@@ -1,0 +1,12 @@
+{
+  "//": "One formatting standard across the whole monorepo so diffs stay clean for developers who will maintain this decades from now.",
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "bracketSpacing": true,
+  "arrowParens": "always",
+  "endOfLine": "lf"
+}

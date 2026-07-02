@@ -1,0 +1,16 @@
+{
+  "//": "Extends the strict monorepo baseline. Node runtime, ESM. `tsc` is used only for type-checking (noEmit); production bundling is done by tsup/esbuild (see tsup.config.ts), which inlines the raw-TypeScript @sma/* workspace packages so `node dist/server.js` needs no on-the-fly transpiler. Bundler moduleResolution lets us import workspace packages and relative files without .js extensions.",
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "moduleResolution": "Bundler",
+    "types": ["node", "vitest/globals"],
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "tsup.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

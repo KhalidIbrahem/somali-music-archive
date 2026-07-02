@@ -1,0 +1,26 @@
+{
+  "name": "@sma/constants",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared, canonical constants for the Somali Music AI Preservation Platform: genres, regions, languages, instruments. The single source of truth consumed by mobile, web, api, and the research dataset.",
+  "//": "WHY a raw-TypeScript internal package (main points at src): Turborepo 'just-in-time' packages let every app compile these files with its own toolchain (Metro, Next, tsc), so there is no separate build step to keep in sync and no risk of a stale compiled artifact drifting from source.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./genres": "./src/genres.ts",
+    "./regions": "./src/regions.ts",
+    "./languages": "./src/languages.ts",
+    "./instruments": "./src/instruments.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "echo \"@sma/constants: no runtime tests — values are asserted via typecheck\" && exit 0",
+    "clean": "rimraf .turbo node_modules"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3"
+  }
+}

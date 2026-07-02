@@ -1,0 +1,155 @@
+// PostgreSQL schema for user/business/relational data (ARCHITECTURE.md §9).
+//
+// This is the canonical PostgreSQL definition. Content metadata lives in MongoDB
+// (§9 Recording/Artist documents) — NOT here. pgvector embeddings (§9) are managed
+// via a raw SQL migration because Prisma has no native vector type yet; see
+// prisma/migrations for the `vector(768)` column + IVFFlat index.
+//
+// Conventions: UUID primary keys, snake_case columns mapped to camelCase fields,
+// soft delete via `deletedAt` (recordings/users are never hard-deleted — Principle 4).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+enum UserRole {
+  listener
+  contributor
+  admin
+}
+
+enum SubscriptionPlan {
+  free
+  premium
+  institutional
+}
+
+enum SubscriptionStatus {
+  active
+  past_due
+  canceled
+}
+
+model User {
+  id              String    @id @default(uuid()) @db.Uuid
+  email           String    @unique
+  passwordHash    String    @map("password_hash")
+  displayName     String    @map("display_name")
+  avatarUrl       String?   @map("avatar_url")
+  language        String    @default("so")
+  role            UserRole  @default(listener)
+  emailVerified   Boolean   @default(false) @map("email_verified")
+  emailVerifiedAt DateTime? @map("email_verified_at") @db.Timestamptz
+  lastLoginAt     DateTime? @map("last_login_at") @db.Timestamptz
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz
+
+  refreshTokens   RefreshToken[]
+  subscriptions   Subscription[]
+  lessonProgress  LessonProgress[]
+  savedRecordings SavedRecording[]
+  playHistory     PlayHistory[]
+  apiKeys         ApiKey[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @map("token_hash") // bcrypt hash of the refresh token
+  deviceId  String?   @map("device_id")
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model Subscription {
+  id                   String             @id @default(uuid()) @db.Uuid
+  userId               String             @map("user_id") @db.Uuid
+  stripeCustomerId     String?            @unique @map("stripe_customer_id")
+  stripeSubscriptionId String?            @unique @map("stripe_subscription_id")
+  plan                 SubscriptionPlan   @default(free)
+  status               SubscriptionStatus @default(active)
+  currentPeriodStart   DateTime?          @map("current_period_start") @db.Timestamptz
+  currentPeriodEnd     DateTime?          @map("current_period_end") @db.Timestamptz
+  cancelAtPeriodEnd    Boolean            @default(false) @map("cancel_at_period_end")
+  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("subscriptions")
+}
+
+model LessonProgress {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  lessonId        String    @map("lesson_id")
+  moduleId        String    @map("module_id")
+  completed       Boolean   @default(false)
+  completedAt     DateTime? @map("completed_at") @db.Timestamptz
+  progressPct     Int       @default(0) @map("progress_pct") @db.SmallInt
+  lastPositionSec Int       @default(0) @map("last_position_sec")
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@map("lesson_progress")
+}
+
+model SavedRecording {
+  userId      String   @map("user_id") @db.Uuid
+  recordingId String   @map("recording_id") // MongoDB ObjectId as string
+  savedAt     DateTime @default(now()) @map("saved_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, recordingId])
+  @@map("saved_recordings")
+}
+
+model PlayHistory {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  recordingId String   @map("recording_id")
+  playedAt    DateTime @default(now()) @map("played_at") @db.Timestamptz
+  durationSec Int?     @map("duration_sec")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("play_history")
+}
+
+model ApiKey {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  keyHash    String    @map("key_hash") // bcrypt hash
+  keyPrefix  String    @map("key_prefix") // first 8 chars for display
+  name       String
+  plan       String    @default("academic") // 'academic' | 'commercial'
+  rateLimit  Int       @default(1000) @map("rate_limit")
+  lastUsedAt DateTime? @map("last_used_at") @db.Timestamptz
+  expiresAt  DateTime? @map("expires_at") @db.Timestamptz
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("api_keys")
+}

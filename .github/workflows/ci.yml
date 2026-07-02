@@ -1,0 +1,71 @@
+# CI — runs on every PR and on pushes to main (ARCHITECTURE.md §13 CI/CD).
+# Gates: format (Prettier) → type check → unit/integration tests → build → security
+# audit for the JS/TS workspaces, plus a fast Python job for the AI service's pure
+# tests. Turborepo caches task output so unchanged workspaces are skipped.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  node:
+    name: JS/TS workspaces
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Format check (Prettier)
+        run: npm run format:check
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit & integration tests
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+
+      - name: Security audit (production deps, high severity)
+        run: npm run audit:prod
+        # Advisory, not a hard gate — a new transitive advisory should surface in
+        # the run without blocking every unrelated PR. Reviewed, not ignored.
+        continue-on-error: true
+
+  python:
+    name: AI service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/ai-service
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install test tooling
+        # The pure scale-mapping tests need no ML wheels — keep this job fast.
+        run: pip install pytest pytest-asyncio ruff
+
+      - name: Lint (Ruff)
+        run: ruff check .
+
+      - name: Unit tests (pure scale mapping)
+        run: pytest tests/test_scale.py -q

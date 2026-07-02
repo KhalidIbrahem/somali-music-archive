@@ -1,0 +1,103 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Somali Music AI Preservation Platform — root .gitignore
+# Covers: Node, Python, Expo/React Native, macOS.
+# WHY committed carefully: this is a permanent archive project. A single leaked
+# .env would expose R2 storage keys, Stripe secrets, and database URIs for
+# irreplaceable cultural material. When in doubt, ignore it.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Secrets & environment ────────────────────────────────────────────────────
+# Never commit real secrets. Only *.env.example (placeholders) are tracked.
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+.doppler
+secrets/
+
+# ── Node ─────────────────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.npm/
+.eslintcache
+*.tsbuildinfo
+dist/
+build/
+coverage/
+.turbo/
+
+# ── Next.js (apps/web) ───────────────────────────────────────────────────────
+.next/
+out/
+.vercel/
+
+# ── Expo / React Native (apps/mobile) ────────────────────────────────────────
+.expo/
+.expo-shared/
+web-build/
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+*.orig.*
+ios/
+android/
+# EAS local build artifacts
+*.ipa
+*.apk
+*.aab
+
+# ── Python (apps/ai-service) ─────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+.ipynb_checkpoints/
+# Downloaded ML model weights — huge, never committed (fetched at deploy time)
+models/weights/
+*.ckpt
+*.pt
+*.safetensors
+wandb/
+
+# ── Docker / local data volumes ──────────────────────────────────────────────
+.docker-data/
+
+# ── Editors & tooling ────────────────────────────────────────────────────────
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.shared.json
+*.swp
+*.swo
+
+# ── macOS ────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# ── Logs & temp ──────────────────────────────────────────────────────────────
+logs/
+*.log
+tmp/
+temp/

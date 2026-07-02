@@ -1,0 +1,24 @@
+[project]
+name = "somali-music-ai-service"
+version = "0.1.0"
+description = "AI/ML service for the Somali Music AI Preservation Platform: Whisper transcription, CREPE pitch extraction + Somali scale mapping, MERT embeddings."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+# Make the flat module layout (main.py, services/, routers/) importable from tests.
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+# The heavy ML libs ship without type stubs; don't fail typecheck on their absence.
+ignore_missing_imports = true
