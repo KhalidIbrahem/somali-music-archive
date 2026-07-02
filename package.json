@@ -1,0 +1,43 @@
+{
+  "name": "somali-music-archive",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Somali Music AI Preservation Platform — a permanent, research-grade archive of Somali traditional music. Monorepo root.",
+  "author": "Khalid Ibrahim <hrgysa123@gmail.com>",
+  "license": "UNLICENSED",
+  "homepage": "https://somalimusicarchive.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khalid-ibrahim/somali-music-archive"
+  },
+  "//": "WHY npm workspaces + Turborepo: one repo holds the mobile app, web app, Node API, Python AI service, and shared TS packages so a single type or validator change propagates everywhere at once. Turborepo caches task output so CI and local builds only re-run what actually changed. This must scale from 1 developer to a team without a rewrite (ARCHITECTURE.md Principle 6).",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0 <23.0.0",
+    "npm": ">=10.0.0"
+  },
+  "packageManager": "npm@10.9.8",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:ci": "turbo run test -- --ci",
+    "clean": "turbo run clean && rimraf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "audit:prod": "npm audit --omit=dev --audit-level=high",
+    "prepare": "husky || true"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "prettier": "^3.3.2",
+    "rimraf": "^5.0.7",
+    "turbo": "^2.0.6",
+    "typescript": "^5.5.3"
+  }
+}

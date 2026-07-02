@@ -1,0 +1,74 @@
+# Local development infrastructure (ARCHITECTURE.md §13).
+#   docker compose up -d              # start core: MongoDB, PostgreSQL+pgvector, Redis
+#   docker compose --profile search up -d   # also start Elasticsearch (heavy)
+#
+# Defaults here match apps/api/.env.example so the API connects out of the box.
+# Data persists in named volumes; nothing here is production configuration.
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    # pgvector image = PostgreSQL 16 with the `vector` extension preinstalled,
+    # required for audio-embedding similarity search (ARCHITECTURE.md §9).
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sma
+      POSTGRES_PASSWORD: sma
+      POSTGRES_DB: somali_archive
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U sma -d somali_archive']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ['redis-server', '--appendonly', 'yes']
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  elasticsearch:
+    # Optional full-text search (ARCHITECTURE.md §5). Heavy — start only when
+    # needed via:  docker compose --profile search up -d
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.1
+    profiles: ['search']
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: 'false'
+      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
+    ports:
+      - '9200:9200'
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+
+volumes:
+  mongo-data:
+  postgres-data:
+  redis-data:
+  es-data:

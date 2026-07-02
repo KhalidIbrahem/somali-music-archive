@@ -1,0 +1,7 @@
+# Dev/test-only dependencies. The pure unit tests (scale mapping) need nothing
+# beyond pytest, so CI can run them without the heavy ML wheels.
+-r requirements.txt
+pytest==8.2.2
+pytest-asyncio==0.23.7
+ruff==0.5.0
+mypy==1.10.1

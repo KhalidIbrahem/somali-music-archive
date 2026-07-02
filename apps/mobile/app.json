@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "Somali Music Archive",
+    "slug": "somali-music-archive",
+    "scheme": "somalimusicarchive",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "primaryColor": "#C89B5F",
+    "backgroundColor": "#0C0B14",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0C0B14"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.somalimusicarchive.app",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "The microphone is used to record traditional music with contributing elder musicians and for pitch-training exercises in lessons.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.somalimusicarchive.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0C0B14"
+      },
+      "permissions": ["RECORD_AUDIO"]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-font",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow Somali Music Archive to access your microphone to record music and complete pitch exercises."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "//": "EAS project id is injected by `eas init`; left empty in source control."
+    }
+  }
+}
