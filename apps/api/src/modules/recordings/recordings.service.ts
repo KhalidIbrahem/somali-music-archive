@@ -8,6 +8,8 @@
 
 import type { AudioFormat, Paginated, PublicRecording, SignedAudioUrl } from '@sma/types';
 import type {
+  ModerationQueryInput,
+  RecordingModerationInput,
   UploadCompleteInput,
   UploadUrlRequestInput,
   RecordingQueryInput,
@@ -93,6 +95,21 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
     return recording;
   }
 
+  async function listForModeration(
+    query: ModerationQueryInput,
+  ): Promise<Paginated<PublicRecording>> {
+    return repo.listForModeration(query);
+  }
+
+  async function moderateRecording(
+    id: string,
+    patch: RecordingModerationInput,
+  ): Promise<PublicRecording> {
+    const updated = await repo.updateModeration(id, patch);
+    if (!updated) throw notFound('RECORDING_NOT_FOUND', 'Recording not found');
+    return updated;
+  }
+
   async function getPlaybackUrl(id: string): Promise<SignedAudioUrl> {
     const fileKey = await repo.getFileKey(id);
     if (!fileKey) throw notFound('RECORDING_NOT_FOUND', 'Recording not found');
@@ -107,6 +124,8 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
     searchRecordings,
     getRecording,
     getPlaybackUrl,
+    listForModeration,
+    moderateRecording,
   };
 }
 

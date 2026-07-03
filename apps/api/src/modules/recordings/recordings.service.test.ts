@@ -84,14 +84,7 @@ describe('completeUpload', () => {
 });
 
 describe('listRecordings', () => {
-  it('excludes drafts and returns completed recordings', async () => {
-    // A draft that is never completed must NOT appear in the archive listing.
-    await ctx.service.createUploadUrl({
-      filename: 'draft.wav',
-      contentType: 'audio/wav',
-      sessionId: 's0',
-    });
-
+  async function publishOne(): Promise<void> {
     const done = await ctx.service.createUploadUrl({
       filename: 'take.wav',
       contentType: 'audio/wav',
@@ -102,6 +95,18 @@ describe('listRecordings', () => {
       fileKey: done.fileKey,
       metadata,
     });
+    await ctx.service.moderateRecording(done.recordingId, { status: 'published' });
+  }
+
+  it('lists only published recordings (not drafts or unreviewed)', async () => {
+    // A draft that is never completed, and a completed-but-unpublished (review)
+    // recording, must NOT appear in the public archive listing.
+    await ctx.service.createUploadUrl({
+      filename: 'draft.wav',
+      contentType: 'audio/wav',
+      sessionId: 's0',
+    });
+    await publishOne();
 
     const page = await ctx.service.listRecordings({ page: 1, limit: 20 });
     expect(page.total).toBe(1);
@@ -109,17 +114,7 @@ describe('listRecordings', () => {
   });
 
   it('filters by genre', async () => {
-    const done = await ctx.service.createUploadUrl({
-      filename: 'take.wav',
-      contentType: 'audio/wav',
-      sessionId: 's1',
-    });
-    await ctx.service.completeUpload({
-      recordingId: done.recordingId,
-      fileKey: done.fileKey,
-      metadata,
-    });
-
+    await publishOne();
     const match = await ctx.service.listRecordings({ page: 1, limit: 20, genre: 'qaraami' });
     expect(match.total).toBe(1);
     const miss = await ctx.service.listRecordings({ page: 1, limit: 20, genre: 'dhaanto' });
@@ -139,6 +134,8 @@ describe('searchRecordings', () => {
       fileKey: done.fileKey,
       metadata,
     });
+    // Search covers the public archive → the recording must be published.
+    await ctx.service.moderateRecording(done.recordingId, { status: 'published' });
   });
 
   it('matches free text against title and artist', async () => {
@@ -166,5 +163,46 @@ describe('searchRecordings', () => {
 describe('getRecording', () => {
   it('throws RECORDING_NOT_FOUND for an unknown id', async () => {
     await expect(ctx.service.getRecording('f'.repeat(24))).rejects.toBeInstanceOf(AppError);
+  });
+});
+
+describe('moderation (admin)', () => {
+  async function completed(): Promise<string> {
+    const done = await ctx.service.createUploadUrl({
+      filename: 'take.wav',
+      contentType: 'audio/wav',
+      sessionId: 's1',
+    });
+    await ctx.service.completeUpload({
+      recordingId: done.recordingId,
+      fileKey: done.fileKey,
+      metadata,
+    });
+    return done.recordingId;
+  }
+
+  it('lists recordings pending review and publishes one', async () => {
+    const recordingId = await completed();
+
+    // A completed upload sits in "review" — visible to moderation but not the archive.
+    const review = await ctx.service.listForModeration({ page: 1, limit: 20, status: 'review' });
+    expect(review.total).toBe(1);
+    expect((await ctx.service.listRecordings({ page: 1, limit: 20 })).total).toBe(0);
+
+    const updated = await ctx.service.moderateRecording(recordingId, {
+      status: 'published',
+      visibility: 'public',
+    });
+    expect(updated.status).toBe('published');
+    expect(updated.visibility).toBe('public');
+
+    // Now it appears in the public archive listing.
+    expect((await ctx.service.listRecordings({ page: 1, limit: 20 })).total).toBe(1);
+  });
+
+  it('rejects moderating an unknown recording', async () => {
+    await expect(
+      ctx.service.moderateRecording('f'.repeat(24), { status: 'archived' }),
+    ).rejects.toBeInstanceOf(AppError);
   });
 });

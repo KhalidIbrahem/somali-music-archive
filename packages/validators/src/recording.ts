@@ -116,6 +116,25 @@ export const searchQuerySchema = paginationQuerySchema.extend({
     .optional(),
 });
 
+// ── Admin moderation (ARCHITECTURE.md §12 PATCH /recordings/:id, admin only) ──
+export const recordingStatusEnum = z.enum(['draft', 'review', 'published', 'archived']);
+export const recordingVisibilityEnum = z.enum(['public', 'restricted', 'private']);
+
+/** Admin PATCH: change a recording's moderation status and/or visibility. */
+export const recordingModerationSchema = z
+  .object({
+    status: recordingStatusEnum.optional(),
+    visibility: recordingVisibilityEnum.optional(),
+  })
+  .refine((d) => d.status !== undefined || d.visibility !== undefined, {
+    message: 'Provide a status or visibility to change',
+  });
+
+/** Admin moderation queue query (optionally filtered by status). */
+export const moderationQuerySchema = paginationQuerySchema.extend({
+  status: recordingStatusEnum.optional(),
+});
+
 export type UploadUrlRequestInput = z.infer<typeof uploadUrlRequestSchema>;
 export type UploadCompleteInput = z.infer<typeof uploadCompleteSchema>;
 export type RecordingCompleteMetadata = z.infer<typeof recordingCompleteMetadataSchema>;
@@ -123,3 +142,5 @@ export type RecordingMetadataInput = z.infer<typeof recordingMetadataSchema>;
 export type RecordingUpdateInput = z.infer<typeof recordingUpdateSchema>;
 export type RecordingQueryInput = z.output<typeof recordingQuerySchema>;
 export type SearchQueryInput = z.output<typeof searchQuerySchema>;
+export type RecordingModerationInput = z.infer<typeof recordingModerationSchema>;
+export type ModerationQueryInput = z.output<typeof moderationQuerySchema>;

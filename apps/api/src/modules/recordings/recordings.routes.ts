@@ -10,10 +10,12 @@ import {
   uploadUrlRequestSchema,
   uploadCompleteSchema,
   recordingQuerySchema,
+  moderationQuerySchema,
+  recordingModerationSchema,
 } from '@sma/validators';
 import { validate } from '@/shared/middleware/validate';
 import { authenticate } from '@/shared/middleware/authenticate';
-import { requireContributor } from '@/shared/middleware/requireRole';
+import { requireContributor, requireAdmin } from '@/shared/middleware/requireRole';
 import { requireVerifiedEmail } from '@/shared/middleware/requireVerifiedEmail';
 import { asyncHandler } from '@/shared/http/asyncHandler';
 import * as controller from './recordings.controller';
@@ -24,8 +26,25 @@ export const recordingsRouter: Router = Router();
 recordingsRouter.use(authenticate);
 
 recordingsRouter.get('/', validate({ query: recordingQuerySchema }), asyncHandler(controller.list));
+
+// Admin moderation — must be registered before the /:id param route.
+recordingsRouter.get(
+  '/moderation',
+  requireAdmin,
+  validate({ query: moderationQuerySchema }),
+  asyncHandler(controller.moderationList),
+);
+
 recordingsRouter.get('/:id', asyncHandler(controller.getById));
 recordingsRouter.get('/:id/audio', asyncHandler(controller.getAudio));
+
+// Admin: change a recording's status/visibility (publish, archive, …).
+recordingsRouter.patch(
+  '/:id',
+  requireAdmin,
+  validate({ body: recordingModerationSchema }),
+  asyncHandler(controller.updateRecording),
+);
 
 // Contributor/admin only, and only with a verified email — adding to the archive
 // is "full access" (§11 — email verification required before full access).
