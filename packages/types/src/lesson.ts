@@ -40,6 +40,11 @@ export interface LessonModule {
   readonly lessonCount: number;
 }
 
+/** A module together with its ordered lessons — the module-detail payload (§12). */
+export interface ModuleWithLessons extends LessonModule {
+  readonly lessons: readonly Lesson[];
+}
+
 /** A learner's progress on a single lesson (`lesson_progress` row). */
 export interface LessonProgress {
   readonly id: Uuid;

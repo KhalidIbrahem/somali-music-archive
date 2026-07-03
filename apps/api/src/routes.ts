@@ -10,9 +10,11 @@ import { Router } from 'express';
 import { authRouter } from '@/modules/auth/auth.routes';
 import { usersRouter } from '@/modules/users/users.routes';
 import { recordingsRouter } from '@/modules/recordings/recordings.routes';
+import { lessonsRouter } from '@/modules/lessons/lessons.routes';
 
 export const apiV1Router: Router = Router();
 
 apiV1Router.use('/auth', authRouter);
 apiV1Router.use('/users', usersRouter);
 apiV1Router.use('/recordings', recordingsRouter);
+apiV1Router.use('/lessons', lessonsRouter);
