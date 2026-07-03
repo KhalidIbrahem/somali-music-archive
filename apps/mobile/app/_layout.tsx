@@ -56,13 +56,13 @@ export default function RootLayout(): React.JSX.Element | null {
   });
 
   const hydrate = useAuthStore((s) => s.hydrate);
-  const status = useAuthStore((s) => s.status);
+  const isLoading = useAuthStore((s) => s.isLoading);
 
   useEffect(() => {
     void hydrate();
   }, [hydrate]);
 
-  const ready = (fontsLoaded || fontError !== null) && status !== 'loading';
+  const ready = (fontsLoaded || fontError !== null) && !isLoading;
 
   useEffect(() => {
     if (ready) {
