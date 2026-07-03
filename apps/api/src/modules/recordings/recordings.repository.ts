@@ -190,8 +190,16 @@ export class InMemoryRecordingRepository implements RecordingRepository {
     return toPublicRecording(doc);
   }
 
+  /** Resolve a recording by its ObjectId key OR its human id (e.g. "2026-07-03-001"),
+   * since clients navigate/save by the human id. */
+  private resolve(idOrHumanId: string): RecordingDoc | undefined {
+    return (
+      this.byId.get(idOrHumanId) ?? [...this.byId.values()].find((d) => d.humanId === idOrHumanId)
+    );
+  }
+
   async findById(id: string): Promise<PublicRecording | null> {
-    const doc = this.byId.get(id);
+    const doc = this.resolve(id);
     return doc && !doc.deletedAt ? toPublicRecording(doc) : null;
   }
 
@@ -238,7 +246,7 @@ export class InMemoryRecordingRepository implements RecordingRepository {
   }
 
   async getFileKey(id: string): Promise<string | null> {
-    const doc = this.byId.get(id);
+    const doc = this.resolve(id);
     return doc && !doc.deletedAt ? doc.fileKey : null;
   }
 

@@ -55,6 +55,18 @@ export interface UserRepository {
   lockUntil(id: string, until: Date): Promise<void>;
   markEmailVerified(id: string): Promise<void>;
   updatePassword(id: string, passwordHash: string): Promise<void>;
+  /** Update editable profile fields; returns the updated record (or null). */
+  updateProfile(id: string, patch: ProfilePatch): Promise<UserRecord | null>;
+  // ── Saved recordings (bookmarks, ARCHITECTURE.md §9 saved_recordings) ──
+  addSaved(userId: string, recordingId: string): Promise<void>;
+  removeSaved(userId: string, recordingId: string): Promise<void>;
+  listSaved(userId: string): Promise<string[]>;
+}
+
+export interface ProfilePatch {
+  displayName?: string | undefined;
+  language?: UiLanguage | undefined;
+  avatarUrl?: string | undefined;
 }
 
 /** Strip secrets and map an internal row to the public wire shape. */
@@ -82,6 +94,8 @@ export function toPublicUser(record: UserRecord): PublicUser {
  */
 export class InMemoryUserRepository implements UserRepository {
   private readonly byId = new Map<string, UserRecord>();
+  /** userId → set of saved recording ids. */
+  private readonly saved = new Map<string, Set<string>>();
 
   async findByEmail(email: string): Promise<UserRecord | null> {
     const needle = email.toLowerCase();
@@ -167,6 +181,33 @@ export class InMemoryUserRepository implements UserRepository {
       record.passwordHash = passwordHash;
       record.updatedAt = new Date();
     }
+  }
+
+  async updateProfile(id: string, patch: ProfilePatch): Promise<UserRecord | null> {
+    const record = this.byId.get(id);
+    if (!record || record.deletedAt) return null;
+    if (patch.displayName !== undefined) record.displayName = patch.displayName;
+    if (patch.language !== undefined) record.language = patch.language;
+    if (patch.avatarUrl !== undefined) record.avatarUrl = patch.avatarUrl;
+    record.updatedAt = new Date();
+    return record;
+  }
+
+  async addSaved(userId: string, recordingId: string): Promise<void> {
+    let set = this.saved.get(userId);
+    if (!set) {
+      set = new Set();
+      this.saved.set(userId, set);
+    }
+    set.add(recordingId);
+  }
+
+  async removeSaved(userId: string, recordingId: string): Promise<void> {
+    this.saved.get(userId)?.delete(recordingId);
+  }
+
+  async listSaved(userId: string): Promise<string[]> {
+    return [...(this.saved.get(userId) ?? [])];
   }
 }
 

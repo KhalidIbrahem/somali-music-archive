@@ -1,6 +1,5 @@
 /**
- * User routes (ARCHITECTURE.md §12 USERS). The mobile/web clients read the session
- * user from GET /users/me after auth. All routes require a valid access token.
+ * User routes (ARCHITECTURE.md §12 USERS). All require a valid access token.
  */
 
 import { Router } from 'express';
@@ -15,4 +14,13 @@ export const usersRouter: Router = Router();
 usersRouter.use(authenticate);
 
 usersRouter.get('/me', asyncHandler(controller.getMe));
-usersRouter.patch('/me', validate({ body: updateProfileSchema }), asyncHandler(controller.updateMe));
+usersRouter.patch(
+  '/me',
+  validate({ body: updateProfileSchema }),
+  asyncHandler(controller.updateMe),
+);
+
+// Saved recordings (bookmarks).
+usersRouter.get('/me/saved', asyncHandler(controller.getSaved));
+usersRouter.post('/me/saved/:id', asyncHandler(controller.addSaved));
+usersRouter.delete('/me/saved/:id', asyncHandler(controller.removeSaved));
