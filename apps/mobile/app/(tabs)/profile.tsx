@@ -17,6 +17,8 @@ import { getSaved, updateProfile } from '@/services/api/users';
 import { getMyProgress } from '@/services/api/lessons';
 import { getSubscriptionStatus } from '@/services/api/subscriptions';
 import { sendTestNotification } from '@/services/api/notifications';
+import { audioCache } from '@/services/audio/cache';
+import { formatFileSize } from '@/utils/formatters';
 import { colors, radius, spacing } from '@/theme';
 
 function initials(name: string): string {
@@ -51,6 +53,14 @@ export default function Profile(): React.JSX.Element {
   });
 
   const testPush = useMutation({ mutationFn: sendTestNotification });
+  const downloadsSizeQuery = useQuery({
+    queryKey: ['downloads-size'],
+    queryFn: () => audioCache.totalSize(),
+  });
+  const clearDownloads = useMutation({
+    mutationFn: () => audioCache.clear(),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['downloads-size'] }),
+  });
 
   const savedCount = savedQuery.data?.length ?? 0;
   const lessonsCompleted = (progressQuery.data ?? []).filter((p) => p.completed).length;
@@ -166,6 +176,15 @@ export default function Profile(): React.JSX.Element {
             variant="ghost"
             onPress={() => testPush.mutate()}
             loading={testPush.isPending}
+          />
+        ) : null}
+
+        {(downloadsSizeQuery.data ?? 0) > 0 ? (
+          <Button
+            label={`Clear downloads (${formatFileSize(downloadsSizeQuery.data ?? 0)})`}
+            variant="ghost"
+            onPress={() => clearDownloads.mutate()}
+            loading={clearDownloads.isPending}
           />
         ) : null}
 

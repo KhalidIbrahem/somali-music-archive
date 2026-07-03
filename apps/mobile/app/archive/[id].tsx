@@ -15,7 +15,9 @@ import { GENRE_LABELS, REGION_LABELS, INSTRUMENT_LABELS } from '@sma/constants';
 import type { PublicRecording } from '@sma/types';
 import { Screen, Text, Card } from '@/components/ui';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
-import { getRecording, getAudioUrl, listRecordings } from '@/services/api/recordings';
+import { useOfflineAudio } from '@/hooks/useOfflineAudio';
+import { useSettingsStore } from '@/stores/settingsStore';
+import { getRecording, listRecordings } from '@/services/api/recordings';
 import { getSaved, saveRecording, unsaveRecording } from '@/services/api/users';
 import { formatDuration } from '@/utils/formatters';
 import { colors, radius, spacing } from '@/theme';
@@ -23,6 +25,8 @@ import { colors, radius, spacing } from '@/theme';
 export default function RecordingDetail(): React.JSX.Element {
   const { id } = useLocalSearchParams<{ id: string }>();
   const player = useAudioPlayer();
+  const offline = useOfflineAudio(id);
+  const offlineDownloads = useSettingsStore((s) => s.offlineDownloads);
   const queryClient = useQueryClient();
   const [ready, setReady] = useState(false);
   const [preparing, setPreparing] = useState(false);
@@ -71,10 +75,15 @@ export default function RecordingDetail(): React.JSX.Element {
     if (!ready) {
       setPreparing(true);
       try {
-        const { url } = await getAudioUrl(id);
-        await player.load(url);
+        // Prefer the offline copy; fall back to a signed streaming URL.
+        const uri = await offline.resolvePlaybackUri();
+        await player.load(uri);
         setReady(true);
         await player.play();
+        // Auto-cache on play when the user has offline downloads enabled (§6).
+        if (offlineDownloads && !offline.isDownloaded) {
+          void offline.download();
+        }
       } catch {
         setAudioError('Could not load the audio. Please try again.');
       } finally {
@@ -165,6 +174,27 @@ export default function RecordingDetail(): React.JSX.Element {
           />
           <Text variant="bodyMedium" color="accent">
             {isSaved ? 'Saved' : 'Save'}
+          </Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => (offline.isDownloaded ? void offline.remove() : void offline.download())}
+          disabled={offline.downloading}
+          style={styles.saveRow}
+          accessibilityRole="button"
+          accessibilityState={{ selected: offline.isDownloaded }}
+        >
+          <Ionicons
+            name={offline.isDownloaded ? 'cloud-done' : 'cloud-download-outline'}
+            size={20}
+            color={colors.amber.primary}
+          />
+          <Text variant="bodyMedium" color="accent">
+            {offline.downloading
+              ? 'Downloading…'
+              : offline.isDownloaded
+                ? 'Downloaded'
+                : 'Download for offline'}
           </Text>
         </Pressable>
 
