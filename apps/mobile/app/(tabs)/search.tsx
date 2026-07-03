@@ -1,45 +1,164 @@
 /**
- * Search tab (ARCHITECTURE.md §7, §12 SEARCH). Full-text across titles, artists,
- * genres, regions and (later) transcripts. Phase 2 uses MongoDB text search;
- * Phase 3 swaps in Elasticsearch behind the same endpoint.
+ * Search tab (SESSION P2-03, ARCHITECTURE.md §7, §12 SEARCH).
+ *
+ * Debounced free-text search across the archive (title, artist, genre, era…) with
+ * a genre facet, backed by GET /search. Results reuse RecordingCard and link to the
+ * recording detail. Phase 2/3 swaps the backend to MongoDB text search / Elasticsearch
+ * behind the same endpoint.
  */
 
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import { Link } from 'expo-router';
+import { useQuery } from '@tanstack/react-query';
+import type { Genre } from '@sma/constants';
+import type { PublicRecording } from '@sma/types';
 import { Screen, Text, Input } from '@/components/ui';
-import { spacing } from '@/theme';
+import { RecordingCard } from '@/components/archive/RecordingCard';
+import { searchRecordings } from '@/services/api/search';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { colors, radius, spacing } from '@/theme';
+
+interface GenreFilter {
+  label: string;
+  value: Genre | null;
+}
+
+const FILTERS: readonly GenreFilter[] = [
+  { label: 'All', value: null },
+  { label: 'Heello', value: 'heello' },
+  { label: 'Qaraami', value: 'qaraami' },
+  { label: 'Dhaanto', value: 'dhaanto' },
+  { label: 'Buraanbur', value: 'buraanbur' },
+  { label: 'Instrumental', value: 'instrumental' },
+];
 
 export default function Search(): React.JSX.Element {
   const [query, setQuery] = useState('');
+  const [genre, setGenre] = useState<Genre | null>(null);
+  const debounced = useDebouncedValue(query.trim(), 300);
+
+  const active = debounced.length > 0 || genre !== null;
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['search', debounced, genre],
+    queryFn: () =>
+      searchRecordings({
+        ...(debounced ? { q: debounced } : {}),
+        ...(genre ? { genre } : {}),
+        limit: 30,
+      }),
+    enabled: active,
+  });
+
+  const results = data?.data ?? [];
 
   return (
-    <Screen>
-      <Text variant="displayLarge" style={styles.title}>
-        Search
-      </Text>
-      <View style={styles.field}>
+    <Screen padded={false}>
+      <View style={styles.header}>
+        <Text variant="displayLarge" style={styles.title}>
+          Search
+        </Text>
         <Input
           label="Find a song, artist, or genre"
           value={query}
           onChangeText={setQuery}
-          placeholder="e.g. Hobalaha, dhaanto…"
+          placeholder="e.g. Balwo, Ahmed, dhaanto…"
           autoCapitalize="none"
+          autoCorrect={false}
           returnKeyType="search"
         />
+        <View style={styles.filterRow}>
+          {FILTERS.map((filter) => {
+            const isActive = genre === filter.value;
+            return (
+              <Pressable
+                key={filter.label}
+                onPress={() => setGenre(filter.value)}
+                style={[styles.chip, isActive ? styles.chipActive : null]}
+                accessibilityRole="button"
+                accessibilityState={{ selected: isActive }}
+              >
+                <Text variant="labelMedium" color={isActive ? 'inverse' : 'secondary'}>
+                  {filter.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
-      <Text variant="bodyMedium" color="secondary">
-        Results appear as you type (Phase 2).
-      </Text>
+
+      <FlatList
+        data={results}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.list}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }: { item: PublicRecording }) => (
+          <Link href={`/archive/${item.id}`} asChild>
+            <Pressable style={styles.cardWrap}>
+              <RecordingCard recording={item} />
+            </Pressable>
+          </Link>
+        )}
+        ListEmptyComponent={
+          !active ? (
+            <Text color="secondary" style={styles.state}>
+              Search the archive by song, artist, genre, or era.
+            </Text>
+          ) : isLoading ? (
+            <Text color="secondary" style={styles.state}>
+              Searching…
+            </Text>
+          ) : isError ? (
+            <Text color="error" style={styles.state}>
+              Search failed. Please try again.
+            </Text>
+          ) : (
+            <Text color="secondary" style={styles.state}>
+              No recordings match “{debounced || FILTERS.find((f) => f.value === genre)?.label}”.
+            </Text>
+          )
+        }
+      />
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
+  header: {
+    paddingHorizontal: spacing.base,
+    gap: spacing.base,
+  },
   title: {
     paddingTop: spacing.lg,
-    paddingBottom: spacing.base,
   },
-  field: {
-    paddingBottom: spacing.base,
+  filterRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  chip: {
+    minHeight: 34,
+    paddingHorizontal: spacing.md,
+    justifyContent: 'center',
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.border.primary,
+    backgroundColor: colors.bg.secondary,
+  },
+  chipActive: {
+    backgroundColor: colors.amber.primary,
+    borderColor: colors.amber.primary,
+  },
+  list: {
+    padding: spacing.base,
+  },
+  cardWrap: {
+    marginBottom: spacing.md,
+  },
+  state: {
+    paddingVertical: spacing.xxl,
+    textAlign: 'center',
   },
 });

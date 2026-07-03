@@ -127,6 +127,42 @@ describe('listRecordings', () => {
   });
 });
 
+describe('searchRecordings', () => {
+  beforeEach(async () => {
+    const done = await ctx.service.createUploadUrl({
+      filename: 'take.wav',
+      contentType: 'audio/wav',
+      sessionId: 's1',
+    });
+    await ctx.service.completeUpload({
+      recordingId: done.recordingId,
+      fileKey: done.fileKey,
+      metadata,
+    });
+  });
+
+  it('matches free text against title and artist', async () => {
+    expect((await ctx.service.searchRecordings({ page: 1, limit: 20, q: 'balwo' })).total).toBe(1);
+    expect((await ctx.service.searchRecordings({ page: 1, limit: 20, q: 'ahmed' })).total).toBe(1);
+    expect((await ctx.service.searchRecordings({ page: 1, limit: 20, q: 'nonsense' })).total).toBe(
+      0,
+    );
+  });
+
+  it('combines text with a genre facet', async () => {
+    expect(
+      (await ctx.service.searchRecordings({ page: 1, limit: 20, genre: 'qaraami' })).total,
+    ).toBe(1);
+    expect(
+      (await ctx.service.searchRecordings({ page: 1, limit: 20, genre: 'dhaanto' })).total,
+    ).toBe(0);
+  });
+
+  it('returns everything when the query is empty', async () => {
+    expect((await ctx.service.searchRecordings({ page: 1, limit: 20 })).total).toBe(1);
+  });
+});
+
 describe('getRecording', () => {
   it('throws RECORDING_NOT_FOUND for an unknown id', async () => {
     await expect(ctx.service.getRecording('f'.repeat(24))).rejects.toBeInstanceOf(AppError);

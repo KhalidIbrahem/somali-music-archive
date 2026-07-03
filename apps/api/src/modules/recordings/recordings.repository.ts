@@ -20,7 +20,11 @@ import type {
   RecordingVisibility,
 } from '@sma/types';
 import type { ContentLanguage, Genre, Instrument, Region } from '@sma/constants';
-import type { RecordingCompleteMetadata, RecordingQueryInput } from '@sma/validators';
+import type {
+  RecordingCompleteMetadata,
+  RecordingQueryInput,
+  SearchQueryInput,
+} from '@sma/validators';
 import { asIso, asObjectId } from '@/shared/brand';
 import { sha256Hex } from '@/shared/crypto';
 
@@ -68,6 +72,7 @@ export interface RecordingRepository {
   ): Promise<PublicRecording | null>;
   findById(id: string): Promise<PublicRecording | null>;
   list(query: RecordingQueryInput): Promise<Paginated<PublicRecording>>;
+  search(query: SearchQueryInput): Promise<Paginated<PublicRecording>>;
   getFileKey(id: string): Promise<string | null>;
   softDelete(id: string): Promise<void>;
 }
@@ -76,6 +81,21 @@ export interface RecordingRepository {
  * collection exists, the name is the identity). */
 function artistIdFor(name: string): string {
   return sha256Hex(name.toLowerCase()).slice(0, 24);
+}
+
+/** Lowercased haystack for free-text search (title, artist, genre, era, occasion,
+ * poet). A Mongo text index / Elasticsearch replaces this in Phase 2/3 (§14). */
+function searchableText(doc: RecordingDoc): string {
+  return [
+    doc.title.somali,
+    doc.artistName,
+    doc.genre,
+    doc.era ?? '',
+    doc.occasion ?? '',
+    doc.poetName ?? '',
+  ]
+    .join(' ')
+    .toLowerCase();
 }
 
 /** Map an internal doc to the public wire shape (omits fileKey/session/etc.). */
@@ -189,6 +209,27 @@ export class InMemoryRecordingRepository implements RecordingRepository {
     const pageDocs = all.slice(start, start + query.limit);
     return {
       data: pageDocs.map(toPublicRecording),
+      total,
+      page: query.page,
+      limit: query.limit,
+      hasMore: start + query.limit < total,
+    };
+  }
+
+  async search(query: SearchQueryInput): Promise<Paginated<PublicRecording>> {
+    const needle = query.q?.trim().toLowerCase() ?? '';
+    const matches = [...this.byId.values()]
+      .filter((d) => !d.deletedAt && d.status !== 'draft')
+      .filter((d) => (query.genre ? d.genre === query.genre : true))
+      .filter((d) => (query.region ? d.region === query.region : true))
+      .filter((d) => (query.era ? d.era === query.era : true))
+      .filter((d) => (needle ? searchableText(d).includes(needle) : true))
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    const total = matches.length;
+    const start = (query.page - 1) * query.limit;
+    return {
+      data: matches.slice(start, start + query.limit).map(toPublicRecording),
       total,
       page: query.page,
       limit: query.limit,

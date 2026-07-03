@@ -11,6 +11,7 @@ import type {
   UploadCompleteInput,
   UploadUrlRequestInput,
   RecordingQueryInput,
+  SearchQueryInput,
 } from '@sma/validators';
 import { badRequest, notFound } from '@/shared/errors/AppError';
 import { asIso } from '@/shared/brand';
@@ -82,6 +83,10 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
     return repo.list(query);
   }
 
+  async function searchRecordings(query: SearchQueryInput): Promise<Paginated<PublicRecording>> {
+    return repo.search(query);
+  }
+
   async function getRecording(id: string): Promise<PublicRecording> {
     const recording = await repo.findById(id);
     if (!recording) throw notFound('RECORDING_NOT_FOUND', 'Recording not found');
@@ -95,7 +100,14 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
     return { url: signed.url, expiresAt: asIso(signed.expiresAt) };
   }
 
-  return { createUploadUrl, completeUpload, listRecordings, getRecording, getPlaybackUrl };
+  return {
+    createUploadUrl,
+    completeUpload,
+    listRecordings,
+    searchRecordings,
+    getRecording,
+    getPlaybackUrl,
+  };
 }
 
 export type RecordingsService = ReturnType<typeof createRecordingsService>;
