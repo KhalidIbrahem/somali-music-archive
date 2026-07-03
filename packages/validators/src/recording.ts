@@ -33,10 +33,31 @@ export const uploadUrlRequestSchema = z.object({
   sizeBytes: z.number().int().positive().max(MAX_UPLOAD_BYTES).optional(),
 });
 
-/** Step 4 — notify the API the direct-to-R2 upload finished. */
+/**
+ * Metadata captured on the record screen and sent with upload-complete. Uses a
+ * free-text `singerName` (the artist collection + `artistId` resolution arrive with
+ * the artist system); genre/region/instruments are constrained to the canonical lists.
+ */
+export const recordingCompleteMetadataSchema = z.object({
+  title: z.object({ somali: z.string().trim().min(1, 'Somali title is required').max(300) }),
+  singerName: z.string().trim().min(1).max(200),
+  poetName: z.string().trim().max(200).optional(),
+  genre: genreSchema,
+  occasion: z.string().trim().max(120).optional(),
+  region: regionSchema.optional(),
+  era: z
+    .string()
+    .regex(/^\d{4}s$/, 'Use a decade like "1970s"')
+    .optional(),
+  instruments: z.array(instrumentSchema).min(1, 'Select at least one instrument'),
+  fieldNotes: z.string().trim().max(4000).optional(),
+});
+
+/** Step 4 — notify the API the direct-to-R2 upload finished, with the take's metadata. */
 export const uploadCompleteSchema = z.object({
   recordingId: objectIdSchema,
   fileKey: z.string().min(1),
+  metadata: recordingCompleteMetadataSchema.optional(),
 });
 
 /** Trilingual title; the Somali title is the source of truth and required. */
@@ -67,21 +88,26 @@ export const recordingMetadataSchema = z.object({
 });
 
 /** PATCH payload — every field optional, but at least one must be present. */
-export const recordingUpdateSchema = recordingMetadataSchema.partial().refine(
-  (data) => Object.keys(data).length > 0,
-  { message: 'Provide at least one field to update' },
-);
+export const recordingUpdateSchema = recordingMetadataSchema
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: 'Provide at least one field to update',
+  });
 
 /** GET /recordings list filters + pagination (§12). */
 export const recordingQuerySchema = paginationQuerySchema.extend({
   genre: genreSchema.optional(),
   region: regionSchema.optional(),
-  era: z.string().regex(/^\d{4}s$/).optional(),
+  era: z
+    .string()
+    .regex(/^\d{4}s$/)
+    .optional(),
   artistId: objectIdSchema.optional(),
 });
 
 export type UploadUrlRequestInput = z.infer<typeof uploadUrlRequestSchema>;
 export type UploadCompleteInput = z.infer<typeof uploadCompleteSchema>;
+export type RecordingCompleteMetadata = z.infer<typeof recordingCompleteMetadataSchema>;
 export type RecordingMetadataInput = z.infer<typeof recordingMetadataSchema>;
 export type RecordingUpdateInput = z.infer<typeof recordingUpdateSchema>;
 export type RecordingQueryInput = z.output<typeof recordingQuerySchema>;
