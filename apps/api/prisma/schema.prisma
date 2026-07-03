@@ -35,6 +35,11 @@ enum SubscriptionStatus {
   canceled
 }
 
+enum VerificationPurpose {
+  email_verify
+  password_reset
+}
+
 model User {
   id              String    @id @default(uuid()) @db.Uuid
   email           String    @unique
@@ -46,24 +51,47 @@ model User {
   emailVerified   Boolean   @default(false) @map("email_verified")
   emailVerifiedAt DateTime? @map("email_verified_at") @db.Timestamptz
   lastLoginAt     DateTime? @map("last_login_at") @db.Timestamptz
+  // Brute-force protection (ARCHITECTURE.md §11 Threat 2): lock after 10 failures.
+  failedLoginAttempts Int    @default(0) @map("failed_login_attempts")
+  lockedUntil     DateTime? @map("locked_until") @db.Timestamptz
   createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz
   deletedAt       DateTime? @map("deleted_at") @db.Timestamptz
 
-  refreshTokens   RefreshToken[]
-  subscriptions   Subscription[]
-  lessonProgress  LessonProgress[]
-  savedRecordings SavedRecording[]
-  playHistory     PlayHistory[]
-  apiKeys         ApiKey[]
+  refreshTokens      RefreshToken[]
+  verificationTokens VerificationToken[]
+  subscriptions      Subscription[]
+  lessonProgress     LessonProgress[]
+  savedRecordings    SavedRecording[]
+  playHistory        PlayHistory[]
+  apiKeys            ApiKey[]
 
   @@map("users")
+}
+
+// One-time, single-use tokens for email verification and password reset
+// (ARCHITECTURE.md §11). Stored ONLY as a SHA-256 hash; the raw token lives only
+// in the email link. Rows are expired and marked consumed after use.
+model VerificationToken {
+  id         String              @id @default(uuid()) @db.Uuid
+  userId     String              @map("user_id") @db.Uuid
+  tokenHash  String              @map("token_hash") // SHA-256 hex of the token
+  purpose    VerificationPurpose
+  expiresAt  DateTime            @map("expires_at") @db.Timestamptz
+  consumedAt DateTime?           @map("consumed_at") @db.Timestamptz
+  createdAt  DateTime            @default(now()) @map("created_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tokenHash])
+  @@index([userId])
+  @@map("verification_tokens")
 }
 
 model RefreshToken {
   id        String    @id @default(uuid()) @db.Uuid
   userId    String    @map("user_id") @db.Uuid
-  tokenHash String    @map("token_hash") // bcrypt hash of the refresh token
+  tokenHash String    @map("token_hash") // SHA-256 hex of the refresh token
   deviceId  String?   @map("device_id")
   expiresAt DateTime  @map("expires_at") @db.Timestamptz
   revokedAt DateTime? @map("revoked_at") @db.Timestamptz

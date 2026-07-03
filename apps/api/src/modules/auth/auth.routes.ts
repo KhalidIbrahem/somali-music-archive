@@ -1,7 +1,7 @@
 /**
- * Auth routes (ARCHITECTURE.md §12 AUTH). The strict `authLimiter` guards the
- * credential endpoints (§11 Threat 2). Every input passes through `validate` with
- * the shared @sma/validators schemas (CLAUDE.md hard rule).
+ * Auth routes (ARCHITECTURE.md §12 AUTH). The strict `authLimiter` (5 attempts /
+ * 15 min / IP, §11 Threat 2) guards the credential endpoints. Every input passes
+ * through `validate` with the shared @sma/validators schemas (CLAUDE.md hard rule).
  */
 
 import { Router } from 'express';
@@ -10,6 +10,8 @@ import {
   registerSchema,
   refreshSchema,
   forgotPasswordSchema,
+  resetPasswordSchema,
+  verifyEmailSchema,
 } from '@sma/validators';
 import { validate } from '@/shared/middleware/validate';
 import { authenticate } from '@/shared/middleware/authenticate';
@@ -38,8 +40,21 @@ authRouter.post('/refresh', validate({ body: refreshSchema }), asyncHandler(cont
 authRouter.post('/logout', authenticate, asyncHandler(controller.logout));
 
 authRouter.post(
+  '/verify-email',
+  validate({ body: verifyEmailSchema }),
+  asyncHandler(controller.verifyEmail),
+);
+
+authRouter.post(
   '/forgot-password',
   authLimiter,
   validate({ body: forgotPasswordSchema }),
   asyncHandler(controller.forgotPassword),
+);
+
+authRouter.post(
+  '/reset-password',
+  authLimiter,
+  validate({ body: resetPasswordSchema }),
+  asyncHandler(controller.resetPassword),
 );

@@ -6,10 +6,15 @@
  */
 
 import { Router } from 'express';
-import { uploadUrlRequestSchema, uploadCompleteSchema, recordingQuerySchema } from '@sma/validators';
+import {
+  uploadUrlRequestSchema,
+  uploadCompleteSchema,
+  recordingQuerySchema,
+} from '@sma/validators';
 import { validate } from '@/shared/middleware/validate';
 import { authenticate } from '@/shared/middleware/authenticate';
 import { requireContributor } from '@/shared/middleware/requireRole';
+import { requireVerifiedEmail } from '@/shared/middleware/requireVerifiedEmail';
 import { asyncHandler } from '@/shared/http/asyncHandler';
 import * as controller from './recordings.controller';
 
@@ -22,16 +27,19 @@ recordingsRouter.get('/', validate({ query: recordingQuerySchema }), asyncHandle
 recordingsRouter.get('/:id', asyncHandler(controller.getById));
 recordingsRouter.get('/:id/audio', asyncHandler(controller.getAudio));
 
-// Contributor/admin only — adding to the archive.
+// Contributor/admin only, and only with a verified email — adding to the archive
+// is "full access" (§11 — email verification required before full access).
 recordingsRouter.post(
   '/upload-url',
   requireContributor,
+  requireVerifiedEmail,
   validate({ body: uploadUrlRequestSchema }),
   asyncHandler(controller.createUploadUrl),
 );
 recordingsRouter.post(
   '/upload-complete',
   requireContributor,
+  requireVerifiedEmail,
   validate({ body: uploadCompleteSchema }),
   asyncHandler(controller.completeUpload),
 );

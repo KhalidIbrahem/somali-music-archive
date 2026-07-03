@@ -54,4 +54,68 @@ describe('API integration', () => {
     expect(res.status).toBe(404);
     expect(res.body).toMatchObject({ success: false, error: { code: 'NOT_FOUND' } });
   });
+
+  it('revokes the access token on logout (blacklist)', async () => {
+    const uniqueEmail = `logout+${Date.now()}@example.com`;
+    const reg = await request(app)
+      .post('/api/v1/auth/register')
+      .send({ ...registration, email: uniqueEmail });
+    const token = reg.body.data.accessToken as string;
+
+    // The token works before logout.
+    const before = await request(app)
+      .get('/api/v1/users/me')
+      .set('Authorization', `Bearer ${token}`);
+    expect(before.status).toBe(200);
+
+    const out = await request(app)
+      .post('/api/v1/auth/logout')
+      .set('Authorization', `Bearer ${token}`);
+    expect(out.status).toBe(200);
+
+    // The same token is now blacklisted → rejected.
+    const after = await request(app)
+      .get('/api/v1/users/me')
+      .set('Authorization', `Bearer ${token}`);
+    expect(after.status).toBe(401);
+    expect(after.body.error.code).toBe('AUTH_INVALID_TOKEN');
+  });
+
+  it('rotates refresh tokens and rejects a replayed one', async () => {
+    const uniqueEmail = `rotate+${Date.now()}@example.com`;
+    const reg = await request(app)
+      .post('/api/v1/auth/register')
+      .send({ ...registration, email: uniqueEmail });
+    const refreshToken = reg.body.data.refreshToken as string;
+
+    const rotated = await request(app).post('/api/v1/auth/refresh').send({ refreshToken });
+    expect(rotated.status).toBe(200);
+    expect(rotated.body.data.refreshToken).not.toBe(refreshToken);
+
+    const replay = await request(app).post('/api/v1/auth/refresh').send({ refreshToken });
+    expect(replay.status).toBe(401);
+    expect(replay.body.error.code).toBe('AUTH_INVALID_TOKEN');
+  });
+
+  it('locks the account after 10 failed logins (brute-force protection)', async () => {
+    const uniqueEmail = `lock+${Date.now()}@example.com`;
+    await request(app)
+      .post('/api/v1/auth/register')
+      .send({ ...registration, email: uniqueEmail });
+
+    let lastCode = '';
+    for (let i = 0; i < 10; i += 1) {
+      const res = await request(app)
+        .post('/api/v1/auth/login')
+        .send({ email: uniqueEmail, password: 'wrong-password9' });
+      lastCode = res.body.error?.code;
+    }
+    expect(lastCode).toBe('AUTH_ACCOUNT_LOCKED');
+
+    // Correct password is refused while locked.
+    const correct = await request(app)
+      .post('/api/v1/auth/login')
+      .send({ email: uniqueEmail, password: registration.password });
+    expect(correct.body.error.code).toBe('AUTH_ACCOUNT_LOCKED');
+  });
 });
