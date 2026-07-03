@@ -87,3 +87,19 @@ export async function objectExists(fileKey: string): Promise<boolean> {
     return false;
   }
 }
+
+/** Alias — a signed GET URL for playback (1-hour expiry). Named per §8/SESSION P1-04. */
+export const generatePlaybackUrl = generateDownloadUrl;
+/** Alias — confirm the object exists before processing. */
+export const verifyExists = objectExists;
+
+/**
+ * "Delete" a recording's audio — a SOFT delete by design (CLAUDE.md hard rule,
+ * Principle 4: recordings are NEVER destroyed). The bytes stay in R2; removal from
+ * the archive is a database/visibility change, not an object deletion. This exists
+ * as the single, explicit place that decision is enforced — it deliberately does
+ * NOT issue a DeleteObjectCommand.
+ */
+export async function deleteFile(fileKey: string): Promise<void> {
+  void fileKey; // intentionally a no-op against R2; soft delete happens in the DB.
+}
