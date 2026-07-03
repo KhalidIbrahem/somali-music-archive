@@ -1,22 +1,31 @@
 /**
  * JWT access/refresh token service (ARCHITECTURE.md §8 auth flow, §11).
  *
- * Access tokens are short-lived (15m); refresh tokens long-lived (30d) and are
- * additionally tracked/rotated in the database (that half lives in auth.service).
- * Access and refresh tokens are signed with SEPARATE secrets so a leaked access
- * secret cannot be used to mint refresh tokens.
+ * Access tokens are short-lived (15m) and carry a `jti` so a specific token can be
+ * revoked via the blacklist on logout, plus an `emailVerified` claim so gated
+ * endpoints can check verification without a database round-trip. Refresh tokens
+ * are long-lived (30d), tracked/rotated in the store (auth.service). Access and
+ * refresh tokens are signed with SEPARATE secrets so a leaked access secret cannot
+ * mint refresh tokens.
  */
 
 import jwt from 'jsonwebtoken';
 import type { UserRole } from '@sma/types';
 import { env } from '@/config/env';
 import { unauthorized } from '@/shared/errors/AppError';
+import { randomUUID } from '@/shared/crypto';
 
 /** Claims carried by an access token. `sub` is the user id. */
 export interface AccessTokenPayload {
   sub: string;
   role: UserRole;
+  emailVerified: boolean;
+  /** Unique token id — used to revoke this exact token (blacklist). */
+  jti: string;
   type: 'access';
+  /** Standard JWT claims, populated by verification. */
+  exp: number;
+  iat: number;
 }
 
 export interface RefreshTokenPayload {
@@ -24,15 +33,26 @@ export interface RefreshTokenPayload {
   type: 'refresh';
 }
 
-export function signAccessToken(userId: string, role: UserRole): string {
-  const payload: AccessTokenPayload = { sub: userId, role, type: 'access' };
+/** Metadata needed to blacklist a token: its id and remaining lifetime. */
+export interface AccessTokenMeta {
+  jti: string;
+  /** Expiry as a UNIX timestamp in seconds. */
+  exp: number;
+}
+
+export function signAccessToken(userId: string, role: UserRole, emailVerified: boolean): string {
+  const payload = { sub: userId, role, emailVerified, jti: randomUUID(), type: 'access' as const };
   return jwt.sign(payload, env.JWT_ACCESS_SECRET, {
     expiresIn: env.JWT_ACCESS_EXPIRY,
   } as jwt.SignOptions);
 }
 
 export function signRefreshToken(userId: string): string {
-  const payload: RefreshTokenPayload = { sub: userId, type: 'refresh' };
+  // A per-token `jti` makes every refresh token a UNIQUE string even when two are
+  // issued in the same second — essential for rotation and replay detection, which
+  // key off the token's hash. Without it, re-signing the same {sub,type} payload
+  // within one second yields an identical JWT.
+  const payload = { sub: userId, jti: randomUUID(), type: 'refresh' as const };
   return jwt.sign(payload, env.JWT_REFRESH_SECRET, {
     expiresIn: env.JWT_REFRESH_EXPIRY,
   } as jwt.SignOptions);

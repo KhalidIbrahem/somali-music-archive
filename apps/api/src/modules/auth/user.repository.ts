@@ -25,6 +25,10 @@ export interface UserRecord {
   emailVerified: boolean;
   emailVerifiedAt: Date | null;
   lastLoginAt: Date | null;
+  /** Consecutive failed login attempts; reset to 0 on success (§11 Threat 2). */
+  failedLoginAttempts: number;
+  /** When set and in the future, login is refused (account lockout). */
+  lockedUntil: Date | null;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
@@ -44,6 +48,13 @@ export interface UserRepository {
   findById(id: string): Promise<UserRecord | null>;
   create(input: CreateUserInput): Promise<UserRecord>;
   touchLastLogin(id: string): Promise<void>;
+  /** Increment the failed-attempt counter and return the new value. */
+  incrementFailedAttempts(id: string): Promise<number>;
+  resetFailedAttempts(id: string): Promise<void>;
+  /** Lock the account until the given time (§11 — lockout after 10 failures). */
+  lockUntil(id: string, until: Date): Promise<void>;
+  markEmailVerified(id: string): Promise<void>;
+  updatePassword(id: string, passwordHash: string): Promise<void>;
 }
 
 /** Strip secrets and map an internal row to the public wire shape. */
@@ -98,6 +109,8 @@ export class InMemoryUserRepository implements UserRepository {
       emailVerified: false,
       emailVerifiedAt: null,
       lastLoginAt: null,
+      failedLoginAttempts: 0,
+      lockedUntil: null,
       createdAt: now,
       updatedAt: now,
       deletedAt: null,
@@ -110,6 +123,48 @@ export class InMemoryUserRepository implements UserRepository {
     const record = this.byId.get(id);
     if (record) {
       record.lastLoginAt = new Date();
+      record.updatedAt = new Date();
+    }
+  }
+
+  async incrementFailedAttempts(id: string): Promise<number> {
+    const record = this.byId.get(id);
+    if (!record) return 0;
+    record.failedLoginAttempts += 1;
+    record.updatedAt = new Date();
+    return record.failedLoginAttempts;
+  }
+
+  async resetFailedAttempts(id: string): Promise<void> {
+    const record = this.byId.get(id);
+    if (record) {
+      record.failedLoginAttempts = 0;
+      record.lockedUntil = null;
+      record.updatedAt = new Date();
+    }
+  }
+
+  async lockUntil(id: string, until: Date): Promise<void> {
+    const record = this.byId.get(id);
+    if (record) {
+      record.lockedUntil = until;
+      record.updatedAt = new Date();
+    }
+  }
+
+  async markEmailVerified(id: string): Promise<void> {
+    const record = this.byId.get(id);
+    if (record && !record.emailVerified) {
+      record.emailVerified = true;
+      record.emailVerifiedAt = new Date();
+      record.updatedAt = new Date();
+    }
+  }
+
+  async updatePassword(id: string, passwordHash: string): Promise<void> {
+    const record = this.byId.get(id);
+    if (record) {
+      record.passwordHash = passwordHash;
       record.updatedAt = new Date();
     }
   }
