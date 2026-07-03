@@ -13,6 +13,7 @@ import { recordingsRouter } from '@/modules/recordings/recordings.routes';
 import { lessonsRouter } from '@/modules/lessons/lessons.routes';
 import { searchRouter } from '@/modules/search/search.routes';
 import { subscriptionsRouter } from '@/modules/subscriptions/subscriptions.routes';
+import { notificationsRouter } from '@/modules/notifications/notifications.routes';
 
 export const apiV1Router: Router = Router();
 
@@ -22,3 +23,4 @@ apiV1Router.use('/recordings', recordingsRouter);
 apiV1Router.use('/lessons', lessonsRouter);
 apiV1Router.use('/search', searchRouter);
 apiV1Router.use('/subscriptions', subscriptionsRouter);
+apiV1Router.use('/notifications', notificationsRouter);

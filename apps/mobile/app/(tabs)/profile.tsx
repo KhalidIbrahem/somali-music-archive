@@ -16,6 +16,7 @@ import { useSettingsStore, type PlaybackQuality } from '@/stores/settingsStore';
 import { getSaved, updateProfile } from '@/services/api/users';
 import { getMyProgress } from '@/services/api/lessons';
 import { getSubscriptionStatus } from '@/services/api/subscriptions';
+import { sendTestNotification } from '@/services/api/notifications';
 import { colors, radius, spacing } from '@/theme';
 
 function initials(name: string): string {
@@ -48,6 +49,8 @@ export default function Profile(): React.JSX.Element {
       void queryClient.invalidateQueries({ queryKey: ['me'] });
     },
   });
+
+  const testPush = useMutation({ mutationFn: sendTestNotification });
 
   const savedCount = savedQuery.data?.length ?? 0;
   const lessonsCompleted = (progressQuery.data ?? []).filter((p) => p.completed).length;
@@ -156,6 +159,15 @@ export default function Profile(): React.JSX.Element {
             onValueChange={settings.setNotifications}
           />
         </Card>
+
+        {settings.notifications ? (
+          <Button
+            label={testPush.isSuccess ? 'Test notification sent' : 'Send test notification'}
+            variant="ghost"
+            onPress={() => testPush.mutate()}
+            loading={testPush.isPending}
+          />
+        ) : null}
 
         <Button label="Sign out" variant="secondary" onPress={onLogout} />
       </ScrollView>
