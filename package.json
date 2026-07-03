@@ -31,10 +31,16 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
-    "prepare": "husky || true"
+    "prepare": "husky"
+  },
+  "//lint-staged": "Runs on staged files only (via the husky pre-commit hook), so commits stay fast. Prettier auto-formats and re-stages. Per-app ESLint joins this list once each app's eslint config lands (Phase 1). Prettier honours .prettierignore, so ignored paths (e.g. package-lock.json, *.md) are skipped.",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md,yml,yaml}": "prettier --write"
   },
   "devDependencies": {
     "@types/node": "^20.14.9",
+    "husky": "^9.1.7",
+    "lint-staged": "^13.3.0",
     "prettier": "^3.3.2",
     "rimraf": "^5.0.7",
     "turbo": "^2.0.6",
