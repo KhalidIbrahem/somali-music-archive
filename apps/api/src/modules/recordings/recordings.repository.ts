@@ -21,7 +21,9 @@ import type {
 } from '@sma/types';
 import type { ContentLanguage, Genre, Instrument, Region } from '@sma/constants';
 import type {
+  ModerationQueryInput,
   RecordingCompleteMetadata,
+  RecordingModerationInput,
   RecordingQueryInput,
   SearchQueryInput,
 } from '@sma/validators';
@@ -73,6 +75,9 @@ export interface RecordingRepository {
   findById(id: string): Promise<PublicRecording | null>;
   list(query: RecordingQueryInput): Promise<Paginated<PublicRecording>>;
   search(query: SearchQueryInput): Promise<Paginated<PublicRecording>>;
+  /** Admin moderation queue — includes drafts/review, optionally status-filtered. */
+  listForModeration(query: ModerationQueryInput): Promise<Paginated<PublicRecording>>;
+  updateModeration(id: string, patch: RecordingModerationInput): Promise<PublicRecording | null>;
   getFileKey(id: string): Promise<string | null>;
   softDelete(id: string): Promise<void>;
 }
@@ -204,8 +209,9 @@ export class InMemoryRecordingRepository implements RecordingRepository {
   }
 
   async list(query: RecordingQueryInput): Promise<Paginated<PublicRecording>> {
+    // Only published recordings are public; drafts/review/archived are not listed.
     const all = [...this.byId.values()]
-      .filter((d) => !d.deletedAt && d.status !== 'draft')
+      .filter((d) => !d.deletedAt && d.status === 'published')
       .filter((d) => (query.genre ? d.genre === query.genre : true))
       .filter((d) => (query.region ? d.region === query.region : true))
       .filter((d) => (query.era ? d.era === query.era : true))
@@ -227,7 +233,7 @@ export class InMemoryRecordingRepository implements RecordingRepository {
   async search(query: SearchQueryInput): Promise<Paginated<PublicRecording>> {
     const needle = query.q?.trim().toLowerCase() ?? '';
     const matches = [...this.byId.values()]
-      .filter((d) => !d.deletedAt && d.status !== 'draft')
+      .filter((d) => !d.deletedAt && d.status === 'published')
       .filter((d) => (query.genre ? d.genre === query.genre : true))
       .filter((d) => (query.region ? d.region === query.region : true))
       .filter((d) => (query.era ? d.era === query.era : true))
@@ -243,6 +249,36 @@ export class InMemoryRecordingRepository implements RecordingRepository {
       limit: query.limit,
       hasMore: start + query.limit < total,
     };
+  }
+
+  async listForModeration(query: ModerationQueryInput): Promise<Paginated<PublicRecording>> {
+    // Admin view: every non-deleted recording (incl. drafts/review), newest first.
+    const all = [...this.byId.values()]
+      .filter((d) => !d.deletedAt)
+      .filter((d) => (query.status ? d.status === query.status : true))
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    const total = all.length;
+    const start = (query.page - 1) * query.limit;
+    return {
+      data: all.slice(start, start + query.limit).map(toPublicRecording),
+      total,
+      page: query.page,
+      limit: query.limit,
+      hasMore: start + query.limit < total,
+    };
+  }
+
+  async updateModeration(
+    id: string,
+    patch: RecordingModerationInput,
+  ): Promise<PublicRecording | null> {
+    const doc = this.resolve(id);
+    if (!doc || doc.deletedAt) return null;
+    if (patch.status !== undefined) doc.status = patch.status;
+    if (patch.visibility !== undefined) doc.visibility = patch.visibility;
+    doc.updatedAt = new Date();
+    return toPublicRecording(doc);
   }
 
   async getFileKey(id: string): Promise<string | null> {

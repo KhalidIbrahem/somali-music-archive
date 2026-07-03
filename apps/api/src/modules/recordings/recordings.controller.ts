@@ -8,12 +8,27 @@
 
 import type { Request, Response } from 'express';
 import type {
+  ModerationQueryInput,
+  RecordingModerationInput,
   RecordingQueryInput,
   UploadCompleteInput,
   UploadUrlRequestInput,
 } from '@sma/validators';
 import { sendSuccess } from '@/shared/http/respond';
 import { recordingsService } from './recordings.service';
+
+export async function moderationList(req: Request, res: Response): Promise<void> {
+  const query = req.query as unknown as ModerationQueryInput;
+  sendSuccess(res, await recordingsService.listForModeration(query));
+}
+
+export async function updateRecording(req: Request, res: Response): Promise<void> {
+  const updated = await recordingsService.moderateRecording(
+    req.params['id'] ?? '',
+    req.body as RecordingModerationInput,
+  );
+  sendSuccess(res, updated);
+}
 
 export async function list(req: Request, res: Response): Promise<void> {
   const query = req.query as unknown as RecordingQueryInput;
