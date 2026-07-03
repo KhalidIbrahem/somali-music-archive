@@ -13,3 +13,4 @@ export * from './recording';
 export * from './user';
 export * from './lesson';
 export * from './subscription';
+export * from './notification';

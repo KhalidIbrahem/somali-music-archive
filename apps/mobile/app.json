@@ -40,6 +40,12 @@
         {
           "microphonePermission": "Allow Somali Music Archive to access your microphone to record music and complete pitch exercises."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#C89B5F"
+        }
       ]
     ],
     "experiments": {

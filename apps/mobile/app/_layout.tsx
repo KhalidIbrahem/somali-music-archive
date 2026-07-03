@@ -29,6 +29,8 @@ import {
 } from '@expo-google-fonts/nunito';
 import { colors } from '@/theme';
 import { useAuthStore } from '@/stores/authStore';
+import { useSettingsStore } from '@/stores/settingsStore';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 
 // Keep the splash visible until we explicitly hide it below.
 void SplashScreen.preventAutoHideAsync();
@@ -57,6 +59,11 @@ export default function RootLayout(): React.JSX.Element | null {
 
   const hydrate = useAuthStore((s) => s.hydrate);
   const isLoading = useAuthStore((s) => s.isLoading);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const notificationsEnabled = useSettingsStore((s) => s.notifications);
+
+  // Register for push once signed in, if the user hasn't turned notifications off.
+  usePushNotifications(isAuthenticated && notificationsEnabled);
 
   useEffect(() => {
     void hydrate();
