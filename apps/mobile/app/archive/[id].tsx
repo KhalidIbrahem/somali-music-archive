@@ -10,22 +10,23 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Link, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { GENRE_LABELS, REGION_LABELS, INSTRUMENT_LABELS } from '@sma/constants';
 import type { PublicRecording } from '@sma/types';
 import { Screen, Text, Card } from '@/components/ui';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { getRecording, getAudioUrl, listRecordings } from '@/services/api/recordings';
+import { getSaved, saveRecording, unsaveRecording } from '@/services/api/users';
 import { formatDuration } from '@/utils/formatters';
 import { colors, radius, spacing } from '@/theme';
 
 export default function RecordingDetail(): React.JSX.Element {
   const { id } = useLocalSearchParams<{ id: string }>();
   const player = useAudioPlayer();
+  const queryClient = useQueryClient();
   const [ready, setReady] = useState(false);
   const [preparing, setPreparing] = useState(false);
   const [audioError, setAudioError] = useState<string | null>(null);
-  const [saved, setSaved] = useState(false);
 
   const {
     data: recording,
@@ -35,6 +36,13 @@ export default function RecordingDetail(): React.JSX.Element {
     queryKey: ['recording', id],
     queryFn: () => getRecording(id),
     enabled: Boolean(id),
+  });
+
+  const savedQuery = useQuery({ queryKey: ['saved'], queryFn: getSaved });
+  const toggleSave = useMutation({
+    mutationFn: (currentlySaved: boolean) =>
+      currentlySaved ? unsaveRecording(id) : saveRecording(id),
+    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ['saved'] }),
   });
 
   const { data: similar } = useQuery({
@@ -79,6 +87,7 @@ export default function RecordingDetail(): React.JSX.Element {
 
   const progress = player.durationMillis > 0 ? player.positionMillis / player.durationMillis : 0;
   const similarItems = (similar?.data ?? []).filter((r) => r.id !== recording.id).slice(0, 6);
+  const isSaved = (savedQuery.data ?? []).some((r) => r.id === recording.id);
 
   return (
     <Screen>
@@ -143,18 +152,19 @@ export default function RecordingDetail(): React.JSX.Element {
 
         {/* Save */}
         <Pressable
-          onPress={() => setSaved((s) => !s)}
+          onPress={() => toggleSave.mutate(isSaved)}
+          disabled={toggleSave.isPending || savedQuery.isLoading}
           style={styles.saveRow}
           accessibilityRole="button"
-          accessibilityState={{ selected: saved }}
+          accessibilityState={{ selected: isSaved }}
         >
           <Ionicons
-            name={saved ? 'bookmark' : 'bookmark-outline'}
+            name={isSaved ? 'bookmark' : 'bookmark-outline'}
             size={20}
             color={colors.amber.primary}
           />
           <Text variant="bodyMedium" color="accent">
-            {saved ? 'Saved' : 'Save offline'}
+            {isSaved ? 'Saved' : 'Save'}
           </Text>
         </Pressable>
 
