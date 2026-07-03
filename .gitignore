@@ -96,6 +96,16 @@ wandb/
 .Trashes
 Icon?
 
+# ── Cloud-sync conflict copies (iCloud/Dropbox on ~/Desktop) ─────────────────
+# e.g. "register 2.tsx", "Input 2.tsx" — auto-created duplicates, never real source.
+* [0-9].*
+
+# ── Stray tooling artifacts ──────────────────────────────────────────────────
+# Expo/TS periodically writes a ROOT tsconfig.json extending expo/tsconfig.base;
+# the real config is tsconfig.base.json + per-workspace tsconfigs. Ignore only the
+# root one (leading slash) — workspace tsconfig.json files stay tracked.
+/tsconfig.json
+
 # ── Logs & temp ──────────────────────────────────────────────────────────────
 logs/
 *.log
