@@ -12,3 +12,4 @@ export * from './auth';
 export * from './recording';
 export * from './user';
 export * from './lesson';
+export * from './subscription';

@@ -20,6 +20,8 @@ declare global {
         /** Access-token expiry (UNIX seconds). */
         exp: number;
       };
+      /** Raw request body bytes, captured for Stripe webhook signature verification. */
+      rawBody?: Buffer;
     }
   }
 }
