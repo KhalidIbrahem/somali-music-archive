@@ -105,9 +105,21 @@ export const recordingQuerySchema = paginationQuerySchema.extend({
   artistId: objectIdSchema.optional(),
 });
 
+/** GET /search — free-text query `q` plus the same facet filters (§12). */
+export const searchQuerySchema = paginationQuerySchema.extend({
+  q: z.string().trim().max(200).optional(),
+  genre: genreSchema.optional(),
+  region: regionSchema.optional(),
+  era: z
+    .string()
+    .regex(/^\d{4}s$/)
+    .optional(),
+});
+
 export type UploadUrlRequestInput = z.infer<typeof uploadUrlRequestSchema>;
 export type UploadCompleteInput = z.infer<typeof uploadCompleteSchema>;
 export type RecordingCompleteMetadata = z.infer<typeof recordingCompleteMetadataSchema>;
 export type RecordingMetadataInput = z.infer<typeof recordingMetadataSchema>;
 export type RecordingUpdateInput = z.infer<typeof recordingUpdateSchema>;
 export type RecordingQueryInput = z.output<typeof recordingQuerySchema>;
+export type SearchQueryInput = z.output<typeof searchQuerySchema>;
