@@ -8,7 +8,8 @@ import { Text as RNText, type TextProps as RNTextProps, type TextStyle } from 'r
 import { colors, typography, type TypographyVariant } from '@/theme';
 
 /** Semantic text colors, mapped to the palette. */
-type TextColor = 'primary' | 'secondary' | 'tertiary' | 'inverse' | 'accent' | 'error';
+type TextColor =
+  'primary' | 'secondary' | 'tertiary' | 'inverse' | 'accent' | 'error' | 'warning' | 'success';
 
 const COLOR_MAP: Record<TextColor, string> = {
   primary: colors.text.primary,
@@ -17,6 +18,8 @@ const COLOR_MAP: Record<TextColor, string> = {
   inverse: colors.text.inverse,
   accent: colors.amber.primary,
   error: colors.error,
+  warning: colors.warning,
+  success: colors.success,
 };
 
 export interface TextProps extends RNTextProps {
