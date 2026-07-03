@@ -15,6 +15,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useSettingsStore, type PlaybackQuality } from '@/stores/settingsStore';
 import { getSaved, updateProfile } from '@/services/api/users';
 import { getMyProgress } from '@/services/api/lessons';
+import { getSubscriptionStatus } from '@/services/api/subscriptions';
 import { colors, radius, spacing } from '@/theme';
 
 function initials(name: string): string {
@@ -35,6 +36,10 @@ export default function Profile(): React.JSX.Element {
 
   const savedQuery = useQuery({ queryKey: ['saved'], queryFn: getSaved });
   const progressQuery = useQuery({ queryKey: ['lesson-progress'], queryFn: getMyProgress });
+  const subscriptionQuery = useQuery({
+    queryKey: ['subscription-status'],
+    queryFn: getSubscriptionStatus,
+  });
 
   const languageMutation = useMutation({
     mutationFn: (language: UiLanguage) => updateProfile({ language }),
@@ -73,11 +78,13 @@ export default function Profile(): React.JSX.Element {
             <Text variant="bodySmall" color="secondary" numberOfLines={1}>
               {user?.email ?? ''}
             </Text>
-            <View style={styles.badge}>
-              <Text variant="labelSmall" color="inverse">
-                FREE
-              </Text>
-            </View>
+            <Link href="/subscription" asChild>
+              <Pressable style={styles.badge}>
+                <Text variant="labelSmall" color="inverse">
+                  {(subscriptionQuery.data?.plan ?? 'free').toUpperCase()}
+                </Text>
+              </Pressable>
+            </Link>
           </View>
         </Card>
 

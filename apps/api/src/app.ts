@@ -38,7 +38,16 @@ export function createApp(): Express {
 
   // JSON body limit of 10MB (§11). File uploads never hit the API — they go
   // straight to R2 via presigned URLs — so no multipart body parser is mounted.
-  app.use(express.json({ limit: '10mb' }));
+  // `verify` stashes the raw bytes so the Stripe webhook can verify its signature
+  // (JSON parsing would otherwise discard the exact bytes Stripe signed).
+  app.use(
+    express.json({
+      limit: '10mb',
+      verify: (req, _res, buf) => {
+        (req as unknown as { rawBody?: Buffer }).rawBody = buf;
+      },
+    }),
+  );
 
   // Structured request logging.
   app.use(pinoHttp({ logger }));
