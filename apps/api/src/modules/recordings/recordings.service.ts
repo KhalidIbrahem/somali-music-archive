@@ -19,6 +19,10 @@ import { badRequest, notFound } from '@/shared/errors/AppError';
 import { asIso } from '@/shared/brand';
 import { generateUploadUrl, generatePlaybackUrl, verifyExists } from '@/shared/storage/r2';
 import { audioQueue, type AudioJobQueue } from '@/shared/queue/audioQueue';
+import {
+  embeddingRepository,
+  type EmbeddingRepository,
+} from '@/modules/internal/embeddings.repository';
 import { recordingRepository, type RecordingRepository } from './recordings.repository';
 
 const CONTENT_TYPE_FORMAT: Record<string, AudioFormat> = {
@@ -46,10 +50,11 @@ export interface RecordingsServiceDeps {
     verifyExists(fileKey: string): Promise<boolean>;
   };
   queue: AudioJobQueue;
+  embeddings: EmbeddingRepository;
 }
 
 export function createRecordingsService(deps: RecordingsServiceDeps) {
-  const { repo, storage, queue } = deps;
+  const { repo, storage, queue, embeddings } = deps;
 
   async function createUploadUrl(input: UploadUrlRequestInput): Promise<PresignedUploadResult> {
     const presigned = await storage.generateUploadUrl(input.contentType);
@@ -95,6 +100,33 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
     return recording;
   }
 
+  /**
+   * "Similar recordings" via MERT embeddings (SESSION P3-05, §12).
+   *
+   * Nearest neighbours in the vector space, hydrated to recordings and filtered
+   * to the PUBLISHED archive — unreviewed material must never leak through a
+   * similarity edge. Over-fetches 3× the limit before filtering so moderation
+   * gaps don't under-fill the rail. Empty (not an error) while the recording's
+   * embedding is still processing.
+   */
+  async function findSimilarRecordings(id: string, limit = 6): Promise<PublicRecording[]> {
+    const recording = await repo.findById(id);
+    if (!recording) throw notFound('RECORDING_NOT_FOUND', 'Recording not found');
+
+    // Embeddings are keyed by the ObjectId the AI callback used, not the human id.
+    const hits = await embeddings.findSimilar(recording._id, limit * 3);
+
+    const similar: PublicRecording[] = [];
+    for (const hit of hits) {
+      if (similar.length >= limit) break;
+      const candidate = await repo.findById(hit.recordingId);
+      if (candidate && candidate.status === 'published' && candidate._id !== recording._id) {
+        similar.push(candidate);
+      }
+    }
+    return similar;
+  }
+
   async function listForModeration(
     query: ModerationQueryInput,
   ): Promise<Paginated<PublicRecording>> {
@@ -124,6 +156,7 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
     searchRecordings,
     getRecording,
     getPlaybackUrl,
+    findSimilarRecordings,
     listForModeration,
     moderateRecording,
   };
@@ -135,4 +168,5 @@ export const recordingsService: RecordingsService = createRecordingsService({
   repo: recordingRepository,
   storage: { generateUploadUrl, generatePlaybackUrl, verifyExists },
   queue: audioQueue,
+  embeddings: embeddingRepository,
 });
