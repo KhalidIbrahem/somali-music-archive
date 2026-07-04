@@ -41,6 +41,11 @@ export async function getById(req: Request, res: Response): Promise<void> {
   sendSuccess(res, recording);
 }
 
+export async function getSimilar(req: Request, res: Response): Promise<void> {
+  const similar = await recordingsService.findSimilarRecordings(req.params['id'] ?? '');
+  sendSuccess(res, similar);
+}
+
 export async function getAudio(req: Request, res: Response): Promise<void> {
   const signed = await recordingsService.getPlaybackUrl(req.params['id'] ?? '');
   sendSuccess(res, signed);

@@ -40,6 +40,13 @@ export async function getPitchData(id: string): Promise<readonly PitchPoint[]> {
   return unwrap(res.data);
 }
 
+/** "Similar recordings" via MERT vector similarity (§12). Empty while the
+ * recording's embedding is still processing — callers may show a fallback. */
+export async function getSimilarRecordings(id: string): Promise<PublicRecording[]> {
+  const res = await apiClient.get<ApiResponse<PublicRecording[]>>(`/recordings/similar/${id}`);
+  return unwrap(res.data);
+}
+
 // ── Upload flow (direct-to-R2 presigned URL, ARCHITECTURE.md §8) ──────────────
 
 /** Cultural metadata captured on the record screen for a new take. */

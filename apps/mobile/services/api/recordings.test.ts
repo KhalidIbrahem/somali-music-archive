@@ -1,5 +1,6 @@
 import {
   getUploadUrl,
+  getSimilarRecordings,
   uploadToR2,
   notifyComplete,
   contentTypeForUri,
@@ -64,6 +65,15 @@ describe('uploadToR2', () => {
   it('throws when R2 rejects the upload', async () => {
     (FileSystem.uploadAsync as jest.Mock).mockResolvedValue({ status: 403 });
     await expect(uploadToR2('u', 'file:///x.wav', 'audio/wav')).rejects.toThrow('403');
+  });
+});
+
+describe('getSimilarRecordings', () => {
+  it('GETs the similarity endpoint and unwraps the list', async () => {
+    (apiClient.get as jest.Mock).mockResolvedValue({ data: { success: true, data: [] } });
+    const result = await getSimilarRecordings('2026-07-04-001');
+    expect(apiClient.get).toHaveBeenCalledWith('/recordings/similar/2026-07-04-001');
+    expect(result).toEqual([]);
   });
 });
 

@@ -17,7 +17,7 @@ import { Screen, Text, Card } from '@/components/ui';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { useOfflineAudio } from '@/hooks/useOfflineAudio';
 import { useSettingsStore } from '@/stores/settingsStore';
-import { getRecording, listRecordings } from '@/services/api/recordings';
+import { getRecording, getSimilarRecordings, listRecordings } from '@/services/api/recordings';
 import { getSaved, saveRecording, unsaveRecording } from '@/services/api/users';
 import { formatDuration } from '@/utils/formatters';
 import { colors, radius, spacing } from '@/theme';
@@ -49,10 +49,17 @@ export default function RecordingDetail(): React.JSX.Element {
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: ['saved'] }),
   });
 
+  // Real vector similarity (P3-05); same-genre fallback covers recordings whose
+  // MERT embedding hasn't been computed yet, so the rail never just vanishes.
   const { data: similar } = useQuery({
-    queryKey: ['similar', recording?.genre, id],
-    queryFn: () => listRecordings({ genre: recording?.genre, limit: 7 }),
+    queryKey: ['similar', id],
+    queryFn: () => getSimilarRecordings(id),
     enabled: Boolean(recording),
+  });
+  const { data: genreFallback } = useQuery({
+    queryKey: ['similar-fallback', recording?.genre, id],
+    queryFn: () => listRecordings({ genre: recording?.genre, limit: 7 }),
+    enabled: Boolean(recording) && similar !== undefined && similar.length === 0,
   });
 
   if (isLoading) {
@@ -95,7 +102,8 @@ export default function RecordingDetail(): React.JSX.Element {
   };
 
   const progress = player.durationMillis > 0 ? player.positionMillis / player.durationMillis : 0;
-  const similarItems = (similar?.data ?? []).filter((r) => r.id !== recording.id).slice(0, 6);
+  const similarSource = similar?.length ? similar : (genreFallback?.data ?? []);
+  const similarItems = similarSource.filter((r) => r.id !== recording.id).slice(0, 6);
   const isSaved = (savedQuery.data ?? []).some((r) => r.id === recording.id);
 
   return (

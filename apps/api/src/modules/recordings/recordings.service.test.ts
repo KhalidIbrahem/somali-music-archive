@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { RecordingCompleteMetadata } from '@sma/validators';
 import { AppError } from '@/shared/errors/AppError';
+import { InMemoryEmbeddingRepository } from '@/modules/internal/embeddings.repository';
 import { InMemoryRecordingRepository } from './recordings.repository';
 import { createRecordingsService, type RecordingsService } from './recordings.service';
 
@@ -26,8 +27,9 @@ function makeService() {
     verifyExists: vi.fn(async () => true),
   };
   const queue = { enqueueProcess: vi.fn(async () => {}) };
-  const service: RecordingsService = createRecordingsService({ repo, storage, queue });
-  return { service, repo, storage, queue };
+  const embeddings = new InMemoryEmbeddingRepository();
+  const service: RecordingsService = createRecordingsService({ repo, storage, queue, embeddings });
+  return { service, repo, storage, queue, embeddings };
 }
 
 let ctx: ReturnType<typeof makeService>;
@@ -163,6 +165,72 @@ describe('searchRecordings', () => {
 describe('getRecording', () => {
   it('throws RECORDING_NOT_FOUND for an unknown id', async () => {
     await expect(ctx.service.getRecording('f'.repeat(24))).rejects.toBeInstanceOf(AppError);
+  });
+});
+
+describe('findSimilarRecordings (vector similarity)', () => {
+  /** Create a recording, optionally publish it, optionally attach an embedding. */
+  async function seed(
+    title: string,
+    embedding: number[] | null,
+    published = true,
+  ): Promise<string> {
+    const draft = await ctx.service.createUploadUrl({
+      filename: 'take.wav',
+      contentType: 'audio/wav',
+      sessionId: title,
+    });
+    await ctx.service.completeUpload({
+      recordingId: draft.recordingId,
+      fileKey: draft.fileKey,
+      metadata: { ...metadata, title: { somali: title } },
+    });
+    if (published) {
+      await ctx.service.moderateRecording(draft.recordingId, { status: 'published' });
+    }
+    if (embedding) {
+      await ctx.embeddings.upsert(draft.recordingId, embedding, 'mert-v1-95m');
+    }
+    return draft.recordingId;
+  }
+
+  it('returns published neighbours ordered by cosine similarity', async () => {
+    const queryId = await seed('Query', [1, 0, 0]);
+    await seed('Near', [0.9, 0.1, 0]); // most similar
+    await seed('Mid', [0.6, 0.8, 0]);
+    await seed('Far', [0, 1, 0]); // orthogonal
+
+    const similar = await ctx.service.findSimilarRecordings(queryId);
+    expect(similar.map((r) => r.title.somali)).toEqual(['Near', 'Mid', 'Far']);
+  });
+
+  it('never leaks unpublished recordings through a similarity edge', async () => {
+    const queryId = await seed('Query', [1, 0, 0]);
+    await seed('Hidden', [1, 0, 0], false); // identical vector but NOT published
+    await seed('Visible', [0.5, 0.5, 0]);
+
+    const similar = await ctx.service.findSimilarRecordings(queryId);
+    expect(similar.map((r) => r.title.somali)).toEqual(['Visible']);
+  });
+
+  it('is empty (not an error) while the embedding is still processing', async () => {
+    const queryId = await seed('NoEmbedding', null);
+    await seed('Other', [1, 0, 0]);
+    expect(await ctx.service.findSimilarRecordings(queryId)).toEqual([]);
+  });
+
+  it('respects the result limit', async () => {
+    const queryId = await seed('Query', [1, 0, 0]);
+    for (let i = 0; i < 5; i += 1) {
+      await seed(`N${i}`, [1, i / 100, 0]);
+    }
+    expect(await ctx.service.findSimilarRecordings(queryId, 2)).toHaveLength(2);
+  });
+
+  it('404s an unknown recording', async () => {
+    await expect(ctx.service.findSimilarRecordings('f'.repeat(24))).rejects.toBeInstanceOf(
+      AppError,
+    );
   });
 });
 

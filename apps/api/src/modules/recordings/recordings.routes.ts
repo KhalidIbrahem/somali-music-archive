@@ -35,6 +35,9 @@ recordingsRouter.get(
   asyncHandler(controller.moderationList),
 );
 
+// Vector similarity ("similar recordings", §12) — literal path before /:id.
+recordingsRouter.get('/similar/:id', asyncHandler(controller.getSimilar));
+
 recordingsRouter.get('/:id', asyncHandler(controller.getById));
 recordingsRouter.get('/:id/audio', asyncHandler(controller.getAudio));
 
