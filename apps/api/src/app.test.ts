@@ -97,6 +97,38 @@ describe('API integration', () => {
     expect(replay.body.error.code).toBe('AUTH_INVALID_TOKEN');
   });
 
+  it('rejects internal AI callbacks without the service key', async () => {
+    const res = await request(app)
+      .post(`/api/v1/internal/recordings/${'a'.repeat(24)}/ai`)
+      .send({ kind: 'transcription' });
+    expect(res.status).toBe(401);
+    expect(res.body.error.code).toBe('AUTH_INVALID_TOKEN');
+  });
+
+  it('accepts the internal key but validates the payload and recording', async () => {
+    // Correct key (vitest.setup sets AI_SERVICE_API_KEY=test), garbage payload → 400.
+    const bad = await request(app)
+      .post(`/api/v1/internal/recordings/${'a'.repeat(24)}/ai`)
+      .set('x-internal-key', 'test')
+      .send({ kind: 'nonsense' });
+    expect(bad.status).toBe(400);
+    expect(bad.body.error.code).toBe('VALIDATION_ERROR');
+
+    // Valid payload, unknown recording → 404 (auth + validation pipeline proven).
+    const valid = await request(app)
+      .post(`/api/v1/internal/recordings/${'a'.repeat(24)}/ai`)
+      .set('x-internal-key', 'test')
+      .send({
+        kind: 'embedding',
+        job_id: 'j1',
+        embedding: new Array(768).fill(0.01),
+        model_version: 'mert-v1-95m',
+        dim: 768,
+      });
+    expect(valid.status).toBe(404);
+    expect(valid.body.error.code).toBe('RECORDING_NOT_FOUND');
+  });
+
   it('locks the account after 10 failed logins (brute-force protection)', async () => {
     const uniqueEmail = `lock+${Date.now()}@example.com`;
     await request(app)
