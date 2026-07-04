@@ -9,6 +9,9 @@
 import type { Subscription, SubscriptionPlan, SubscriptionStatus } from '@sma/types';
 import { asIso, asUuid } from '@/shared/brand';
 import { randomUUID } from '@/shared/crypto';
+import { useDatabase } from '@/shared/db/driver';
+import { getPrisma } from '@/shared/db/prisma';
+import { PrismaSubscriptionRepository } from './subscriptions.prisma.repository';
 
 interface SubscriptionRecord {
   id: string;
@@ -58,7 +61,7 @@ function toSubscription(rec: SubscriptionRecord): Subscription {
 }
 
 /** A default free subscription for users who have never paid (not persisted). */
-function freeSubscription(userId: string): Subscription {
+export function freeSubscription(userId: string): Subscription {
   const now = new Date();
   return {
     id: asUuid(randomUUID()),
@@ -118,4 +121,6 @@ export class InMemorySubscriptionRepository implements SubscriptionRepository {
   }
 }
 
-export const subscriptionRepository: SubscriptionRepository = new InMemorySubscriptionRepository();
+export const subscriptionRepository: SubscriptionRepository = useDatabase()
+  ? new PrismaSubscriptionRepository(getPrisma())
+  : new InMemorySubscriptionRepository();
