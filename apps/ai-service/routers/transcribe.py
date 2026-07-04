@@ -1,17 +1,27 @@
-"""Whisper speech transcription (ARCHITECTURE.md §10).
+"""Whisper transcription endpoint (SESSION P3-01, ARCHITECTURE.md §10 Job 2).
 
-Transcribes Somali audio and produces an English translation. Whisper is loaded
-lazily and cached in models.registry so this router imports without the model
-present. Both passes (transcribe + translate) run in a background task.
+POST /transcribe accepts {recording_id, audio_url, language} and returns a
+job_id IMMEDIATELY — transcription takes minutes, and holding the HTTP request
+open that long would tie up the caller and time out proxies. The only work done
+inline is cheap fail-fast validation of the audio URL's format, so obviously
+bad requests get a 422 instead of a queued job that dies later.
+
+Queueing is dual-mode (see workers/transcription_worker.py): Celery when
+USE_CELERY=true, otherwise the same sync pipeline function on Starlette's
+background thread pool — Celery is imported lazily so dev never needs it.
 """
 
 from __future__ import annotations
 
-from fastapi import APIRouter, BackgroundTasks, Depends
+import uuid
 
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+
+from config import get_settings
 from deps import require_internal_key
 from schemas import JobAccepted, TranscribeRequest
-from services.audio import download_audio, post_result
+from services.transcription_service import run_transcription_job
+from utils.audio_download import AudioValidationError, validate_format
 
 router = APIRouter(
     prefix="/transcribe",
@@ -22,35 +32,26 @@ router = APIRouter(
 
 @router.post("", response_model=JobAccepted)
 async def transcribe(req: TranscribeRequest, tasks: BackgroundTasks) -> JobAccepted:
-    tasks.add_task(_run_transcription, req)
-    return JobAccepted(recording_id=req.recording_id)
+    """Queue a transcription job; returns {status, recording_id, job_id} at once."""
+    try:
+        validate_format(req.audio_url)
+    except AudioValidationError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
+    job_id = uuid.uuid4().hex
+    settings = get_settings()
 
-async def _run_transcription(req: TranscribeRequest) -> None:
-    from models.registry import get_whisper
+    if settings.use_celery:
+        # Lazy import: Celery/Redis exist only in deployed environments.
+        from workers.transcription_worker import celery_app
 
-    model = get_whisper()
-    audio_path = await download_audio(req.audio_url, req.recording_id)
+        celery_app.send_task(
+            "transcribe.process",
+            args=[job_id, req.recording_id, req.audio_url, req.language],
+        )
+    else:
+        # run_transcription_job is sync, so Starlette executes it in a worker
+        # thread — the event loop (health checks, new requests) stays free.
+        tasks.add_task(run_transcription_job, job_id, req.recording_id, req.audio_url, req.language)
 
-    original = model.transcribe(
-        str(audio_path),
-        language=req.language,
-        task="transcribe",
-        word_timestamps=True,
-        verbose=False,
-    )
-    english = model.transcribe(
-        str(audio_path),
-        language=req.language,
-        task="translate",
-        verbose=False,
-    )
-
-    await post_result(
-        req.recording_id,
-        {
-            "transcript_somali": original["text"],
-            "transcript_english": english["text"],
-            "detected_language": original.get("language", req.language),
-        },
-    )
+    return JobAccepted(recording_id=req.recording_id, job_id=job_id)

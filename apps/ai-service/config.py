@@ -26,9 +26,17 @@ class Settings(BaseSettings):
     callback_api_url: str = Field(default="http://localhost:3001/api/v1")
 
     whisper_model: str = Field(default="large-v3")
+    # Inference device: "" = auto-detect (MPS on Apple Silicon → CUDA → CPU).
+    whisper_device: str = Field(default="")
     mert_model: str = Field(default="m-a-p/MERT-v1-95M")
     pitch_confidence_threshold: float = Field(default=0.80, ge=0.0, le=1.0)
 
+    # Job queue: Celery (Redis broker) in production; FastAPI BackgroundTasks
+    # when False so development needs no Redis (ADR-0005 seam, same pipeline fn).
+    use_celery: bool = Field(default=False)
+    celery_broker_url: str = Field(default="redis://localhost:6379/0")
+
+    sentry_dsn: str = Field(default="")
     wandb_api_key: str = Field(default="")
 
     @property
