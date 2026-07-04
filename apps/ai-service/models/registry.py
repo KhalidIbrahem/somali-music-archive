@@ -14,13 +14,16 @@ from typing import Any
 from config import get_settings
 
 
-@lru_cache
 def get_whisper() -> Any:
-    """Load and cache the Whisper model (ARCHITECTURE.md §10)."""
-    import whisper  # type: ignore[import-untyped]
+    """Load and cache the Whisper model (ARCHITECTURE.md §10).
 
-    settings = get_settings()
-    return whisper.load_model(settings.whisper_model)
+    Delegates to models.whisper_model — the canonical loader with device
+    selection (MPS/CUDA/CPU) and graceful fallback — so there is exactly one
+    loading path in the codebase.
+    """
+    from models.whisper_model import get_whisper_model
+
+    return get_whisper_model()
 
 
 @lru_cache

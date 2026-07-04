@@ -28,6 +28,8 @@ class EmbedRequest(BaseModel):
 class JobAccepted(BaseModel):
     status: str = "queued"
     recording_id: str
+    # Correlation id for the async job; empty for legacy endpoints that predate it.
+    job_id: str = ""
 
 
 class PitchPoint(BaseModel):

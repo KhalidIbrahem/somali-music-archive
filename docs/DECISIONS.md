@@ -142,3 +142,41 @@ scale-mapping logic (the research core) is pure Python.
 
 **Consequences.** The service boots instantly, the health check is cheap, and the
 research-critical scale/cents math is unit-tested in CI without installing torch.
+
+---
+
+## ADR-0010 — Singing detection via Whisper's own hallucination signals
+
+**Context.** Whisper was trained on speech. On sung material (heello melisma,
+buraanbur metre) it hallucinates fluent text that was never sung; storing that as
+a "transcript" would poison the research corpus (P3-01).
+
+**Decision.** Classify each recording as `is_singing` using Whisper's per-segment
+self-diagnostics — `no_speech_prob > 0.6`, `compression_ratio > 2.4` (loop
+hallucination), `avg_logprob < −1.0` — with a flagged-majority vote across
+segments. Thresholds mirror Whisper's own decoder-fallback values and live as
+named constants in `services/transcription_service.py`, pure and unit-tested with
+synthetic segments. Transcript cleaning is conservative (fixed stage-tag
+allowlist; repeats CAPPED at two, never deduplicated — Somali refrains are real).
+
+**Consequences.** Sung recordings ship transcripts marked advisory rather than
+silently wrong — itself a citable methodology point for the ISMIR dataset paper.
+Thresholds are refined empirically against Ahmed Ali Egal's recordings, the same
+governance as the scale table (services/scale.py).
+
+---
+
+## ADR-0011 — Dual-mode job queue: Celery in production, BackgroundTasks in dev
+
+**Context.** Transcription is minutes of GPU/CPU work needing retries, timeouts,
+and horizontal scale (§8) — but development should not require Redis.
+
+**Decision.** One sync pipeline function (`run_transcription_job`) with two
+dispatchers: `USE_CELERY=true` sends a Celery task (3 retries, exponential
+backoff, 10-minute hard limit, acks-late, Sentry on final failure); otherwise the
+router runs the same function on Starlette's background thread pool. Celery is
+imported lazily so the dev/test import graph never touches it.
+
+**Consequences.** Dev and prod execute identical logic (no behavioural drift);
+the event loop is never blocked (sync fn → thread pool); tests exercise the
+pipeline pieces with zero infrastructure (ADR-0005 pattern).

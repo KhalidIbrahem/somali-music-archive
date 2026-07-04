@@ -67,5 +67,5 @@ jobs:
       - name: Lint (Ruff)
         run: ruff check .
 
-      - name: Unit tests (pure scale mapping)
-        run: pytest tests/test_scale.py -q
+      - name: Unit tests (pure — scale mapping, transcription pipeline)
+        run: pytest -q
