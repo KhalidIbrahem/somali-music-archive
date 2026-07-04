@@ -43,7 +43,7 @@ async def transcribe(req: TranscribeRequest, tasks: BackgroundTasks) -> JobAccep
 
     if settings.use_celery:
         # Lazy import: Celery/Redis exist only in deployed environments.
-        from workers.transcription_worker import celery_app
+        from workers.celery_app import celery_app
 
         celery_app.send_task(
             "transcribe.process",

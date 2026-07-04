@@ -1,51 +1,45 @@
-"""CREPE pitch extraction + Somali scale mapping (ARCHITECTURE.md §10).
+"""CREPE pitch extraction endpoint (SESSION P3-02, ARCHITECTURE.md §10 Job 3).
 
-The heavy libraries (crepe, librosa, torch) are imported LAZILY inside the task so
-that importing this router — and running the pure scale-mapping unit tests — does
-not require the ML stack. The scale mapping itself lives in services.scale.
+POST /pitch/extract accepts {recording_id, audio_url} and returns a job_id
+immediately — CREPE full-capacity over a whole recording is minutes of compute.
+Only cheap fail-fast URL-format validation happens inline (422 for obviously
+bad requests). Dispatch is dual-mode like every AI stage: Celery when
+USE_CELERY=true, otherwise the same sync pipeline on Starlette's thread pool.
 """
 
 from __future__ import annotations
 
-from fastapi import APIRouter, BackgroundTasks, Depends
+import uuid
+
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 
 from config import get_settings
 from deps import require_internal_key
 from schemas import JobAccepted, PitchRequest
-from services.audio import download_audio, post_result
-from services.scale import map_pitch_frames
+from services.pitch_service import run_pitch_job
+from utils.audio_download import AudioValidationError, validate_format
 
 router = APIRouter(prefix="/pitch", tags=["pitch"], dependencies=[Depends(require_internal_key)])
 
 
 @router.post("/extract", response_model=JobAccepted)
 async def extract_pitch(req: PitchRequest, tasks: BackgroundTasks) -> JobAccepted:
-    tasks.add_task(_run_pitch_extraction, req)
-    return JobAccepted(recording_id=req.recording_id)
+    """Queue a pitch-extraction job; returns {status, recording_id, job_id} at once."""
+    try:
+        validate_format(req.audio_url)
+    except AudioValidationError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
-
-async def _run_pitch_extraction(req: PitchRequest) -> None:
-    # Lazy imports: keep the ML deps out of the import graph for tests/CI.
-    import crepe  # type: ignore[import-untyped]
-    import librosa
-
+    job_id = uuid.uuid4().hex
     settings = get_settings()
-    audio_path = await download_audio(req.audio_url, req.recording_id)
 
-    # CREPE requires 16 kHz mono.
-    audio, sr = librosa.load(str(audio_path), sr=16000, mono=True)
-    time, frequency, confidence, _ = crepe.predict(
-        audio,
-        sr,
-        model_capacity="full",
-        viterbi=True,
-        step_size=10,
-        verbose=0,
-    )
+    if settings.use_celery:
+        # Lazy import: Celery/Redis exist only in deployed environments.
+        from workers.celery_app import celery_app
 
-    frames = [
-        (float(t), float(hz), float(conf))
-        for t, hz, conf in zip(time, frequency, confidence)
-    ]
-    pitch_data = map_pitch_frames(frames, settings.pitch_confidence_threshold)
-    await post_result(req.recording_id, {"pitch_data": pitch_data})
+        celery_app.send_task("pitch.process", args=[job_id, req.recording_id, req.audio_url])
+    else:
+        # Sync pipeline → Starlette runs it in a worker thread; event loop stays free.
+        tasks.add_task(run_pitch_job, job_id, req.recording_id, req.audio_url)
+
+    return JobAccepted(recording_id=req.recording_id, job_id=job_id)
