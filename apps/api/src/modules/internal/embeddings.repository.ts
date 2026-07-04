@@ -13,6 +13,9 @@
  */
 
 import { randomUUID } from '@/shared/crypto';
+import { useDatabase } from '@/shared/db/driver';
+import { getPrisma } from '@/shared/db/prisma';
+import { PgVectorEmbeddingRepository } from './embeddings.pgvector.repository';
 
 export interface EmbeddingRecord {
   id: string;
@@ -110,4 +113,6 @@ export class InMemoryEmbeddingRepository implements EmbeddingRepository {
   }
 }
 
-export const embeddingRepository: EmbeddingRepository = new InMemoryEmbeddingRepository();
+export const embeddingRepository: EmbeddingRepository = useDatabase()
+  ? new PgVectorEmbeddingRepository(getPrisma())
+  : new InMemoryEmbeddingRepository();
