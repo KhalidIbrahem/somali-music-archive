@@ -27,9 +27,14 @@ from typing import Any
 from celery import Celery
 
 from config import get_settings
+from services.embedding_service import EmbeddingValidationError
 from utils.audio_download import AudioValidationError
 
 logger = logging.getLogger("ai.worker")
+
+# Failures that no amount of retrying can fix: bad input audio, or a
+# deterministically corrupt model output. Rejected immediately, no GPU wasted.
+PERMANENT_ERRORS: tuple[type[Exception], ...] = (AudioValidationError, EmbeddingValidationError)
 
 _settings = get_settings()
 
@@ -39,6 +44,7 @@ celery_app = Celery(
     include=[
         "workers.transcription_worker",
         "workers.pitch_worker",
+        "workers.embedding_worker",
     ],
 )
 celery_app.conf.update(
@@ -98,8 +104,9 @@ def execute_job(
     """
     try:
         runner()
-    except AudioValidationError as exc:
-        # Permanent input problem: retrying cannot fix a wrong format/duration.
+    except PERMANENT_ERRORS as exc:
+        # Permanent problem (bad format/duration, corrupt model output):
+        # retrying cannot fix it, so reject without burning GPU time.
         report_failure(exc, job_id, recording_id, stage)
         return {"status": "rejected", "job_id": job_id, "reason": str(exc)}
     except Exception as exc:

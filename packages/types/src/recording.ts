@@ -55,9 +55,16 @@ export interface RecordingAi {
   readonly status: AiStatus;
   readonly transcriptSomali?: string;
   readonly transcriptEnglish?: string;
+  /** Whisper hallucination-signal classifier: sung content → transcript is
+   * advisory, not ground truth (ADR-0010). */
+  readonly isSinging?: boolean;
   readonly musicDescription?: string;
   readonly styleNotes?: string;
   readonly pitchData?: readonly PitchPoint[];
+  /** Melodic skeleton — scale degrees by prevalence; first ≈ tonal centre (P3-02). */
+  readonly dominantNotes?: readonly string[];
+  /** Fraction of frames with a confident pitch — corpus-quality signal. */
+  readonly voicedFraction?: number;
   /** Reference to the pgvector row holding the MERT embedding. */
   readonly embeddingId?: string;
   readonly genrePredicted?: Genre;

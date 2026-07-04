@@ -116,16 +116,24 @@ def probe_duration(path: Path) -> float:
         raise AudioValidationError(f"Could not determine audio duration: {exc}") from exc
 
 
-def convert_to_wav_16k_mono(src: Path, dest: Path) -> None:
-    """Transcode to 16 kHz mono WAV — Whisper's expected input.
+def convert_to_wav_mono(src: Path, dest: Path, sample_rate: int) -> None:
+    """Transcode to mono WAV at the model's native rate.
 
-    Whisper can decode other formats itself, but normalising here means one
-    decode instead of two (transcribe + translate passes reuse the same WAV)
-    and removes container quirks from the model's path.
+    Each model gets its OWN rate from the original download (16 kHz for
+    Whisper/CREPE, 24 kHz for MERT) rather than sharing one conversion:
+    upsampling a 16 kHz intermediate to 24 kHz would silently discard the
+    8–12 kHz band MERT was trained on. Normalising here also means one decode
+    per model instead of container quirks reaching the inference path.
     """
     try:
         subprocess.run(
-            ["ffmpeg", "-y", "-v", "error", "-i", str(src), "-ar", "16000", "-ac", "1", str(dest)],
+            [
+                "ffmpeg", "-y", "-v", "error",
+                "-i", str(src),
+                "-ar", str(sample_rate),
+                "-ac", "1",
+                str(dest),
+            ],
             capture_output=True,
             timeout=300,
             check=True,
@@ -135,12 +143,14 @@ def convert_to_wav_16k_mono(src: Path, dest: Path) -> None:
 
 
 @contextmanager
-def prepared_audio(url: str, recording_id: str) -> Iterator[Path]:
-    """Download → validate → convert; yields the 16 kHz WAV path; always cleans up.
+def prepared_audio(url: str, recording_id: str, sample_rate: int = 16000) -> Iterator[Path]:
+    """Download → validate → convert; yields the mono WAV path; always cleans up.
 
-    A context manager so that no matter how transcription exits (success, model
-    error, worker timeout raising SoftTimeLimitExceeded), the multi-hundred-MB
-    temp files never accumulate on the worker disk.
+    ``sample_rate`` defaults to 16 kHz (Whisper and CREPE's requirement); the
+    MERT embedding stage passes 24000 (its native rate). A context manager so
+    that no matter how inference exits (success, model error, worker timeout
+    raising SoftTimeLimitExceeded), the multi-hundred-MB temp files never
+    accumulate on the worker disk.
     """
     validate_format(url)
     safe_id = _SAFE_ID.sub("_", recording_id) or "recording"
@@ -153,10 +163,13 @@ def prepared_audio(url: str, recording_id: str) -> Iterator[Path]:
         duration = probe_duration(raw)
         validate_duration(duration)
 
-        wav = tmpdir / "audio-16k.wav"
-        convert_to_wav_16k_mono(raw, wav)
+        wav = tmpdir / f"audio-{sample_rate // 1000}k.wav"
+        convert_to_wav_mono(raw, wav, sample_rate)
         logger.info(
-            "audio prepared recording_id=%s duration=%.1fs", recording_id, duration
+            "audio prepared recording_id=%s duration=%.1fs rate=%d",
+            recording_id,
+            duration,
+            sample_rate,
         )
         yield wav
     finally:

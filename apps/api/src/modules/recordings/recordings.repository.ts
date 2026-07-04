@@ -15,6 +15,7 @@ import type {
   AudioFormat,
   Paginated,
   PublicRecording,
+  RecordingAi,
   RecordingLicense,
   RecordingStatus,
   RecordingVisibility,
@@ -49,6 +50,9 @@ interface RecordingDoc {
   language: ContentLanguage;
   fieldNotes: string | undefined;
   aiStatus: AiStatus;
+  /** AI enrichment written by the internal callback (transcripts, pitch, embedding). */
+  aiExtras: RecordingAiPatch;
+  aiProcessedAt: Date | null;
   status: RecordingStatus;
   visibility: RecordingVisibility;
   license: RecordingLicense;
@@ -66,6 +70,18 @@ export interface CreateDraftInput {
   sessionId: string;
 }
 
+/** The AI-result fields the internal callback may write (subset of RecordingAi). */
+export type RecordingAiPatch = Pick<
+  RecordingAi,
+  | 'transcriptSomali'
+  | 'transcriptEnglish'
+  | 'isSinging'
+  | 'pitchData'
+  | 'dominantNotes'
+  | 'voicedFraction'
+  | 'embeddingId'
+>;
+
 export interface RecordingRepository {
   createDraft(input: CreateDraftInput): Promise<{ recordingId: string }>;
   complete(
@@ -78,6 +94,8 @@ export interface RecordingRepository {
   /** Admin moderation queue — includes drafts/review, optionally status-filtered. */
   listForModeration(query: ModerationQueryInput): Promise<Paginated<PublicRecording>>;
   updateModeration(id: string, patch: RecordingModerationInput): Promise<PublicRecording | null>;
+  /** Merge AI-pipeline results into the recording's ai document (internal callback). */
+  updateAi(id: string, patch: RecordingAiPatch): Promise<PublicRecording | null>;
   getFileKey(id: string): Promise<string | null>;
   softDelete(id: string): Promise<void>;
 }
@@ -116,7 +134,11 @@ function toPublicRecording(doc: RecordingDoc): PublicRecording {
     genre: doc.genre,
     instruments: doc.instruments,
     language: doc.language,
-    ai: { status: doc.aiStatus },
+    ai: {
+      status: doc.aiStatus,
+      ...doc.aiExtras,
+      ...(doc.aiProcessedAt ? { processedAt: asIso(doc.aiProcessedAt) } : {}),
+    },
     visibility: doc.visibility,
     license: doc.license,
     status: doc.status,
@@ -159,6 +181,8 @@ export class InMemoryRecordingRepository implements RecordingRepository {
       language: 'so',
       fieldNotes: undefined,
       aiStatus: 'pending',
+      aiExtras: {},
+      aiProcessedAt: null,
       status: 'draft',
       visibility: 'private',
       license: 'all-rights-reserved',
@@ -277,6 +301,18 @@ export class InMemoryRecordingRepository implements RecordingRepository {
     if (!doc || doc.deletedAt) return null;
     if (patch.status !== undefined) doc.status = patch.status;
     if (patch.visibility !== undefined) doc.visibility = patch.visibility;
+    doc.updatedAt = new Date();
+    return toPublicRecording(doc);
+  }
+
+  async updateAi(id: string, patch: RecordingAiPatch): Promise<PublicRecording | null> {
+    const doc = this.resolve(id);
+    if (!doc || doc.deletedAt) return null;
+    // Merge: each pipeline stage lands independently (§10 — jobs don't block
+    // each other), so a pitch result must not clobber an earlier transcript.
+    doc.aiExtras = { ...doc.aiExtras, ...patch };
+    doc.aiStatus = 'complete';
+    doc.aiProcessedAt = new Date();
     doc.updatedAt = new Date();
     return toPublicRecording(doc);
   }
