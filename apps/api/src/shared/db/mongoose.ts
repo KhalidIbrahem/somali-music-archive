@@ -4,23 +4,24 @@
  * Content metadata (recordings, artists) lives in MongoDB. Mongoose models are
  * defined at import time (schema only, no connection), so importing a model is
  * side-effect-free; queries require an open connection, opened at boot via
- * `connectMongo()` when PERSISTENCE=database. The URI comes from MONGODB_URI.
+ * `connectMongo()` when PERSISTENCE=database.
+ *
+ * Like prisma.ts, this imports neither `@/config/env` nor `@/shared/logger` so
+ * recording repository modules stay import-safe in the env-light seed/promote
+ * scripts. The caller (server.ts) supplies the URI and does the logging.
  */
 
 import mongoose from 'mongoose';
-import { env } from '@/config/env';
-import { logger } from '@/shared/logger';
 
 let connected = false;
 
-/** Open the shared Mongoose connection (idempotent). */
-export async function connectMongo(): Promise<void> {
+/** Open the shared Mongoose connection (idempotent). URI comes from MONGODB_URI. */
+export async function connectMongo(uri: string): Promise<void> {
   if (connected) return;
   // Fail fast instead of buffering queries forever against a dead connection.
   mongoose.set('bufferCommands', false);
-  await mongoose.connect(env.MONGODB_URI);
+  await mongoose.connect(uri);
   connected = true;
-  logger.info('MongoDB (Mongoose) connected');
 }
 
 /** Close the connection on graceful shutdown. */

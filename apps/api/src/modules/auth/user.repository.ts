@@ -12,6 +12,9 @@ import { randomUUID } from 'node:crypto';
 import type { UiLanguage } from '@sma/constants';
 import type { PublicUser, UserRole } from '@sma/types';
 import { asIso, asUuid } from '@/shared/brand';
+import { useDatabase } from '@/shared/db/driver';
+import { getPrisma } from '@/shared/db/prisma';
+import { PrismaUserRepository } from './user.prisma.repository';
 
 /** Internal row shape — carries the password hash, which never leaves this layer. */
 export interface UserRecord {
@@ -227,5 +230,11 @@ export class InMemoryUserRepository implements UserRepository {
   }
 }
 
-/** Process-wide default repository. Swap this construction for Prisma in Phase 1. */
-export const userRepository: UserRepository = new InMemoryUserRepository();
+/**
+ * Process-wide repository: Prisma/Postgres when PERSISTENCE=database, else the
+ * in-memory implementation (tests + local dev without a database). Both satisfy
+ * `UserRepository`, so services depend only on the interface (ADR-0005).
+ */
+export const userRepository: UserRepository = useDatabase()
+  ? new PrismaUserRepository(getPrisma())
+  : new InMemoryUserRepository();

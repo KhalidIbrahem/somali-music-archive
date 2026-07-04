@@ -18,7 +18,9 @@ async function start(): Promise<void> {
     // Open the database connections up front so a bad URL fails at boot, not
     // mid-request. In-memory mode never touches them.
     await connectPrisma();
-    await connectMongo();
+    logger.info('Postgres (Prisma) connected');
+    await connectMongo(env.MONGODB_URI);
+    logger.info('MongoDB (Mongoose) connected');
   } else {
     // Dev-only: load `npm run seed` data into the in-memory repositories so a
     // fresh process looks seeded. No-op in production and when nothing was seeded.
