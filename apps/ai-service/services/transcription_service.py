@@ -277,6 +277,7 @@ def run_transcription_job(
     failure so the Celery retry policy can take over.
     """
     from models.whisper_model import fp16_for, get_whisper_model
+    from services.callback import post_ai_result
     from utils.audio_download import prepared_audio
 
     log = logging.LoggerAdapter(logger, {"job_id": job_id, "recording_id": recording_id})
@@ -293,24 +294,4 @@ def run_transcription_job(
         result.is_singing,
         len(result.segments),
     )
-    _post_result(job_id, recording_id, result)
-
-
-def _post_result(job_id: str, recording_id: str, result: TranscriptionResult) -> None:
-    """POST the finished transcript to the Node API's internal callback.
-
-    Raises on non-2xx so the worker's retry/backoff policy treats a failed
-    delivery like any other transient failure — results must not be lost
-    silently after minutes of GPU time.
-    """
-    import httpx
-
-    from config import get_settings
-
-    settings = get_settings()
-    url = f"{settings.callback_api_url}/internal/recordings/{recording_id}/ai"
-    payload = {"job_id": job_id, "kind": "transcription", **result.to_payload()}
-    headers = {"x-internal-key": settings.ai_service_api_key}
-    with httpx.Client(timeout=30.0) as client:
-        response = client.post(url, json=payload, headers=headers)
-        response.raise_for_status()
+    post_ai_result(job_id, recording_id, "transcription", result.to_payload())
