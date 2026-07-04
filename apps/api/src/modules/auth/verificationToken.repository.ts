@@ -8,6 +8,9 @@
  */
 
 import { randomUUID } from '@/shared/crypto';
+import { useDatabase } from '@/shared/db/driver';
+import { getPrisma } from '@/shared/db/prisma';
+import { PrismaVerificationTokenRepository } from './verificationToken.prisma.repository';
 
 export type VerificationPurpose = 'email_verify' | 'password_reset';
 
@@ -84,5 +87,6 @@ export class InMemoryVerificationTokenRepository implements VerificationTokenRep
   }
 }
 
-export const verificationTokenRepository: VerificationTokenRepository =
-  new InMemoryVerificationTokenRepository();
+export const verificationTokenRepository: VerificationTokenRepository = useDatabase()
+  ? new PrismaVerificationTokenRepository(getPrisma())
+  : new InMemoryVerificationTokenRepository();

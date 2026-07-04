@@ -12,6 +12,9 @@
  */
 
 import { randomUUID } from '@/shared/crypto';
+import { useDatabase } from '@/shared/db/driver';
+import { getPrisma } from '@/shared/db/prisma';
+import { PrismaRefreshTokenRepository } from './refreshToken.prisma.repository';
 
 export interface RefreshTokenRecord {
   id: string;
@@ -78,4 +81,6 @@ export class InMemoryRefreshTokenRepository implements RefreshTokenRepository {
   }
 }
 
-export const refreshTokenRepository: RefreshTokenRepository = new InMemoryRefreshTokenRepository();
+export const refreshTokenRepository: RefreshTokenRepository = useDatabase()
+  ? new PrismaRefreshTokenRepository(getPrisma())
+  : new InMemoryRefreshTokenRepository();
