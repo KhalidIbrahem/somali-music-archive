@@ -35,6 +35,15 @@ const envSchema = z.object({
   MONGODB_URI: z.string().min(1),
   POSTGRES_URL: z.string().min(1),
   REDIS_URL: z.string().min(1),
+  /**
+   * Which persistence backend the repositories use. `memory` (default) keeps the
+   * in-memory repositories — zero infrastructure, used by tests and local dev
+   * without a database. `database` switches to the Prisma/Postgres + Mongoose/Mongo
+   * repositories (requires POSTGRES_URL + MONGODB_URI to point at real databases).
+   * Also read directly from process.env by shared/db/driver so repository modules
+   * stay import-safe in the env-light script contexts (seed/promote).
+   */
+  PERSISTENCE: z.enum(['memory', 'database']).default('memory'),
 
   // Cloudflare R2
   R2_ACCOUNT_ID: z.string().min(1),
