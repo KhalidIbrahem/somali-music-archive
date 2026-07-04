@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { RecordingCompleteMetadata } from '@sma/validators';
 import { AppError } from '@/shared/errors/AppError';
 import { InMemoryEmbeddingRepository } from '@/modules/internal/embeddings.repository';
+import { InMemorySearchIndex } from '@/modules/search/searchIndex';
 import { InMemoryRecordingRepository } from './recordings.repository';
 import { createRecordingsService, type RecordingsService } from './recordings.service';
 
@@ -28,8 +29,15 @@ function makeService() {
   };
   const queue = { enqueueProcess: vi.fn(async () => {}) };
   const embeddings = new InMemoryEmbeddingRepository();
-  const service: RecordingsService = createRecordingsService({ repo, storage, queue, embeddings });
-  return { service, repo, storage, queue, embeddings };
+  const search = new InMemorySearchIndex();
+  const service: RecordingsService = createRecordingsService({
+    repo,
+    storage,
+    queue,
+    embeddings,
+    search,
+  });
+  return { service, repo, storage, queue, embeddings, search };
 }
 
 let ctx: ReturnType<typeof makeService>;
@@ -121,44 +129,6 @@ describe('listRecordings', () => {
     expect(match.total).toBe(1);
     const miss = await ctx.service.listRecordings({ page: 1, limit: 20, genre: 'dhaanto' });
     expect(miss.total).toBe(0);
-  });
-});
-
-describe('searchRecordings', () => {
-  beforeEach(async () => {
-    const done = await ctx.service.createUploadUrl({
-      filename: 'take.wav',
-      contentType: 'audio/wav',
-      sessionId: 's1',
-    });
-    await ctx.service.completeUpload({
-      recordingId: done.recordingId,
-      fileKey: done.fileKey,
-      metadata,
-    });
-    // Search covers the public archive → the recording must be published.
-    await ctx.service.moderateRecording(done.recordingId, { status: 'published' });
-  });
-
-  it('matches free text against title and artist', async () => {
-    expect((await ctx.service.searchRecordings({ page: 1, limit: 20, q: 'balwo' })).total).toBe(1);
-    expect((await ctx.service.searchRecordings({ page: 1, limit: 20, q: 'ahmed' })).total).toBe(1);
-    expect((await ctx.service.searchRecordings({ page: 1, limit: 20, q: 'nonsense' })).total).toBe(
-      0,
-    );
-  });
-
-  it('combines text with a genre facet', async () => {
-    expect(
-      (await ctx.service.searchRecordings({ page: 1, limit: 20, genre: 'qaraami' })).total,
-    ).toBe(1);
-    expect(
-      (await ctx.service.searchRecordings({ page: 1, limit: 20, genre: 'dhaanto' })).total,
-    ).toBe(0);
-  });
-
-  it('returns everything when the query is empty', async () => {
-    expect((await ctx.service.searchRecordings({ page: 1, limit: 20 })).total).toBe(1);
   });
 });
 
@@ -266,6 +236,20 @@ describe('moderation (admin)', () => {
 
     // Now it appears in the public archive listing.
     expect((await ctx.service.listRecordings({ page: 1, limit: 20 })).total).toBe(1);
+  });
+
+  it('adds a recording to the search index on publish and removes it on archive', async () => {
+    const recordingId = await completed();
+
+    // In "review" it is not yet searchable.
+    expect(await ctx.search.count()).toBe(0);
+
+    await ctx.service.moderateRecording(recordingId, { status: 'published' });
+    expect((await ctx.search.search({ page: 1, limit: 20, q: 'balwo' })).total).toBe(1);
+
+    // Archiving pulls it back out of the index.
+    await ctx.service.moderateRecording(recordingId, { status: 'archived' });
+    expect(await ctx.search.count()).toBe(0);
   });
 
   it('rejects moderating an unknown recording', async () => {

@@ -18,7 +18,12 @@ const envSchema = z.object({
   CORS_ORIGINS: z
     .string()
     .default('http://localhost:8081')
-    .transform((s) => s.split(',').map((o) => o.trim()).filter(Boolean)),
+    .transform((s) =>
+      s
+        .split(',')
+        .map((o) => o.trim())
+        .filter(Boolean),
+    ),
 
   // JWT — secrets must be long enough to be meaningfully secure (§11).
   JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET must be at least 32 characters'),
@@ -51,6 +56,12 @@ const envSchema = z.object({
   // AI service
   AI_SERVICE_URL: z.string().url(),
   AI_SERVICE_API_KEY: z.string().min(1),
+
+  // Search (Elasticsearch) — opt-in full-text backend (docker compose --profile
+  // search). Empty URL → the API uses the built-in in-memory search index
+  // (ADR-0005 interface-first), so it boots and search works without ES running.
+  ELASTICSEARCH_URL: z.string().default(''),
+  ELASTICSEARCH_INDEX: z.string().default('recordings'),
 
   // Observability
   SENTRY_DSN: z.string().default(''),

@@ -19,6 +19,7 @@ import {
   type RecordingAiPatch,
   type RecordingRepository,
 } from '@/modules/recordings/recordings.repository';
+import { searchIndex, toSearchDocument, type SearchIndex } from '@/modules/search/searchIndex';
 import { embeddingRepository, type EmbeddingRepository } from './embeddings.repository';
 
 function transcriptionPatch(input: TranscriptionResultInput): RecordingAiPatch {
@@ -47,8 +48,9 @@ function pitchPatch(input: PitchResultInput): RecordingAiPatch {
 export function createInternalService(deps: {
   recordings: RecordingRepository;
   embeddings: EmbeddingRepository;
+  search: SearchIndex;
 }) {
-  const { recordings, embeddings } = deps;
+  const { recordings, embeddings, search } = deps;
 
   /** Persist one stage's result onto the recording; 404s unknown recordings. */
   async function applyAiResult(recordingId: string, input: AiResultInput): Promise<void> {
@@ -73,6 +75,13 @@ export function createInternalService(deps: {
     if (!updated) {
       throw notFound('RECORDING_NOT_FOUND', 'Recording not found for AI result');
     }
+
+    // If the recording is already published, refresh its search document so the
+    // freshly-landed transcript becomes findable (SESSION P3-04). A recording
+    // still in review is indexed later, at publish time — nothing to do here.
+    if (updated.status === 'published') {
+      await search.index(toSearchDocument(updated));
+    }
   }
 
   return { applyAiResult };
@@ -83,4 +92,5 @@ export type InternalService = ReturnType<typeof createInternalService>;
 export const internalService: InternalService = createInternalService({
   recordings: recordingRepository,
   embeddings: embeddingRepository,
+  search: searchIndex,
 });

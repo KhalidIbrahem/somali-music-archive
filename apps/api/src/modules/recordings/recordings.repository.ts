@@ -26,12 +26,11 @@ import type {
   RecordingCompleteMetadata,
   RecordingModerationInput,
   RecordingQueryInput,
-  SearchQueryInput,
 } from '@sma/validators';
 import { asIso, asObjectId } from '@/shared/brand';
 import { sha256Hex } from '@/shared/crypto';
 
-interface RecordingDoc {
+export interface RecordingDoc {
   id: string; // 24-hex ObjectId
   humanId: string;
   fileKey: string;
@@ -90,7 +89,6 @@ export interface RecordingRepository {
   ): Promise<PublicRecording | null>;
   findById(id: string): Promise<PublicRecording | null>;
   list(query: RecordingQueryInput): Promise<Paginated<PublicRecording>>;
-  search(query: SearchQueryInput): Promise<Paginated<PublicRecording>>;
   /** Admin moderation queue — includes drafts/review, optionally status-filtered. */
   listForModeration(query: ModerationQueryInput): Promise<Paginated<PublicRecording>>;
   updateModeration(id: string, patch: RecordingModerationInput): Promise<PublicRecording | null>;
@@ -104,21 +102,6 @@ export interface RecordingRepository {
  * collection exists, the name is the identity). */
 function artistIdFor(name: string): string {
   return sha256Hex(name.toLowerCase()).slice(0, 24);
-}
-
-/** Lowercased haystack for free-text search (title, artist, genre, era, occasion,
- * poet). A Mongo text index / Elasticsearch replaces this in Phase 2/3 (§14). */
-function searchableText(doc: RecordingDoc): string {
-  return [
-    doc.title.somali,
-    doc.artistName,
-    doc.genre,
-    doc.era ?? '',
-    doc.occasion ?? '',
-    doc.poetName ?? '',
-  ]
-    .join(' ')
-    .toLowerCase();
 }
 
 /** Map an internal doc to the public wire shape (omits fileKey/session/etc.). */
@@ -254,27 +237,6 @@ export class InMemoryRecordingRepository implements RecordingRepository {
     };
   }
 
-  async search(query: SearchQueryInput): Promise<Paginated<PublicRecording>> {
-    const needle = query.q?.trim().toLowerCase() ?? '';
-    const matches = [...this.byId.values()]
-      .filter((d) => !d.deletedAt && d.status === 'published')
-      .filter((d) => (query.genre ? d.genre === query.genre : true))
-      .filter((d) => (query.region ? d.region === query.region : true))
-      .filter((d) => (query.era ? d.era === query.era : true))
-      .filter((d) => (needle ? searchableText(d).includes(needle) : true))
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-
-    const total = matches.length;
-    const start = (query.page - 1) * query.limit;
-    return {
-      data: matches.slice(start, start + query.limit).map(toPublicRecording),
-      total,
-      page: query.page,
-      limit: query.limit,
-      hasMore: start + query.limit < total,
-    };
-  }
-
   async listForModeration(query: ModerationQueryInput): Promise<Paginated<PublicRecording>> {
     // Admin view: every non-deleted recording (incl. drafts/review), newest first.
     const all = [...this.byId.values()]
@@ -328,6 +290,23 @@ export class InMemoryRecordingRepository implements RecordingRepository {
       doc.deletedAt = new Date();
       doc.updatedAt = new Date();
     }
+  }
+
+  // ── Dev-store snapshot/hydrate (not part of the persistence contract) ────────
+  // Used only by the local dev seed store (scripts/seed.ts, shared/devStore) to
+  // move the full in-memory state to and from a JSON file. A real DB-backed repo
+  // has no equivalent — persistence is the database's job there.
+
+  /** Export every stored document (including drafts/deleted) for a dev snapshot. */
+  snapshot(): RecordingDoc[] {
+    return [...this.byId.values()];
+  }
+
+  /** Replace all documents from a dev snapshot (dev bootstrap only). */
+  hydrate(records: readonly RecordingDoc[]): void {
+    this.byId.clear();
+    for (const record of records) this.byId.set(record.id, record);
+    this.seq = records.length; // keep generated humanIds ahead of seeded ones
   }
 }
 
