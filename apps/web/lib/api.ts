@@ -12,6 +12,7 @@ import type {
   RecordingStatus,
   RecordingVisibility,
 } from '@sma/types';
+import type { RegisterInput } from '@sma/validators';
 import { getToken } from './auth';
 
 const API_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
@@ -48,6 +49,15 @@ export function login(email: string, password: string): Promise<AuthResult> {
   return apiFetch<AuthResult>(
     '/auth/login',
     { method: 'POST', body: JSON.stringify({ email, password }) },
+    false,
+  );
+}
+
+/** Create an account (POST /auth/register). Validated server-side by registerSchema. */
+export function register(input: RegisterInput): Promise<AuthResult> {
+  return apiFetch<AuthResult>(
+    '/auth/register',
+    { method: 'POST', body: JSON.stringify(input) },
     false,
   );
 }

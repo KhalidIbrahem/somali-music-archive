@@ -209,6 +209,22 @@ export class InMemoryUserRepository implements UserRepository {
   async listSaved(userId: string): Promise<string[]> {
     return [...(this.saved.get(userId) ?? [])];
   }
+
+  // ── Dev-store snapshot/hydrate (not part of the persistence contract) ────────
+  // Used only by the local dev seed store (scripts/seed.ts, scripts/promote.ts,
+  // shared/devStore) to move the full in-memory state to and from a JSON file. A
+  // real DB-backed repo has no equivalent — persistence is the database's job.
+
+  /** Export every stored user row for a dev snapshot. */
+  snapshot(): UserRecord[] {
+    return [...this.byId.values()];
+  }
+
+  /** Replace all rows from a dev snapshot (dev bootstrap only). */
+  hydrate(records: readonly UserRecord[]): void {
+    this.byId.clear();
+    for (const record of records) this.byId.set(record.id, record);
+  }
 }
 
 /** Process-wide default repository. Swap this construction for Prisma in Phase 1. */
