@@ -2,11 +2,13 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { MERT_EMBEDDING_DIM } from '@sma/validators';
 import { AppError } from '@/shared/errors/AppError';
 import { InMemoryRecordingRepository } from '@/modules/recordings/recordings.repository';
+import { InMemorySearchIndex } from '@/modules/search/searchIndex';
 import { InMemoryEmbeddingRepository } from './embeddings.repository';
 import { createInternalService, type InternalService } from './internal.service';
 
 let recordings: InMemoryRecordingRepository;
 let embeddings: InMemoryEmbeddingRepository;
+let search: InMemorySearchIndex;
 let service: InternalService;
 let recordingId: string;
 
@@ -16,7 +18,8 @@ const embedding = new Array<number>(MERT_EMBEDDING_DIM).fill(unitValue);
 beforeEach(async () => {
   recordings = new InMemoryRecordingRepository();
   embeddings = new InMemoryEmbeddingRepository();
-  service = createInternalService({ recordings, embeddings });
+  search = new InMemorySearchIndex();
+  service = createInternalService({ recordings, embeddings, search });
 
   const draft = await recordings.createDraft({ fileKey: 'k', format: 'wav', sessionId: 's' });
   recordingId = draft.recordingId;
@@ -142,6 +145,34 @@ describe('embedding results', () => {
     expect(second?.id).toBe(first?.id); // embeddingId references never dangle
     expect(second?.embedding[0]).toBe(-unitValue);
     expect(await embeddings.count()).toBe(1);
+  });
+});
+
+describe('search re-indexing', () => {
+  const transcript = {
+    kind: 'transcription' as const,
+    job_id: 'j-idx',
+    somali_text: 'Waa hees jaceyl',
+    english_text: 'It is a love song',
+    segments: [],
+    detected_language: 'so' as const,
+    is_singing: true,
+    duration_sec: 6,
+  };
+
+  it('re-indexes a published recording so its new transcript is searchable', async () => {
+    await recordings.updateModeration(recordingId, { status: 'published' });
+
+    await service.applyAiResult(recordingId, transcript);
+
+    const res = await search.search({ page: 1, limit: 20, q: 'jaceyl' });
+    expect(res.ids).toEqual([recordingId]);
+  });
+
+  it('does not index a recording that is still in review', async () => {
+    // No publish step — the recording sits in "review" from the beforeEach.
+    await service.applyAiResult(recordingId, transcript);
+    expect(await search.count()).toBe(0);
   });
 });
 

@@ -13,7 +13,6 @@ import type {
   UploadCompleteInput,
   UploadUrlRequestInput,
   RecordingQueryInput,
-  SearchQueryInput,
 } from '@sma/validators';
 import { badRequest, notFound } from '@/shared/errors/AppError';
 import { asIso } from '@/shared/brand';
@@ -23,6 +22,7 @@ import {
   embeddingRepository,
   type EmbeddingRepository,
 } from '@/modules/internal/embeddings.repository';
+import { searchIndex, toSearchDocument, type SearchIndex } from '@/modules/search/searchIndex';
 import { recordingRepository, type RecordingRepository } from './recordings.repository';
 
 const CONTENT_TYPE_FORMAT: Record<string, AudioFormat> = {
@@ -51,10 +51,11 @@ export interface RecordingsServiceDeps {
   };
   queue: AudioJobQueue;
   embeddings: EmbeddingRepository;
+  search: SearchIndex;
 }
 
 export function createRecordingsService(deps: RecordingsServiceDeps) {
-  const { repo, storage, queue, embeddings } = deps;
+  const { repo, storage, queue, embeddings, search } = deps;
 
   async function createUploadUrl(input: UploadUrlRequestInput): Promise<PresignedUploadResult> {
     const presigned = await storage.generateUploadUrl(input.contentType);
@@ -88,10 +89,6 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
 
   async function listRecordings(query: RecordingQueryInput): Promise<Paginated<PublicRecording>> {
     return repo.list(query);
-  }
-
-  async function searchRecordings(query: SearchQueryInput): Promise<Paginated<PublicRecording>> {
-    return repo.search(query);
   }
 
   async function getRecording(id: string): Promise<PublicRecording> {
@@ -133,12 +130,24 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
     return repo.listForModeration(query);
   }
 
+  /**
+   * Change a recording's moderation status/visibility, and keep the search index
+   * in step (SESSION P3-04): publishing adds it to the full-text index; any other
+   * status (review/archived/draft) removes it, so search never surfaces a
+   * recording that has left the public archive.
+   */
   async function moderateRecording(
     id: string,
     patch: RecordingModerationInput,
   ): Promise<PublicRecording> {
     const updated = await repo.updateModeration(id, patch);
     if (!updated) throw notFound('RECORDING_NOT_FOUND', 'Recording not found');
+
+    if (updated.status === 'published') {
+      await search.index(toSearchDocument(updated));
+    } else {
+      await search.remove(String(updated._id));
+    }
     return updated;
   }
 
@@ -153,7 +162,6 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
     createUploadUrl,
     completeUpload,
     listRecordings,
-    searchRecordings,
     getRecording,
     getPlaybackUrl,
     findSimilarRecordings,
@@ -169,4 +177,5 @@ export const recordingsService: RecordingsService = createRecordingsService({
   storage: { generateUploadUrl, generatePlaybackUrl, verifyExists },
   queue: audioQueue,
   embeddings: embeddingRepository,
+  search: searchIndex,
 });
