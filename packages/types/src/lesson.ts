@@ -11,12 +11,26 @@ import type { Uuid, IsoDateTimeString } from './common';
 /** Curriculum track a module belongs to. */
 export type LessonTrack = 'beginner' | 'intermediate' | 'advanced';
 
+/** Tone of a callout box — drives its colour + label. */
+export type CalloutTone = 'note' | 'tip' | 'warning';
+
 /** A block of rich lesson content. Kept as a discriminated union so new block
- * types (video, quiz, …) can be appended without breaking existing renderers. */
+ * types can be appended without breaking existing renderers (SESSION P4-04 added
+ * heading / callout / quiz). */
 export type LessonBlock =
   | { readonly kind: 'text'; readonly markdown: string }
+  | { readonly kind: 'heading'; readonly text: string }
+  | { readonly kind: 'callout'; readonly tone: CalloutTone; readonly body: string }
   | { readonly kind: 'audio'; readonly recordingId: string; readonly caption?: string }
-  | { readonly kind: 'pitch-exercise'; readonly targetNote: string; readonly targetHz: number };
+  | { readonly kind: 'pitch-exercise'; readonly targetNote: string; readonly targetHz: number }
+  | {
+      readonly kind: 'quiz';
+      readonly prompt: string;
+      readonly options: readonly string[];
+      /** 0-based index of the correct option. */
+      readonly answerIndex: number;
+      readonly explanation?: string;
+    };
 
 export interface Lesson {
   readonly id: string;

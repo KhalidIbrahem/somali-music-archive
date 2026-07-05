@@ -30,6 +30,18 @@ const LESSONS: readonly Lesson[] = [
         markdown:
           'Somali music is a living oral tradition — heello, qaraami, dhaanto, buraanbur, gabay. This lesson introduces the landscape you will explore.',
       },
+      {
+        kind: 'callout',
+        tone: 'note',
+        body: 'In Somali tradition the poetry and the melody are inseparable — a genre is defined by its words as much as its music.',
+      },
+      {
+        kind: 'quiz',
+        prompt: 'Which of these is a genre of Somali sung poetry?',
+        options: ['Qaraami', 'Bossa nova', 'Fado'],
+        answerIndex: 0,
+        explanation: 'Qaraami is a classic Somali love-song genre, typically led by the oud.',
+      },
     ],
   },
   {
@@ -68,11 +80,19 @@ const LESSONS: readonly Lesson[] = [
     order: 1,
     estimatedMinutes: 10,
     blocks: [
+      { kind: 'heading', text: 'The five degrees' },
       {
         kind: 'text',
         markdown: 'The Somali pentatonic scale: do, re, mi, sol, la. Hear each degree.',
       },
       { kind: 'pitch-exercise', targetNote: 'do', targetHz: 293.66 },
+      {
+        kind: 'quiz',
+        prompt: 'How many notes are in the Somali pentatonic scale?',
+        options: ['Four', 'Five', 'Seven'],
+        answerIndex: 1,
+        explanation: '"Pentatonic" means five notes per octave — do, re, mi, sol, la.',
+      },
     ],
   },
   {
@@ -96,6 +116,11 @@ const LESSONS: readonly Lesson[] = [
         kind: 'text',
         markdown:
           'The expressive "in-between" pitches that Western notation misses — measured in cents. This is the research heart of the archive.',
+      },
+      {
+        kind: 'callout',
+        tone: 'warning',
+        body: 'Do not "correct" these pitches to a piano. The deviation from equal temperament is the tradition itself, not a mistake.',
       },
       { kind: 'pitch-exercise', targetNote: 'mi', targetHz: 369.99 },
     ],

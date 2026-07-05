@@ -8,23 +8,30 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import type { LessonBlock } from '@sma/types';
+import type { CalloutTone, LessonBlock } from '@sma/types';
 import { Card, Text, Button } from '@/components/ui';
 import { PitchMeter } from '@/components/audio/PitchMeter';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { usePitchExercise } from '@/hooks/usePitchExercise';
 import { getAudioUrl } from '@/services/api/recordings';
 import { formatDuration } from '@/utils/formatters';
+import { quizOptionState } from '@/utils/lessons';
 import { colors, radius, spacing } from '@/theme';
 
 export function LessonBlockView({ block }: { block: LessonBlock }): React.JSX.Element {
   switch (block.kind) {
     case 'text':
       return <TextBlock markdown={block.markdown} />;
+    case 'heading':
+      return <HeadingBlock text={block.text} />;
+    case 'callout':
+      return <CalloutBlock tone={block.tone} body={block.body} />;
     case 'audio':
       return <AudioBlock recordingId={block.recordingId} caption={block.caption} />;
     case 'pitch-exercise':
       return <PitchExerciseBlock targetNote={block.targetNote} targetHz={block.targetHz} />;
+    case 'quiz':
+      return <QuizBlock block={block} />;
   }
 }
 
@@ -38,6 +45,84 @@ function TextBlock({ markdown }: { markdown: string }): React.JSX.Element {
         </Text>
       ))}
     </View>
+  );
+}
+
+function HeadingBlock({ text }: { text: string }): React.JSX.Element {
+  return (
+    <Text variant="displaySmall" style={styles.heading}>
+      {text}
+    </Text>
+  );
+}
+
+type IconName = React.ComponentProps<typeof Ionicons>['name'];
+
+const CALLOUT: Record<CalloutTone, { label: string; color: string; icon: IconName }> = {
+  note: { label: 'NOTE', color: colors.info, icon: 'information-circle-outline' },
+  tip: { label: 'TIP', color: colors.amber.primary, icon: 'bulb-outline' },
+  warning: { label: 'IMPORTANT', color: colors.warning, icon: 'alert-circle-outline' },
+};
+
+function CalloutBlock({ tone, body }: { tone: CalloutTone; body: string }): React.JSX.Element {
+  const style = CALLOUT[tone];
+  return (
+    <View style={[styles.callout, { borderLeftColor: style.color }]}>
+      <View style={styles.calloutHeader}>
+        <Ionicons name={style.icon} size={16} color={style.color} />
+        <Text variant="labelMedium" style={{ color: style.color }}>
+          {style.label}
+        </Text>
+      </View>
+      <Text variant="bodyMedium" style={styles.paragraph}>
+        {body}
+      </Text>
+    </View>
+  );
+}
+
+type QuizBlockType = Extract<LessonBlock, { kind: 'quiz' }>;
+
+function QuizBlock({ block }: { block: QuizBlockType }): React.JSX.Element {
+  const [selected, setSelected] = useState<number | null>(null);
+  const answered = selected !== null;
+
+  return (
+    <Card style={styles.quizCard}>
+      <Text variant="labelLarge" color="secondary">
+        QUIZ
+      </Text>
+      <Text variant="bodyLarge">{block.prompt}</Text>
+      <View style={styles.quizOptions}>
+        {block.options.map((option, i) => {
+          const state = quizOptionState(block, selected, i);
+          return (
+            <Pressable
+              key={i}
+              onPress={() => setSelected(i)}
+              disabled={answered}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: selected === i }}
+              style={[
+                styles.quizOption,
+                state === 'correct'
+                  ? styles.quizCorrect
+                  : state === 'incorrect'
+                    ? styles.quizIncorrect
+                    : null,
+              ]}
+            >
+              <Text variant="bodyMedium">{option}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+      {answered && block.explanation ? (
+        <Text variant="bodySmall" color="secondary" style={styles.paragraph}>
+          {block.explanation}
+        </Text>
+      ) : null}
+    </Card>
   );
 }
 
@@ -173,6 +258,43 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     lineHeight: 24,
+  },
+  heading: {
+    marginTop: spacing.sm,
+  },
+  callout: {
+    borderLeftWidth: 3,
+    borderRadius: radius.md,
+    backgroundColor: colors.bg.secondary,
+    padding: spacing.base,
+    gap: spacing.xs,
+  },
+  calloutHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  quizCard: {
+    gap: spacing.sm,
+  },
+  quizOptions: {
+    gap: spacing.sm,
+  },
+  quizOption: {
+    borderWidth: 1,
+    borderColor: colors.border.primary,
+    borderRadius: radius.md,
+    backgroundColor: colors.bg.secondary,
+    paddingHorizontal: spacing.base,
+    paddingVertical: spacing.md,
+  },
+  quizCorrect: {
+    borderColor: colors.success,
+    backgroundColor: 'rgba(90, 184, 138, 0.12)',
+  },
+  quizIncorrect: {
+    borderColor: colors.error,
+    backgroundColor: 'rgba(224, 90, 90, 0.12)',
   },
   audioCard: {
     gap: spacing.sm,
