@@ -130,6 +130,21 @@ describe('listRecordings', () => {
     const miss = await ctx.service.listRecordings({ page: 1, limit: 20, genre: 'dhaanto' });
     expect(miss.total).toBe(0);
   });
+
+  it('serves a repeated query from cache and invalidates it on moderation', async () => {
+    await publishOne();
+    const listSpy = vi.spyOn(ctx.repo, 'list');
+
+    const first = await ctx.service.listRecordings({ page: 1, limit: 20 });
+    const second = await ctx.service.listRecordings({ page: 1, limit: 20 });
+    expect(second).toEqual(first);
+    expect(listSpy).toHaveBeenCalledTimes(1); // second call served from cache
+
+    await publishOne(); // any moderation clears the cache
+    const third = await ctx.service.listRecordings({ page: 1, limit: 20 });
+    expect(third.total).toBe(2); // recomputed, reflects the new recording
+    expect(listSpy).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe('getRecording', () => {

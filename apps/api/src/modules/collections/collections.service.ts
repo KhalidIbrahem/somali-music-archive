@@ -79,9 +79,13 @@ export function createCollectionsService(deps: CollectionsServiceDeps) {
     if (!collection.isPublic && collection.ownerId !== requesterId) throw forbidden();
 
     const recordingIds = await repo.listItems(id);
+    // Batch-hydrate items in ONE query (was N+1 findById calls), then walk the
+    // stored order — findByIds does not guarantee order — dropping any recording
+    // that has since left the published archive.
+    const byId = new Map((await recordings.findByIds(recordingIds)).map((r) => [String(r._id), r]));
     const items: PublicRecording[] = [];
     for (const recordingId of recordingIds) {
-      const recording = await recordings.findById(recordingId);
+      const recording = byId.get(String(recordingId));
       if (recording && recording.status === 'published') items.push(recording);
     }
     return { ...toPublicCollection(collection, recordingIds.length), items };

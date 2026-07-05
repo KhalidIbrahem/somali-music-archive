@@ -149,6 +149,22 @@ export class MongoRecordingRepository implements RecordingRepository {
     return doc ? toPublicRecording(doc) : null;
   }
 
+  async findByIds(ids: readonly string[]): Promise<PublicRecording[]> {
+    if (ids.length === 0) return [];
+    // Clients reference recordings by either ObjectId or human id, so split the
+    // batch and match both in a single query. Order is not guaranteed; callers
+    // re-order (mirrors the in-memory repo).
+    const objectIds = ids.filter((id) => mongoose.isValidObjectId(id));
+    const humanIds = ids.filter((id) => !mongoose.isValidObjectId(id));
+    const or: Record<string, unknown>[] = [];
+    if (objectIds.length) or.push({ _id: { $in: objectIds } });
+    if (humanIds.length) or.push({ humanId: { $in: humanIds } });
+    const docs = await RecordingModel.find({ deletedAt: null, $or: or })
+      .lean<RecordingFields[]>()
+      .exec();
+    return docs.map(toPublicRecording);
+  }
+
   async list(query: RecordingQueryInput): Promise<Paginated<PublicRecording>> {
     // Only published recordings are public; drafts/review/archived are not listed.
     const where: Record<string, unknown> = { deletedAt: null, status: 'published' };
