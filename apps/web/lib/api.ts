@@ -6,13 +6,16 @@
 import type {
   ApiResponse,
   AuthTokens,
+  CreatedOrganization,
+  OrganizationMemberView,
   Paginated,
+  PublicOrganization,
   PublicRecording,
   PublicUser,
   RecordingStatus,
   RecordingVisibility,
 } from '@sma/types';
-import type { RegisterInput } from '@sma/validators';
+import type { CreateOrganizationInput, RegisterInput } from '@sma/validators';
 import { getToken } from './auth';
 
 const API_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
@@ -78,5 +81,29 @@ export function updateRecording(
   return apiFetch<PublicRecording>(`/recordings/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(patch),
+  });
+}
+
+// ── Institutional licenses (SESSION P4-03; admin manages the P4-02 orgs) ──────
+
+/** Issue an institutional license (POST /organizations). Returns the key once. */
+export function createOrganization(input: CreateOrganizationInput): Promise<CreatedOrganization> {
+  return apiFetch<CreatedOrganization>('/organizations', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export function getOrganization(id: string): Promise<PublicOrganization> {
+  return apiFetch<PublicOrganization>(`/organizations/${id}`);
+}
+
+export function listOrgMembers(id: string): Promise<OrganizationMemberView[]> {
+  return apiFetch<OrganizationMemberView[]>(`/organizations/${id}/members`);
+}
+
+export function removeOrgMember(id: string, userId: string): Promise<{ removed: boolean }> {
+  return apiFetch<{ removed: boolean }>(`/organizations/${id}/members/${userId}`, {
+    method: 'DELETE',
   });
 }

@@ -1,23 +1,28 @@
 'use client';
 
 /**
- * Admin dashboard (SESSION P2-08) — basic content management (ARCHITECTURE.md §8,
- * §11 admin-only). Lists recordings by moderation status and lets an admin publish
- * or archive them via PATCH /recordings/:id. Gated: non-admins are bounced to login.
+ * Admin → Recordings (SESSION P2-08, extended P4-03). The moderation queue: list
+ * recordings by status and publish/archive them via PATCH /recordings/:id. The auth
+ * gate and section nav now live in AdminShell.
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import type { PublicRecording, RecordingStatus } from '@sma/types';
 import { GENRE_LABELS } from '@sma/constants';
-import { getMe, listModeration, updateRecording } from '@/lib/api';
-import { getToken, clearToken } from '@/lib/auth';
+import { listModeration, updateRecording } from '@/lib/api';
+import { AdminShell } from '@/components/AdminShell';
 
 const TABS: readonly RecordingStatus[] = ['review', 'published', 'archived'];
 
-export default function AdminDashboard(): React.JSX.Element {
-  const router = useRouter();
-  const [ready, setReady] = useState(false);
+export default function AdminRecordings(): React.JSX.Element {
+  return (
+    <AdminShell active="recordings">
+      <RecordingsPanel />
+    </AdminShell>
+  );
+}
+
+function RecordingsPanel(): React.JSX.Element {
   const [status, setStatus] = useState<RecordingStatus>('review');
   const [items, setItems] = useState<readonly PublicRecording[]>([]);
   const [loading, setLoading] = useState(false);
@@ -36,30 +41,9 @@ export default function AdminDashboard(): React.JSX.Element {
     }
   }, []);
 
-  // Auth gate on mount: require a stored token belonging to an admin.
   useEffect(() => {
-    if (!getToken()) {
-      router.replace('/admin/login');
-      return;
-    }
-    getMe()
-      .then((user) => {
-        if (user.role !== 'admin') {
-          clearToken();
-          router.replace('/admin/login');
-          return;
-        }
-        setReady(true);
-      })
-      .catch(() => {
-        clearToken();
-        router.replace('/admin/login');
-      });
-  }, [router]);
-
-  useEffect(() => {
-    if (ready) void load(status);
-  }, [ready, status, load]);
+    void load(status);
+  }, [status, load]);
 
   const moderate = async (
     id: string,
@@ -69,34 +53,8 @@ export default function AdminDashboard(): React.JSX.Element {
     void load(status);
   };
 
-  const signOut = (): void => {
-    clearToken();
-    router.replace('/admin/login');
-  };
-
-  if (!ready) {
-    return (
-      <main className="flex min-h-screen items-center justify-center">
-        <p className="font-body text-ink-secondary">Loading…</p>
-      </main>
-    );
-  }
-
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-10">
-      <header className="flex items-center justify-between">
-        <div>
-          <p className="font-body text-sm uppercase tracking-widest text-amber">Admin</p>
-          <h1 className="font-display text-3xl text-ink-primary">Recordings</h1>
-        </div>
-        <button
-          onClick={signOut}
-          className="rounded-lg border border-line-primary px-3 py-2 font-body text-sm text-ink-secondary"
-        >
-          Sign out
-        </button>
-      </header>
-
+    <>
       <nav className="flex gap-2">
         {TABS.map((tab) => (
           <button
@@ -167,7 +125,7 @@ export default function AdminDashboard(): React.JSX.Element {
           </tbody>
         </table>
       </div>
-    </main>
+    </>
   );
 }
 
