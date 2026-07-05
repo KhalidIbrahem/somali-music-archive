@@ -10,6 +10,9 @@ import type { Lesson, LessonModule, LessonProgress, ModuleWithLessons } from '@s
 import type { LessonProgressInput } from '@sma/validators';
 import { asIso, asUuid } from '@/shared/brand';
 import { randomUUID } from '@/shared/crypto';
+import { useDatabase } from '@/shared/db/driver';
+import { getPrisma } from '@/shared/db/prisma';
+import { PrismaLessonRepository } from './lessons.prisma.repository';
 
 // ── Seed curriculum (ARCHITECTURE.md §7 tracks) ───────────────────────────────
 
@@ -173,6 +176,25 @@ const MODULES: readonly LessonModule[] = [
   ),
 ];
 
+// ── Authored content (not persisted; shared by both repository backends) ──────
+// Lesson content is authored, so it ships in code (§7 tracks) regardless of the
+// persistence driver — only per-user progress goes to Postgres. Exported as
+// function declarations (hoisted) so the Prisma repository can reuse them without
+// tripping the circular-import TDZ.
+
+export function listModulesContent(): LessonModule[] {
+  return [...MODULES].sort((a, b) => a.order - b.order);
+}
+
+export function getModuleContent(id: string): ModuleWithLessons | null {
+  const module = MODULES.find((m) => m.id === id);
+  return module ? { ...module, lessons: lessonsFor(id) } : null;
+}
+
+export function getLessonContent(id: string): Lesson | null {
+  return LESSONS.find((l) => l.id === id) ?? null;
+}
+
 // ── Repository ────────────────────────────────────────────────────────────────
 
 export interface LessonRepository {
@@ -193,16 +215,15 @@ export class InMemoryLessonRepository implements LessonRepository {
   private readonly progress = new Map<string, Map<string, LessonProgress>>();
 
   async listModules(): Promise<LessonModule[]> {
-    return [...MODULES].sort((a, b) => a.order - b.order);
+    return listModulesContent();
   }
 
   async getModule(id: string): Promise<ModuleWithLessons | null> {
-    const module = MODULES.find((m) => m.id === id);
-    return module ? { ...module, lessons: lessonsFor(id) } : null;
+    return getModuleContent(id);
   }
 
   async getLesson(id: string): Promise<Lesson | null> {
-    return LESSONS.find((l) => l.id === id) ?? null;
+    return getLessonContent(id);
   }
 
   async listProgress(userId: string): Promise<LessonProgress[]> {
@@ -239,4 +260,6 @@ export class InMemoryLessonRepository implements LessonRepository {
   }
 }
 
-export const lessonRepository: LessonRepository = new InMemoryLessonRepository();
+export const lessonRepository: LessonRepository = useDatabase()
+  ? new PrismaLessonRepository(getPrisma())
+  : new InMemoryLessonRepository();
