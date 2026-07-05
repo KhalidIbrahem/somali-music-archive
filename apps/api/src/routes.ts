@@ -14,6 +14,7 @@ import { lessonsRouter } from '@/modules/lessons/lessons.routes';
 import { searchRouter } from '@/modules/search/search.routes';
 import { subscriptionsRouter } from '@/modules/subscriptions/subscriptions.routes';
 import { notificationsRouter } from '@/modules/notifications/notifications.routes';
+import { researchRouter } from '@/modules/research/research.routes';
 import { internalRouter } from '@/modules/internal/internal.routes';
 
 export const apiV1Router: Router = Router();
@@ -25,5 +26,6 @@ apiV1Router.use('/lessons', lessonsRouter);
 apiV1Router.use('/search', searchRouter);
 apiV1Router.use('/subscriptions', subscriptionsRouter);
 apiV1Router.use('/notifications', notificationsRouter);
+apiV1Router.use('/research', researchRouter);
 // Service-to-service only (AI pipeline callbacks) — internal-key auth, not JWT.
 apiV1Router.use('/internal', internalRouter);

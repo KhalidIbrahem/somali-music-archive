@@ -15,3 +15,4 @@ export * from './lesson';
 export * from './subscription';
 export * from './notification';
 export * from './ai';
+export * from './research';
