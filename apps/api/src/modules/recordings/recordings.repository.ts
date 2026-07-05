@@ -90,6 +90,9 @@ export interface RecordingRepository {
     metadata: RecordingCompleteMetadata,
   ): Promise<PublicRecording | null>;
   findById(id: string): Promise<PublicRecording | null>;
+  /** Batch fetch by id — one query instead of N, for hydrating search/similar/
+   * collection results (SESSION P4-07). Order is not guaranteed; callers re-order. */
+  findByIds(ids: readonly string[]): Promise<PublicRecording[]>;
   list(query: RecordingQueryInput): Promise<Paginated<PublicRecording>>;
   /** Admin moderation queue — includes drafts/review, optionally status-filtered. */
   listForModeration(query: ModerationQueryInput): Promise<Paginated<PublicRecording>>;
@@ -215,6 +218,15 @@ export class InMemoryRecordingRepository implements RecordingRepository {
   async findById(id: string): Promise<PublicRecording | null> {
     const doc = this.resolve(id);
     return doc && !doc.deletedAt ? toPublicRecording(doc) : null;
+  }
+
+  async findByIds(ids: readonly string[]): Promise<PublicRecording[]> {
+    const out: PublicRecording[] = [];
+    for (const id of ids) {
+      const doc = this.resolve(id);
+      if (doc && !doc.deletedAt) out.push(toPublicRecording(doc));
+    }
+    return out;
   }
 
   async list(query: RecordingQueryInput): Promise<Paginated<PublicRecording>> {

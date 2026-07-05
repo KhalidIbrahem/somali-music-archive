@@ -23,7 +23,12 @@ import {
   type EmbeddingRepository,
 } from '@/modules/internal/embeddings.repository';
 import { searchIndex, toSearchDocument, type SearchIndex } from '@/modules/search/searchIndex';
+import { TtlCache } from '@/shared/cache/ttlCache';
 import { recordingRepository, type RecordingRepository } from './recordings.repository';
+
+/** Public archive feed cache TTL — the listing changes only on moderation, which
+ * clears the cache, so this just bounds staleness from any other path (§14 scale). */
+const LIST_CACHE_TTL_MS = 60_000;
 
 const CONTENT_TYPE_FORMAT: Record<string, AudioFormat> = {
   'audio/wav': 'wav',
@@ -57,6 +62,9 @@ export interface RecordingsServiceDeps {
 export function createRecordingsService(deps: RecordingsServiceDeps) {
   const { repo, storage, queue, embeddings, search } = deps;
 
+  // Per-instance cache for the hot public archive feed; invalidated on moderation.
+  const listCache = new TtlCache<Paginated<PublicRecording>>({ ttlMs: LIST_CACHE_TTL_MS });
+
   async function createUploadUrl(input: UploadUrlRequestInput): Promise<PresignedUploadResult> {
     const presigned = await storage.generateUploadUrl(input.contentType);
     const format = CONTENT_TYPE_FORMAT[input.contentType] ?? 'wav';
@@ -88,7 +96,16 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
   }
 
   async function listRecordings(query: RecordingQueryInput): Promise<Paginated<PublicRecording>> {
-    return repo.list(query);
+    // Cache by the full query so every filter/page combination stays consistent.
+    const key = [
+      query.page,
+      query.limit,
+      query.genre ?? '',
+      query.region ?? '',
+      query.era ?? '',
+      query.artistId ?? '',
+    ].join('|');
+    return listCache.getOrCompute(key, () => repo.list(query));
   }
 
   async function getRecording(id: string): Promise<PublicRecording> {
@@ -113,10 +130,16 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
     // Embeddings are keyed by the ObjectId the AI callback used, not the human id.
     const hits = await embeddings.findSimilar(recording._id, limit * 3);
 
+    // Batch-hydrate the neighbours in ONE query (was N+1 findById calls), then
+    // restore similarity order — findByIds does not guarantee order — keeping only
+    // published, non-self rows so unreviewed material never leaks through (§12).
+    const byId = new Map(
+      (await repo.findByIds(hits.map((h) => h.recordingId))).map((r) => [String(r._id), r]),
+    );
     const similar: PublicRecording[] = [];
     for (const hit of hits) {
       if (similar.length >= limit) break;
-      const candidate = await repo.findById(hit.recordingId);
+      const candidate = byId.get(String(hit.recordingId));
       if (candidate && candidate.status === 'published' && candidate._id !== recording._id) {
         similar.push(candidate);
       }
@@ -142,6 +165,10 @@ export function createRecordingsService(deps: RecordingsServiceDeps) {
   ): Promise<PublicRecording> {
     const updated = await repo.updateModeration(id, patch);
     if (!updated) throw notFound('RECORDING_NOT_FOUND', 'Recording not found');
+
+    // A status/visibility change can add or remove a recording from the public
+    // archive feed, so drop the cached listings.
+    listCache.clear();
 
     if (updated.status === 'published') {
       await search.index(toSearchDocument(updated));
