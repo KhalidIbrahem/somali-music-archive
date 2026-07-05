@@ -80,21 +80,21 @@ const recordingSchema = new Schema<RecordingFields>(
     duration: { type: Number, default: 0 },
     fileSize: { type: Number, default: 0 },
     title: { somali: { type: String, default: '' } },
-    artistId: { type: String, default: '' },
+    artistId: { type: String, default: '', index: true },
     artistName: { type: String, default: '' },
     poetName: { type: String, default: null },
     genre: { type: String, default: 'other', index: true },
     occasion: { type: String, default: null },
     region: { type: String, default: null, index: true },
-    era: { type: String, default: null },
+    era: { type: String, default: null, index: true },
     instruments: { type: [String], default: [] },
     language: { type: String, default: 'so' },
     fieldNotes: { type: String, default: null },
     aiStatus: { type: String, default: 'pending' },
     ai: { type: aiSchema, default: () => ({}) },
     aiProcessedAt: { type: Date, default: null },
-    // Only published recordings are public; the index serves the archive + moderation.
-    status: { type: String, default: 'draft', index: true },
+    // Only published recordings are public; served by the compound index below.
+    status: { type: String, default: 'draft' },
     visibility: { type: String, default: 'private' },
     license: { type: String, default: 'all-rights-reserved' },
     playCount: { type: Number, default: 0 },
@@ -104,6 +104,13 @@ const recordingSchema = new Schema<RecordingFields>(
   },
   { timestamps: true, collection: 'recordings' },
 );
+
+// The archive feed and moderation queue both filter by status and sort newest-first;
+// this compound index serves the equality + sort in a single pass, so the hot list
+// query no longer does an in-memory sort as the collection grows (P4-07). It also
+// covers status-only equality lookups as its prefix. The standalone genre/region/
+// era/artistId indexes cover the optional list filters.
+recordingSchema.index({ status: 1, createdAt: -1 });
 
 /** Reuse the compiled model across hot reloads / repeated imports. */
 export const RecordingModel: Model<RecordingFields> =
