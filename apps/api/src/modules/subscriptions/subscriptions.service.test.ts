@@ -51,6 +51,18 @@ describe('getPlans / getStatus', () => {
   });
 });
 
+describe('institutional seat entitlement (P4-02)', () => {
+  it('overrides the effective plan to institutional for an active seat holder', async () => {
+    const svc = createSubscriptionsService({
+      repo: new InMemorySubscriptionRepository(),
+      gateway: new FakeStripeGateway(),
+      hasInstitutionalSeat: async (userId) => userId === 'seated',
+    });
+    expect((await svc.getStatus('seated')).plan).toBe('institutional');
+    expect((await svc.getStatus('other')).plan).toBe('free');
+  });
+});
+
 describe('createCheckout', () => {
   it('returns a checkout URL carrying the price and user reference', async () => {
     const { checkoutUrl } = await service.createCheckout('u1', { plan: 'premium' });

@@ -15,4 +15,5 @@ export * from './user';
 export * from './subscription';
 export * from './lesson';
 export * from './research';
+export * from './organization';
 export * from './api';

@@ -40,6 +40,12 @@ enum VerificationPurpose {
   password_reset
 }
 
+enum OrganizationStatus {
+  active
+  suspended
+  expired
+}
+
 model User {
   id              String    @id @default(uuid()) @db.Uuid
   email           String    @unique
@@ -65,6 +71,8 @@ model User {
   savedRecordings    SavedRecording[]
   playHistory        PlayHistory[]
   apiKeys            ApiKey[]
+  ownedOrganizations Organization[]         @relation("OrgOwner")
+  organizationMember OrganizationMember?
 
   @@map("users")
 }
@@ -180,4 +188,36 @@ model ApiKey {
 
   @@index([userId])
   @@map("api_keys")
+}
+
+// Institutional license: a seat-limited org whose members get institutional-tier
+// entitlement (ARCHITECTURE.md §16 Phase 4, SESSION P4-02).
+model Organization {
+  id         String             @id @default(uuid()) @db.Uuid
+  name       String
+  licenseKey String             @unique @map("license_key") // shareable enrolment code
+  seats      Int
+  status     OrganizationStatus @default(active)
+  ownerId    String             @map("owner_id") @db.Uuid // the admin who issued it
+  expiresAt  DateTime?          @map("expires_at") @db.Timestamptz
+  createdAt  DateTime           @default(now()) @map("created_at") @db.Timestamptz
+
+  owner   User                 @relation("OrgOwner", fields: [ownerId], references: [id])
+  members OrganizationMember[]
+
+  @@index([ownerId])
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  organizationId String   @map("organization_id") @db.Uuid
+  userId         String   @unique @map("user_id") @db.Uuid // one org per user
+  role           String   @default("member") // 'owner' | 'member'
+  joinedAt       DateTime @default(now()) @map("joined_at") @db.Timestamptz
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([organizationId, userId])
+  @@map("organization_members")
 }

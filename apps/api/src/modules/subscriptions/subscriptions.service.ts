@@ -9,6 +9,7 @@ import type { PlanOption, Subscription } from '@sma/types';
 import type { CheckoutInput } from '@sma/validators';
 import { badRequest } from '@/shared/errors/AppError';
 import { env } from '@/config/env';
+import { organizationsService } from '@/modules/organizations/organizations.service';
 import { PLAN_OPTIONS, priceIdForPlan, planForPriceId } from './plans';
 import { subscriptionRepository, type SubscriptionRepository } from './subscriptions.repository';
 import { stripeGateway, type StripeGateway, type StripeWebhookEvent } from './stripeGateway';
@@ -16,15 +17,29 @@ import { stripeGateway, type StripeGateway, type StripeWebhookEvent } from './st
 export function createSubscriptionsService(deps: {
   repo: SubscriptionRepository;
   gateway: StripeGateway;
+  /** Whether the user holds an active institutional seat (SESSION P4-02). Injected
+   * so subscriptions need not depend on the organisations module's internals. */
+  hasInstitutionalSeat?: (userId: string) => Promise<boolean>;
 }) {
   const { repo, gateway } = deps;
+  const hasInstitutionalSeat = deps.hasInstitutionalSeat ?? (async () => false);
 
   function getPlans(): readonly PlanOption[] {
     return PLAN_OPTIONS;
   }
 
+  /**
+   * The user's effective subscription. An active institutional seat (P4-02) grants
+   * institutional-tier entitlement without a personal payment, so it overrides a
+   * free/premium personal plan for entitlement purposes.
+   */
   async function getStatus(userId: string): Promise<Subscription> {
-    return repo.getForUser(userId);
+    const subscription = await repo.getForUser(userId);
+    if (subscription.plan === 'institutional') return subscription;
+    if (await hasInstitutionalSeat(userId)) {
+      return { ...subscription, plan: 'institutional' };
+    }
+    return subscription;
   }
 
   async function createCheckout(
@@ -96,4 +111,5 @@ export type SubscriptionsService = ReturnType<typeof createSubscriptionsService>
 export const subscriptionsService: SubscriptionsService = createSubscriptionsService({
   repo: subscriptionRepository,
   gateway: stripeGateway,
+  hasInstitutionalSeat: (userId) => organizationsService.hasActiveSeat(userId),
 });

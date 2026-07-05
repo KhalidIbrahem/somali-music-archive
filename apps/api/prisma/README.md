@@ -39,7 +39,8 @@ npx prisma migrate dev --name init
 ```
 
 Tables created: `users`, `verification_tokens`, `refresh_tokens`, `subscriptions`,
-`lesson_progress`, `saved_recordings`, `play_history`, `api_keys`.
+`lesson_progress`, `saved_recordings`, `play_history`, `api_keys`, `organizations`,
+`organization_members`.
 
 ## 3. Add the pgvector table (embeddings)
 
