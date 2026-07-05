@@ -73,6 +73,7 @@ model User {
   apiKeys            ApiKey[]
   ownedOrganizations Organization[]         @relation("OrgOwner")
   organizationMember OrganizationMember?
+  comments           Comment[]
 
   @@map("users")
 }
@@ -220,4 +221,22 @@ model OrganizationMember {
 
   @@id([organizationId, userId])
   @@map("organization_members")
+}
+
+// Community comments on recordings (SESSION P4-05). recordingId is a MongoDB
+// ObjectId string (no FK — recordings live in Mongo). Soft-delete only.
+model Comment {
+  id          String    @id @default(uuid()) @db.Uuid
+  recordingId String    @map("recording_id") // MongoDB ObjectId as string
+  userId      String    @map("user_id") @db.Uuid
+  authorName  String    @map("author_name") // denormalised display-name snapshot
+  body        String
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([recordingId])
+  @@index([userId])
+  @@map("comments")
 }

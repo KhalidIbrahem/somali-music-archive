@@ -17,3 +17,4 @@ export * from './notification';
 export * from './ai';
 export * from './research';
 export * from './organization';
+export * from './comment';
