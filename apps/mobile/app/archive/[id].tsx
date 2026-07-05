@@ -20,6 +20,8 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import { getRecording, getSimilarRecordings, listRecordings } from '@/services/api/recordings';
 import { getSaved, saveRecording, unsaveRecording } from '@/services/api/users';
 import { formatDuration } from '@/utils/formatters';
+import { buildPitchContour, voicedPercent } from '@/utils/pitch';
+import { PitchContour } from '@/components/audio/PitchContour';
 import { colors, radius, spacing } from '@/theme';
 
 export default function RecordingDetail(): React.JSX.Element {
@@ -105,6 +107,15 @@ export default function RecordingDetail(): React.JSX.Element {
   const similarSource = similar?.length ? similar : (genreFallback?.data ?? []);
   const similarItems = similarSource.filter((r) => r.id !== recording.id).slice(0, 6);
   const isSaved = (savedQuery.data ?? []).some((r) => r.id === recording.id);
+
+  // AI musical analysis (P3-02 pitch/scale): shown once the pipeline has produced
+  // dominant notes, a pitch track, or a voiced fraction; a placeholder while it runs.
+  const ai = recording.ai;
+  const contour = ai.pitchData ? buildPitchContour(ai.pitchData) : [];
+  const dominantNotes = ai.dominantNotes ?? [];
+  const hasAnalysis =
+    dominantNotes.length > 0 || contour.length > 1 || ai.voicedFraction !== undefined;
+  const analysisPending = ai.status === 'pending' || ai.status === 'processing';
 
   return (
     <Screen>
@@ -226,6 +237,43 @@ export default function RecordingDetail(): React.JSX.Element {
                 {recording.ai.transcriptEnglish}
               </Text>
             ) : null}
+          </Section>
+        ) : null}
+
+        {hasAnalysis ? (
+          <Section title="MUSICAL ANALYSIS">
+            {dominantNotes.length > 0 ? (
+              <View style={styles.noteRow}>
+                {dominantNotes.map((note) => (
+                  <View key={note} style={styles.noteBadge}>
+                    <Text variant="labelMedium" color="accent">
+                      {note.toUpperCase()}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            ) : null}
+
+            {contour.length > 1 ? <PitchContour points={contour} /> : null}
+
+            <View style={styles.analysisMeta}>
+              {ai.voicedFraction !== undefined ? (
+                <Text variant="bodySmall" color="secondary">
+                  {voicedPercent(ai.voicedFraction)}% voiced
+                </Text>
+              ) : null}
+              {ai.isSinging !== undefined ? (
+                <Text variant="bodySmall" color="secondary">
+                  {ai.isSinging ? 'Sung' : 'Instrumental'}
+                </Text>
+              ) : null}
+            </View>
+          </Section>
+        ) : analysisPending ? (
+          <Section title="MUSICAL ANALYSIS">
+            <Text variant="bodySmall" color="tertiary">
+              Musical analysis in progress…
+            </Text>
           </Section>
         ) : null}
 
@@ -357,6 +405,25 @@ const styles = StyleSheet.create({
   },
   para: {
     lineHeight: 22,
+  },
+  noteRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+  },
+  noteBadge: {
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: colors.amber.dim,
+    backgroundColor: colors.bg.secondary,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+  },
+  analysisMeta: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.md,
+    marginTop: spacing.xs,
   },
   similarRow: {
     gap: spacing.md,

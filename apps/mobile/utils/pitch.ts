@@ -6,7 +6,13 @@
  * cents math is the platform's research core) and is the single source of truth for
  * "how close was that note?". The detected frequency is fed in by the mic capture
  * layer, keeping this module free of any native audio dependency.
+ *
+ * It also derives the pitch-contour sparkline shown on the recording detail screen
+ * from the AI service's stored PitchPoint[] (SESSION P3-06) — normalised here so the
+ * rendering component (PitchContour) stays a thin SVG wrapper.
  */
+
+import type { PitchPoint } from '@sma/types';
 
 /**
  * Estimate the fundamental frequency (Hz) of a mono PCM window by autocorrelation.
@@ -73,4 +79,56 @@ export function pitchAccuracy(hz: number, targetHz: number): PitchAccuracy {
     accuracy: Math.round(accuracy),
     inTune: Math.abs(cents) <= 15,
   };
+}
+
+// ── Pitch-contour sparkline (SESSION P3-06) ──────────────────────────────────
+
+/** A point on the normalised contour: both axes 0–1, y=0 lowest pitch, y=1 highest. */
+export interface ContourPoint {
+  x: number;
+  y: number;
+}
+
+/** Average a series into at most `buckets` values (mean of each contiguous bucket). */
+export function downsample(values: readonly number[], buckets: number): number[] {
+  if (buckets <= 0) return [];
+  if (values.length <= buckets) return [...values];
+  const size = values.length / buckets;
+  const out: number[] = [];
+  for (let b = 0; b < buckets; b += 1) {
+    const start = Math.floor(b * size);
+    const end = Math.floor((b + 1) * size);
+    let sum = 0;
+    for (let i = start; i < end; i += 1) sum += values[i] ?? 0;
+    out.push(sum / Math.max(1, end - start));
+  }
+  return out;
+}
+
+/**
+ * Turn stored PitchPoints into a normalised contour for the sparkline. Drops
+ * silent/low-confidence frames, downsamples to keep the line legible, and scales
+ * frequency to 0–1 across the recording's own range. Returns [] when there is not
+ * enough voiced pitch to draw a line.
+ */
+export function buildPitchContour(points: readonly PitchPoint[], maxPoints = 48): ContourPoint[] {
+  const voiced = points
+    .filter((p) => p.frequencyHz > 0 && (p.confidence === undefined || p.confidence >= 0.5))
+    .map((p) => p.frequencyHz);
+  if (voiced.length < 2) return [];
+
+  const series = downsample(voiced, maxPoints);
+  const min = Math.min(...series);
+  const max = Math.max(...series);
+  const range = max - min || 1; // flat line when every frame is the same pitch
+  const lastIndex = series.length - 1;
+  return series.map((hz, i) => ({
+    x: lastIndex === 0 ? 0 : i / lastIndex,
+    y: (hz - min) / range,
+  }));
+}
+
+/** Voiced fraction (0–1) as a whole percentage for display. */
+export function voicedPercent(fraction: number): number {
+  return Math.round(Math.max(0, Math.min(1, fraction)) * 100);
 }
