@@ -17,6 +17,7 @@ import { RecordingCard } from '@/components/archive/RecordingCard';
 import { ArtistCard } from '@/components/archive/ArtistCard';
 import { listRecordings } from '@/services/api/recordings';
 import { deriveFeaturedArtists } from '@/utils/artists';
+import { useTranslation } from '@/i18n';
 import { colors, radius, spacing } from '@/theme';
 
 interface GenreFilter {
@@ -33,6 +34,7 @@ const FILTERS: readonly GenreFilter[] = [
 ];
 
 export default function Discover(): React.JSX.Element {
+  const { t } = useTranslation();
   const [genre, setGenre] = useState<Genre | null>(null);
 
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -61,13 +63,13 @@ export default function Discover(): React.JSX.Element {
         ListHeaderComponent={
           <View>
             <Text variant="displayLarge" style={styles.title}>
-              Discover
+              {t('tabs.discover')}
             </Text>
 
             {featured.length > 0 ? (
               <View style={styles.section}>
                 <Text variant="labelLarge" color="secondary" style={styles.sectionLabel}>
-                  FEATURED ARTISTS
+                  {t('discover.featuredArtists').toUpperCase()}
                 </Text>
                 <ScrollView
                   horizontal
@@ -101,7 +103,7 @@ export default function Discover(): React.JSX.Element {
                     accessibilityState={{ selected: active }}
                   >
                     <Text variant="labelLarge" color={active ? 'inverse' : 'secondary'}>
-                      {filter.label}
+                      {filter.value === null ? t('common.all') : filter.label}
                     </Text>
                   </Pressable>
                 );
@@ -109,7 +111,7 @@ export default function Discover(): React.JSX.Element {
             </ScrollView>
 
             <Text variant="labelLarge" color="secondary" style={styles.sectionLabel}>
-              RECENT RECORDINGS
+              {t('discover.recentRecordings').toUpperCase()}
             </Text>
           </View>
         }
@@ -123,19 +125,19 @@ export default function Discover(): React.JSX.Element {
         ListEmptyComponent={
           isLoading ? (
             <Text color="secondary" style={styles.pad}>
-              Loading the archive…
+              {t('discover.loading')}
             </Text>
           ) : isError ? (
             <Text color="error" style={styles.pad}>
-              Could not load recordings. Pull to retry.
+              {t('discover.loadError')}
             </Text>
           ) : (
             <View style={styles.empty}>
               <Text variant="displaySmall" style={styles.center}>
-                The archive is just beginning
+                {t('discover.emptyTitle')}
               </Text>
               <Text variant="bodyMedium" color="secondary" style={styles.center}>
-                Recordings will appear here as they are added and reviewed.
+                {t('discover.emptyBody')}
               </Text>
             </View>
           )

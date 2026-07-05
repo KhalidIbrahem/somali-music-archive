@@ -40,6 +40,28 @@ export const en = {
 
   'common.loading': 'Loading…',
   'common.retry': 'Try again',
+  'common.all': 'All',
+
+  'discover.featuredArtists': 'Featured artists',
+  'discover.recentRecordings': 'Recent recordings',
+  'discover.loading': 'Loading the archive…',
+  'discover.loadError': 'Could not load recordings. Pull to retry.',
+  'discover.emptyTitle': 'The archive is just beginning',
+  'discover.emptyBody': 'Recordings will appear here as they are added and reviewed.',
+
+  'learn.loadingModules': 'Loading modules…',
+  'learn.loadError': 'Could not load lessons. Pull to retry.',
+  'learn.continue': 'Continue',
+  'learn.track.beginner': 'Beginner',
+  'learn.track.intermediate': 'Intermediate',
+  'learn.track.advanced': 'Advanced',
+
+  'search.label': 'Find a song, artist, or genre',
+  'search.placeholder': 'e.g. Balwo, Ahmed, dhaanto…',
+  'search.hint': 'Search the archive by song, artist, genre, or era.',
+  'search.searching': 'Searching…',
+  'search.failed': 'Search failed. Please try again.',
+  'search.noResults': 'No recordings match “{query}”.',
 } as const;
 
 /** Every translatable string key. */
@@ -70,6 +92,28 @@ export const so: Partial<Record<TranslationKey, string>> = {
 
   'common.loading': 'Sugaya…',
   'common.retry': 'Isku day mar kale',
+  'common.all': 'Dhammaan',
+
+  'discover.featuredArtists': 'Fannaaniinta la soo bandhigay',
+  'discover.recentRecordings': 'Duubabka dhawaan',
+  'discover.loading': 'Waa la soo dejinayaa keydka…',
+  'discover.loadError': 'Lama soo dejin karin duubabka. Hoos u jiid.',
+  'discover.emptyTitle': 'Keydku wuu bilaabmayaa',
+  'discover.emptyBody': 'Duubabku halkan ayay ka soo muuqan doonaan marka la daro oo la eego.',
+
+  'learn.loadingModules': 'Waa la soo dejinayaa cutubyada…',
+  'learn.loadError': 'Lama soo dejin karin casharrada. Hoos u jiid.',
+  'learn.continue': 'Sii wad',
+  'learn.track.beginner': 'Bilow',
+  'learn.track.intermediate': 'Dhexe',
+  'learn.track.advanced': 'Sare',
+
+  'search.label': 'Raadi hees, fannaan, ama nooc',
+  'search.placeholder': 'tusaale: Balwo, Axmed, dhaanto…',
+  'search.hint': 'Ka raadi keydka hees, fannaan, nooc, ama xilli.',
+  'search.searching': 'Waa la raadinayaa…',
+  'search.failed': 'Raadintu way fashilantay. Fadlan isku day mar kale.',
+  'search.noResults': 'Ma jiro duub u dhigma “{query}”.',
 };
 
 /** Arabic (right-to-left). Partial — missing keys fall back to English. */
@@ -97,6 +141,28 @@ export const ar: Partial<Record<TranslationKey, string>> = {
 
   'common.loading': 'جارٍ التحميل…',
   'common.retry': 'أعد المحاولة',
+  'common.all': 'الكل',
+
+  'discover.featuredArtists': 'فنانون مميزون',
+  'discover.recentRecordings': 'تسجيلات حديثة',
+  'discover.loading': 'جارٍ تحميل الأرشيف…',
+  'discover.loadError': 'تعذّر تحميل التسجيلات. اسحب لإعادة المحاولة.',
+  'discover.emptyTitle': 'الأرشيف في بدايته',
+  'discover.emptyBody': 'ستظهر التسجيلات هنا عند إضافتها ومراجعتها.',
+
+  'learn.loadingModules': 'جارٍ تحميل الوحدات…',
+  'learn.loadError': 'تعذّر تحميل الدروس. اسحب لإعادة المحاولة.',
+  'learn.continue': 'متابعة',
+  'learn.track.beginner': 'مبتدئ',
+  'learn.track.intermediate': 'متوسط',
+  'learn.track.advanced': 'متقدّم',
+
+  'search.label': 'ابحث عن أغنية أو فنان أو نوع',
+  'search.placeholder': 'مثال: بلوو، أحمد، دهانتو…',
+  'search.hint': 'ابحث في الأرشيف حسب الأغنية أو الفنان أو النوع أو الحقبة.',
+  'search.searching': 'جارٍ البحث…',
+  'search.failed': 'فشل البحث. حاول مرة أخرى.',
+  'search.noResults': 'لا توجد تسجيلات تطابق “{query}”.',
 };
 
 export const translations: Record<AppLanguage, Partial<Record<TranslationKey, string>>> = {

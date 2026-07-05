@@ -6,6 +6,7 @@
 
 import { Text as RNText, type TextProps as RNTextProps, type TextStyle } from 'react-native';
 import { colors, typography, type TypographyVariant } from '@/theme';
+import { useIsRTL } from '@/i18n';
 
 /** Semantic text colors, mapped to the palette. */
 type TextColor =
@@ -33,6 +34,10 @@ export function Text({
   style,
   ...rest
 }: TextProps): React.JSX.Element {
+  const rtl = useIsRTL();
   const base: TextStyle = { ...typography[variant], color: COLOR_MAP[color] };
-  return <RNText style={[base, style]} {...rest} />;
+  // Arabic (RTL): reverse the writing direction and right-align by default. Both
+  // sit before `style`, so any caller override (e.g. textAlign: 'center') still wins.
+  const dir: TextStyle | null = rtl ? { writingDirection: 'rtl', textAlign: 'right' } : null;
+  return <RNText style={[base, dir, style]} {...rest} />;
 }

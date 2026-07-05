@@ -17,6 +17,7 @@ import { Screen, Text, Input } from '@/components/ui';
 import { RecordingCard } from '@/components/archive/RecordingCard';
 import { searchRecordings } from '@/services/api/search';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useTranslation } from '@/i18n';
 import { colors, radius, spacing } from '@/theme';
 
 interface GenreFilter {
@@ -34,6 +35,7 @@ const FILTERS: readonly GenreFilter[] = [
 ];
 
 export default function Search(): React.JSX.Element {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [genre, setGenre] = useState<Genre | null>(null);
   const debounced = useDebouncedValue(query.trim(), 300);
@@ -57,13 +59,13 @@ export default function Search(): React.JSX.Element {
     <Screen padded={false}>
       <View style={styles.header}>
         <Text variant="displayLarge" style={styles.title}>
-          Search
+          {t('tabs.search')}
         </Text>
         <Input
-          label="Find a song, artist, or genre"
+          label={t('search.label')}
           value={query}
           onChangeText={setQuery}
-          placeholder="e.g. Balwo, Ahmed, dhaanto…"
+          placeholder={t('search.placeholder')}
           autoCapitalize="none"
           autoCorrect={false}
           returnKeyType="search"
@@ -80,7 +82,7 @@ export default function Search(): React.JSX.Element {
                 accessibilityState={{ selected: isActive }}
               >
                 <Text variant="labelMedium" color={isActive ? 'inverse' : 'secondary'}>
-                  {filter.label}
+                  {filter.value === null ? t('common.all') : filter.label}
                 </Text>
               </Pressable>
             );
@@ -104,19 +106,21 @@ export default function Search(): React.JSX.Element {
         ListEmptyComponent={
           !active ? (
             <Text color="secondary" style={styles.state}>
-              Search the archive by song, artist, genre, or era.
+              {t('search.hint')}
             </Text>
           ) : isLoading ? (
             <Text color="secondary" style={styles.state}>
-              Searching…
+              {t('search.searching')}
             </Text>
           ) : isError ? (
             <Text color="error" style={styles.state}>
-              Search failed. Please try again.
+              {t('search.failed')}
             </Text>
           ) : (
             <Text color="secondary" style={styles.state}>
-              No recordings match “{debounced || FILTERS.find((f) => f.value === genre)?.label}”.
+              {t('search.noResults', {
+                query: debounced || (FILTERS.find((f) => f.value === genre)?.label ?? ''),
+              })}
             </Text>
           )
         }
