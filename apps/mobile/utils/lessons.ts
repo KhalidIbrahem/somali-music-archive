@@ -3,7 +3,7 @@
  * progress, and group modules by track. Kept dependency-free and unit-tested.
  */
 
-import type { LessonModule, LessonProgress, LessonTrack } from '@sma/types';
+import type { LessonBlock, LessonModule, LessonProgress, LessonTrack } from '@sma/types';
 
 export interface ModuleProgress {
   completed: number;
@@ -53,4 +53,29 @@ export function groupModulesByTrack(
     track,
     modules: modules.filter((m) => m.track === track).sort((a, b) => a.order - b.order),
   })).filter((group) => group.modules.length > 0);
+}
+
+// ── Interactive quiz block (SESSION P4-04) ───────────────────────────────────
+
+type QuizBlock = Extract<LessonBlock, { kind: 'quiz' }>;
+
+/** Whether the chosen option is the correct one. */
+export function isQuizCorrect(quiz: QuizBlock, selectedIndex: number): boolean {
+  return selectedIndex === quiz.answerIndex;
+}
+
+/** Per-option display state once an answer is chosen (drives the option colour). */
+export type QuizOptionState = 'idle' | 'correct' | 'incorrect';
+
+export function quizOptionState(
+  quiz: QuizBlock,
+  selectedIndex: number | null,
+  optionIndex: number,
+): QuizOptionState {
+  if (selectedIndex === null) return 'idle';
+  // Once answered, always reveal the correct option…
+  if (optionIndex === quiz.answerIndex) return 'correct';
+  // …and mark the wrong one the learner actually picked.
+  if (optionIndex === selectedIndex) return 'incorrect';
+  return 'idle';
 }

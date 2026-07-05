@@ -1,5 +1,11 @@
-import { computeModuleProgress, inProgressModules, groupModulesByTrack } from './lessons';
-import type { LessonModule, LessonProgress } from '@sma/types';
+import {
+  computeModuleProgress,
+  inProgressModules,
+  groupModulesByTrack,
+  isQuizCorrect,
+  quizOptionState,
+} from './lessons';
+import type { LessonBlock, LessonModule, LessonProgress } from '@sma/types';
 
 const mod = (
   id: string,
@@ -53,5 +59,40 @@ describe('groupModulesByTrack', () => {
       mod('beg', 'beginner', ['y']),
     ]);
     expect(groups.map((g) => g.track)).toEqual(['beginner', 'advanced']);
+  });
+});
+
+// ── Quiz block (SESSION P4-04) ───────────────────────────────────────────────
+
+const quiz: Extract<LessonBlock, { kind: 'quiz' }> = {
+  kind: 'quiz',
+  prompt: 'How many notes are in the Somali pentatonic scale?',
+  options: ['Four', 'Five', 'Seven'],
+  answerIndex: 1,
+};
+
+describe('isQuizCorrect', () => {
+  it('is true only for the answer index', () => {
+    expect(isQuizCorrect(quiz, 1)).toBe(true);
+    expect(isQuizCorrect(quiz, 0)).toBe(false);
+    expect(isQuizCorrect(quiz, 2)).toBe(false);
+  });
+});
+
+describe('quizOptionState', () => {
+  it('is idle for every option before an answer', () => {
+    expect(quizOptionState(quiz, null, 0)).toBe('idle');
+    expect(quizOptionState(quiz, null, 1)).toBe('idle');
+  });
+
+  it('reveals the correct answer and marks the wrong pick', () => {
+    // Picked option 0 (wrong): 0 is incorrect, 1 is revealed correct, 2 stays idle.
+    expect(quizOptionState(quiz, 0, 0)).toBe('incorrect');
+    expect(quizOptionState(quiz, 0, 1)).toBe('correct');
+    expect(quizOptionState(quiz, 0, 2)).toBe('idle');
+  });
+
+  it('marks the correct pick correct', () => {
+    expect(quizOptionState(quiz, 1, 1)).toBe('correct');
   });
 });
