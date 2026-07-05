@@ -74,6 +74,7 @@ model User {
   ownedOrganizations Organization[]         @relation("OrgOwner")
   organizationMember OrganizationMember?
   comments           Comment[]
+  collections        Collection[]
 
   @@map("users")
 }
@@ -239,4 +240,32 @@ model Comment {
   @@index([recordingId])
   @@index([userId])
   @@map("comments")
+}
+
+// User-curated collections of recordings (SESSION P4-05). Items reference Mongo
+// ObjectId strings (no FK). Deleting a collection cascades its items.
+model Collection {
+  id          String   @id @default(uuid()) @db.Uuid
+  ownerId     String   @map("owner_id") @db.Uuid
+  name        String
+  description String?
+  isPublic    Boolean  @default(false) @map("is_public")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  owner User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  items CollectionItem[]
+
+  @@index([ownerId])
+  @@map("collections")
+}
+
+model CollectionItem {
+  collectionId String   @map("collection_id") @db.Uuid
+  recordingId  String   @map("recording_id") // MongoDB ObjectId as string
+  addedAt      DateTime @default(now()) @map("added_at") @db.Timestamptz
+
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  @@id([collectionId, recordingId])
+  @@map("collection_items")
 }

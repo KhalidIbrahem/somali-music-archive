@@ -17,4 +17,5 @@ export * from './lesson';
 export * from './research';
 export * from './organization';
 export * from './comment';
+export * from './collection';
 export * from './api';
