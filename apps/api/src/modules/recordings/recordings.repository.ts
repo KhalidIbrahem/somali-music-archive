@@ -29,6 +29,8 @@ import type {
 } from '@sma/validators';
 import { asIso, asObjectId } from '@/shared/brand';
 import { sha256Hex } from '@/shared/crypto';
+import { useDatabase } from '@/shared/db/driver';
+import { MongoRecordingRepository } from './recordings.mongo.repository';
 
 export interface RecordingDoc {
   id: string; // 24-hex ObjectId
@@ -310,4 +312,12 @@ export class InMemoryRecordingRepository implements RecordingRepository {
   }
 }
 
-export const recordingRepository: RecordingRepository = new InMemoryRecordingRepository();
+/**
+ * Process-wide repository: MongoDB/Mongoose when PERSISTENCE=database, else the
+ * in-memory implementation (tests + local dev without a database, and the dev-store
+ * seed which relies on the InMemory snapshot/hydrate methods). Both satisfy
+ * `RecordingRepository` (ADR-0005).
+ */
+export const recordingRepository: RecordingRepository = useDatabase()
+  ? new MongoRecordingRepository()
+  : new InMemoryRecordingRepository();
