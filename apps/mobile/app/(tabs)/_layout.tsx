@@ -10,12 +10,14 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography } from '@/theme';
 import { useAuthStore } from '@/stores/authStore';
+import { useTranslation } from '@/i18n';
 
 type IoniconName = React.ComponentProps<typeof Ionicons>['name'];
 
 export default function TabsLayout(): React.JSX.Element {
   const role = useAuthStore((s) => s.user?.role ?? 'listener');
   const canRecord = role === 'contributor' || role === 'admin';
+  const { t } = useTranslation();
 
   const icon =
     (name: IoniconName) =>
@@ -38,20 +40,20 @@ export default function TabsLayout(): React.JSX.Element {
     >
       <Tabs.Screen
         name="discover"
-        options={{ title: 'Discover', tabBarIcon: icon('compass-outline') }}
+        options={{ title: t('tabs.discover'), tabBarIcon: icon('compass-outline') }}
       />
       <Tabs.Screen
         name="learn"
-        options={{ title: 'Learn', tabBarIcon: icon('school-outline') }}
+        options={{ title: t('tabs.learn'), tabBarIcon: icon('school-outline') }}
       />
       <Tabs.Screen
         name="search"
-        options={{ title: 'Search', tabBarIcon: icon('search-outline') }}
+        options={{ title: t('tabs.search'), tabBarIcon: icon('search-outline') }}
       />
       <Tabs.Screen
         name="record"
         options={{
-          title: 'Record',
+          title: t('tabs.record'),
           tabBarIcon: icon('mic-outline'),
           // Hide entirely for non-contributors; the route still exists but is
           // unreachable from the tab bar.
@@ -60,7 +62,7 @@ export default function TabsLayout(): React.JSX.Element {
       />
       <Tabs.Screen
         name="profile"
-        options={{ title: 'Profile', tabBarIcon: icon('person-outline') }}
+        options={{ title: t('tabs.profile'), tabBarIcon: icon('person-outline') }}
       />
     </Tabs>
   );

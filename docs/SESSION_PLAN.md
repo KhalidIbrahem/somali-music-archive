@@ -451,6 +451,20 @@ SESSION P3-08: ISMIR paper draft (give Fable your pitch data + methodology)
 
 ---
 
+## PHASE 4 SESSIONS (scale + revenue)
+
+SESSION P4-01: Multi-language UI foundation (i18n: so/ar/en, driven by the stored
+               language preference; Arabic RTL awareness) — DONE
+SESSION P4-02: Institutional license system (organisations, seats, license keys)
+SESSION P4-03: Admin dashboard — full content management (extend the web admin)
+SESSION P4-04: Advanced lesson modules (richer block types, media)
+SESSION P4-05: Community features (comments, collections)
+SESSION P4-06: Multi-language UI completion (translate all screens + RTL layout polish)
+SESSION P4-07: Performance optimisation for scale (indexes, caching, pagination)
+SESSION P4-08: Grant applications + first university partnership (non-code)
+
+---
+
 ## TOKEN BUDGET GUIDE
 
 Session type          | Estimated tokens | Estimated cost

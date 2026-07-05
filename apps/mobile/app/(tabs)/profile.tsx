@@ -19,6 +19,7 @@ import { getSubscriptionStatus } from '@/services/api/subscriptions';
 import { sendTestNotification } from '@/services/api/notifications';
 import { audioCache } from '@/services/audio/cache';
 import { formatFileSize } from '@/utils/formatters';
+import { useTranslation } from '@/i18n';
 import { colors, radius, spacing } from '@/theme';
 
 function initials(name: string): string {
@@ -36,6 +37,7 @@ export default function Profile(): React.JSX.Element {
   const updateUser = useAuthStore((s) => s.updateUser);
   const settings = useSettingsStore();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const savedQuery = useQuery({ queryKey: ['saved'], queryFn: getSaved });
   const progressQuery = useQuery({ queryKey: ['lesson-progress'], queryFn: getMyProgress });
@@ -74,7 +76,7 @@ export default function Profile(): React.JSX.Element {
     <Screen padded={false}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text variant="displayLarge" style={styles.title}>
-          Profile
+          {t('profile.title')}
         </Text>
 
         {/* Identity */}
@@ -86,7 +88,7 @@ export default function Profile(): React.JSX.Element {
           </View>
           <View style={styles.identityText}>
             <Text variant="displaySmall" numberOfLines={1}>
-              {user?.displayName ?? 'Guest'}
+              {user?.displayName ?? t('profile.guest')}
             </Text>
             <Text variant="bodySmall" color="secondary" numberOfLines={1}>
               {user?.email ?? ''}
@@ -105,14 +107,14 @@ export default function Profile(): React.JSX.Element {
         <View style={styles.stats}>
           <Link href="/saved" asChild>
             <Pressable style={styles.flex}>
-              <Stat value={savedCount} label="Saved" />
+              <Stat value={savedCount} label={t('profile.saved')} />
             </Pressable>
           </Link>
-          <Stat value={lessonsCompleted} label="Lessons done" />
+          <Stat value={lessonsCompleted} label={t('profile.lessonsDone')} />
         </View>
 
-        {/* Language (server-synced) */}
-        <Section title="LANGUAGE">
+        {/* Language — sets the server-synced preference AND the UI language (P4-01). */}
+        <Section title={t('profile.section.language')}>
           <View style={styles.langRow}>
             {UI_LANGUAGES.map((code) => {
               const active = user?.language === code;
@@ -135,7 +137,7 @@ export default function Profile(): React.JSX.Element {
         </Section>
 
         {/* Playback quality */}
-        <Section title="PLAYBACK QUALITY">
+        <Section title={t('profile.section.playbackQuality')}>
           <View style={styles.langRow}>
             {(['standard', 'high'] as PlaybackQuality[]).map((q) => {
               const active = settings.playbackQuality === q;
@@ -148,7 +150,7 @@ export default function Profile(): React.JSX.Element {
                   accessibilityState={{ selected: active }}
                 >
                   <Text variant="bodyMedium" color={active ? 'inverse' : 'primary'}>
-                    {q === 'high' ? 'High' : 'Standard'}
+                    {q === 'high' ? t('profile.playback.high') : t('profile.playback.standard')}
                   </Text>
                 </Pressable>
               );
@@ -159,12 +161,12 @@ export default function Profile(): React.JSX.Element {
         {/* Toggles */}
         <Card style={styles.toggles}>
           <ToggleRow
-            label="Offline downloads"
+            label={t('profile.offlineDownloads')}
             value={settings.offlineDownloads}
             onValueChange={settings.setOfflineDownloads}
           />
           <ToggleRow
-            label="Notifications"
+            label={t('profile.notifications')}
             value={settings.notifications}
             onValueChange={settings.setNotifications}
           />
@@ -172,7 +174,11 @@ export default function Profile(): React.JSX.Element {
 
         {settings.notifications ? (
           <Button
-            label={testPush.isSuccess ? 'Test notification sent' : 'Send test notification'}
+            label={
+              testPush.isSuccess
+                ? t('profile.testNotificationSent')
+                : t('profile.sendTestNotification')
+            }
             variant="ghost"
             onPress={() => testPush.mutate()}
             loading={testPush.isPending}
@@ -181,14 +187,16 @@ export default function Profile(): React.JSX.Element {
 
         {(downloadsSizeQuery.data ?? 0) > 0 ? (
           <Button
-            label={`Clear downloads (${formatFileSize(downloadsSizeQuery.data ?? 0)})`}
+            label={t('profile.clearDownloads', {
+              size: formatFileSize(downloadsSizeQuery.data ?? 0),
+            })}
             variant="ghost"
             onPress={() => clearDownloads.mutate()}
             loading={clearDownloads.isPending}
           />
         ) : null}
 
-        <Button label="Sign out" variant="secondary" onPress={onLogout} />
+        <Button label={t('profile.signOut')} variant="secondary" onPress={onLogout} />
       </ScrollView>
     </Screen>
   );
