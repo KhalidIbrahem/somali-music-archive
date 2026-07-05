@@ -24,3 +24,10 @@ export function useTranslation(): {
   );
   return { t, language, isRTL: isRTL(language) };
 }
+
+/** Just the text direction of the active language — a light hook for primitives
+ * (e.g. the Text component) that don't need the translator. */
+export function useIsRTL(): boolean {
+  const language = (useAuthStore((s) => s.user?.language) ?? 'en') as AppLanguage;
+  return isRTL(language);
+}

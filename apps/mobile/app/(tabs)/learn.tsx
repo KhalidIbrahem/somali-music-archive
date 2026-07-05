@@ -14,15 +14,12 @@ import type { LessonModule } from '@sma/types';
 import { Screen, Text } from '@/components/ui';
 import { ModuleCard } from '@/components/learn/ModuleCard';
 import { getModules, getMyProgress } from '@/services/api/lessons';
-import {
-  computeModuleProgress,
-  groupModulesByTrack,
-  inProgressModules,
-  TRACK_LABELS,
-} from '@/utils/lessons';
+import { computeModuleProgress, groupModulesByTrack, inProgressModules } from '@/utils/lessons';
+import { useTranslation } from '@/i18n';
 import { spacing } from '@/theme';
 
 export default function Learn(): React.JSX.Element {
+  const { t } = useTranslation();
   const modulesQuery = useQuery({ queryKey: ['lesson-modules'], queryFn: getModules });
   const progressQuery = useQuery({ queryKey: ['lesson-progress'], queryFn: getMyProgress });
 
@@ -47,19 +44,19 @@ export default function Learn(): React.JSX.Element {
     <Screen padded={false}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <Text variant="displayLarge" style={styles.title}>
-          Learn
+          {t('tabs.learn')}
         </Text>
 
         {modulesQuery.isLoading ? (
-          <Text color="secondary">Loading modules…</Text>
+          <Text color="secondary">{t('learn.loadingModules')}</Text>
         ) : modulesQuery.isError ? (
-          <Text color="error">Could not load lessons. Pull to retry.</Text>
+          <Text color="error">{t('learn.loadError')}</Text>
         ) : (
           <>
             {continueModules.length > 0 ? (
               <View style={styles.section}>
                 <Text variant="labelLarge" color="secondary" style={styles.sectionLabel}>
-                  CONTINUE
+                  {t('learn.continue').toUpperCase()}
                 </Text>
                 {continueModules.map(renderModule)}
               </View>
@@ -68,7 +65,7 @@ export default function Learn(): React.JSX.Element {
             {groups.map((group) => (
               <View key={group.track} style={styles.section}>
                 <Text variant="labelLarge" color="secondary" style={styles.sectionLabel}>
-                  {TRACK_LABELS[group.track].toUpperCase()}
+                  {t(`learn.track.${group.track}`).toUpperCase()}
                 </Text>
                 {group.modules.map(renderModule)}
               </View>

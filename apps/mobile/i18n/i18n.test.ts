@@ -3,6 +3,7 @@
  */
 
 import { translate, isRTL } from './i18n';
+import { translations } from './translations';
 
 describe('translate', () => {
   it('returns the string in the requested language', () => {
@@ -38,5 +39,23 @@ describe('isRTL', () => {
     expect(isRTL('ar')).toBe(true);
     expect(isRTL('so')).toBe(false);
     expect(isRTL('en')).toBe(false);
+  });
+});
+
+describe('translation catalogue (SESSION P4-06)', () => {
+  it('every Somali/Arabic key exists in the English base', () => {
+    const enKeys = new Set(Object.keys(translations.en));
+    for (const lang of ['so', 'ar'] as const) {
+      for (const key of Object.keys(translations[lang])) {
+        expect(enKeys.has(key)).toBe(true);
+      }
+    }
+  });
+
+  it('interpolates the search no-results key', () => {
+    expect(translate('en', 'search.noResults', { query: 'Balwo' })).toBe(
+      'No recordings match “Balwo”.',
+    );
+    expect(translate('so', 'search.noResults', { query: 'Balwo' })).toContain('Balwo');
   });
 });
