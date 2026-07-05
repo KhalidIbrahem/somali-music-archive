@@ -19,6 +19,10 @@ The repositories read `PERSISTENCE` to decide which backend to bind
 (`src/shared/db/driver.ts`). Under `NODE_ENV=test` the in-memory repositories are
 always used, so the test suite never needs a database.
 
+`npm run dev` (and `npm start`) load `apps/api/.env` automatically at boot
+(`src/config/bootstrapEnv.ts`) — no exporting variables by hand. Real shell/CI
+environment variables always take precedence over the file.
+
 ## 2. Create the Postgres schema
 
 ```bash

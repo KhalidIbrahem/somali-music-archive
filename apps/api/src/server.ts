@@ -4,6 +4,8 @@
  * before the server ever accepts a connection.
  */
 
+// Must be first: loads .env into process.env before @/config/env validates it.
+import '@/config/bootstrapEnv';
 import { createApp } from '@/app';
 import { env } from '@/config/env';
 import { logger } from '@/shared/logger';
