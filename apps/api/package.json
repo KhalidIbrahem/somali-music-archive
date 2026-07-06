@@ -16,6 +16,7 @@
     "seed": "tsx src/scripts/seed.ts",
     "promote": "tsx src/scripts/promote.ts",
     "ingest:harvard": "tsx src/scripts/ingest-harvard.ts",
+    "migrate:devstore": "tsx src/scripts/migrate-devstore.ts",
     "doctor": "tsx src/scripts/doctor.ts",
     "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
