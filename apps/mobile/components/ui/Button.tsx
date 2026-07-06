@@ -6,13 +6,7 @@
  * role/label. A `loading` state disables the button and shows a spinner.
  */
 
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  View,
-  type PressableProps,
-} from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View, type PressableProps } from 'react-native';
 import { colors, radius, spacing, MIN_TOUCH_TARGET } from '@/theme';
 import { Text } from './Text';
 
