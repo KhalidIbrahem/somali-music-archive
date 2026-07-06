@@ -465,6 +465,37 @@ SESSION P4-08: Grant applications + first university partnership (non-code)
 
 ---
 
+## PHASE 5 SESSIONS (production cutover + launch)
+
+Everything before this ran on dev conveniences: in-memory persistence, a local
+seed store, no CI, no deploys. Phase 5 is the cutover to real infrastructure and
+the first public users. Order matters — each session gates the next.
+
+SESSION P5-01: Credential rotation + secrets hygiene (rotate the exposed
+               Supabase/Upstash/Mongo/R2/Resend/JWT secrets; fix .env Mongo
+               password + REDIS_URL format; document a rotation runbook) —
+               non-code but BLOCKS all deploys
+SESSION P5-02: Database cutover — run Prisma migrations + prisma/sql/008_pgvector.sql
+               on live Postgres, verify Mongo indexes sync on boot, run
+               PERSISTENCE=database end-to-end against staging, migrate seed
+               content out of the dev store
+SESSION P5-03: CI pipeline (GitHub Actions: typecheck + unit + db-backed
+               integration suites on every push; the embedded-DB tests from the
+               db-path coverage session run with no external services)
+SESSION P5-04: Deploy API + web (API on Railway/Render/Fly, web on Vercel;
+               health checks, env wiring, custom domain, CORS for production
+               origins)
+SESSION P5-05: Observability (Sentry on mobile + API, structured log drain,
+               uptime alerts on /health, Stripe webhook monitoring)
+SESSION P5-06: Mobile release builds — EAS production profile, TestFlight +
+               Play internal track, crash-free session baseline
+SESSION P5-07: Real content ingestion — first 50 archival recordings through
+               the full upload → AI pipeline → moderation → publish flow
+SESSION P5-08: Public beta launch (invite flow, feedback loop, App Store / Play
+               submission) — the archive goes live
+
+---
+
 ## TOKEN BUDGET GUIDE
 
 Session type          | Estimated tokens | Estimated cost
