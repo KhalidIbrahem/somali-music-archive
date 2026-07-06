@@ -6,6 +6,7 @@
  * (§7 "Record" screen, §11 Authorization) — so it is hidden for listeners.
  */
 
+import type { ColorValue } from 'react-native';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, typography } from '@/theme';
@@ -21,7 +22,7 @@ export default function TabsLayout(): React.JSX.Element {
 
   const icon =
     (name: IoniconName) =>
-    ({ color, size }: { color: string; size: number }) => (
+    ({ color, size }: { color: ColorValue; size: number }) => (
       <Ionicons name={name} color={color} size={size} />
     );
 

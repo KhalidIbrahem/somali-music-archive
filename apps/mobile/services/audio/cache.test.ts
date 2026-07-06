@@ -1,4 +1,4 @@
-jest.mock('expo-file-system', () => ({
+jest.mock('expo-file-system/legacy', () => ({
   documentDirectory: 'file:///docs/',
   getInfoAsync: jest.fn(),
   makeDirectoryAsync: jest.fn(),
@@ -7,7 +7,7 @@ jest.mock('expo-file-system', () => ({
   deleteAsync: jest.fn(),
 }));
 
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { audioCache } from './cache';
 
 const DIR = 'file:///docs/audio-cache/';

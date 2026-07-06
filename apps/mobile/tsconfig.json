@@ -7,16 +7,11 @@
     "moduleResolution": "Bundler",
     "allowJs": true,
     "noEmit": true,
-    "baseUrl": ".",
+    "types": ["jest"],
     "paths": {
       "@/*": ["./*"]
     }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-  ],
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }
