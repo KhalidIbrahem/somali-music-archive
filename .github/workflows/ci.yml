@@ -1,14 +1,18 @@
-# CI — runs on every PR and on pushes to main (ARCHITECTURE.md §13 CI/CD).
+# CI — runs on every PR and on pushes to main/master (ARCHITECTURE.md §13 CI/CD).
 # Gates: format (Prettier) → type check → unit/integration tests → build → security
 # audit for the JS/TS workspaces, plus a fast Python job for the AI service's pure
 # tests. Turborepo caches task output so unchanged workspaces are skipped.
+#
+# The API test step includes the db-backed integration suites (P5-03):
+# mongodb-memory-server + embedded-postgres run real databases in-process on the
+# runner — no service containers needed. The mongod binary download is cached.
 
 name: CI
 
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, master]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -28,6 +32,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Cache MongoDB test binaries
+        # mongodb-memory-server downloads mongod (~100MB) on first run; cache it
+        # so the integration suites don't re-download every CI run.
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binaries-${{ runner.os }}
 
       - name: Format check (Prettier)
         run: npm run format:check

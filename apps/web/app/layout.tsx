@@ -28,11 +28,7 @@ export const metadata: Metadata = {
     'The first AI-powered archive of Somali traditional music. Preserved. Taught. Shared.',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}): React.JSX.Element {
+export default function RootLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
     <html lang="en" className={`${playfair.variable} ${nunito.variable}`}>
       <body className="font-body antialiased">{children}</body>

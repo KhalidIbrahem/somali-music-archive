@@ -24,7 +24,10 @@ describe('registerSchema', () => {
   });
 
   it('rejects a user younger than the COPPA minimum age', () => {
-    const result = registerSchema.safeParse({ ...valid, dateOfBirth: dobYearsAgo(MIN_SIGNUP_AGE - 1) });
+    const result = registerSchema.safeParse({
+      ...valid,
+      dateOfBirth: dobYearsAgo(MIN_SIGNUP_AGE - 1),
+    });
     expect(result.success).toBe(false);
   });
 
