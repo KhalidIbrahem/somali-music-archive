@@ -244,7 +244,8 @@ def test_singing_recording_is_flagged_end_to_end() -> None:
 
 
 def test_result_payload_matches_storage_contract() -> None:
-    payload = transcribe_recording(make_model(), "x.wav", "so", detector=SOMALI_DETECTOR).to_payload()
+    result = transcribe_recording(make_model(), "x.wav", "so", detector=SOMALI_DETECTOR)
+    payload = result.to_payload()
     assert set(payload) == {
         "somali_text",
         "english_text",
