@@ -126,7 +126,9 @@ def extract_pitch(
     """
     frames = [
         (float(t), float(hz), float(conf))
-        for t, hz, conf in zip(times, frequencies, confidences)
+        # CREPE emits parallel arrays; strict=True turns a length drift into a
+        # loud error instead of silently truncating the analysis.
+        for t, hz, conf in zip(times, frequencies, confidences, strict=True)
     ]
     points = map_pitch_frames(frames, confidence_threshold)
     stats = note_statistics(points)
