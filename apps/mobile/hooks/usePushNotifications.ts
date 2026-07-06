@@ -14,9 +14,12 @@ import * as Notifications from 'expo-notifications';
 import { registerPushToken } from '@/services/api/notifications';
 
 // Show foreground notifications as a banner with sound (set once).
+// SDK 57: shouldShowAlert split into shouldShowBanner (heads-up) + shouldShowList
+// (notification center).
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),

@@ -2,7 +2,9 @@
  * Recording API calls (ARCHITECTURE.md §12 RECORDINGS, §8 upload flow).
  */
 
-import * as FileSystem from 'expo-file-system';
+// SDK 57: the classic callback API (uploadAsync, FileSystemUploadType) lives in
+// the `legacy` entry point; the root export is now the new class-based API.
+import * as FileSystem from 'expo-file-system/legacy';
 import type {
   ApiResponse,
   Paginated,
