@@ -10,11 +10,7 @@ export interface CardProps extends ViewProps {
   elevation?: ShadowToken;
 }
 
-export function Card({
-  elevation = 'sm',
-  style,
-  ...rest
-}: CardProps): React.JSX.Element {
+export function Card({ elevation = 'sm', style, ...rest }: CardProps): React.JSX.Element {
   return <View style={[styles.card, shadows[elevation], style]} {...rest} />;
 }
 

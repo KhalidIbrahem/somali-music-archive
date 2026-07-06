@@ -50,8 +50,7 @@ export const GENRE_DESCRIPTORS: Readonly<Record<Genre, GenreDescriptor>> = {
   qaraami: {
     id: 'qaraami',
     label: 'Qaraami',
-    description:
-      'Classic mid-century Somali love and art songs, often accompanied by oud (kaban).',
+    description: 'Classic mid-century Somali love and art songs, often accompanied by oud (kaban).',
   },
   dhaanto: {
     id: 'dhaanto',
@@ -74,12 +73,14 @@ export const GENRE_DESCRIPTORS: Readonly<Record<Genre, GenreDescriptor>> = {
   jiifto: {
     id: 'jiifto',
     label: 'Jiifto',
-    description: 'A shorter classical poetic metre, contemplative in character, traditionally chanted.',
+    description:
+      'A shorter classical poetic metre, contemplative in character, traditionally chanted.',
   },
   instrumental: {
     id: 'instrumental',
     label: 'Instrumental',
-    description: 'Purely instrumental performance with no sung text — e.g. solo oud or kaban pieces.',
+    description:
+      'Purely instrumental performance with no sung text — e.g. solo oud or kaban pieces.',
   },
   other: {
     id: 'other',

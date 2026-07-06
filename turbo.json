@@ -1,15 +1,8 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "//": "Turborepo 2.x task graph. WHY: every pipeline below runs across all workspaces with content-hash caching, so CI on a permanent 100-year project never re-does work it has already proven. 'dependsOn' with the ^ prefix means a package's task waits for the same task in its internal dependencies first (e.g. api's build waits for @sma/types to build).",
-  "globalDependencies": [
-    "tsconfig.base.json",
-    ".prettierrc",
-    ".env"
-  ],
-  "globalEnv": [
-    "NODE_ENV",
-    "CI"
-  ],
+  "globalDependencies": ["tsconfig.base.json", ".prettierrc", ".env"],
+  "globalEnv": ["NODE_ENV", "CI"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

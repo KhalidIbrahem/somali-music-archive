@@ -6,13 +6,7 @@
  */
 
 import { z } from 'zod';
-import {
-  GENRES,
-  REGIONS,
-  INSTRUMENTS,
-  CONTENT_LANGUAGES,
-  UI_LANGUAGES,
-} from '@sma/constants';
+import { GENRES, REGIONS, INSTRUMENTS, CONTENT_LANGUAGES, UI_LANGUAGES } from '@sma/constants';
 
 // ── Identifiers ───────────────────────────────────────────────────────────────
 
