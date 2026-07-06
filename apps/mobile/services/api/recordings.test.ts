@@ -7,10 +7,10 @@ import {
   type RecordingMetadata,
 } from './recordings';
 import { apiClient } from './client';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 
 jest.mock('./client', () => ({ apiClient: { post: jest.fn(), get: jest.fn() } }));
-jest.mock('expo-file-system', () => ({
+jest.mock('expo-file-system/legacy', () => ({
   uploadAsync: jest.fn(),
   FileSystemUploadType: { BINARY_CONTENT: 'BINARY_CONTENT' },
 }));

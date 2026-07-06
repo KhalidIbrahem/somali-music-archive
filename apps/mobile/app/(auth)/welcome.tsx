@@ -86,16 +86,16 @@ export default function Welcome(): React.JSX.Element {
           <StarHero size={starSize} />
           <View style={styles.tagline}>
             <Text variant="displayMedium" color="accent" style={styles.center}>
-              Muusigga Awoowayaasha
+              Xilligii Dahabiga Ahaa
             </Text>
             <Text variant="displaySmall" style={styles.center}>
-              The Music of Our Ancestors
+              The Golden Era
             </Text>
           </View>
         </Slide>
 
         {/* ── Slide 2 — waveform + pillars ───────────────────────────────── */}
-        <Slide width={width} height={height}>
+        {/* <Slide width={width} height={height}>
           <Waveform width={Math.min(width - spacing.xxl * 2, 440)} />
           <Text variant="displaySmall" color="primary" style={[styles.center, styles.slide2Text]}>
             5,000 years of Somali musical tradition. Preserved. Taught. Shared.
@@ -104,6 +104,20 @@ export default function Welcome(): React.JSX.Element {
             <Pillar icon="albums-outline" label="Archive" />
             <Pillar icon="school-outline" label="Learn" />
             <Pillar icon="compass-outline" label="Discover" />
+          </View>
+        </Slide> */}
+        <Slide width={width} height={height}>
+          <Waveform width={Math.min(width - spacing.xxl * 2, 440)} />
+
+          <Text variant="displaySmall" color="primary" style={[styles.center, styles.slide2Text]}>
+            Music of Our Ancestors
+            {'\n'}.
+          </Text>
+
+          <View style={styles.pillars}>
+            <Pillar icon="library-outline" label="Preserve" />
+            <Pillar icon="school-outline" label="Learn" />
+            <Pillar icon="musical-notes-outline" label="Create" />
           </View>
         </Slide>
 

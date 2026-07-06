@@ -7,7 +7,9 @@
  * as: "give me a local uri if we have one."
  */
 
-import * as FileSystem from 'expo-file-system';
+// SDK 57: the classic callback API (documentDirectory, getInfoAsync, …) lives in
+// the `legacy` entry point; the root export is now the new class-based API.
+import * as FileSystem from 'expo-file-system/legacy';
 
 const CACHE_DIR = FileSystem.documentDirectory
   ? `${FileSystem.documentDirectory}audio-cache/`

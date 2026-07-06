@@ -46,10 +46,12 @@
         {
           "color": "#C89B5F"
         }
-      ]
+      ],
+      "expo-sqlite",
+      "expo-status-bar"
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": false
     },
     "extra": {
       "//": "EAS project id is injected by `eas init`; left empty in source control."
