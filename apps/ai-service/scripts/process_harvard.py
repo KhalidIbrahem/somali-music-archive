@@ -78,6 +78,10 @@ CLIPPING_SAMPLE_FRACTION = 1e-4  # >0.01% full-scale samples counts as clipped
 SILENCE_FLOOR_DBFS = -50.0  # frame RMS below this is "silence" for trimming
 PITCH_CONFIDENCE_THRESHOLD = 0.80
 PITCH_STEP_MS = 10
+# Corpus sweeps analyze a centered excerpt: tuning statistics converge long
+# before a 40-minute cassette side is exhausted, and centering skips lead-in
+# announcer speech. Override per-run with SOMALI_PITCH_MAX_SEC.
+PITCH_MAX_ANALYZE_SEC = 360
 
 # Ornament classification (Phase D3). All values in cents / seconds.
 GRACE_NOTE_MAX_SEC = 0.05
@@ -750,14 +754,24 @@ def _load_inventory(config: PipelineConfig) -> Any:
 
 
 def _iter_tracks(config: PipelineConfig, limit: int | None) -> list[tuple[str, Path]]:
-    """(track_id, source_path) for every non-duplicate inventory row."""
+    """(track_id, source_path) for every non-duplicate inventory row.
+
+    SOMALI_ONLY_TRACKS (comma-separated track ids; set by the --tracks flag)
+    restricts the run — used to prioritize e.g. the date-stamped tracks that
+    feed the era analysis before grinding through the whole corpus.
+    """
+    only_env = os.environ.get("SOMALI_ONLY_TRACKS", "")
+    only = {t.strip() for t in only_env.split(",") if t.strip()} or None
     df = _load_inventory(config)
     out: list[tuple[str, Path]] = []
     for _, row in df.iterrows():
         flags = str(row.get("flags") or "")
         if "duplicate_of" in flags:
             continue
-        out.append((str(row["track_id"]), Path(str(row["source_dir"])) / str(row["filename"])))
+        track_id = str(row["track_id"])
+        if only is not None and track_id not in only:
+            continue
+        out.append((track_id, Path(str(row["source_dir"])) / str(row["filename"])))
     return out[:limit] if limit else out
 
 
@@ -1090,13 +1104,104 @@ def stage_transcribe(config: PipelineConfig, limit: int | None = None) -> None:
     gc.collect()
 
 
-def stage_pitch(config: PipelineConfig, limit: int | None = None) -> None:
-    """Phase D — CREPE pitch → Somali scale map, ornaments, per-track stats."""
+def _crepe_predict_frames(
+    samples: np.ndarray,
+) -> tuple[list[tuple[float, float, float]], str]:
+    """CREPE f0 frames (time, hz, confidence) at 10 ms, preferring torchcrepe.
+
+    torchcrepe is the same CREPE 'full' architecture and weights ported to
+    PyTorch — it runs on Apple-Silicon MPS, whereas the reference TensorFlow
+    implementation does not.
+
+    Decoder choice (documented for the paper): weighted-argmax + 3-frame
+    median smoothing, NOT Viterbi. Viterbi decoding is O(frames × 360²) on
+    CPU — minutes per cassette side, ~1× realtime end to end — and its main
+    benefit is octave continuity, which the octave-folded pitch-class
+    analysis is invariant to by construction. Confidence gating (0.80) plus
+    median smoothing handles the frame jitter that remains. The decoder is
+    recorded in every output record for reproducibility.
+    """
+    capacity = os.environ.get("SOMALI_CREPE_CAPACITY", "tiny")
+    try:
+        import torch
+        import torchcrepe
+
+        device = _select_torch_device()
+        audio = torch.from_numpy(np.ascontiguousarray(samples)).unsqueeze(0)
+        hop = int(16000 * PITCH_STEP_MS / 1000)
+        with torch.no_grad():
+            freq, periodicity = torchcrepe.predict(
+                audio,
+                16000,
+                hop_length=hop,
+                fmin=50.0,
+                fmax=1500.0,
+                model=capacity,
+                batch_size=512,
+                device=device,
+                decoder=torchcrepe.decode.weighted_argmax,
+                return_periodicity=True,
+            )
+            freq = torchcrepe.filter.median(freq, 3)
+            periodicity = torchcrepe.filter.median(periodicity, 3)
+        freq_arr = freq.squeeze(0).cpu().numpy().astype(float)
+        conf_arr = periodicity.squeeze(0).cpu().numpy().astype(float)
+        times = (np.arange(len(freq_arr)) * PITCH_STEP_MS / 1000.0).astype(float)
+        frames = list(zip(times.tolist(), freq_arr.tolist(), conf_arr.tolist(), strict=True))
+        return frames, f"torchcrepe-{capacity}/weighted_argmax+median3"
+    except ImportError:
+        pass
     try:
         import crepe
     except ImportError as exc:
-        raise SystemExit("CREPE not installed: pip install crepe tensorflow") from exc
+        raise SystemExit(
+            "no CREPE backend: pip install torchcrepe (preferred) or crepe tensorflow"
+        ) from exc
+    time_arr, freq_arr, conf_arr, _ = crepe.predict(
+        samples, 16000, model_capacity="full", viterbi=True, step_size=PITCH_STEP_MS, verbose=0
+    )
+    frames = list(
+        zip(
+            time_arr.astype(float).tolist(),
+            freq_arr.astype(float).tolist(),
+            conf_arr.astype(float).tolist(),
+            strict=True,
+        )
+    )
+    return frames, "crepe-full/viterbi"
 
+
+def _estimate_tempo_bpm(samples: np.ndarray, sample_rate: int) -> float | None:
+    """Global tempo estimate (librosa beat tracker); None when unavailable.
+
+    A single BPM for a 10+ minute cassette side is a coarse descriptor —
+    stored for the dataset record (Phase D4), not used in the tuning analysis.
+    Estimated on a 2-minute excerpt from the middle of the track: beat
+    tracking a whole cassette side costs more than the number is worth.
+    """
+    try:
+        import librosa
+
+        excerpt_len = 120 * sample_rate
+        if len(samples) > excerpt_len:
+            start = (len(samples) - excerpt_len) // 2
+            samples = samples[start : start + excerpt_len]
+        tempo = librosa.beat.beat_track(y=samples, sr=sample_rate, units="time")[0]
+        value = float(np.atleast_1d(tempo)[0])
+        return round(value, 1) if value > 0 else None
+    except Exception as exc:  # noqa: BLE001 — tempo is best-effort enrichment
+        log.debug("tempo estimation failed: %s", exc)
+        return None
+
+
+def stage_pitch(config: PipelineConfig, limit: int | None = None) -> None:
+    """Phase D — CREPE pitch → Somali scale map, ornaments, per-track stats.
+
+    Runs on the Demucs instrument stem when separation has been done, else on
+    the full mix — in that case the f0 track is the *predominant* melody of a
+    voice+oud heterophony, gated hard by confidence; the record notes which
+    source was analysed so the paper can scope its claims honestly.
+    """
     config.pitch_dir.mkdir(parents=True, exist_ok=True)
 
     def source_for(track_id: str, src: Path) -> Path:
@@ -1104,30 +1209,30 @@ def stage_pitch(config: PipelineConfig, limit: int | None = None) -> None:
         instruments = config.separated_dir / track_id / "no_vocals.wav"
         return instruments if instruments.is_file() else src
 
+    max_sec = int(os.environ.get("SOMALI_PITCH_MAX_SEC", str(PITCH_MAX_ANALYZE_SEC)))
+
     def process(track_id: str, src: Path, out: Path) -> None:
-        samples = load_audio_mono(source_for(track_id, src), sample_rate=16000)
-        time_arr, freq_arr, conf_arr, _ = crepe.predict(
-            samples,
-            16000,
-            model_capacity="full",
-            viterbi=True,
-            step_size=PITCH_STEP_MS,
-            verbose=0,
-        )
-        frames = list(
-            zip(
-                time_arr.astype(float).tolist(),
-                freq_arr.astype(float).tolist(),
-                conf_arr.astype(float).tolist(),
-                strict=True,
-            )
-        )
+        source = source_for(track_id, src)
+        samples = load_audio_mono(source, sample_rate=16000)
+        excerpt_start_sec = 0.0
+        if max_sec > 0 and len(samples) > max_sec * 16000:
+            start = (len(samples) - max_sec * 16000) // 2
+            excerpt_start_sec = round(start / 16000, 2)
+            samples = samples[start : start + max_sec * 16000]
+        frames, decoder = _crepe_predict_frames(samples)
         points = map_pitch_frames(frames, confidence_threshold=PITCH_CONFIDENCE_THRESHOLD)
         summary = aggregate_track_pitch(points)
+        summary["tempo_bpm"] = _estimate_tempo_bpm(samples, 16000)
         record = {
             "track_id": track_id,
             "scale_reference_hz": SOMALI_SCALE_HZ,
             "confidence_threshold": PITCH_CONFIDENCE_THRESHOLD,
+            "decoder": decoder,
+            "analyzed_source": "instrument_stem" if source != src else "full_mix",
+            "excerpt": {
+                "start_sec": excerpt_start_sec,
+                "analyzed_sec": round(len(samples) / 16000, 2),
+            },
             "summary": summary,
             "points": points,
         }
@@ -1203,9 +1308,12 @@ def stage_assemble(config: PipelineConfig, limit: int | None = None) -> None:
             "license": "CC BY 4.0 (catalog metadata) / research use (audio)",
             "filename": row["filename"],
             "title": None if pd.isna(row.get("title")) else row["title"],
+            # One string per attribution line — comma-splitting mangles both
+            # parenthetical romanizations and embedded dates, so we only strip
+            # a trailing recording date and keep the attribution whole.
             "artists": []
             if pd.isna(row.get("artists"))
-            else [a.strip() for a in str(row["artists"]).split(",")],
+            else [_TRAILING_DATE_RE.sub("", str(row["artists"])).strip(" ,")],
             "duration_sec": (
                 None if pd.isna(row.get("duration_sec")) else float(row["duration_sec"])
             ),
@@ -1233,6 +1341,7 @@ def stage_assemble(config: PipelineConfig, limit: int | None = None) -> None:
             summary = p.get("summary", {})
             record["dominant_notes"] = summary.get("dominant_notes")
             record["modal_center"] = summary.get("modal_center")
+            record["tempo_bpm"] = summary.get("tempo_bpm")
             record["avg_cents_deviation"] = summary.get("avg_cents_deviation")
             record["ornament_types"] = summary.get("ornaments")
             record["files"]["pitch_data"] = str(pitch_path)
@@ -1264,7 +1373,19 @@ def stage_assemble(config: PipelineConfig, limit: int | None = None) -> None:
     (config.dataset_dir / "somali_music_dataset_v1_lite.json").write_text(
         json.dumps(lite, ensure_ascii=False, indent=2)
     )
-    log.info("Assembled %d records → %s", len(records), config.dataset_dir)
+
+    # HuggingFace-format export: JSONL (datasets loads it natively) + the
+    # dataset card as README. Deliberately the `lite` view — file paths are
+    # machine-local and audio is not redistributed through HF.
+    hf_dir = config.dataset_dir / "somali_music_dataset_v1_huggingface"
+    hf_dir.mkdir(parents=True, exist_ok=True)
+    with (hf_dir / "data.jsonl").open("w") as fh:
+        for record in lite:
+            fh.write(json.dumps(record, ensure_ascii=False) + "\n")
+    card = config.data_root / "DATASET_CARD.md"
+    if card.is_file():
+        (hf_dir / "README.md").write_text(card.read_text())
+    log.info("Assembled %d records → %s (incl. HF export)", len(records), config.dataset_dir)
 
 
 STAGES: dict[str, Any] = {
@@ -1288,6 +1409,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument(
         "--limit", type=int, default=None, help="process at most N tracks (smoke runs)"
     )
+    parser.add_argument(
+        "--tracks",
+        type=str,
+        default=None,
+        help="comma-separated track ids to restrict the run to (priority subsets)",
+    )
     parser.add_argument("--data-root", type=Path, default=None, help="override the data/ tree")
     parser.add_argument(
         "--audio-dir",
@@ -1301,6 +1428,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     setup_logging(args.verbose)
+    if args.tracks:
+        os.environ["SOMALI_ONLY_TRACKS"] = args.tracks
     config = default_config()
     if args.data_root or args.audio_dir or args.catalog_csv:
         config = PipelineConfig(
