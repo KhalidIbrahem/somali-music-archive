@@ -76,15 +76,31 @@ PITCH_FRAMES_PER_SEC = 100  # CREPE at 10 ms steps
 # ---------------------------------------------------------------------------
 
 
-def assign_split(track_id: str, train_percent: int = TRAIN_SPLIT_PERCENT) -> str:
-    """Deterministic per-track split: same track always lands in the same set.
+def assign_split(split_key: str, train_percent: int = TRAIN_SPLIT_PERCENT) -> str:
+    """Deterministic split by an arbitrary grouping key.
 
     Hash-based (not random.shuffle) so the split survives corpus growth —
-    adding tracks later never migrates an old track from val into train,
+    adding tracks later never migrates an old group from val into train,
     which would quietly invalidate every previously reported number.
+
+    Callers must pass the CASSETTE key where one exists (see
+    :func:`split_key_for`): tracks dubbed onto one cassette share a tape
+    generation, deck, speed error, and noise floor — splitting them across
+    train/val leaks recording conditions and inflates reported accuracy
+    (an upheld reviewer finding; a track-level split understates leakage).
     """
-    digest = hashlib.sha1(track_id.encode("utf-8")).hexdigest()
+    digest = hashlib.sha1(split_key.encode("utf-8")).hexdigest()
     return "train" if int(digest, 16) % 100 < train_percent else "val"
+
+
+def split_key_for(track_id: str, cassette_number: float | int | None) -> str:
+    """The grouping key for train/val assignment: the cassette when known."""
+    if cassette_number is None:
+        return track_id
+    try:
+        return f"cassette_{int(cassette_number):03d}"
+    except (TypeError, ValueError):
+        return track_id
 
 
 def encode_labels(labels: Sequence[str], vocabulary: Sequence[str]) -> list[int]:
@@ -245,7 +261,9 @@ def _genre_examples(
             "path": Path(str(inv["source_dir"])) / str(inv["filename"]),
             "label_id": GENRE_LABELS.index(str(row["genre"])),
         }
-        (train if assign_split(track_id) == "train" else val).append(example)
+        cassette = None if pd.isna(inv.get("cassette_number")) else inv["cassette_number"]
+        split = assign_split(split_key_for(track_id, cassette))
+        (train if split == "train" else val).append(example)
     return train, val
 
 
@@ -253,6 +271,8 @@ def _scale_examples(
     config: PipelineConfig,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Window-level examples derived from every Phase D pitch JSON on disk."""
+    import pandas as pd
+
     train: list[dict[str, Any]] = []
     val: list[dict[str, Any]] = []
     pitch_files = sorted(config.pitch_dir.glob("*_pitch.json"))
@@ -260,6 +280,7 @@ def _scale_examples(
         raise SystemExit(
             f"no pitch data in {config.pitch_dir} — run `process_harvard pitch` first"
         )
+    inventory = pd.read_csv(config.inventory_csv).set_index("track_id")
     for pitch_path in pitch_files:
         record = json.loads(pitch_path.read_text())
         track_id = str(record["track_id"])
@@ -268,7 +289,12 @@ def _scale_examples(
         source = config.separated_dir / track_id / "no_vocals.wav"
         if not source.is_file():
             continue
-        split = assign_split(track_id)
+        cassette = None
+        if track_id in inventory.index and not pd.isna(
+            inventory.loc[track_id].get("cassette_number")
+        ):
+            cassette = inventory.loc[track_id]["cassette_number"]
+        split = assign_split(split_key_for(track_id, cassette))
         for start_sec, label in label_windows_from_points(points, duration):
             example = {
                 "track_id": track_id,

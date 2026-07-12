@@ -25,25 +25,45 @@ SOMALI_SCALE_HZ: dict[str, float] = {
 }
 
 
+def _octave_folded_cents(hz: float, reference_hz: float) -> float:
+    """Signed cents from ``reference_hz`` to ``hz`` folded to pitch class.
+
+    Result is in [-600, +600): the same note played in any octave measures the
+    same deviation. Octave equivalence is the standard convention in tuning
+    analysis (cf. makam pitch histograms) and is essential here — male vocal
+    lines and the oud's bass register sit an octave or more below the D4
+    reference table, and absolute-Hz matching would smear them onto the lowest
+    degree with meaningless deviations of hundreds of cents.
+    """
+    cents = 1200.0 * math.log2(hz / reference_hz)
+    return (cents + 600.0) % 1200.0 - 600.0
+
+
 def hz_to_somali_note(hz: float) -> tuple[str, float]:
-    """Map a frequency to the nearest Somali scale degree.
+    """Map a frequency to the nearest Somali scale degree (octave-equivalent).
 
     Returns ``(note_name, cents_deviation)`` where ``cents_deviation`` reveals
     microtonality:
-      * 0 cents      = exactly on the equal-tempered pitch,
+      * 0 cents      = exactly on the equal-tempered pitch class,
       * ±50 cents    = a quarter tone away,
       * ±100 cents   = one semitone away.
+
+    The mapping is by pitch *class*: 146.83 Hz (D3) maps to ``do`` at 0 cents,
+    same as 293.66 Hz (D4). With the pentatonic gaps of this scale the largest
+    possible deviation is ±150 cents (midpoint of a 300-cent gap).
 
     Raises ``ValueError`` for a non-positive frequency (cents are undefined there).
     """
     if hz <= 0:
         raise ValueError("frequency must be positive")
 
-    note_name, target_hz = min(
-        SOMALI_SCALE_HZ.items(),
-        key=lambda item: abs(hz - item[1]),
+    note_name, cents_deviation = min(
+        (
+            (name, _octave_folded_cents(hz, reference_hz))
+            for name, reference_hz in SOMALI_SCALE_HZ.items()
+        ),
+        key=lambda item: abs(item[1]),
     )
-    cents_deviation = 1200.0 * math.log2(hz / target_hz)
     return note_name, round(cents_deviation, 2)
 
 
