@@ -22,6 +22,12 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 # is independently runnable after a Colab disconnect (the resumability design).
 # F811 would "fix" that by deleting the re-imports and breaking cell isolation.
 "notebooks/*.ipynb" = ["F811"]
+# Batch entry points must bootstrap sys.path (so `python scripts/x.py` works
+# from anywhere) before importing the service packages; imports therefore
+# cannot sit at the very top. Same for tests gated on pytest.importorskip.
+"scripts/*.py" = ["E402"]
+"evaluation/*.py" = ["E402"]
+"tests/test_classifiers.py" = ["E402"]
 
 [tool.mypy]
 python_version = "3.11"

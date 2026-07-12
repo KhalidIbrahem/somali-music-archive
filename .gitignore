@@ -113,3 +113,14 @@ logs/
 *.log
 tmp/
 temp/
+
+# ── Harvard corpus pipeline outputs (regenerable; audio never committed) ─────
+# Curated artifacts stay tracked: data/harvard_inventory.csv, data/DATASET_CARD.md
+data/0*_*/
+data/transcripts/
+data/pitch_data/
+data/embeddings/
+data/dataset/
+data/reports/
+data/progress.json
+data/harvard_audio/

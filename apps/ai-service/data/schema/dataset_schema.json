@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://somalimusicarchive.com/schema/dataset_record.v1.json",
+  "title": "SomaliMusicCorpus master dataset record (v1)",
+  "description": "One track of the SomaliMusicCorpus-HAR-v1 dataset (Harvard AWM Spec Coll 103, Maryan 'Aryette' Omar Ali Collection, 1955-1991). Fields marked nullable are populated progressively as pipeline stages complete; a record is valid at every stage of enrichment. Produced by apps/ai-service/scripts/process_harvard.py stage `assemble`.",
+  "type": "object",
+  "required": ["track_id", "source", "license", "filename"],
+  "additionalProperties": false,
+  "properties": {
+    "track_id": {
+      "type": "string",
+      "pattern": "^(track_[0-9]{4}|AWM-HAR-[0-9]{4})$",
+      "description": "Canonical corpus id. `track_NNNN` indexes the Harvard HOLLIS catalog export row; `AWM-HAR-NNNN` is the publication alias."
+    },
+    "source": {
+      "type": "string",
+      "description": "Provenance statement, e.g. 'Harvard AWM Spec Coll 103'."
+    },
+    "license": {
+      "type": "string",
+      "description": "License statement covering catalog metadata vs audio use."
+    },
+    "filename": { "type": "string" },
+    "title": { "type": ["string", "null"] },
+    "artists": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Performer names, Somali orthography first, romanization in parentheses where the catalog provides it."
+    },
+    "duration_sec": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+    "cassette": {
+      "type": ["string", "null"],
+      "description": "Synthetic cassette grouping (cassette_NNN) derived from catalog row structure; physical call numbers are not in the export CSV."
+    },
+    "side": { "enum": ["A", "B", null] },
+    "recorded_date": {
+      "type": ["string", "null"],
+      "pattern": "^19[0-9]{2}(-[0-9]{2}-[0-9]{2})?$",
+      "description": "Recording date recovered from the catalog title, when present."
+    },
+    "era": {
+      "enum": ["1955-1965", "1966-1974", "1975-1991", null],
+      "description": "Stylistic period: early nationalist (voice+oud), golden age, late period (Western instrumentation)."
+    },
+    "genre_labeled": {
+      "enum": ["heello", "qaraami", "dhaanto", "praise_song", null],
+      "description": "Expert-assigned genre (human label; the training target)."
+    },
+    "genre_predicted": {
+      "enum": ["heello", "qaraami", "dhaanto", "praise_song", null]
+    },
+    "genre_confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "transcript_somali": { "type": ["string", "null"] },
+    "transcript_english": { "type": ["string", "null"] },
+    "transcript_confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "singing_ratio": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Duration-weighted share of Whisper segments flagged as sung. Transcripts over sung material are stored but treated as unreliable lyrics."
+    },
+    "dominant_notes": {
+      "type": ["array", "null"],
+      "items": { "enum": ["do", "re", "mi", "sol", "la"] },
+      "maxItems": 3,
+      "description": "Top scale degrees by voiced duration (Phase D4)."
+    },
+    "modal_center": {
+      "enum": ["do", "re", "mi", "sol", "la", null],
+      "description": "Duration-weighted dominant degree — a computational proxy for the tonal 'home', not an expert judgment."
+    },
+    "tempo_bpm": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+    "avg_cents_deviation": {
+      "type": ["object", "null"],
+      "description": "Mean signed deviation from the Somali scale reference per degree, in cents — the corpus-level distribution of these values is the paper's central empirical result.",
+      "propertyNames": { "enum": ["do", "re", "mi", "sol", "la"] },
+      "additionalProperties": { "type": "number", "minimum": -100, "maximum": 100 }
+    },
+    "ornament_types": {
+      "type": ["object", "null"],
+      "description": "Counts of classified note events (Phase D3 heuristics).",
+      "propertyNames": {
+        "enum": ["glissando", "vibrato", "grace_note", "straight", "other"]
+      },
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "instruments_detected": {
+      "type": ["array", "null"],
+      "items": { "type": "string" },
+      "description": "e.g. voice, oud, organ, guitar, violin, clarinet, saxophone, frame_drum."
+    },
+    "embedding_id": {
+      "type": ["string", "null"],
+      "description": "pgvector row UUID for the 768-d MERT embedding."
+    },
+    "quality": {
+      "type": ["object", "null"],
+      "description": "Phase B1 audit metrics (SNR estimate, clipping, silence).",
+      "additionalProperties": true
+    },
+    "quality_score": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "files": {
+      "type": "object",
+      "description": "Relative or absolute paths of every artifact derived from this track. Only `original` is guaranteed; the rest appear as stages complete. Excluded from the `_lite` export.",
+      "required": ["original"],
+      "properties": {
+        "original": { "type": "string" },
+        "cleaned": { "type": "string" },
+        "vocals": { "type": "string" },
+        "instruments": { "type": "string" },
+        "pitch_data": { "type": "string" },
+        "transcript": { "type": "string" },
+        "embedding": { "type": "string" }
+      },
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}
