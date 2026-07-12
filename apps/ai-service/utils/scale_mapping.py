@@ -14,10 +14,9 @@ histograms in the ISMIR analysis), where nearest-note snapping would be wrong.
 
 from __future__ import annotations
 
-import math
-
 from services.scale import (
     SOMALI_SCALE_HZ,
+    _octave_folded_cents,
     hz_to_somali_note,
     map_pitch_frames,
 )
@@ -39,6 +38,11 @@ def calculate_cents_deviation(frequency_hz: float, scale_degree: str) -> float:
     every frame must be measured against *mi*'s reference — even frames far
     enough off that nearest-note snapping would have relabelled them.
 
+    Octave-equivalent, like ``hz_to_somali_note``: the deviation is measured
+    to the nearest octave of the reference degree, in [-600, +600) cents, so
+    a bass oud note and a soprano line contribute comparably to one degree's
+    deviation distribution.
+
     Args:
         frequency_hz: Detected fundamental frequency. Must be positive.
         scale_degree: One of the keys of ``SOMALI_SCALE_HZ`` (e.g. ``"mi"``).
@@ -54,4 +58,4 @@ def calculate_cents_deviation(frequency_hz: float, scale_degree: str) -> float:
     if frequency_hz <= 0:
         raise ValueError("frequency must be positive")
     reference_hz = SOMALI_SCALE_HZ[scale_degree]
-    return round(1200.0 * math.log2(frequency_hz / reference_hz), 2)
+    return round(_octave_folded_cents(frequency_hz, reference_hz), 2)

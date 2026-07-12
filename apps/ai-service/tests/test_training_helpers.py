@@ -11,6 +11,7 @@ from scripts.train_somali_model import (
     augment_scale_waveform,
     encode_labels,
     label_windows_from_points,
+    split_key_for,
 )
 
 
@@ -21,6 +22,16 @@ def test_assign_split_is_deterministic_and_roughly_80_20() -> None:
     assert first == second  # stable across calls (and processes, by design)
     train_fraction = first.count("train") / len(first)
     assert 0.72 <= train_fraction <= 0.88  # hash noise, but near 80/20
+
+
+def test_split_key_groups_by_cassette_when_known() -> None:
+    # Two tracks on the same cassette must share a split key — a cassette
+    # shares tape generation and deck, so it must never straddle train/val.
+    assert split_key_for("track_0001", 12) == split_key_for("track_0002", 12.0)
+    assert split_key_for("track_0001", None) == "track_0001"
+    assert assign_split(split_key_for("track_0001", 12)) == assign_split(
+        split_key_for("track_0009", 12)
+    )
 
 
 def test_encode_labels_round_trip_and_typo_rejection() -> None:

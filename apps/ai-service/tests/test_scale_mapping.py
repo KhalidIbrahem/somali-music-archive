@@ -46,6 +46,25 @@ def test_fixed_degree_differs_from_nearest_note_snapping() -> None:
     assert calculate_cents_deviation(hz, "mi") == pytest.approx(200.0, abs=0.01)
 
 
+def test_octave_equivalence_bass_register_maps_cleanly() -> None:
+    # D3 (146.83 Hz) and D5 (587.33 Hz) are both "do" at ~0 cents — male vocal
+    # and oud bass registers must not smear onto the lowest degree with
+    # hundreds of cents of spurious deviation.
+    for hz in (146.83, 587.33):
+        note, cents = hz_to_somali_note(hz)
+        assert note == "do"
+        assert abs(cents) < 1.0
+    assert calculate_cents_deviation(146.83, "do") == pytest.approx(0.0, abs=1.0)
+
+
+def test_deviation_never_exceeds_widest_gap_midpoint() -> None:
+    # Pentatonic gaps are 200/200/300/200/300 cents → max |deviation| is 150.
+    rng_hz = [55.0 * math.pow(2, i / 37) for i in range(200)]  # sweep 55–2300 Hz
+    for hz in rng_hz:
+        _, cents = hz_to_somali_note(hz)
+        assert abs(cents) <= 150.0 + 1e-6
+
+
 def test_non_positive_frequency_raises() -> None:
     with pytest.raises(ValueError):
         calculate_cents_deviation(0.0, "do")
