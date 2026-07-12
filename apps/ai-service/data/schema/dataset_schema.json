@@ -72,9 +72,9 @@
     "tempo_bpm": { "type": ["number", "null"], "exclusiveMinimum": 0 },
     "avg_cents_deviation": {
       "type": ["object", "null"],
-      "description": "Mean signed deviation from the Somali scale reference per degree, in cents — the corpus-level distribution of these values is the paper's central empirical result.",
+      "description": "Mean signed octave-folded deviation from the Somali scale reference per degree, in cents — the corpus-level distribution of these values is the paper's central empirical result. Bounded by ±150 (midpoint of the scale's widest 300-cent gap); anything outside is a mapping bug.",
       "propertyNames": { "enum": ["do", "re", "mi", "sol", "la"] },
-      "additionalProperties": { "type": "number", "minimum": -100, "maximum": 100 }
+      "additionalProperties": { "type": "number", "minimum": -150, "maximum": 150 }
     },
     "ornament_types": {
       "type": ["object", "null"],
