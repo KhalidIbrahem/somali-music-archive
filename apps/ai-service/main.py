@@ -8,9 +8,10 @@ The heavy models are NOT loaded at startup — they load lazily on first use
 from __future__ import annotations
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from config import get_settings
-from routers import embed, health, pitch, transcribe
+from routers import embed, generation, health, notation, pitch, transcribe
 
 settings = get_settings()
 
@@ -20,10 +21,23 @@ app = FastAPI(
     description="Transcription, pitch extraction, and audio embeddings for the archive.",
 )
 
+# The notation endpoints are called directly from the web app in the browser.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://somali-music-archive.vercel.app",
+    ],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
+
 app.include_router(health.router)
 app.include_router(transcribe.router)
 app.include_router(pitch.router)
 app.include_router(embed.router)
+app.include_router(notation.router)
+app.include_router(generation.router)
 
 
 @app.get("/")
