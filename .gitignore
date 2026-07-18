@@ -125,3 +125,17 @@ data/reports/
 data/progress.json
 data/harvard_audio/
 data/analysis/validation_full/
+.vercel
+.env*
+
+# ── Corpus-training artifacts (Jul 2026): regenerable or too large for git ───
+# Tracked: data/manifest.csv, captions.jsonl, splits.json, eval_pcs/, transcriptions/
+data/clips/
+data/tokens/
+data/eval_gen/
+data/notation_jobs/
+data/phase*.log
+runs/*/ckpt_step_*/
+runs/*/samples/
+runs/*/samples_smoke/
+runs/smoke/

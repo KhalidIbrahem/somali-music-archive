@@ -1,0 +1,13 @@
+{
+  "file": "d8b0d93d_seg001.wav",
+  "n_notes": 88,
+  "tonic": "C",
+  "mode": 0,
+  "degrees": [0, 2, 4, 7, 9],
+  "tuning_offset_cents": 40.0,
+  "bpm": 114,
+  "snapped": 87,
+  "marked_outliers": 1,
+  "mean_confidence": 0.859,
+  "outputs": ["d8b0d93d_seg001.musicxml", "d8b0d93d_seg001.svg"]
+}
