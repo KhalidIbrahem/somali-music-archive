@@ -1,0 +1,12 @@
+{
+  "group": "real_test",
+  "clips_scored": 1076,
+  "clips_skipped_unvoiced": 0,
+  "pcs_mean": 0.8467,
+  "pcs_median": 0.853,
+  "pcs_std": 0.0932,
+  "voiced_fraction_mean": 0.53,
+  "tuning_offset_abs_median": 26.1,
+  "tonic_match_rate": 0.2388,
+  "sec_total": 3551.5
+}

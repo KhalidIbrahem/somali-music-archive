@@ -1,0 +1,12 @@
+{
+  "group": "lora1500",
+  "clips_scored": 99,
+  "clips_skipped_unvoiced": 1,
+  "pcs_mean": 0.9621,
+  "pcs_median": 0.9787,
+  "pcs_std": 0.045,
+  "voiced_fraction_mean": 0.183,
+  "tuning_offset_abs_median": 5.5,
+  "tonic_match_rate": 0.2525,
+  "sec_total": 217.3
+}

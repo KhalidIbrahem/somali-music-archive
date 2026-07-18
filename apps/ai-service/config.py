@@ -39,6 +39,14 @@ class Settings(BaseSettings):
     sentry_dsn: str = Field(default="")
     wandb_api_key: str = Field(default="")
 
+    # Track B notation pipeline: basic-pitch requires Python <=3.11, so
+    # transcription runs as a subprocess under this interpreter.
+    transcribe_python: str = Field(default="/opt/anaconda3/envs/somali311/bin/python")
+
+    # Track A generation gate: stays False until the Phase 0 license_status
+    # table (data/manifest.csv — currently all 'unknown') permits exposure.
+    generation_enabled: bool = Field(default=False)
+
     @property
     def is_production(self) -> bool:
         return self.ai_env == "production"

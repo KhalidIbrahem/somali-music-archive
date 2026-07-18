@@ -1,0 +1,13 @@
+{
+  "clips_scored": 1073,
+  "clips_skipped_lt5_notes": 3,
+  "ground_truth_f1": "NOT COMPUTABLE \u2014 no ground-truth MIDI exists for this corpus",
+  "pcs_raw_mean": 0.8983,
+  "pcs_western_mean": 0.8615,
+  "pcs_penta_mean": 0.8983,
+  "penta_snapped_pct_mean": 0.8897,
+  "penta_marked_pct_mean": 0.1103,
+  "western_altered_pct_mean": 0.7738,
+  "mean_confidence": 0.7805,
+  "sec_total": 137.5
+}

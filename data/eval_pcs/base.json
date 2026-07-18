@@ -1,0 +1,12 @@
+{
+  "group": "base",
+  "clips_scored": 87,
+  "clips_skipped_unvoiced": 13,
+  "pcs_mean": 0.8782,
+  "pcs_median": 0.9118,
+  "pcs_std": 0.1278,
+  "voiced_fraction_mean": 0.484,
+  "tuning_offset_abs_median": 6.5,
+  "tonic_match_rate": 0.2184,
+  "sec_total": 219.3
+}
