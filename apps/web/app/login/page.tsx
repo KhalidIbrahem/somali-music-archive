@@ -8,27 +8,34 @@
  * from registration (?registered=1).
  */
 
-import { useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { login, ApiError } from '@/lib/api';
 import { setToken } from '@/lib/auth';
+
+/** Shown when arriving straight from registration (?registered=1). Reads the
+ * query string via useSearchParams, so it must live under a Suspense boundary
+ * to keep the rest of the page fully static. */
+function RegisteredBanner(): React.JSX.Element | null {
+  const justRegistered = useSearchParams().get('registered') === '1';
+  if (!justRegistered) return null;
+  return (
+    <p
+      role="status"
+      className="rounded-lg border border-amber/40 bg-amber/10 px-4 py-3 text-center font-body text-sm text-amber"
+    >
+      Account created. Please sign in to continue.
+    </p>
+  );
+}
 
 export default function LoginPage(): React.JSX.Element {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [justRegistered, setJustRegistered] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-
-  // Read the ?registered=1 flag on the client (avoids the useSearchParams
-  // Suspense requirement for an otherwise fully static page).
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setJustRegistered(new URLSearchParams(window.location.search).get('registered') === '1');
-    }
-  }, []);
 
   const onSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
@@ -39,7 +46,15 @@ export default function LoginPage(): React.JSX.Element {
       setToken(accessToken);
       router.push('/');
     } catch (err) {
-      setError(err instanceof ApiError ? 'Invalid email or password.' : 'Something went wrong.');
+      // Only bad credentials get the canned line; locked/rate-limited/network
+      // errors carry actionable messages of their own.
+      if (err instanceof ApiError) {
+        setError(
+          err.code === 'AUTH_INVALID_CREDENTIALS' ? 'Invalid email or password.' : err.message,
+        );
+      } else {
+        setError('Something went wrong.');
+      }
     } finally {
       setBusy(false);
     }
@@ -55,14 +70,9 @@ export default function LoginPage(): React.JSX.Element {
           <h1 className="font-display text-4xl text-ink-primary">Welcome back</h1>
         </div>
 
-        {justRegistered ? (
-          <p
-            role="status"
-            className="rounded-lg border border-amber/40 bg-amber/10 px-4 py-3 text-center font-body text-sm text-amber"
-          >
-            Account created. Please sign in to continue.
-          </p>
-        ) : null}
+        <Suspense fallback={null}>
+          <RegisteredBanner />
+        </Suspense>
 
         <form
           onSubmit={onSubmit}

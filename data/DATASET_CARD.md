@@ -21,7 +21,7 @@ grid alignment** (invariant to key, cassette playback speed, and A440
 assumptions), and MERT-v1-95M embeddings. Records validate against
 `apps/ai-service/data/schema/dataset_schema.json`.
 
-- **Curated by:** Somali Music Preservation Foundation (Khalid Ibrahim), Minneapolis, MN
+- **Curated by:** Somali Music Preservation Foundation **(Khalid Ibrahim)**, Minneapolis, MN
 - **Source archive:** Harvard Library, Archive of World Music
 - **Languages:** Somali (`so`); English translations machine-generated
 - **Modality:** metadata + audio-derived annotations. **Audio is not part of this dataset** (see Licensing).

@@ -1,6 +1,137 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/*
+ * Tailwind v4 theme mapped to the platform design tokens (CLAUDE.md, ARCHITECTURE.md §7).
+ * These MUST stay in sync with the mobile theme in apps/mobile/theme — same hex
+ * values, same intent (oud-wood amber accent on near-black). Fonts are wired via
+ * CSS variables set by next/font in app/layout.tsx.
+ */
+@theme {
+  --color-bg-primary: #0c0b14;
+  --color-bg-secondary: #161524;
+  --color-bg-tertiary: #201e33;
+  --color-bg-inverse: #ede9dc;
+
+  --color-amber: #c89b5f;
+  --color-amber-light: #e5c48a;
+  --color-amber-dim: #7a5c2e;
+  --color-amber-subtle: #2a1f0e;
+
+  --color-blueflag: #4189d4;
+  --color-blueflag-light: #6babec;
+  --color-blueflag-dim: #1a4b82;
+
+  --color-ink-primary: #ede9dc;
+  --color-ink-secondary: #9b97b0;
+  --color-ink-tertiary: #5c5a74;
+
+  --color-line-primary: #2d2b45;
+  --color-line-secondary: #1e1d30;
+
+  --font-display: var(--font-playfair), serif;
+  --font-body: var(--font-nunito), sans-serif;
+
+  --animate-fade-up: fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-fade-in: fade-in 1.2s ease-out both;
+  --animate-glow-drift: glow-drift 14s ease-in-out infinite alternate;
+  --animate-spin-slow: spin 9s linear infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(26px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes glow-drift {
+    from {
+      transform: translate(-56%, -4%) scale(1);
+      opacity: 0.75;
+    }
+    to {
+      transform: translate(-44%, 6%) scale(1.15);
+      opacity: 1;
+    }
+  }
+}
+
+/* Scroll-reveal (components/Reveal.tsx): hidden until the IntersectionObserver
+   marks the element visible, then the fade-up curve plays with its stagger delay. */
+.reveal {
+  opacity: 0;
+}
+.reveal.is-visible {
+  animation: fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+  }
+  .reveal.is-visible {
+    animation: none;
+  }
+}
+
+/* Live equaliser glyph for the playing row (3 amber bars). */
+.eq {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.eq span {
+  width: 3px;
+  border-radius: 999px;
+  background: var(--color-amber);
+  animation: eq-bounce 0.9s ease-in-out infinite;
+}
+.eq span:nth-child(1) {
+  height: 60%;
+  animation-delay: -0.3s;
+}
+.eq span:nth-child(2) {
+  height: 100%;
+  animation-delay: -0.15s;
+}
+.eq span:nth-child(3) {
+  height: 45%;
+}
+.eq.paused span {
+  animation-play-state: paused;
+}
+@keyframes eq-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* Tailwind v3 gave un-coloured borders a default hue; v4 uses currentColor.
+   Keep hairlines on the design system's line colour unless a class overrides it. */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-line-primary);
+  }
+}
 
 :root {
   color-scheme: dark;

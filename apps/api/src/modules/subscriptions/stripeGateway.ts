@@ -126,15 +126,18 @@ export class RealStripeGateway implements StripeGateway {
     }
     if (event.type.startsWith('customer.subscription.')) {
       const sub = event.data.object as Stripe.Subscription;
+      // Stripe's Basil API (2025-03+) moved the billing period onto the
+      // subscription item; a subscription here always has exactly one item.
+      const item = sub.items.data[0];
       return {
         type: event.type,
         subscription: {
           customerId: idOf(sub.customer),
           subscriptionId: sub.id,
           status: event.type.endsWith('deleted') ? 'canceled' : mapStatus(sub.status),
-          priceId: sub.items.data[0]?.price.id,
-          currentPeriodStart: new Date(sub.current_period_start * 1000),
-          currentPeriodEnd: new Date(sub.current_period_end * 1000),
+          priceId: item?.price.id,
+          currentPeriodStart: item ? new Date(item.current_period_start * 1000) : undefined,
+          currentPeriodEnd: item ? new Date(item.current_period_end * 1000) : undefined,
           cancelAtPeriodEnd: sub.cancel_at_period_end,
         },
       };

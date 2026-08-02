@@ -1,12 +1,12 @@
-// Mock expo-av so importing the recorder module (which references Audio enums at
-// load time for its WAV options) does not require the native module.
-jest.mock('expo-av', () => ({
-  Audio: {
-    AndroidOutputFormat: { DEFAULT: 0 },
-    AndroidAudioEncoder: { DEFAULT: 0 },
-    IOSAudioQuality: { MAX: 127 },
-    IOSOutputFormat: { LINEARPCM: 'lpcm' },
-  },
+// Mock expo-audio so importing the recorder module (which references the recording
+// enums at load time for its WAV options) does not require the native module.
+jest.mock('expo-audio', () => ({
+  AudioQuality: { MAX: 127 },
+  IOSOutputFormat: { LINEARPCM: 'lpcm' },
+  requestRecordingPermissionsAsync: jest.fn(),
+  setAudioModeAsync: jest.fn(),
+  useAudioRecorder: jest.fn(),
+  useAudioRecorderState: jest.fn(),
 }));
 
 import { normalizeMeter } from './useAudioRecorder';
