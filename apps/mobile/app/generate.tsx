@@ -18,7 +18,7 @@ import { ApiRequestError } from '@/services/api/unwrap';
 import { colors, radius, spacing } from '@/theme';
 
 const PROVIDER_OPTIONS: ReadonlyArray<{ label: string; value: MusicProvider; note: string }> = [
-  { label: 'Google Lyria', value: 'lyria', note: 'Official Gemini API · ~30s clips' },
+  { label: 'Google Lyria', value: 'lyria', note: 'Lyria 3 · ~30s clips' },
   { label: 'Suno', value: 'suno', note: 'Full songs with vocals · via reseller API' },
   { label: 'Archive model', value: 'local', note: 'Our own fine-tuned model · coming soon' },
 ];
