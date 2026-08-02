@@ -51,6 +51,43 @@ packages/*       shared types, validators (Zod), constants (genres/instruments
 Full specification: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md). Decisions:
 [`docs/DECISIONS.md`](docs/DECISIONS.md). Build plan: [`docs/SESSION_PLAN.md`](docs/SESSION_PLAN.md).
 
+## AI music generation (Suno · Lyria · our own model)
+
+The newest layer: describe a song on the web **/generate** page or the mobile
+**Generation Studio** and the platform composes it with AI — routed through one
+provider-agnostic backend contract.
+
+```
+web / mobile ──▶ POST /api/v1/generate { provider, prompt, … } ─▶ 201 job
+             ◀─ GET  /api/v1/generate/:jobId  (poll ≥3s)  ◀────── succeeded/failed
+                                │
+                        provider registry (apps/api/src/modules/generation)
+                        ├─ suno   → api.sunoapi.org reseller (async task + poll)
+                        ├─ lyria  → Google Gemini API (sync, budgeted submit)
+                        └─ local  → Python ai-service (our fine-tuned model;
+                                    gated until corpus licensing clears)
+```
+
+Design properties worth knowing:
+
+- **Keys live only in the API** (`SUNO_API_KEY`, `GEMINI_API_KEY` — see
+  [`SETUP.md`](SETUP.md) for how to get each). The apps never talk to a
+  provider and never see a key.
+- **Swappable by construction** (ADR-0005): every provider implements one
+  `MusicProviderClient` interface (`submit`/`poll`), and every provider —
+  synchronous or async — is normalised onto the same job you poll. Replacing
+  Suno/Lyria with the archive's own fine-tuned model is one class + one
+  registry line; zero app changes.
+- **Keyless demo**: with no keys set, dev/test serve a built-in fake provider,
+  so the full generate→poll→play loop runs offline and free.
+- **Serverless-safe**: jobs persist in Redis (Upstash) in production so POST
+  and polls can land on different lambdas; Lyria's long synchronous call is
+  handled by a budgeted submit + `waitUntil` continuation; Suno results arrive
+  by poll-through (no background workers anywhere).
+- **Cost brake**: generation requires sign-in and is limited to 10
+  jobs/hour/user; generated pieces are labeled AI-experiments, deliberately
+  outside the preservation archive.
+
 ## Quickstart
 
 ```bash

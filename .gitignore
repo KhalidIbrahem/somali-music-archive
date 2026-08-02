@@ -134,8 +134,15 @@ data/clips/
 data/tokens/
 data/eval_gen/
 data/notation_jobs/
+# Same runtime job artifacts, written by the ai-service itself (the root
+# data/notation_jobs/ pattern above does not reach this nested path).
+apps/ai-service/data/notation_jobs/
 data/phase*.log
 runs/*/ckpt_step_*/
 runs/*/samples/
 runs/*/samples_smoke/
 runs/smoke/
+
+# Corpus MP3s staged for the web listening room (~120MB, license_status=unknown):
+# audio belongs in R2/deploy uploads, never in git history.
+apps/web/public/audio/

@@ -3,7 +3,7 @@
  *
  * This drives the persistent mini-player that rises from the bottom of the app
  * while a recording plays. It holds only *which* recording is loaded and transport
- * state; the actual `expo-av` Sound object is owned by the audio service layer.
+ * state; the actual `expo-audio` player object is owned by the audio service layer.
  */
 
 import { create } from 'zustand';

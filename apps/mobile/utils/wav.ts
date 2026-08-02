@@ -1,5 +1,5 @@
 /**
- * Minimal WAV (LINEAR PCM 16-bit) decoding for the pitch exercise. expo-av records
+ * Minimal WAV (LINEAR PCM 16-bit) decoding for the pitch exercise. expo-audio records
  * WAV on iOS; expo-file-system reads it as base64; these pure, tested helpers turn
  * that into a mono sample window we can run pitch detection over. No native deps.
  */

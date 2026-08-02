@@ -6,10 +6,12 @@
  * of its short TTL; `authenticate` rejects any token whose `jti` is listed.
  *
  * The interface is Redis-shaped (Upstash in production, §5) — Redis `SET jti "" EX
- * ttl` maps 1:1 onto `add`. Phase 0/1 ships an in-memory implementation so the
- * flow runs and is testable with zero infrastructure (ADR-0005); the Redis-backed
- * implementation swaps in behind this interface without touching callers.
+ * ttl` maps 1:1 onto `add`. The in-memory implementation keeps the flow runnable
+ * and testable with zero infrastructure (ADR-0005); RATE_LIMIT_BACKEND=redis
+ * selects the Redis implementation so logout holds across instances/lambdas.
  */
+
+import { connectRedis, getRedis, useRedisBackend } from '@/shared/cache/redisClient';
 
 export interface TokenBlacklist {
   /** Deny a token id for `ttlSeconds` (its remaining lifetime). */
@@ -38,5 +40,23 @@ export class InMemoryTokenBlacklist implements TokenBlacklist {
   }
 }
 
-/** Process-wide default. Swap for a RedisTokenBlacklist in production. */
-export const tokenBlacklist: TokenBlacklist = new InMemoryTokenBlacklist();
+/** Redis-backed blacklist: shared across every instance/lambda. Keys are
+ * namespaced (`bl:<jti>`) and expire exactly when the token itself would. */
+export class RedisTokenBlacklist implements TokenBlacklist {
+  async add(jti: string, ttlSeconds: number): Promise<void> {
+    // An already-expired token needs no deny-list entry (SET EX rejects <= 0).
+    if (ttlSeconds <= 0) return;
+    await connectRedis(); // no-op once the connection is up
+    await getRedis().set(`bl:${jti}`, '', { EX: ttlSeconds });
+  }
+
+  async has(jti: string): Promise<boolean> {
+    await connectRedis();
+    return (await getRedis().exists(`bl:${jti}`)) > 0;
+  }
+}
+
+/** Process-wide default, selected the same way as the repositories (driver flag). */
+export const tokenBlacklist: TokenBlacklist = useRedisBackend()
+  ? new RedisTokenBlacklist()
+  : new InMemoryTokenBlacklist();

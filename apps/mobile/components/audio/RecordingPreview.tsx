@@ -1,13 +1,13 @@
 /**
  * RecordingPreview — plays back the just-captured local take (SESSION P1-03 state 3).
- * A local expo-av player over the `file://` URI with play/pause, a progress bar, a
+ * A local expo-audio player over the `file://` URI with play/pause, a progress bar, a
  * duration badge, and a static waveform motif. This is a lightweight preview; the
  * global streaming player (useAudioPlayer) arrives in P1-05.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Audio, type AVPlaybackStatus } from 'expo-av';
+import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { Ionicons } from '@expo/vector-icons';
 import { Card, Text } from '@/components/ui';
 import { formatDuration } from '@/utils/formatters';
@@ -24,52 +24,36 @@ export function RecordingPreview({
   uri,
   durationMillis,
 }: RecordingPreviewProps): React.JSX.Element {
-  const soundRef = useRef<Audio.Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [positionMillis, setPositionMillis] = useState(0);
+  const player = useAudioPlayer({ uri }, { updateInterval: 100 });
+  const status = useAudioPlayerStatus(player);
+  const loadedUriRef = useRef(uri);
 
   useEffect(() => {
-    let mounted = true;
-    void Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+    void setAudioModeAsync({ playsInSilentMode: true });
+  }, []);
 
-    const onStatus = (status: AVPlaybackStatus): void => {
-      if (!mounted || !status.isLoaded) return;
-      setPositionMillis(status.positionMillis);
-      setIsPlaying(status.isPlaying);
-      if (status.didJustFinish) {
-        setIsPlaying(false);
-        setPositionMillis(0);
-        void soundRef.current?.setPositionAsync(0);
-      }
-    };
+  // A new take arrived while mounted — swap the source without recreating the player.
+  useEffect(() => {
+    if (loadedUriRef.current === uri) return;
+    loadedUriRef.current = uri;
+    player.replace({ uri });
+  }, [uri, player]);
 
-    void Audio.Sound.createAsync({ uri }, { progressUpdateIntervalMillis: 100 }, onStatus).then(
-      ({ sound }) => {
-        if (mounted) {
-          soundRef.current = sound;
-        } else {
-          void sound.unloadAsync();
-        }
-      },
-    );
+  useEffect(() => {
+    if (status.didJustFinish) {
+      void player.seekTo(0);
+    }
+  }, [status.didJustFinish, player]);
 
-    return () => {
-      mounted = false;
-      void soundRef.current?.unloadAsync();
-      soundRef.current = null;
-    };
-  }, [uri]);
-
-  const toggle = async (): Promise<void> => {
-    const sound = soundRef.current;
-    if (!sound) return;
-    if (isPlaying) {
-      await sound.pauseAsync();
+  const toggle = (): void => {
+    if (status.playing) {
+      player.pause();
     } else {
-      await sound.playAsync();
+      player.play();
     }
   };
 
+  const positionMillis = status.didJustFinish ? 0 : Math.round(status.currentTime * 1000);
   const total = durationMillis || 1;
   const progress = Math.min(1, positionMillis / total);
 
@@ -80,13 +64,13 @@ export function RecordingPreview({
           onPress={toggle}
           style={styles.playButton}
           accessibilityRole="button"
-          accessibilityLabel={isPlaying ? 'Pause preview' : 'Play preview'}
+          accessibilityLabel={status.playing ? 'Pause preview' : 'Play preview'}
         >
           <Ionicons
-            name={isPlaying ? 'pause' : 'play'}
+            name={status.playing ? 'pause' : 'play'}
             size={24}
             color={colors.text.inverse}
-            style={isPlaying ? undefined : styles.playNudge}
+            style={status.playing ? undefined : styles.playNudge}
           />
         </Pressable>
 
