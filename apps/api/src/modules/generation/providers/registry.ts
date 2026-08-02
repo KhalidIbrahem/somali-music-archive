@@ -8,6 +8,11 @@
  *   • no key, production     → UnavailableProvider (503 at POST, no job made)
  *   • local                  → always real; the gated ai-service reports its
  *                              own status honestly per job.
+ *
+ * `lyria` has TWO transports for the same provider name: OpenRouter (spends
+ * existing openrouter.ai credits) wins whenever OPENROUTER_API_KEY is set;
+ * otherwise GEMINI_API_KEY goes direct to Google. Same wire contract either
+ * way — the apps cannot tell the difference.
  */
 
 import type { MusicProvider } from '@sma/constants';
@@ -16,6 +21,7 @@ import { env, isProduction } from '@/config/env';
 import type { MusicProviderClient, PollResult, SubmitResult } from './provider';
 import { FakeMusicProvider } from './fake';
 import { LyriaProvider } from './lyria';
+import { OpenRouterLyriaProvider } from './openrouterLyria';
 import { SunoProvider } from './suno';
 import { LocalProvider } from './local';
 
@@ -42,6 +48,9 @@ export interface ProviderRegistryConfig {
   readonly sunoModel: string;
   readonly geminiApiKey: string;
   readonly lyriaModel: string;
+  readonly openRouterApiKey: string;
+  readonly openRouterBaseUrl: string;
+  readonly openRouterLyriaModel: string;
   readonly aiServiceUrl: string;
   readonly aiServiceApiKey: string;
   readonly callbackUrl: string;
@@ -72,13 +81,20 @@ export function buildProviderRegistry(
     ),
     lyria: fakeOr(
       'lyria',
-      cfg.geminiApiKey
-        ? new LyriaProvider({
-            apiKey: cfg.geminiApiKey,
-            model: cfg.lyriaModel,
+      cfg.openRouterApiKey
+        ? new OpenRouterLyriaProvider({
+            apiKey: cfg.openRouterApiKey,
+            baseUrl: cfg.openRouterBaseUrl,
+            model: cfg.openRouterLyriaModel,
             timeoutMs: cfg.timeoutMs,
           })
-        : null,
+        : cfg.geminiApiKey
+          ? new LyriaProvider({
+              apiKey: cfg.geminiApiKey,
+              model: cfg.lyriaModel,
+              timeoutMs: cfg.timeoutMs,
+            })
+          : null,
     ),
     local: new LocalProvider({
       baseUrl: cfg.aiServiceUrl,
@@ -95,6 +111,9 @@ export const providerRegistry: Record<MusicProvider, MusicProviderClient> = buil
   sunoModel: env.SUNO_MODEL,
   geminiApiKey: env.GEMINI_API_KEY,
   lyriaModel: env.LYRIA_MODEL,
+  openRouterApiKey: env.OPENROUTER_API_KEY,
+  openRouterBaseUrl: env.OPENROUTER_BASE_URL,
+  openRouterLyriaModel: env.OPENROUTER_LYRIA_MODEL,
   aiServiceUrl: env.AI_SERVICE_URL,
   aiServiceApiKey: env.AI_SERVICE_API_KEY,
   callbackUrl: env.GENERATION_CALLBACK_URL || `${env.API_URL}/api/v1/generate/callback`,
