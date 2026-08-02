@@ -1,5 +1,5 @@
 /**
- * useAudioRecorder — field recording via expo-av (ARCHITECTURE.md §6, SESSION P1-03).
+ * useAudioRecorder — field recording via expo-audio (ARCHITECTURE.md §6, SESSION P1-03).
  *
  * Captures WAV at the highest quality the platform offers (true LINEAR PCM on iOS,
  * best-effort on Android), exposes a live metering level for the waveform, and a
@@ -11,7 +11,15 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Audio } from 'expo-av';
+import {
+  AudioQuality,
+  IOSOutputFormat,
+  requestRecordingPermissionsAsync,
+  setAudioModeAsync,
+  useAudioRecorder as useExpoAudioRecorder,
+  useAudioRecorderState,
+  type RecordingOptions,
+} from 'expo-audio';
 
 /** Warn the recordist once a take runs long (SESSION P1-03). */
 export const LONG_RECORDING_WARNING_MS = 15 * 60 * 1000;
@@ -26,7 +34,7 @@ export interface RecorderResult {
 }
 
 /**
- * Normalise expo-av's metering (decibels, roughly -160 dB silence → 0 dB peak) to
+ * Normalise expo-audio's metering (decibels, roughly -160 dB silence → 0 dB peak) to
  * a 0–1 level for the waveform. We map the useful vocal/instrument band
  * (-60 dB → 0 dB) onto 0 → 1. Pure and exported so it is unit-tested.
  */
@@ -38,24 +46,21 @@ export function normalizeMeter(db: number): number {
 }
 
 /** WAV recording options — LINEAR PCM on iOS is a true .wav; Android best-effort. */
-const WAV_RECORDING_OPTIONS: Audio.RecordingOptions = {
+const WAV_RECORDING_OPTIONS: RecordingOptions = {
   isMeteringEnabled: true,
-  keepAudioActiveHint: true,
+  extension: '.wav',
+  sampleRate: 44100,
+  numberOfChannels: 2,
+  bitRate: 256000,
   android: {
     extension: '.wav',
-    outputFormat: Audio.AndroidOutputFormat.DEFAULT,
-    audioEncoder: Audio.AndroidAudioEncoder.DEFAULT,
-    sampleRate: 44100,
-    numberOfChannels: 2,
-    bitRate: 256000,
+    outputFormat: 'default',
+    audioEncoder: 'default',
   },
   ios: {
     extension: '.wav',
-    audioQuality: Audio.IOSAudioQuality.MAX,
-    outputFormat: Audio.IOSOutputFormat.LINEARPCM,
-    sampleRate: 44100,
-    numberOfChannels: 2,
-    bitRate: 256000,
+    audioQuality: AudioQuality.MAX,
+    outputFormat: IOSOutputFormat.LINEARPCM,
     linearPCMBitDepth: 16,
     linearPCMIsBigEndian: false,
     linearPCMIsFloat: false,
@@ -79,7 +84,10 @@ export interface UseAudioRecorder {
 }
 
 export function useAudioRecorder(): UseAudioRecorder {
-  const recordingRef = useRef<Audio.Recording | null>(null);
+  // expo-audio owns the native recorder's lifecycle (released on unmount).
+  const recorder = useExpoAudioRecorder(WAV_RECORDING_OPTIONS);
+  const recorderState = useAudioRecorderState(recorder, 100);
+  const activeRef = useRef(false);
   const durationRef = useRef(0);
   const [status, setStatus] = useState<RecorderStatus>('idle');
   const [durationMillis, setDurationMillis] = useState(0);
@@ -87,53 +95,49 @@ export function useAudioRecorder(): UseAudioRecorder {
   const [uri, setUri] = useState<string | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
 
-  const onStatusUpdate = useCallback((s: Audio.RecordingStatus) => {
-    if (!s.isRecording) return;
-    durationRef.current = s.durationMillis;
-    setDurationMillis(s.durationMillis);
-    if (typeof s.metering === 'number') {
-      setMeterLevel(normalizeMeter(s.metering));
+  useEffect(() => {
+    if (!recorderState.isRecording) return;
+    durationRef.current = recorderState.durationMillis;
+    setDurationMillis(recorderState.durationMillis);
+    if (typeof recorderState.metering === 'number') {
+      setMeterLevel(normalizeMeter(recorderState.metering));
     }
-  }, []);
+  }, [recorderState]);
 
   const start = useCallback(async () => {
-    const permission = await Audio.requestPermissionsAsync();
+    const permission = await requestRecordingPermissionsAsync();
     if (!permission.granted) {
       setPermissionDenied(true);
       throw new Error('Microphone permission denied');
     }
     setPermissionDenied(false);
-    await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
+    await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
 
-    const { recording } = await Audio.Recording.createAsync(
-      WAV_RECORDING_OPTIONS,
-      onStatusUpdate,
-      100,
-    );
-    recordingRef.current = recording;
+    await recorder.prepareToRecordAsync();
+    recorder.record();
+    activeRef.current = true;
     durationRef.current = 0;
     setUri(null);
     setDurationMillis(0);
     setMeterLevel(0);
     setStatus('recording');
-  }, [onStatusUpdate]);
+  }, [recorder]);
 
   const stop = useCallback(async (): Promise<RecorderResult | null> => {
-    const recording = recordingRef.current;
-    if (!recording) return null;
+    if (!activeRef.current) return null;
+    activeRef.current = false;
     try {
-      await recording.stopAndUnloadAsync();
+      await recorder.stop();
     } finally {
-      await Audio.setAudioModeAsync({ allowsRecordingIOS: false });
+      await setAudioModeAsync({ allowsRecording: false });
     }
-    const finalUri = recording.getURI();
-    recordingRef.current = null;
+    const finalUri = recorder.uri;
     setMeterLevel(0);
     setStatus('stopped');
     if (!finalUri) return null;
     setUri(finalUri);
     return { uri: finalUri, durationMillis: durationRef.current };
-  }, []);
+  }, [recorder]);
 
   const reset = useCallback(() => {
     setStatus('idle');
@@ -141,13 +145,6 @@ export function useAudioRecorder(): UseAudioRecorder {
     setDurationMillis(0);
     setMeterLevel(0);
     durationRef.current = 0;
-  }, []);
-
-  // Safety net: if the screen unmounts mid-take, release the recorder.
-  useEffect(() => {
-    return () => {
-      recordingRef.current?.stopAndUnloadAsync().catch(() => undefined);
-    };
   }, []);
 
   return { status, durationMillis, meterLevel, uri, permissionDenied, start, stop, reset };

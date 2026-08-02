@@ -10,3 +10,4 @@ export * from './genres';
 export * from './regions';
 export * from './languages';
 export * from './instruments';
+export * from './generation';
