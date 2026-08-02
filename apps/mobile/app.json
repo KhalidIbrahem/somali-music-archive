@@ -36,7 +36,7 @@
       "expo-secure-store",
       "expo-font",
       [
-        "expo-av",
+        "expo-audio",
         {
           "microphonePermission": "Allow Somali Music Archive to access your microphone to record music and complete pitch exercises."
         }

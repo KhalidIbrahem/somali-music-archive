@@ -1,3 +1,7 @@
+import { fileURLToPath } from 'node:url';
+
+const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
+
 /**
  * Next.js config. `transpilePackages` lets Next compile the raw-TypeScript @sma/*
  * workspace packages directly (they ship .ts, not built JS), matching how Metro
@@ -6,6 +10,7 @@
  */
 const nextConfig = {
   reactStrictMode: true,
+  outputFileTracingRoot: repoRoot,
   transpilePackages: ['@sma/types', '@sma/constants', '@sma/validators'],
 };
 

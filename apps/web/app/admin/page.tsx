@@ -6,7 +6,7 @@
  * gate and section nav now live in AdminShell.
  */
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { PublicRecording, RecordingStatus } from '@sma/types';
 import { GENRE_LABELS } from '@sma/constants';
 import { listModeration, updateRecording } from '@/lib/api';
@@ -25,32 +25,44 @@ export default function AdminRecordings(): React.JSX.Element {
 function RecordingsPanel(): React.JSX.Element {
   const [status, setStatus] = useState<RecordingStatus>('review');
   const [items, setItems] = useState<readonly PublicRecording[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
-  const load = useCallback(async (s: RecordingStatus): Promise<void> => {
+  // All setState here happens after the awaited fetch resolves — never
+  // synchronously inside the effect (react-hooks/set-state-in-effect).
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const page = await listModeration(status);
+        if (cancelled) return;
+        setItems(page.data);
+        setError(null);
+      } catch {
+        if (!cancelled) setError('Could not load recordings.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [status, reloadKey]);
+
+  const selectTab = (tab: RecordingStatus): void => {
+    setStatus(tab);
     setLoading(true);
     setError(null);
-    try {
-      const page = await listModeration(s);
-      setItems(page.data);
-    } catch {
-      setError('Could not load recordings.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void load(status);
-  }, [status, load]);
+  };
 
   const moderate = async (
     id: string,
     patch: Parameters<typeof updateRecording>[1],
   ): Promise<void> => {
     await updateRecording(id, patch).catch(() => undefined);
-    void load(status);
+    setLoading(true);
+    setReloadKey((k) => k + 1);
   };
 
   return (
@@ -59,7 +71,7 @@ function RecordingsPanel(): React.JSX.Element {
         {TABS.map((tab) => (
           <button
             key={tab}
-            onClick={() => setStatus(tab)}
+            onClick={() => selectTab(tab)}
             className={`rounded-full px-4 py-1.5 font-body text-sm capitalize ${
               status === tab
                 ? 'bg-amber text-bg-primary'

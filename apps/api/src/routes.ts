@@ -17,7 +17,9 @@ import { notificationsRouter } from '@/modules/notifications/notifications.route
 import { organizationsRouter } from '@/modules/organizations/organizations.routes';
 import { commentsRouter } from '@/modules/comments/comments.routes';
 import { collectionsRouter } from '@/modules/collections/collections.routes';
+import { libraryRouter } from '@/modules/library/library.routes';
 import { researchRouter } from '@/modules/research/research.routes';
+import { generationRouter } from '@/modules/generation/generation.routes';
 import { internalRouter } from '@/modules/internal/internal.routes';
 
 export const apiV1Router: Router = Router();
@@ -32,6 +34,8 @@ apiV1Router.use('/notifications', notificationsRouter);
 apiV1Router.use('/organizations', organizationsRouter);
 apiV1Router.use('/comments', commentsRouter);
 apiV1Router.use('/collections', collectionsRouter);
+apiV1Router.use('/library', libraryRouter);
 apiV1Router.use('/research', researchRouter);
+apiV1Router.use('/generate', generationRouter);
 // Service-to-service only (AI pipeline callbacks) — internal-key auth, not JWT.
 apiV1Router.use('/internal', internalRouter);

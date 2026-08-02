@@ -54,9 +54,9 @@ beforeEach(() => {
 });
 
 describe('useAuth — session state', () => {
-  it('reflects the store session', () => {
+  it('reflects the store session', async () => {
     useAuthStore.setState({ user: fakeUser(), accessToken: 't', isAuthenticated: true });
-    const { result } = renderHook(() => useAuth());
+    const { result } = await renderHook(() => useAuth());
     expect(result.current.isAuthenticated).toBe(true);
     expect(result.current.user?.email).toBe('elder@example.com');
   });
@@ -71,7 +71,7 @@ describe('useAuth — checkBiometricAvailability', () => {
       .mocked(LocalAuthentication.supportedAuthenticationTypesAsync)
       .mockResolvedValue([LocalAuthentication.AuthenticationType.FACIAL_RECOGNITION]);
 
-    const { result } = renderHook(() => useAuth());
+    const { result } = await renderHook(() => useAuth());
     const status = await result.current.checkBiometricAvailability();
 
     expect(status.available).toBe(true);
@@ -83,7 +83,7 @@ describe('useAuth — checkBiometricAvailability', () => {
     jest.mocked(LocalAuthentication.isEnrolledAsync).mockResolvedValue(true);
     jest.mocked(secureStorage.getAccessToken).mockResolvedValue(null);
 
-    const { result } = renderHook(() => useAuth());
+    const { result } = await renderHook(() => useAuth());
     const status = await result.current.checkBiometricAvailability();
 
     expect(status.available).toBe(false);
@@ -93,7 +93,7 @@ describe('useAuth — checkBiometricAvailability', () => {
 describe('useAuth — loginWithBiometrics', () => {
   it('refuses when there is no stored credential', async () => {
     jest.mocked(secureStorage.getAccessToken).mockResolvedValue(null);
-    const { result } = renderHook(() => useAuth());
+    const { result } = await renderHook(() => useAuth());
 
     let res: { success: boolean; error?: string } = { success: true };
     await act(async () => {
@@ -109,7 +109,7 @@ describe('useAuth — loginWithBiometrics', () => {
     jest.mocked(LocalAuthentication.authenticateAsync).mockResolvedValue({ success: true });
     jest.mocked(authApi.getMe).mockResolvedValue(fakeUser());
 
-    const { result } = renderHook(() => useAuth());
+    const { result } = await renderHook(() => useAuth());
 
     let res: { success: boolean; error?: string } = { success: false };
     await act(async () => {
@@ -127,7 +127,7 @@ describe('useAuth — loginWithBiometrics', () => {
       .mocked(LocalAuthentication.authenticateAsync)
       .mockResolvedValue({ success: false, error: 'user_cancel' });
 
-    const { result } = renderHook(() => useAuth());
+    const { result } = await renderHook(() => useAuth());
 
     let res: { success: boolean; error?: string } = { success: true };
     await act(async () => {

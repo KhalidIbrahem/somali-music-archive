@@ -30,7 +30,15 @@ export default function AdminLogin(): React.JSX.Element {
       setToken(accessToken);
       router.push('/admin');
     } catch (err) {
-      setError(err instanceof ApiError ? 'Invalid email or password.' : 'Something went wrong.');
+      // Only bad credentials get the canned line; locked/rate-limited/network
+      // errors carry actionable messages of their own.
+      if (err instanceof ApiError) {
+        setError(
+          err.code === 'AUTH_INVALID_CREDENTIALS' ? 'Invalid email or password.' : err.message,
+        );
+      } else {
+        setError('Something went wrong.');
+      }
     } finally {
       setBusy(false);
     }

@@ -113,6 +113,13 @@ export default function Profile(): React.JSX.Element {
           <Stat value={lessonsCompleted} label={t('profile.lessonsDone')} />
         </View>
 
+        {/* AI generation studio (pushed route, like /subscription) */}
+        <Button
+          label="Generation Studio"
+          variant="secondary"
+          onPress={() => router.push('/generate')}
+        />
+
         {/* Language — sets the server-synced preference AND the UI language (P4-01). */}
         <Section title={t('profile.section.language')}>
           <View style={styles.langRow}>

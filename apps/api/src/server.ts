@@ -12,6 +12,7 @@ import { logger } from '@/shared/logger';
 import { hydrateFromDevStore } from '@/shared/devStore/bootstrap';
 import { connectPrisma, disconnectPrisma } from '@/shared/db/prisma';
 import { connectMongo, disconnectMongo } from '@/shared/db/mongoose';
+import { connectRedis, disconnectRedis, useRedisBackend } from '@/shared/cache/redisClient';
 
 const usingDatabase = env.PERSISTENCE === 'database';
 
@@ -29,6 +30,12 @@ async function start(): Promise<void> {
     await hydrateFromDevStore();
   }
 
+  if (useRedisBackend()) {
+    // Same fail-fast rule as the databases: a bad REDIS_URL should stop boot.
+    await connectRedis();
+    logger.info('Redis connected (rate limiter + token blacklist)');
+  }
+
   const app = createApp();
 
   const server = app.listen(env.PORT, () => {
@@ -42,7 +49,9 @@ async function start(): Promise<void> {
   function shutdown(signal: string): void {
     logger.info({ signal }, 'Shutting down');
     server.close(() => {
-      void Promise.all([disconnectPrisma(), disconnectMongo()]).finally(() => process.exit(0));
+      void Promise.all([disconnectPrisma(), disconnectMongo(), disconnectRedis()]).finally(() =>
+        process.exit(0),
+      );
     });
   }
 

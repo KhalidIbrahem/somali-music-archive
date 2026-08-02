@@ -11,9 +11,11 @@ Somali Music Preservation Foundation, Minneapolis, MN, USA
 
 ## Abstract
 
-Somali traditional music — *heello*, *qaraami*, *dhaanto*, *buraanbur*, and the sung poetry of *gabay* — is a living oral tradition with, to our knowledge, **no representation in any major music‑information‑retrieval (MIR) corpus or audio training dataset**. It is transmitted voice‑to‑voice, without notation, and its pitch organisation does not align cleanly with twelve‑tone equal temperament (12‑TET). We present (1) an open, provenance‑complete corpus of Somali traditional recordings with structured cultural metadata, and (2) an end‑to‑end MIR pipeline that transcribes lyrics (Whisper), extracts a monophonic pitch track (CREPE), maps each frame onto a Somali pentatonic reference and **quantifies its microtonal deviation from 12‑TET in cents**, and computes self‑supervised audio embeddings (MERT) for content‑based similarity search over a `pgvector` index. The scale‑mapping component is deliberately dependency‑free and unit‑tested, and its reference frequencies are refined empirically against a master performer's ear rather than assumed from Western theory. We report the pitch‑deviation distribution across the corpus, discuss the cultural‑governance model under which the data is collected and licensed, and describe a documented Research API through which the annotated corpus is made available to the ethnomusicology community. Our aim is both scientific — characterising a previously uncharacterised tonal system — and preservationist: making an endangered tradition legible to computation without flattening it into a Western frame.
+Somali traditional music — *heello*, *qaraami*, *buraanbur*, and other Qaraami Melodies is a living oral tradition with, to our knowledge, **no representation in any major music‑information‑retrieval (MIR) corpus or audio training dataset**. It is transmitted voice‑to‑voice, without notation, and its pitch organisation does not align cleanly with twelve‑tone equal temperament (12‑TET). We present (1) an open, provenance‑complete corpus of Somali traditional recordings with structured cultural metadata, and (2) an end‑to‑end MIR pipeline that transcribes lyrics (Whisper), extracts a monophonic pitch track (CREPE), maps each frame onto a Somali pentatonic reference and **quantifies its microtonal deviation from 12‑TET in cents**, and computes self‑supervised audio embeddings (MERT) for content‑based similarity search over a `pgvector` index. The scale‑mapping component is deliberately dependency‑free and unit‑tested, and its reference frequencies are refined empirically against a master performer's ear rather than assumed from Western theory. We report the pitch‑deviation distribution across the corpus, discuss the cultural‑governance model under which the data is collected and licensed, and describe a documented Research API through which the annotated corpus is made available to the ethnomusicology community. Our aim is both scientific — characterising a previously uncharacterised tonal system — and preservationist: making an endangered tradition legible to computation without flattening it into a Western frame.
 
 ---
+
+
 
 ## 1. Introduction
 
@@ -73,6 +75,8 @@ Stages are independent so that a failure or re‑run of one (e.g. re‑extractin
 
 ## 5. Methodology
 
+
+
 ### 5.1 Lyric transcription and sung/spoken gating
 
 We transcribe with Whisper large‑v3, retaining Somali source text and an English gloss. Because Whisper can hallucinate fluent text over non‑speech, we derive a boolean *is‑singing* signal and treat transcripts over predominantly instrumental material as unreliable, flagging rather than storing them as ground‑truth lyrics. This protects downstream lyric‑based analysis from spurious text.
@@ -85,13 +89,15 @@ CREPE produces frames `(t_i, f0_i, c_i)` where `c_i ∈ [0,1]` is a confidence. 
 
 We maintain a reference table of Somali pentatonic scale degrees and their approximate frequencies, seeded from common *oud* tuning (D root):
 
+
 | Degree | Ref. Hz | Nearest 12‑TET |
-|:------:|:-------:|:--------------:|
+| ------ | ------- | -------------- |
 | do     | 293.66  | D4             |
 | re     | 329.63  | E4             |
 | mi     | 369.99  | F♯4            |
 | sol    | 440.00  | A4             |
 | la     | 493.88  | B4             |
+
 
 For each retained pitch frame with frequency `f`, we assign the nearest scale degree `n*` by absolute frequency distance and compute the **deviation in cents** from that degree's reference `f_{n*}`:
 
@@ -109,7 +115,7 @@ We embed each recording with MERT‑v1‑95M into a 768‑dimensional vector, L2
 
 ## 6. Preliminary Results
 
-_All quantitative results below are placeholders to be computed on the finalised corpus._
+*All quantitative results below are placeholders to be computed on the finalised corpus.*
 
 - **Pitch‑deviation distribution.** Across ⟨N⟩ recordings and ⟨M⟩ retained frames, the mean absolute deviation from 12‑TET is ⟨μ⟩ cents (σ = ⟨σ⟩). Per‑degree, we observe the largest systematic deviation on ⟨degree⟩ (⟨d⟩ cents), consistent with the tradition's treatment of that scale step as microtonally distinct from its Western neighbour. *(Figure 1: per‑degree cents histograms.)*
 - **Voiced fraction by genre.** Sung genres (*heello*, *qaraami*) show voiced fractions of ⟨…⟩; instrumental pieces cluster near ⟨…⟩, validating the sung/spoken gate.
@@ -127,6 +133,8 @@ A corpus of an endangered tradition is not neutral data. Our governance model is
 - **Editorial review before publication.** Material is moderated into a "published" state deliberately; unreviewed uploads are never exposed through listing, search, similarity, or export.
 - **Legibility without flattening.** The microtonality method exists precisely to avoid describing Somali music as "out‑of‑tune Western music"; deviation from 12‑TET is treated as signal, not error.
 
+
+
 ## 8. Access: the Research API
 
 The annotated corpus is exposed to external researchers through a documented HTTP API. Access is authenticated with issued API keys (stored only as salted hashes; the plaintext key is shown once), scoped to an *academic* or *commercial* tier, and rate‑limited per key. A paginated `dataset` endpoint returns the published corpus projected to a research view — cultural metadata plus the AI fields (transcripts, dominant scale degrees, voiced fraction), with the full frame‑level pitch track available opt‑in because of its size. This lets the ethnomusicology community reproduce and extend the analyses in §5 without direct access to the raw audio store.
@@ -137,6 +145,8 @@ The annotated corpus is exposed to external researchers through a documented HTT
 - **Reference calibration is ongoing.** The scale table is being empirically refined; reported deviations will shift as calibration completes, and per‑region/per‑era reference variation is expected and worth modelling explicitly.
 - **Transcription quality for sung Somali.** Whisper is not tuned for melismatic sung Somali; a fine‑tuned or forced‑alignment approach is future work.
 - **Corpus scale.** The corpus is growing; statistical claims will strengthen with size and with independent expert annotation of intonation.
+
+
 
 ## 10. Conclusion
 
@@ -158,4 +168,4 @@ To the performers and elders whose repertoire this work preserves, and in partic
 
 ---
 
-_Draft prepared as SESSION P3‑08. To finalise: fill the ⟨…⟩ placeholders from the corpus, generate Figure 1 (per‑degree cents histograms) and Table 2 (retrieval evaluation) from the Research API export, and complete the bibliography with full ISMIR‑format citations._
+*Draft prepared as SESSION P3‑08. To finalise: fill the ⟨…⟩ placeholders from the corpus, generate Figure 1 (per‑degree cents histograms) and Table 2 (retrieval evaluation) from the Research API export, and complete the bibliography with full ISMIR‑format citations.*

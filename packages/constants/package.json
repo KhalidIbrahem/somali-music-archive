@@ -21,6 +21,6 @@
     "clean": "rimraf .turbo node_modules"
   },
   "devDependencies": {
-    "typescript": "^5.5.3"
+    "typescript": "^5.9.3"
   }
 }

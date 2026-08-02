@@ -4,9 +4,14 @@
  */
 
 import type {
+  ApiErrorCode,
   ApiResponse,
   AuthTokens,
+  BookContentType,
   CreatedOrganization,
+  GenerationJob,
+  GenerationRequest,
+  LibraryBook,
   OrganizationMemberView,
   Paginated,
   PublicOrganization,
@@ -14,15 +19,21 @@ import type {
   PublicUser,
   RecordingStatus,
   RecordingVisibility,
+  SignedBookUrl,
 } from '@sma/types';
-import type { CreateOrganizationInput, RegisterInput } from '@sma/validators';
+import type { BookCreateInput, CreateOrganizationInput, RegisterInput } from '@sma/validators';
 import { getToken } from './auth';
 
 const API_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
 
+/** Server codes plus the one failure only the client can observe: no response at all. */
+type ClientErrorCode = ApiErrorCode | 'NETWORK_ERROR';
+
+const NETWORK_ERROR_MESSAGE = 'Could not reach the server. Check your connection and try again.';
+
 export class ApiError extends Error {
-  readonly code: string;
-  constructor(code: string, message: string) {
+  readonly code: ClientErrorCode;
+  constructor(code: ClientErrorCode, message: string) {
     super(message);
     this.name = 'ApiError';
     this.code = code;
@@ -31,15 +42,26 @@ export class ApiError extends Error {
 
 async function apiFetch<T>(path: string, init?: RequestInit, auth = true): Promise<T> {
   const token = auth ? getToken() : null;
-  const res = await fetch(`${API_URL}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...init?.headers,
-    },
-  });
-  const body = (await res.json()) as ApiResponse<T>;
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      ...init,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...init?.headers,
+      },
+    });
+  } catch {
+    // fetch rejects only on network-level failure (server down, DNS, CORS).
+    throw new ApiError('NETWORK_ERROR', NETWORK_ERROR_MESSAGE);
+  }
+  let body: ApiResponse<T>;
+  try {
+    body = (await res.json()) as ApiResponse<T>;
+  } catch {
+    throw new ApiError('INTERNAL_ERROR', `Server error (${res.status})`);
+  }
   if (!body.success) {
     throw new ApiError(body.error.code, body.error.message);
   }
@@ -106,4 +128,75 @@ export function removeOrgMember(id: string, userId: string): Promise<{ removed: 
   return apiFetch<{ removed: boolean }>(`/organizations/${id}/members/${userId}`, {
     method: 'DELETE',
   });
+}
+
+// ── Library — scanned books of Somali music sheets (presigned-R2 upload) ──────
+
+export interface BookPresign {
+  uploadUrl: string;
+  fileKey: string;
+  expiresAt: string;
+}
+
+/** Ask the API for a presigned R2 PUT for a book document. */
+export function requestBookUploadUrl(input: {
+  filename: string;
+  contentType: BookContentType;
+  sizeBytes?: number;
+}): Promise<BookPresign> {
+  return apiFetch<BookPresign>('/library/books/upload-url', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+/**
+ * PUT the document bytes straight to R2 (never through our API — CLAUDE.md).
+ * Plain fetch on purpose: no auth header, and the Content-Type must match the
+ * one the URL was presigned for.
+ */
+export async function uploadFileToR2(
+  uploadUrl: string,
+  file: File,
+  contentType: BookContentType,
+): Promise<void> {
+  let res: Response;
+  try {
+    res = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': contentType },
+      body: file,
+    });
+  } catch {
+    throw new ApiError('NETWORK_ERROR', NETWORK_ERROR_MESSAGE);
+  }
+  if (!res.ok) {
+    throw new ApiError('INTERNAL_ERROR', `Storage upload failed (${res.status})`);
+  }
+}
+
+/** Register the uploaded document on the library shelf. */
+export function createBook(input: BookCreateInput): Promise<LibraryBook> {
+  return apiFetch<LibraryBook>('/library/books', { method: 'POST', body: JSON.stringify(input) });
+}
+
+export function listBooks(): Promise<LibraryBook[]> {
+  return apiFetch<LibraryBook[]>('/library/books');
+}
+
+/** Short-lived signed read URL for a book (opens the PDF/scan). */
+export function getBookFileUrl(id: string): Promise<SignedBookUrl> {
+  return apiFetch<SignedBookUrl>(`/library/books/${id}/file`);
+}
+
+// ── AI music generation (provider-agnostic proxy — Suno/Lyria/local) ──────────
+
+/** Submit a generation job. The response may already be terminal (sync providers). */
+export function requestGeneration(input: GenerationRequest): Promise<GenerationJob> {
+  return apiFetch<GenerationJob>('/generate', { method: 'POST', body: JSON.stringify(input) });
+}
+
+/** Poll a generation job until `state` is `succeeded` or `failed` (≥3s apart). */
+export function getGenerationJob(id: string): Promise<GenerationJob> {
+  return apiFetch<GenerationJob>(`/generate/${id}`);
 }

@@ -29,6 +29,9 @@ export const API_ERROR_CODES = [
   // Billing
   'SUBSCRIPTION_REQUIRED',
   'PAYMENT_FAILED',
+  // AI generation
+  'GENERATION_PROVIDER_UNAVAILABLE',
+  'GENERATION_FAILED',
   // Generic
   'NOT_FOUND',
   'INTERNAL_ERROR',

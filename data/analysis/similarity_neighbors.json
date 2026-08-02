@@ -1,0 +1,3362 @@
+{
+  "somali_test_001": [
+    {
+      "track_id": "track_0239",
+      "cosine": 0.9939,
+      "title": "Taliyoo wax may taraysaa, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0237",
+      "cosine": 0.9924,
+      "title": "Milgo, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0240",
+      "cosine": 0.9923,
+      "title": "Haddaad Wiiq Is Lahayd, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0241",
+      "cosine": 0.9811,
+      "title": "In la i talinaayo, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0243",
+      "cosine": 0.9798,
+      "title": "Alla Aammin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0001": [
+    {
+      "track_id": "track_0002",
+      "cosine": 0.9976,
+      "title": "Wisiisi (Longing)",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0003",
+      "cosine": 0.9931,
+      "title": "Carro-edeg",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0004",
+      "cosine": 0.9883,
+      "title": "Guyaal Caashaqii",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0006",
+      "cosine": 0.9791,
+      "title": "Bal Aan Saadsho",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0005",
+      "cosine": 0.9693,
+      "title": "Balanbaallis",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    }
+  ],
+  "track_0002": [
+    {
+      "track_id": "track_0001",
+      "cosine": 0.9976,
+      "title": "Sahro Axmed (Sahra Ahmed) and others",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0003",
+      "cosine": 0.9878,
+      "title": "Carro-edeg",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0004",
+      "cosine": 0.9794,
+      "title": "Guyaal Caashaqii",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0006",
+      "cosine": 0.9752,
+      "title": "Bal Aan Saadsho",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0008",
+      "cosine": 0.9657,
+      "title": "Rifdoor (Rêve d'Or)",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    }
+  ],
+  "track_0003": [
+    {
+      "track_id": "track_0001",
+      "cosine": 0.9931,
+      "title": "Sahro Axmed (Sahra Ahmed) and others",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0002",
+      "cosine": 0.9878,
+      "title": "Wisiisi (Longing)",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0004",
+      "cosine": 0.9725,
+      "title": "Guyaal Caashaqii",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0006",
+      "cosine": 0.9672,
+      "title": "Bal Aan Saadsho",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0005",
+      "cosine": 0.9591,
+      "title": "Balanbaallis",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    }
+  ],
+  "track_0004": [
+    {
+      "track_id": "track_0001",
+      "cosine": 0.9883,
+      "title": "Sahro Axmed (Sahra Ahmed) and others",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0002",
+      "cosine": 0.9794,
+      "title": "Wisiisi (Longing)",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0006",
+      "cosine": 0.9767,
+      "title": "Bal Aan Saadsho",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0003",
+      "cosine": 0.9725,
+      "title": "Carro-edeg",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0005",
+      "cosine": 0.9668,
+      "title": "Balanbaallis",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    }
+  ],
+  "track_0005": [
+    {
+      "track_id": "track_0006",
+      "cosine": 0.9762,
+      "title": "Bal Aan Saadsho",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0001",
+      "cosine": 0.9693,
+      "title": "Sahro Axmed (Sahra Ahmed) and others",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0004",
+      "cosine": 0.9668,
+      "title": "Guyaal Caashaqii",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0002",
+      "cosine": 0.9651,
+      "title": "Wisiisi (Longing)",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0003",
+      "cosine": 0.9591,
+      "title": "Carro-edeg",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    }
+  ],
+  "track_0006": [
+    {
+      "track_id": "track_0001",
+      "cosine": 0.9791,
+      "title": "Sahro Axmed (Sahra Ahmed) and others",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0004",
+      "cosine": 0.9767,
+      "title": "Guyaal Caashaqii",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0005",
+      "cosine": 0.9762,
+      "title": "Balanbaallis",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0002",
+      "cosine": 0.9752,
+      "title": "Wisiisi (Longing)",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0003",
+      "cosine": 0.9672,
+      "title": "Carro-edeg",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    }
+  ],
+  "track_0007": [
+    {
+      "track_id": "track_0008",
+      "cosine": 0.9836,
+      "title": "Rifdoor (Rêve d'Or)",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0006",
+      "cosine": 0.9627,
+      "title": "Bal Aan Saadsho",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0001",
+      "cosine": 0.9571,
+      "title": "Sahro Axmed (Sahra Ahmed) and others",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0004",
+      "cosine": 0.9569,
+      "title": "Guyaal Caashaqii",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0002",
+      "cosine": 0.9566,
+      "title": "Wisiisi (Longing)",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    }
+  ],
+  "track_0008": [
+    {
+      "track_id": "track_0007",
+      "cosine": 0.9836,
+      "title": "Dhinbilo Qudhac",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0002",
+      "cosine": 0.9657,
+      "title": "Wisiisi (Longing)",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0001",
+      "cosine": 0.9656,
+      "title": "Sahro Axmed (Sahra Ahmed) and others",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0006",
+      "cosine": 0.9621,
+      "title": "Bal Aan Saadsho",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    },
+    {
+      "track_id": "track_0004",
+      "cosine": 0.9588,
+      "title": "Guyaal Caashaqii",
+      "artists": "Sahro Axmed (Sahra Ahmed)"
+    }
+  ],
+  "track_0009": [
+    {
+      "track_id": "track_0013",
+      "cosine": 0.9876,
+      "title": "Gari ma ku gashaa",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0012",
+      "cosine": 0.9872,
+      "title": "Jacaylkaygu Waa Tiro",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0010",
+      "cosine": 0.9867,
+      "title": "Ammaan aan la koobcin",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0011",
+      "cosine": 0.9855,
+      "title": "Waa Cawro (Something of which to be ashamed)",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9788,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    }
+  ],
+  "track_0010": [
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9867,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9725,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    },
+    {
+      "track_id": "track_0013",
+      "cosine": 0.9717,
+      "title": "Gari ma ku gashaa",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0012",
+      "cosine": 0.9688,
+      "title": "Jacaylkaygu Waa Tiro",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0016",
+      "cosine": 0.965,
+      "title": "Hadhuub caano ah",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0011": [
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9855,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0012",
+      "cosine": 0.9792,
+      "title": "Jacaylkaygu Waa Tiro",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9757,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0017",
+      "cosine": 0.9681,
+      "title": "Soo Hor Caashaqa, 1974",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0010",
+      "cosine": 0.9646,
+      "title": "Ammaan aan la koobcin",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0012": [
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9872,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0011",
+      "cosine": 0.9792,
+      "title": "Waa Cawro (Something of which to be ashamed)",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9727,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0010",
+      "cosine": 0.9688,
+      "title": "Ammaan aan la koobcin",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0016",
+      "cosine": 0.9629,
+      "title": "Hadhuub caano ah",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0013": [
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9876,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0010",
+      "cosine": 0.9717,
+      "title": "Ammaan aan la koobcin",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.962,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    },
+    {
+      "track_id": "track_0011",
+      "cosine": 0.9618,
+      "title": "Waa Cawro (Something of which to be ashamed)",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0017",
+      "cosine": 0.9599,
+      "title": "Soo Hor Caashaqa, 1974",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0015": [
+    {
+      "track_id": "track_0016",
+      "cosine": 0.9494,
+      "title": "Hadhuub caano ah",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9489,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0012",
+      "cosine": 0.9476,
+      "title": "Jacaylkaygu Waa Tiro",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0017",
+      "cosine": 0.9348,
+      "title": "Soo Hor Caashaqa, 1974",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.932,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    }
+  ],
+  "track_0016": [
+    {
+      "track_id": "track_0009",
+      "cosine": 0.968,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0010",
+      "cosine": 0.965,
+      "title": "Ammaan aan la koobcin",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0012",
+      "cosine": 0.9629,
+      "title": "Jacaylkaygu Waa Tiro",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0324",
+      "cosine": 0.9622,
+      "title": "Nabi Ammaan [Songs Praising the Prophet]",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0017",
+      "cosine": 0.9618,
+      "title": "Soo Hor Caashaqa, 1974",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0017": [
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9737,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0011",
+      "cosine": 0.9681,
+      "title": "Waa Cawro (Something of which to be ashamed)",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9646,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0012",
+      "cosine": 0.9625,
+      "title": "Jacaylkaygu Waa Tiro",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0016",
+      "cosine": 0.9618,
+      "title": "Hadhuub caano ah",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0018": [
+    {
+      "track_id": "track_0022",
+      "cosine": 0.9943,
+      "title": "Raaxeeye",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0021",
+      "cosine": 0.9895,
+      "title": "Hay gabineh hay goyneh",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0019",
+      "cosine": 0.9884,
+      "title": "Sabab Kale Ha Moodin (Hibo version)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0026",
+      "cosine": 0.9825,
+      "title": "Laalay",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9782,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    }
+  ],
+  "track_0019": [
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9884,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0022",
+      "cosine": 0.9749,
+      "title": "Raaxeeye",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0026",
+      "cosine": 0.9703,
+      "title": "Laalay",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9634,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9602,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    }
+  ],
+  "track_0021": [
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9895,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0022",
+      "cosine": 0.9883,
+      "title": "Raaxeeye",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0026",
+      "cosine": 0.9733,
+      "title": "Laalay",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.971,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0244",
+      "cosine": 0.9633,
+      "title": "Weynoow hayna kala wadin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0022": [
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9943,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0021",
+      "cosine": 0.9883,
+      "title": "Hay gabineh hay goyneh",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9751,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0019",
+      "cosine": 0.9749,
+      "title": "Sabab Kale Ha Moodin (Hibo version)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0026",
+      "cosine": 0.9731,
+      "title": "Laalay",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    }
+  ],
+  "track_0026": [
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9825,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0021",
+      "cosine": 0.9733,
+      "title": "Hay gabineh hay goyneh",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0022",
+      "cosine": 0.9731,
+      "title": "Raaxeeye",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0019",
+      "cosine": 0.9703,
+      "title": "Sabab Kale Ha Moodin (Hibo version)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9698,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    }
+  ],
+  "track_0028": [
+    {
+      "track_id": "track_0334",
+      "cosine": 0.9471,
+      "title": "Different Singers",
+      "artists": "Different Singers"
+    },
+    {
+      "track_id": "track_0340",
+      "cosine": 0.9335,
+      "title": "Side B: Track 1: Suleekha",
+      "artists": "Side B: Track 1: Suleekha"
+    },
+    {
+      "track_id": "track_0338",
+      "cosine": 0.93,
+      "title": "Side A: Track 4: Dan la'aanta dhaaxa",
+      "artists": "Side A: Track 4: Dan la'aanta dhaaxa"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9268,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0252",
+      "cosine": 0.9265,
+      "title": "Maxaa Kula Hagaagsan",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    }
+  ],
+  "track_0034": [
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9468,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0338",
+      "cosine": 0.9413,
+      "title": "Side A: Track 4: Dan la'aanta dhaaxa",
+      "artists": "Side A: Track 4: Dan la'aanta dhaaxa"
+    },
+    {
+      "track_id": "track_0250",
+      "cosine": 0.9402,
+      "title": "Haweeyaay",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0239",
+      "cosine": 0.9388,
+      "title": "Taliyoo wax may taraysaa, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "somali_test_001",
+      "cosine": 0.9387,
+      "title": null,
+      "artists": null
+    }
+  ],
+  "track_0036": [
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9751,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0324",
+      "cosine": 0.9727,
+      "title": "Nabi Ammaan [Songs Praising the Prophet]",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0010",
+      "cosine": 0.9725,
+      "title": "Ammaan aan la koobcin",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9695,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9666,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    }
+  ],
+  "track_0045": [
+    {
+      "track_id": "track_0255",
+      "cosine": 0.9636,
+      "title": "Naftu lama diido",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0316",
+      "cosine": 0.9636,
+      "title": "I soo lali",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0258",
+      "cosine": 0.9625,
+      "title": "Jacayl Gaaxsannaa",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9581,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9531,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    }
+  ],
+  "track_0118": [
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9256,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    },
+    {
+      "track_id": "track_0157",
+      "cosine": 0.9246,
+      "title": "Songs from Maxamed Suleebaan (Mohamed Sulaiman), Sulfa, Xaliima Milano (Halima Milano), Khadra Daahir (Khadra Dahir), Saalax Qaasim (Salah Kassim), and Shammuuri",
+      "artists": "Songs from Maxamed Suleebaan (Mohamed Sulaiman), Sulfa, Xaliima Milano (Halima Milano), Khadra Daahir (Khadra Dahir), Saalax Qaasim (Salah Kassim), and Shammuuri"
+    },
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9228,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0303",
+      "cosine": 0.9175,
+      "title": "Jidhiidhico, 1975-05-24",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0305",
+      "cosine": 0.9152,
+      "title": "Dardaaran, 1974-03-12",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    }
+  ],
+  "track_0129": [
+    {
+      "track_id": "track_0316",
+      "cosine": 0.9532,
+      "title": "I soo lali",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0255",
+      "cosine": 0.9532,
+      "title": "Naftu lama diido",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0022",
+      "cosine": 0.9526,
+      "title": "Raaxeeye",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9524,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9515,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    }
+  ],
+  "track_0156": [
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9782,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0022",
+      "cosine": 0.9751,
+      "title": "Raaxeeye",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0244",
+      "cosine": 0.9748,
+      "title": "Weynoow hayna kala wadin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "somali_test_001",
+      "cosine": 0.9716,
+      "title": null,
+      "artists": null
+    },
+    {
+      "track_id": "track_0021",
+      "cosine": 0.971,
+      "title": "Hay gabineh hay goyneh",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    }
+  ],
+  "track_0157": [
+    {
+      "track_id": "track_0323",
+      "cosine": 0.966,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0312",
+      "cosine": 0.9633,
+      "title": "Wallee aniyo caashaqu",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0322",
+      "cosine": 0.963,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0321",
+      "cosine": 0.9625,
+      "title": "Hoobaalla Hoobaallayow or Hayee hayee halbowlahaygow",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0313",
+      "cosine": 0.9625,
+      "title": "Halloow",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0158": [
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9662,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9553,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0311",
+      "cosine": 0.9552,
+      "title": "Qaahira",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.954,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0010",
+      "cosine": 0.9537,
+      "title": "Ammaan aan la koobcin",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0193": [
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9618,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9604,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0311",
+      "cosine": 0.9602,
+      "title": "Qaahira",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0322",
+      "cosine": 0.9585,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0324",
+      "cosine": 0.9562,
+      "title": "Nabi Ammaan [Songs Praising the Prophet]",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    }
+  ],
+  "track_0237": [
+    {
+      "track_id": "somali_test_001",
+      "cosine": 0.9924,
+      "title": null,
+      "artists": null
+    },
+    {
+      "track_id": "track_0240",
+      "cosine": 0.9865,
+      "title": "Haddaad Wiiq Is Lahayd, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0239",
+      "cosine": 0.9831,
+      "title": "Taliyoo wax may taraysaa, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0243",
+      "cosine": 0.9733,
+      "title": "Alla Aammin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0241",
+      "cosine": 0.9695,
+      "title": "In la i talinaayo, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0239": [
+    {
+      "track_id": "somali_test_001",
+      "cosine": 0.9939,
+      "title": null,
+      "artists": null
+    },
+    {
+      "track_id": "track_0240",
+      "cosine": 0.9891,
+      "title": "Haddaad Wiiq Is Lahayd, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0237",
+      "cosine": 0.9831,
+      "title": "Milgo, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0241",
+      "cosine": 0.9808,
+      "title": "In la i talinaayo, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0243",
+      "cosine": 0.9775,
+      "title": "Alla Aammin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0240": [
+    {
+      "track_id": "somali_test_001",
+      "cosine": 0.9923,
+      "title": null,
+      "artists": null
+    },
+    {
+      "track_id": "track_0239",
+      "cosine": 0.9891,
+      "title": "Taliyoo wax may taraysaa, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0237",
+      "cosine": 0.9865,
+      "title": "Milgo, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0243",
+      "cosine": 0.9813,
+      "title": "Alla Aammin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0241",
+      "cosine": 0.9805,
+      "title": "In la i talinaayo, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0241": [
+    {
+      "track_id": "somali_test_001",
+      "cosine": 0.9811,
+      "title": null,
+      "artists": null
+    },
+    {
+      "track_id": "track_0239",
+      "cosine": 0.9808,
+      "title": "Taliyoo wax may taraysaa, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0240",
+      "cosine": 0.9805,
+      "title": "Haddaad Wiiq Is Lahayd, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0237",
+      "cosine": 0.9695,
+      "title": "Milgo, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0243",
+      "cosine": 0.9672,
+      "title": "Alla Aammin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0242": [
+    {
+      "track_id": "track_0243",
+      "cosine": 0.9848,
+      "title": "Alla Aammin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0240",
+      "cosine": 0.9724,
+      "title": "Haddaad Wiiq Is Lahayd, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "somali_test_001",
+      "cosine": 0.9698,
+      "title": null,
+      "artists": null
+    },
+    {
+      "track_id": "track_0237",
+      "cosine": 0.9675,
+      "title": "Milgo, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0239",
+      "cosine": 0.9652,
+      "title": "Taliyoo wax may taraysaa, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0243": [
+    {
+      "track_id": "track_0242",
+      "cosine": 0.9848,
+      "title": "Geeri Doortee, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0240",
+      "cosine": 0.9813,
+      "title": "Haddaad Wiiq Is Lahayd, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "somali_test_001",
+      "cosine": 0.9798,
+      "title": null,
+      "artists": null
+    },
+    {
+      "track_id": "track_0239",
+      "cosine": 0.9775,
+      "title": "Taliyoo wax may taraysaa, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0237",
+      "cosine": 0.9733,
+      "title": "Milgo, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0244": [
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9748,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9708,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0022",
+      "cosine": 0.9688,
+      "title": "Raaxeeye",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0334",
+      "cosine": 0.9673,
+      "title": "Different Singers",
+      "artists": "Different Singers"
+    },
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9647,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    }
+  ],
+  "track_0246": [
+    {
+      "track_id": "track_0248",
+      "cosine": 0.9587,
+      "title": "Diiggaa Habeenkii",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0253",
+      "cosine": 0.9582,
+      "title": "Illoow Illoow",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0019",
+      "cosine": 0.9572,
+      "title": "Sabab Kale Ha Moodin (Hibo version)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0252",
+      "cosine": 0.9555,
+      "title": "Maxaa Kula Hagaagsan",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0250",
+      "cosine": 0.9546,
+      "title": "Haweeyaay",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    }
+  ],
+  "track_0247": [
+    {
+      "track_id": "track_0250",
+      "cosine": 0.9769,
+      "title": "Haweeyaay",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0249",
+      "cosine": 0.9621,
+      "title": "Yaxaas, 1965-07-02",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0252",
+      "cosine": 0.9591,
+      "title": "Maxaa Kula Hagaagsan",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9525,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    },
+    {
+      "track_id": "track_0324",
+      "cosine": 0.9523,
+      "title": "Nabi Ammaan [Songs Praising the Prophet]",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    }
+  ],
+  "track_0248": [
+    {
+      "track_id": "track_0246",
+      "cosine": 0.9587,
+      "title": "Dhool Bari",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0250",
+      "cosine": 0.9585,
+      "title": "Haweeyaay",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0019",
+      "cosine": 0.9532,
+      "title": "Sabab Kale Ha Moodin (Hibo version)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9529,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0247",
+      "cosine": 0.9519,
+      "title": "Hayga Goosan, 1968-07-04",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    }
+  ],
+  "track_0249": [
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9654,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0252",
+      "cosine": 0.9654,
+      "title": "Maxaa Kula Hagaagsan",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0247",
+      "cosine": 0.9621,
+      "title": "Hayga Goosan, 1968-07-04",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0334",
+      "cosine": 0.9602,
+      "title": "Different Singers",
+      "artists": "Different Singers"
+    },
+    {
+      "track_id": "track_0244",
+      "cosine": 0.9597,
+      "title": "Weynoow hayna kala wadin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0250": [
+    {
+      "track_id": "track_0247",
+      "cosine": 0.9769,
+      "title": "Hayga Goosan, 1968-07-04",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0252",
+      "cosine": 0.9663,
+      "title": "Maxaa Kula Hagaagsan",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9607,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0244",
+      "cosine": 0.9587,
+      "title": "Weynoow hayna kala wadin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0248",
+      "cosine": 0.9585,
+      "title": "Diiggaa Habeenkii",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    }
+  ],
+  "track_0251": [
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9517,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0250",
+      "cosine": 0.9463,
+      "title": "Haweeyaay",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0017",
+      "cosine": 0.9452,
+      "title": "Soo Hor Caashaqa, 1974",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9443,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0319",
+      "cosine": 0.9421,
+      "title": "Kani waa hannadkii",
+      "artists": "Qalinle, Xarago, Kinsi"
+    }
+  ],
+  "track_0252": [
+    {
+      "track_id": "track_0250",
+      "cosine": 0.9663,
+      "title": "Haweeyaay",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0249",
+      "cosine": 0.9654,
+      "title": "Yaxaas, 1965-07-02",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0247",
+      "cosine": 0.9591,
+      "title": "Hayga Goosan, 1968-07-04",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0253",
+      "cosine": 0.9564,
+      "title": "Illoow Illoow",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0246",
+      "cosine": 0.9555,
+      "title": "Dhool Bari",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    }
+  ],
+  "track_0253": [
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9697,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9656,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9642,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9638,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0026",
+      "cosine": 0.9632,
+      "title": "Laalay",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    }
+  ],
+  "track_0255": [
+    {
+      "track_id": "track_0316",
+      "cosine": 1.0,
+      "title": "I soo lali",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0259",
+      "cosine": 0.9724,
+      "title": "Waxaan Gaaxsanaadoo",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0045",
+      "cosine": 0.9636,
+      "title": "Songs by Xasan Aadan Samatar (Hasan Aden Samatar)",
+      "artists": "Xasan Aadan Samatar (Hasan Aden Samatar)"
+    },
+    {
+      "track_id": "track_0260",
+      "cosine": 0.9628,
+      "title": "Tawaawac",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0306",
+      "cosine": 0.96,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0256": [
+    {
+      "track_id": "track_0257",
+      "cosine": 0.9929,
+      "title": "Dhagaxyahow",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9662,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0321",
+      "cosine": 0.9623,
+      "title": "Hoobaalla Hoobaallayow or Hayee hayee halbowlahaygow",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0258",
+      "cosine": 0.9612,
+      "title": "Jacayl Gaaxsannaa",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0322",
+      "cosine": 0.9611,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    }
+  ],
+  "track_0257": [
+    {
+      "track_id": "track_0256",
+      "cosine": 0.9929,
+      "title": "Maad garan si ladho",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0321",
+      "cosine": 0.9653,
+      "title": "Hoobaalla Hoobaallayow or Hayee hayee halbowlahaygow",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0258",
+      "cosine": 0.9634,
+      "title": "Jacayl Gaaxsannaa",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9619,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0322",
+      "cosine": 0.9572,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    }
+  ],
+  "track_0258": [
+    {
+      "track_id": "track_0260",
+      "cosine": 0.9701,
+      "title": "Tawaawac",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9692,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9668,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0259",
+      "cosine": 0.9656,
+      "title": "Waxaan Gaaxsanaadoo",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0307",
+      "cosine": 0.9651,
+      "title": "Luul iyo Layla",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0259": [
+    {
+      "track_id": "track_0260",
+      "cosine": 0.9907,
+      "title": "Tawaawac",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0255",
+      "cosine": 0.9724,
+      "title": "Naftu lama diido",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0316",
+      "cosine": 0.9724,
+      "title": "I soo lali",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0258",
+      "cosine": 0.9656,
+      "title": "Jacayl Gaaxsannaa",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9529,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0260": [
+    {
+      "track_id": "track_0259",
+      "cosine": 0.9907,
+      "title": "Waxaan Gaaxsanaadoo",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0258",
+      "cosine": 0.9701,
+      "title": "Jacayl Gaaxsannaa",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0255",
+      "cosine": 0.9628,
+      "title": "Naftu lama diido",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0316",
+      "cosine": 0.9628,
+      "title": "I soo lali",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0026",
+      "cosine": 0.9596,
+      "title": "Laalay",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    }
+  ],
+  "track_0262": [
+    {
+      "track_id": "track_0263",
+      "cosine": 0.9826,
+      "title": "Ballanku waa kii runta",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0265",
+      "cosine": 0.9826,
+      "title": "Sheekhaagu waa kuma",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0267",
+      "cosine": 0.9825,
+      "title": "Ma anaa",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9793,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0315",
+      "cosine": 0.976,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    }
+  ],
+  "track_0263": [
+    {
+      "track_id": "track_0265",
+      "cosine": 0.993,
+      "title": "Sheekhaagu waa kuma",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0267",
+      "cosine": 0.9908,
+      "title": "Ma anaa",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9887,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0266",
+      "cosine": 0.9886,
+      "title": "Beeni Raad Ma Leh",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0262",
+      "cosine": 0.9826,
+      "title": "Jaalallay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    }
+  ],
+  "track_0264": [
+    {
+      "track_id": "track_0263",
+      "cosine": 0.9887,
+      "title": "Ballanku waa kii runta",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0265",
+      "cosine": 0.9809,
+      "title": "Sheekhaagu waa kuma",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0262",
+      "cosine": 0.9793,
+      "title": "Jaalallay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0267",
+      "cosine": 0.9776,
+      "title": "Ma anaa",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0266",
+      "cosine": 0.9752,
+      "title": "Beeni Raad Ma Leh",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    }
+  ],
+  "track_0265": [
+    {
+      "track_id": "track_0263",
+      "cosine": 0.993,
+      "title": "Ballanku waa kii runta",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0267",
+      "cosine": 0.9924,
+      "title": "Ma anaa",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0266",
+      "cosine": 0.9842,
+      "title": "Beeni Raad Ma Leh",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0262",
+      "cosine": 0.9826,
+      "title": "Jaalallay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9809,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    }
+  ],
+  "track_0266": [
+    {
+      "track_id": "track_0267",
+      "cosine": 0.9896,
+      "title": "Ma anaa",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0263",
+      "cosine": 0.9886,
+      "title": "Ballanku waa kii runta",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0265",
+      "cosine": 0.9842,
+      "title": "Sheekhaagu waa kuma",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9752,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0262",
+      "cosine": 0.9749,
+      "title": "Jaalallay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    }
+  ],
+  "track_0267": [
+    {
+      "track_id": "track_0265",
+      "cosine": 0.9924,
+      "title": "Sheekhaagu waa kuma",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0263",
+      "cosine": 0.9908,
+      "title": "Ballanku waa kii runta",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0266",
+      "cosine": 0.9896,
+      "title": "Beeni Raad Ma Leh",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0262",
+      "cosine": 0.9825,
+      "title": "Jaalallay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9776,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    }
+  ],
+  "track_0290": [
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9655,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0322",
+      "cosine": 0.9623,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9617,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0258",
+      "cosine": 0.9608,
+      "title": "Jacayl Gaaxsannaa",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9577,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    }
+  ],
+  "track_0298": [
+    {
+      "track_id": "track_0300",
+      "cosine": 0.9915,
+      "title": "Tolow yaa nakala guri, 1973-02-01",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0299",
+      "cosine": 0.986,
+      "title": "Cunnaabi",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0301",
+      "cosine": 0.986,
+      "title": "Dhidibsaan ku leeyahay, 1976-06-30",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0360",
+      "cosine": 0.9572,
+      "title": "Goormaan ladnaannay, 1966-06-26",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0305",
+      "cosine": 0.9567,
+      "title": "Dardaaran, 1974-03-12",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    }
+  ],
+  "track_0299": [
+    {
+      "track_id": "track_0298",
+      "cosine": 0.986,
+      "title": "Qalinle, Sado Ali, and Marwo Mohamed",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0300",
+      "cosine": 0.9731,
+      "title": "Tolow yaa nakala guri, 1973-02-01",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0301",
+      "cosine": 0.9719,
+      "title": "Dhidibsaan ku leeyahay, 1976-06-30",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0360",
+      "cosine": 0.9306,
+      "title": "Goormaan ladnaannay, 1966-06-26",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0305",
+      "cosine": 0.9241,
+      "title": "Dardaaran, 1974-03-12",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    }
+  ],
+  "track_0300": [
+    {
+      "track_id": "track_0298",
+      "cosine": 0.9915,
+      "title": "Qalinle, Sado Ali, and Marwo Mohamed",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0299",
+      "cosine": 0.9731,
+      "title": "Cunnaabi",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0301",
+      "cosine": 0.9714,
+      "title": "Dhidibsaan ku leeyahay, 1976-06-30",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0305",
+      "cosine": 0.9497,
+      "title": "Dardaaran, 1974-03-12",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0303",
+      "cosine": 0.9453,
+      "title": "Jidhiidhico, 1975-05-24",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    }
+  ],
+  "track_0301": [
+    {
+      "track_id": "track_0298",
+      "cosine": 0.986,
+      "title": "Qalinle, Sado Ali, and Marwo Mohamed",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0299",
+      "cosine": 0.9719,
+      "title": "Cunnaabi",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0300",
+      "cosine": 0.9714,
+      "title": "Tolow yaa nakala guri, 1973-02-01",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0360",
+      "cosine": 0.9413,
+      "title": "Goormaan ladnaannay, 1966-06-26",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9297,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    }
+  ],
+  "track_0302": [
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9671,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0360",
+      "cosine": 0.9577,
+      "title": "Goormaan ladnaannay, 1966-06-26",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9528,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0011",
+      "cosine": 0.9499,
+      "title": "Waa Cawro (Something of which to be ashamed)",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.949,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    }
+  ],
+  "track_0303": [
+    {
+      "track_id": "track_0305",
+      "cosine": 0.9788,
+      "title": "Dardaaran, 1974-03-12",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0304",
+      "cosine": 0.9696,
+      "title": "Ma iska daba maqiiqaa, 1969-06-15",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9575,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0298",
+      "cosine": 0.9549,
+      "title": "Qalinle, Sado Ali, and Marwo Mohamed",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0360",
+      "cosine": 0.9487,
+      "title": "Goormaan ladnaannay, 1966-06-26",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    }
+  ],
+  "track_0304": [
+    {
+      "track_id": "track_0305",
+      "cosine": 0.9697,
+      "title": "Dardaaran, 1974-03-12",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0303",
+      "cosine": 0.9696,
+      "title": "Jidhiidhico, 1975-05-24",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.959,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0322",
+      "cosine": 0.9589,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9567,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    }
+  ],
+  "track_0305": [
+    {
+      "track_id": "track_0303",
+      "cosine": 0.9788,
+      "title": "Jidhiidhico, 1975-05-24",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0304",
+      "cosine": 0.9697,
+      "title": "Ma iska daba maqiiqaa, 1969-06-15",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9603,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0298",
+      "cosine": 0.9567,
+      "title": "Qalinle, Sado Ali, and Marwo Mohamed",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0300",
+      "cosine": 0.9497,
+      "title": "Tolow yaa nakala guri, 1973-02-01",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    }
+  ],
+  "track_0306": [
+    {
+      "track_id": "track_0307",
+      "cosine": 0.9892,
+      "title": "Luul iyo Layla",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0308",
+      "cosine": 0.9885,
+      "title": "Hooyo",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0309",
+      "cosine": 0.9864,
+      "title": "Calaacal",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0314",
+      "cosine": 0.9838,
+      "title": "Raalliyaa ahayd",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0312",
+      "cosine": 0.9825,
+      "title": "Wallee aniyo caashaqu",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0307": [
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9892,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0314",
+      "cosine": 0.976,
+      "title": "Raalliyaa ahayd",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0308",
+      "cosine": 0.9726,
+      "title": "Hooyo",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0312",
+      "cosine": 0.9703,
+      "title": "Wallee aniyo caashaqu",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0258",
+      "cosine": 0.9651,
+      "title": "Jacayl Gaaxsannaa",
+      "artists": "Samatar, Shamso and Qays"
+    }
+  ],
+  "track_0308": [
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9885,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0314",
+      "cosine": 0.9781,
+      "title": "Raalliyaa ahayd",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0312",
+      "cosine": 0.9737,
+      "title": "Wallee aniyo caashaqu",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0307",
+      "cosine": 0.9726,
+      "title": "Luul iyo Layla",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0313",
+      "cosine": 0.9657,
+      "title": "Halloow",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0309": [
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9864,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0312",
+      "cosine": 0.9655,
+      "title": "Wallee aniyo caashaqu",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0307",
+      "cosine": 0.9618,
+      "title": "Luul iyo Layla",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0314",
+      "cosine": 0.9617,
+      "title": "Raalliyaa ahayd",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0308",
+      "cosine": 0.9608,
+      "title": "Hooyo",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0311": [
+    {
+      "track_id": "track_0313",
+      "cosine": 0.982,
+      "title": "Halloow",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9693,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0312",
+      "cosine": 0.9664,
+      "title": "Wallee aniyo caashaqu",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0306",
+      "cosine": 0.964,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0308",
+      "cosine": 0.9638,
+      "title": "Hooyo",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0312": [
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9825,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0308",
+      "cosine": 0.9737,
+      "title": "Hooyo",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0307",
+      "cosine": 0.9703,
+      "title": "Luul iyo Layla",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9679,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0313",
+      "cosine": 0.9675,
+      "title": "Halloow",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0313": [
+    {
+      "track_id": "track_0311",
+      "cosine": 0.982,
+      "title": "Qaahira",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9693,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0312",
+      "cosine": 0.9675,
+      "title": "Wallee aniyo caashaqu",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9659,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0308",
+      "cosine": 0.9657,
+      "title": "Hooyo",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0314": [
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9838,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0308",
+      "cosine": 0.9781,
+      "title": "Hooyo",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0307",
+      "cosine": 0.976,
+      "title": "Luul iyo Layla",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0312",
+      "cosine": 0.9653,
+      "title": "Wallee aniyo caashaqu",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0309",
+      "cosine": 0.9617,
+      "title": "Calaacal",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0315": [
+    {
+      "track_id": "track_0318",
+      "cosine": 0.9821,
+      "title": "Goormaynu darisnaa",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0320",
+      "cosine": 0.981,
+      "title": "Niyadda beenta ah",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0319",
+      "cosine": 0.981,
+      "title": "Kani waa hannadkii",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0317",
+      "cosine": 0.9787,
+      "title": "Murtida Hadalka",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0322",
+      "cosine": 0.9778,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    }
+  ],
+  "track_0316": [
+    {
+      "track_id": "track_0255",
+      "cosine": 1.0,
+      "title": "Naftu lama diido",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0259",
+      "cosine": 0.9724,
+      "title": "Waxaan Gaaxsanaadoo",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0045",
+      "cosine": 0.9636,
+      "title": "Songs by Xasan Aadan Samatar (Hasan Aden Samatar)",
+      "artists": "Xasan Aadan Samatar (Hasan Aden Samatar)"
+    },
+    {
+      "track_id": "track_0260",
+      "cosine": 0.9628,
+      "title": "Tawaawac",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0306",
+      "cosine": 0.96,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0317": [
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9787,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0321",
+      "cosine": 0.9622,
+      "title": "Hoobaalla Hoobaallayow or Hayee hayee halbowlahaygow",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0340",
+      "cosine": 0.9616,
+      "title": "Side B: Track 1: Suleekha",
+      "artists": "Side B: Track 1: Suleekha"
+    },
+    {
+      "track_id": "track_0262",
+      "cosine": 0.9586,
+      "title": "Jaalallay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9554,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    }
+  ],
+  "track_0318": [
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9821,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0266",
+      "cosine": 0.9633,
+      "title": "Beeni Raad Ma Leh",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0263",
+      "cosine": 0.9629,
+      "title": "Ballanku waa kii runta",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0265",
+      "cosine": 0.9625,
+      "title": "Sheekhaagu waa kuma",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0262",
+      "cosine": 0.9605,
+      "title": "Jaalallay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    }
+  ],
+  "track_0319": [
+    {
+      "track_id": "track_0320",
+      "cosine": 1.0,
+      "title": "Niyadda beenta ah",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0315",
+      "cosine": 0.981,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0322",
+      "cosine": 0.9634,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0266",
+      "cosine": 0.962,
+      "title": "Beeni Raad Ma Leh",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0263",
+      "cosine": 0.9611,
+      "title": "Ballanku waa kii runta",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    }
+  ],
+  "track_0320": [
+    {
+      "track_id": "track_0319",
+      "cosine": 1.0,
+      "title": "Kani waa hannadkii",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0315",
+      "cosine": 0.981,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0322",
+      "cosine": 0.9635,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0266",
+      "cosine": 0.9621,
+      "title": "Beeni Raad Ma Leh",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0263",
+      "cosine": 0.9612,
+      "title": "Ballanku waa kii runta",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    }
+  ],
+  "track_0321": [
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9856,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0322",
+      "cosine": 0.9824,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9777,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0265",
+      "cosine": 0.9713,
+      "title": "Sheekhaagu waa kuma",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0243",
+      "cosine": 0.9706,
+      "title": "Alla Aammin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0322": [
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9898,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0321",
+      "cosine": 0.9824,
+      "title": "Hoobaalla Hoobaallayow or Hayee hayee halbowlahaygow",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9778,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9682,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "somali_test_001",
+      "cosine": 0.9671,
+      "title": null,
+      "artists": null
+    }
+  ],
+  "track_0323": [
+    {
+      "track_id": "track_0322",
+      "cosine": 0.9898,
+      "title": "Adigaa Qalbiga Baray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0321",
+      "cosine": 0.9856,
+      "title": "Hoobaalla Hoobaallayow or Hayee hayee halbowlahaygow",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9721,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "somali_test_001",
+      "cosine": 0.972,
+      "title": null,
+      "artists": null
+    },
+    {
+      "track_id": "track_0311",
+      "cosine": 0.9693,
+      "title": "Qaahira",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0324": [
+    {
+      "track_id": "track_0326",
+      "cosine": 0.9803,
+      "title": "Dayaxii reer Maka",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0325",
+      "cosine": 0.9785,
+      "title": "Udgoonow Rasuulkow",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9727,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    },
+    {
+      "track_id": "track_0327",
+      "cosine": 0.9696,
+      "title": "Illaahay baa mahad leh",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9632,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0325": [
+    {
+      "track_id": "track_0324",
+      "cosine": 0.9785,
+      "title": "Nabi Ammaan [Songs Praising the Prophet]",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.96,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0326",
+      "cosine": 0.9583,
+      "title": "Dayaxii reer Maka",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9571,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0017",
+      "cosine": 0.9564,
+      "title": "Soo Hor Caashaqa, 1974",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0326": [
+    {
+      "track_id": "track_0324",
+      "cosine": 0.9803,
+      "title": "Nabi Ammaan [Songs Praising the Prophet]",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0260",
+      "cosine": 0.9595,
+      "title": "Tawaawac",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0258",
+      "cosine": 0.9584,
+      "title": "Jacayl Gaaxsannaa",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0325",
+      "cosine": 0.9583,
+      "title": "Udgoonow Rasuulkow",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9573,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    }
+  ],
+  "track_0327": [
+    {
+      "track_id": "track_0324",
+      "cosine": 0.9696,
+      "title": "Nabi Ammaan [Songs Praising the Prophet]",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0326",
+      "cosine": 0.9363,
+      "title": "Dayaxii reer Maka",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0290",
+      "cosine": 0.9294,
+      "title": "Faysal, Samatar, and Mohamed Sulaiman",
+      "artists": "Faysal, Samatar, and Mohamed Sulaiman"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.929,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    },
+    {
+      "track_id": "track_0247",
+      "cosine": 0.9258,
+      "title": "Hayga Goosan, 1968-07-04",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    }
+  ],
+  "track_0328": [
+    {
+      "track_id": "track_0324",
+      "cosine": 0.9568,
+      "title": "Nabi Ammaan [Songs Praising the Prophet]",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9447,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    },
+    {
+      "track_id": "track_0022",
+      "cosine": 0.9415,
+      "title": "Raaxeeye",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9412,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0371",
+      "cosine": 0.9399,
+      "title": "Cumar Dhuule (Omar Dule)",
+      "artists": "Cumar Dhuule (Omar Dule)"
+    }
+  ],
+  "track_0330": [
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9573,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9554,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0309",
+      "cosine": 0.954,
+      "title": "Calaacal",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0253",
+      "cosine": 0.9527,
+      "title": "Illoow Illoow",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0312",
+      "cosine": 0.9521,
+      "title": "Wallee aniyo caashaqu",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0331": [
+    {
+      "track_id": "track_0010",
+      "cosine": 0.9605,
+      "title": "Ammaan aan la koobcin",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0026",
+      "cosine": 0.959,
+      "title": "Laalay",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0313",
+      "cosine": 0.9586,
+      "title": "Halloow",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9574,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9571,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    }
+  ],
+  "track_0332": [
+    {
+      "track_id": "track_0309",
+      "cosine": 0.9511,
+      "title": "Calaacal",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9511,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0260",
+      "cosine": 0.9439,
+      "title": "Tawaawac",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0259",
+      "cosine": 0.9433,
+      "title": "Waxaan Gaaxsanaadoo",
+      "artists": "Samatar, Shamso and Qays"
+    },
+    {
+      "track_id": "track_0330",
+      "cosine": 0.9398,
+      "title": "Dunida kii loo Abuurow",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    }
+  ],
+  "track_0334": [
+    {
+      "track_id": "track_0338",
+      "cosine": 0.9812,
+      "title": "Side A: Track 4: Dan la'aanta dhaaxa",
+      "artists": "Side A: Track 4: Dan la'aanta dhaaxa"
+    },
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9684,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0340",
+      "cosine": 0.968,
+      "title": "Side B: Track 1: Suleekha",
+      "artists": "Side B: Track 1: Suleekha"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9676,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0244",
+      "cosine": 0.9673,
+      "title": "Weynoow hayna kala wadin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0338": [
+    {
+      "track_id": "track_0334",
+      "cosine": 0.9812,
+      "title": "Different Singers",
+      "artists": "Different Singers"
+    },
+    {
+      "track_id": "track_0244",
+      "cosine": 0.9607,
+      "title": "Weynoow hayna kala wadin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    },
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9571,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0250",
+      "cosine": 0.9548,
+      "title": "Haweeyaay",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0319",
+      "cosine": 0.9533,
+      "title": "Kani waa hannadkii",
+      "artists": "Qalinle, Xarago, Kinsi"
+    }
+  ],
+  "track_0340": [
+    {
+      "track_id": "track_0334",
+      "cosine": 0.968,
+      "title": "Different Singers",
+      "artists": "Different Singers"
+    },
+    {
+      "track_id": "track_0317",
+      "cosine": 0.9616,
+      "title": "Murtida Hadalka",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0018",
+      "cosine": 0.9567,
+      "title": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)",
+      "artists": "Hibo Maxamed and Faysal Cumar Mushteeg (Hibo Mohamed and Faisal Omar Mushteeg)"
+    },
+    {
+      "track_id": "track_0315",
+      "cosine": 0.9561,
+      "title": "Qalinle, Xarago, Kinsi, and others",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0244",
+      "cosine": 0.9552,
+      "title": "Weynoow hayna kala wadin, 1966-08-25",
+      "artists": "Allah aammin ma iisho (Songs from the play by this name), 1966-08-25"
+    }
+  ],
+  "track_0344": [
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9194,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0298",
+      "cosine": 0.9167,
+      "title": "Qalinle, Sado Ali, and Marwo Mohamed",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9151,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0300",
+      "cosine": 0.9114,
+      "title": "Tolow yaa nakala guri, 1973-02-01",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    },
+    {
+      "track_id": "track_0304",
+      "cosine": 0.9086,
+      "title": "Ma iska daba maqiiqaa, 1969-06-15",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    }
+  ],
+  "track_0357": [
+    {
+      "track_id": "track_0330",
+      "cosine": 0.9402,
+      "title": "Dunida kii loo Abuurow",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0157",
+      "cosine": 0.938,
+      "title": "Songs from Maxamed Suleebaan (Mohamed Sulaiman), Sulfa, Xaliima Milano (Halima Milano), Khadra Daahir (Khadra Dahir), Saalax Qaasim (Salah Kassim), and Shammuuri",
+      "artists": "Songs from Maxamed Suleebaan (Mohamed Sulaiman), Sulfa, Xaliima Milano (Halima Milano), Khadra Daahir (Khadra Dahir), Saalax Qaasim (Salah Kassim), and Shammuuri"
+    },
+    {
+      "track_id": "track_0306",
+      "cosine": 0.9355,
+      "title": "Axmadey Abubakr (Ahmedey Abubakr)",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0253",
+      "cosine": 0.9348,
+      "title": "Illoow Illoow",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    },
+    {
+      "track_id": "track_0312",
+      "cosine": 0.9324,
+      "title": "Wallee aniyo caashaqu",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    }
+  ],
+  "track_0358": [
+    {
+      "track_id": "track_0360",
+      "cosine": 0.9871,
+      "title": "Goormaan ladnaannay, 1966-06-26",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9788,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0011",
+      "cosine": 0.9757,
+      "title": "Waa Cawro (Something of which to be ashamed)",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0012",
+      "cosine": 0.9727,
+      "title": "Jacaylkaygu Waa Tiro",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0391",
+      "cosine": 0.9673,
+      "title": "Cumar Nuur Cabdulle (Omar Nur Abdalla)",
+      "artists": "Cumar Nuur Cabdulle (Omar Nur Abdalla)"
+    }
+  ],
+  "track_0360": [
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9871,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.9646,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0012",
+      "cosine": 0.9597,
+      "title": "Jacaylkaygu Waa Tiro",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0011",
+      "cosine": 0.959,
+      "title": "Waa Cawro (Something of which to be ashamed)",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0302",
+      "cosine": 0.9577,
+      "title": "Samsamay [incomplete], 1974-05-12",
+      "artists": "Qalinle, Sado Ali, and Marwo Mohamed"
+    }
+  ],
+  "track_0361": [
+    {
+      "track_id": "track_0367",
+      "cosine": 0.959,
+      "title": "Na bal kaalay oo bal kaalay, 1964-04-29",
+      "artists": "Side B. Track [6?]: Bal u fiiro yeesha"
+    },
+    {
+      "track_id": "track_0311",
+      "cosine": 0.947,
+      "title": "Qaahira",
+      "artists": "Axmadey Abubakr (Ahmedey Abubakr)"
+    },
+    {
+      "track_id": "track_0193",
+      "cosine": 0.9425,
+      "title": "Songs by Hibo Maxamed Huddoon (Hibo Mohamed Huddoon)",
+      "artists": "Hibo Maxamed Huddoon (Hibo Mohamed Huddoon)"
+    },
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9391,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0016",
+      "cosine": 0.9385,
+      "title": "Hadhuub caano ah",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0367": [
+    {
+      "track_id": "track_0361",
+      "cosine": 0.959,
+      "title": "Soomaaliyeey soconnoo, 1967-06-20",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0324",
+      "cosine": 0.9552,
+      "title": "Nabi Ammaan [Songs Praising the Prophet]",
+      "artists": "Nabi Ammaan [Songs Praising the Prophet]"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9488,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0323",
+      "cosine": 0.9485,
+      "title": "Anaa xeedhadii furfuray",
+      "artists": "Qalinle, Xarago, Kinsi"
+    },
+    {
+      "track_id": "track_0193",
+      "cosine": 0.9484,
+      "title": "Songs by Hibo Maxamed Huddoon (Hibo Mohamed Huddoon)",
+      "artists": "Hibo Maxamed Huddoon (Hibo Mohamed Huddoon)"
+    }
+  ],
+  "track_0371": [
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9593,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    },
+    {
+      "track_id": "track_0156",
+      "cosine": 0.9537,
+      "title": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)",
+      "artists": "Songs from Maandeeq, Gacayte Ismaacil Yare (Ismail Yare), Cabdalla Sagsaag (Abdala Sagsag), Faysal Cumar Mushteeg (Faisal Omar Mushtek), Axmed Cali Dararamle (Ahmed Ali Daramle)"
+    },
+    {
+      "track_id": "track_0010",
+      "cosine": 0.9517,
+      "title": "Ammaan aan la koobcin",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0158",
+      "cosine": 0.9488,
+      "title": "Songs by Dalays, Baxsan Xaaji Cali (Bahsan Haji Ali), Faadumo Cabdillaahi Maandeeq (Fadumo Abdillahi Maandeeq)",
+      "artists": "Dalays, Baxsan Xaaji Cali (Bahsan Haji Ali), Faadumo Cabdillaahi Maandeeq (Fadumo Abdillahi Maandeeq)"
+    },
+    {
+      "track_id": "track_0249",
+      "cosine": 0.9473,
+      "title": "Yaxaas, 1965-07-02",
+      "artists": "Maxamed Axmed Kuluc and others (Mohamed Ahmed Kulu and others)"
+    }
+  ],
+  "track_0391": [
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9673,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0036",
+      "cosine": 0.9661,
+      "title": "Heeso Xul ah (Qaraami): Qaraami songs by different singers",
+      "artists": "Heeso Xul ah (Qaraami): Qaraami songs by different singers"
+    },
+    {
+      "track_id": "track_0009",
+      "cosine": 0.961,
+      "title": "Songs of the Play: Ninkeeda ku amaahday",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    },
+    {
+      "track_id": "track_0264",
+      "cosine": 0.9579,
+      "title": "Ima Ogiddee waxaan ahay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0017",
+      "cosine": 0.9565,
+      "title": "Soo Hor Caashaqa, 1974",
+      "artists": "Songs of the Play: Ninkeeda ku amaahday"
+    }
+  ],
+  "track_0397": [
+    {
+      "track_id": "track_0267",
+      "cosine": 0.9573,
+      "title": "Ma anaa",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0358",
+      "cosine": 0.9538,
+      "title": "Heesaha Calanka (Songs for the Flag of Independence)",
+      "artists": "Heesaha Calanka (Songs for the Flag of Independence)"
+    },
+    {
+      "track_id": "track_0263",
+      "cosine": 0.9519,
+      "title": "Ballanku waa kii runta",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0265",
+      "cosine": 0.951,
+      "title": "Sheekhaagu waa kuma",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    },
+    {
+      "track_id": "track_0262",
+      "cosine": 0.9501,
+      "title": "Jaalallay",
+      "artists": "Xuud baa liqay jacaylkii (Songs from the play by this name)"
+    }
+  ]
+}
