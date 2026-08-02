@@ -40,6 +40,24 @@ Lyria 3 is served through Google's **Gemini API** (verified Aug 2026).
    preview) if you later want GCP-project auth instead of an API key — that
    would be a small change inside the Lyria provider class only.
 
+### 1b. Lyria via OpenRouter — spend existing openrouter.ai credits 💳
+
+OpenRouter resells the same Lyria 3 models (verified Aug 2026:
+[lyria-3-clip-preview](https://openrouter.ai/google/lyria-3-clip-preview)
+~$0.04/clip, [lyria-3-pro-preview](https://openrouter.ai/google/lyria-3-pro-preview)
+~$0.08/song), so credits you already hold there can power the `lyria`
+provider with no Google billing at all:
+
+1. Copy a key from <https://openrouter.ai/keys> into `apps/api/.env` as
+   `OPENROUTER_API_KEY=…`.
+2. That's it — when both keys are present, **OpenRouter wins** over
+   `GEMINI_API_KEY`; remove `OPENROUTER_API_KEY` to go direct-to-Google again.
+   The apps can't tell the transports apart (same `provider: "lyria"`).
+3. Wire facts (implemented in `providers/openrouterLyria.ts`): OpenAI-style
+   `POST /api/v1/chat/completions` with `modalities: ["text","audio"]`,
+   `audio: { format: "mp3" }`, and `stream: true` (required — audio arrives
+   as SSE chunks at `choices[0].delta.audio.data`, reassembled server-side).
+
 Pricing note: Lyria API usage is token-billed on the paid tier — check the
 current rates at <https://ai.google.dev/gemini-api/docs/music-generation>
 before opening generation to many users; the API's per-user limit
