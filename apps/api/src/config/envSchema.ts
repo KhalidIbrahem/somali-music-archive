@@ -87,6 +87,15 @@ export const envSchema = z.object({
   GEMINI_API_KEY: z.string().default(''),
   /** lyria-3-clip-preview (30s MP3) or lyria-3-pro-preview (~2min WAV, needs R2 path). */
   LYRIA_MODEL: z.string().default('lyria-3-clip-preview'),
+  /**
+   * OpenRouter key — an ALTERNATE transport for the same `lyria` provider
+   * (openrouter.ai lists google/lyria-3-*-preview; ~$0.04/clip). When set it
+   * WINS over GEMINI_API_KEY, so existing OpenRouter credits can be spent
+   * without touching Google billing. Remove it to go direct-to-Google again.
+   */
+  OPENROUTER_API_KEY: z.string().default(''),
+  OPENROUTER_BASE_URL: z.string().url().default('https://openrouter.ai/api/v1'),
+  OPENROUTER_LYRIA_MODEL: z.string().default('google/lyria-3-clip-preview'),
   /** Hard cap on any single provider HTTP call (Lyria generates inside one call). */
   GENERATION_PROVIDER_TIMEOUT_MS: z.coerce.number().int().positive().default(90_000),
   /** How long POST /generate waits for the provider before answering 201 queued. */

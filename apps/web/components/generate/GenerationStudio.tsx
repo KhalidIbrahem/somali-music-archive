@@ -25,7 +25,7 @@ const POLL_INTERVAL_MS = 3_000;
 
 const PROVIDERS: ReadonlyArray<{ id: MusicProvider; label: string; note: string }> = [
   { id: 'suno', label: 'Suno', note: 'Full songs with vocals · via reseller API' },
-  { id: 'lyria', label: 'Google Lyria', note: 'Official Gemini API · ~30s clips' },
+  { id: 'lyria', label: 'Google Lyria', note: 'Lyria 3 · ~30s clips' },
   { id: 'local', label: 'Archive model', note: 'Our own fine-tuned model · coming soon' },
 ];
 
