@@ -50,6 +50,19 @@ always the lightest surface on screen.
 
 ## Block 1 status: COMPLETE (all 8 tasks + baseline, 11 commits dff7121…bcd948c)
 
+## Aug 5 PM — deploy + registration session
+
+Web (Block 1) and API are both LIVE and verified in production. Registration
+works end to end (API 201 + browser flow on /register). Fixed along the way:
+observable serverless boot (503 BOOT_FAILED + step instead of platform 500),
+6s Mongo server-selection cap, per-field VALIDATION_ERROR surfacing on the web
+register form (+ client-side letter+digit mirror). Root causes were: Atlas IP
+allowlist (user fixed), then password-composition failures hidden behind the
+generic banner. Auth rate limiting is per-IP and correct — dev machine +
+browser share one egress IP, so test bursts throttle themselves (5/15min).
+Smoke accounts created: b1-smoke-api@example.com, b1-smoke-web@example.com
+(listener role — delete or keep as test fixtures; rotation task still open).
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects
