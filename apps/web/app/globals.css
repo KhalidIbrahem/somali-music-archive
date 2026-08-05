@@ -141,3 +141,44 @@ body {
   background-color: #0c0b14; /* bg.primary */
   color: #ede9dc; /* ink.primary */
 }
+
+/* ── QaraamiGen Studio (scoped theme system — /studio subtree only) ──────────
+   The studio is a product surface with its own identity: deep navy + teal,
+   dual dark/light themes flipped by data-theme on the .qg wrapper. Scoped CSS
+   variables keep it fully independent of the archive's amber token set. */
+.qg {
+  --qg-bg: #070b12;
+  --qg-bg2: #0c121c;
+  --qg-panel: #101826;
+  --qg-panel2: #16202f;
+  --qg-ink: #eaf2fb;
+  --qg-ink2: #9fb2c8;
+  --qg-ink3: #5f7189;
+  --qg-line: #1c2939;
+  --qg-accent: #38d0d8;
+  --qg-accent-soft: rgba(56, 208, 216, 0.12);
+  --qg-amber: #c89b5f;
+  --qg-score-bg: #f4efe6;
+  color: var(--qg-ink);
+  background: var(--qg-bg);
+}
+.qg[data-theme='light'] {
+  --qg-bg: #f6f9fc;
+  --qg-bg2: #eef3f8;
+  --qg-panel: #ffffff;
+  --qg-panel2: #f2f6fa;
+  --qg-ink: #10202f;
+  --qg-ink2: #46596e;
+  --qg-ink3: #7e8fa3;
+  --qg-line: #d8e2ec;
+  --qg-accent: #0e9aa4;
+  --qg-accent-soft: rgba(14, 154, 164, 0.1);
+  --qg-amber: #a97c3f;
+  --qg-score-bg: #ffffff;
+}
+@keyframes qg-float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-18px) rotate(5deg); }
+}
+.qg-float { animation: qg-float 7s ease-in-out infinite; }
+.qg-float-slow { animation: qg-float 11s ease-in-out infinite; }

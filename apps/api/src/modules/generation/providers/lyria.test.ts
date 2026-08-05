@@ -12,7 +12,7 @@ const INPUT: GenerateRequestInput = {
 function provider(): LyriaProvider {
   return new LyriaProvider({
     apiKey: 'test-key',
-    model: 'lyria-3-clip-preview',
+    model: 'local',
     timeoutMs: 5_000,
     baseUrl: 'https://lyria.test',
   });

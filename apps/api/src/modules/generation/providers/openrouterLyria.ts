@@ -28,20 +28,25 @@ export interface OpenRouterLyriaConfig {
   readonly timeoutMs: number;
 }
 
-/** Safely pluck `choices[0].delta.audio` / `choices[0].message.audio` fields. */
-function audioPartOf(chunk: unknown): { data?: string; transcript?: string } {
+/** Safely pluck audio + text from `choices[0].delta` / `choices[0].message`. */
+function audioPartOf(chunk: unknown): { data?: string; transcript?: string; text?: string } {
   if (typeof chunk !== 'object' || chunk === null) return {};
   const choices = (chunk as { choices?: unknown }).choices;
   if (!Array.isArray(choices) || choices.length === 0) return {};
   const first = choices[0] as { delta?: unknown; message?: unknown };
   for (const part of [first.delta, first.message]) {
     if (typeof part !== 'object' || part === null) continue;
-    const audio = (part as { audio?: unknown }).audio;
-    if (typeof audio !== 'object' || audio === null) continue;
+    const { audio, content } = part as { audio?: unknown; content?: unknown };
+    const text = typeof content === 'string' && content.length > 0 ? { text: content } : {};
+    if (typeof audio !== 'object' || audio === null) {
+      if ('text' in text) return text;
+      continue;
+    }
     const { data, transcript } = audio as { data?: unknown; transcript?: unknown };
     return {
       ...(typeof data === 'string' ? { data } : {}),
       ...(typeof transcript === 'string' ? { transcript } : {}),
+      ...text,
     };
   }
   return {};
@@ -92,8 +97,21 @@ export class OpenRouterLyriaProvider implements MusicProviderClient {
     }
     if (!res.ok) throw await this.httpError(res);
 
-    const { bytes, transcript } = await this.collectSse(res);
-    if (bytes.length === 0) throw new Error('OpenRouter returned no audio');
+    const { bytes, transcript, text } = await this.collectSse(res);
+    if (bytes.length === 0) {
+      // A text-only stream usually means the model REFUSED (e.g. Lyria
+      // declines prompts naming a real artist) — surface its words so the
+      // user learns why instead of a bare "no audio".
+      const reason = text
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      throw new Error(
+        reason
+          ? `Lyria returned no audio — model said: ${reason.slice(0, 180)}`
+          : 'OpenRouter returned no audio (the model may have declined the prompt — avoid naming real artists)',
+      );
+    }
 
     const track: ProviderTrack = {
       audio: { kind: 'bytes', data: new Uint8Array(bytes), mimeType: 'audio/mpeg' },
@@ -110,13 +128,16 @@ export class OpenRouterLyriaProvider implements MusicProviderClient {
   }
 
   /** Drain the SSE stream, decoding each base64 audio segment as it arrives. */
-  private async collectSse(res: Response): Promise<{ bytes: Buffer; transcript: string }> {
+  private async collectSse(
+    res: Response,
+  ): Promise<{ bytes: Buffer; transcript: string; text: string }> {
     const body = res.body;
     if (!body) throw new Error('OpenRouter returned an empty stream');
 
     const decoder = new TextDecoder();
     const audio: Buffer[] = [];
     let transcript = '';
+    let text = '';
     let pending = '';
 
     const reader = body.getReader();
@@ -140,12 +161,13 @@ export class OpenRouterLyriaProvider implements MusicProviderClient {
           const part = audioPartOf(parsed);
           if (part.data) audio.push(Buffer.from(part.data, 'base64'));
           if (part.transcript) transcript += part.transcript;
+          if (part.text) text += part.text;
         }
       }
     } catch (cause) {
       throw this.asSafeError(cause);
     }
-    return { bytes: Buffer.concat(audio), transcript };
+    return { bytes: Buffer.concat(audio), transcript, text };
   }
 
   /** Map an HTTP failure to a client-safe message (credits get a clear one). */
