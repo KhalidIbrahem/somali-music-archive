@@ -167,13 +167,22 @@
   }
 }
 
-:root {
-  color-scheme: dark;
-}
+/* color-scheme is owned by tokens.css (dark default, light under data-theme
+   or print). Legacy pages keep their explicit dark surfaces below. */
 
 body {
   background-color: #0c0b14; /* bg.primary */
   color: #ede9dc; /* ink.primary */
+}
+
+/* Printing always happens on a light page (§1): tokens.css already flips the
+   semantic tokens; this covers the legacy body surface so archive pages don't
+   print warm-white text on an unprinted dark background. */
+@media print {
+  body {
+    background-color: #ffffff;
+    color: #1a1822;
+  }
 }
 
 /* ── QaraamiGen Studio (scoped theme system — /studio subtree only) ──────────
