@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Machine Listening for Somali Music — Demonstrations</title>
+<style>
+  /* Plain academic demo page in the machine-listening tradition:
+     section per topic, listen-and-compare tables, spectrograms, measured numbers. */
+  :root { --ink:#1c2430; --ink2:#4a586b; --line:#d9e0e8; --accent:#0e6f77; --amber:#8a6a33; --bg:#fbfcfd; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:16px/1.65 Georgia, 'Times New Roman', serif; }
+  main { max-width: 900px; margin: 0 auto; padding: 40px 20px 80px; }
+  h1 { font-size: 30px; line-height:1.25; margin: 0 0 4px; }
+  .sub { color: var(--ink2); margin: 0 0 6px; }
+  .links a { color: var(--accent); margin-right: 14px; font-size: 14px; }
+  h2 { font-size: 22px; margin: 44px 0 6px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+  h3 { font-size: 17px; margin: 22px 0 4px; }
+  p  { margin: 8px 0; }
+  .note { color: var(--ink2); font-size: 14px; }
+  table { border-collapse: collapse; width: 100%; margin: 14px 0; }
+  td, th { border: 1px solid var(--line); padding: 10px 12px; vertical-align: middle; text-align: left; }
+  th { background:#f1f5f8; font-size: 14px; }
+  td.k { width: 130px; font-weight: bold; }
+  audio { width: 100%; max-width: 330px; display: block; }
+  img.spec { width: 100%; display: block; border: 1px solid var(--line); border-radius: 4px; }
+  figure { margin: 18px 0; }
+  figcaption { font-size: 14px; color: var(--ink2); margin-top: 6px; }
+  .scorebox { border: 1px solid var(--line); border-radius: 6px; background:#fff;
+              max-height: 460px; overflow: auto; padding: 10px; }
+  .scorebox img { width: 100%; }
+  .stat { color: var(--accent); font-weight: bold; }
+  .red { color: #B03030; font-weight: bold; }
+  .dl a { color: var(--accent); margin-right: 16px; }
+  .honest { border-left: 4px solid var(--amber); background: #faf6ee;
+            padding: 10px 14px; margin: 14px 0; font-size: 15px; }
+  footer { margin-top: 60px; padding-top: 14px; border-top: 1px solid var(--line);
+           font-size: 13px; color: var(--ink2); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Machine Listening for Somali Music</h1>
+  <p class="sub">Demonstrations — Khalid Ibrahim · Somali Music Archive research platform</p>
+  <p class="links">
+    <a href="/">The Archive</a>
+    <a href="/studio">QaraamiGen Studio</a>
+    <a href="/transcribe">Live transcription tool</a>
+  </p>
+  <p>
+    These demonstrations show a machine-listening pipeline built <em>for</em> a musical
+    tradition rather than adapted to it after the fact: source separation of qaraami band
+    recordings, transcription that treats the pentatonic modal system and its microtonal
+    inflections as first-class structure, and corpus-level analyses of what the models
+    learn from 20th-century Somali recordings. Every number on this page is measured
+    output of the running system — nothing is illustrative.
+  </p>
+
+  <!-- ── 1. Source separation ─────────────────────────────────────────── -->
+  <h2>1 · Source separation on a qaraami recording</h2>
+  <p>
+    A single mixed recording (voice, kaban/oud, bass, percussion) is decomposed into four
+    stems; each downstream analysis then listens only to the source it concerns. Listen to
+    the mixture, then to each extracted source; the mel-spectrograms show what the
+    separator isolated.
+  </p>
+  <table>
+    <tr><th style="width:130px">Source</th><th style="width:340px">Listen</th><th>Mel-spectrogram (0–8 kHz)</th></tr>
+    <tr><td class="k">Mixture</td>
+        <td><audio controls preload="none" src="audio/mixture.mp3"></audio></td>
+        <td><img class="spec" src="img/spec_mixture.png" alt="mixture spectrogram" /></td></tr>
+    <tr><td class="k">Voice</td>
+        <td><audio controls preload="none" src="audio/vocals.mp3"></audio></td>
+        <td><img class="spec" src="img/spec_vocals.png" alt="vocals spectrogram" /></td></tr>
+    <tr><td class="k">Kaban / strings</td>
+        <td><audio controls preload="none" src="audio/other.mp3"></audio></td>
+        <td><img class="spec" src="img/spec_other.png" alt="melodic instruments spectrogram" /></td></tr>
+    <tr><td class="k">Bass</td>
+        <td><audio controls preload="none" src="audio/bass.mp3"></audio></td>
+        <td><img class="spec" src="img/spec_bass.png" alt="bass spectrogram" /></td></tr>
+    <tr><td class="k">Percussion</td>
+        <td><audio controls preload="none" src="audio/drums.mp3"></audio></td>
+        <td><img class="spec" src="img/spec_drums.png" alt="drums spectrogram" /></td></tr>
+  </table>
+  <p class="note">
+    Separation: hybrid-transformer demixing, one pass, four stems. The voice stem feeds a
+    dedicated 10&nbsp;ms pitch tracker; the strings stem is transcribed inside the kaban's
+    register (70–900&nbsp;Hz) so neighbouring sources' harmonics are shed; percussion drives
+    the beat tracker that the rhythm grid follows through rubato.
+  </p>
+
+  <!-- ── 2. Pentatonic-aware transcription ────────────────────────────── -->
+  <h2>2 · Transcription that respects the modal system</h2>
+  <p>
+    The same recording, transcribed to a two-staff score — <span class="stat">Voice</span>
+    (532 notes from the 10&nbsp;ms vocal tracker) over <span class="stat">Kaban</span>
+    (842 notes). The system detected tonic <span class="stat">A</span>, pentatonic degrees
+    <span class="stat">{2,&nbsp;4,&nbsp;7,&nbsp;9,&nbsp;11}</span>, a corpus-typical tape/tuning
+    offset of <span class="stat">+17.3&nbsp;cents</span>, and <span class="stat">106&nbsp;BPM</span>
+    tracked across <span class="stat">612 beats</span> rather than one fixed tempo.
+    Of the vocal notes, 354 snapped to the detected scale within tolerance and
+    <span class="red">178 were preserved unsnapped and marked</span> (red noteheads, “~”) —
+    the melisma and microtonal inflections that a Western 12-TET pipeline would erase.
+  </p>
+  <div class="scorebox"><img src="img/score.svg" alt="two-staff engraved score, Voice and Kaban" /></div>
+  <p class="dl">
+    <a href="files/transcription.musicxml" download>MusicXML</a>
+    <a href="files/transcription.mid" download>MIDI</a>
+    <span class="note">— open in MuseScore/Finale; red notes carry the preserved inflections.</span>
+  </p>
+  <p class="note">
+    Ablation on 1,073 held-out clips: forcing Western key correction alters
+    <span class="stat">77.4%</span> of notes and <em>lowers</em> pentatonic conformity from
+    0.898 to 0.862 — evidence that the tradition-aware stage is doing real musical work,
+    not cosmetic relabelling.
+  </p>
+
+  <!-- ── 3. What the models learned ───────────────────────────────────── -->
+  <h2>3 · What the machine learned about the tradition</h2>
+
+  <h3>3.1 · The pentatonic grid is real — once you align per performance</h3>
+  <figure>
+    <img class="spec" src="img/fig2_aligned_histogram.png" alt="aligned cents histogram" />
+    <figcaption>
+      Across <b>105 tracks / 22.6 hours / 706,483 voiced frames</b>, a fixed 12-TET grid
+      smears sung pitch into a 63-cent blur. Fitting one alignment offset per track —
+      absorbing key, cassette speed, and A440 assumptions — collapses dispersion to a
+      <span class="stat">25.8-cent median</span>, with <span class="stat">86%</span> of
+      frames within a quarter tone of a pentatonic degree. The scale system is a measured
+      property of the corpus, not an imposed template.
+    </figcaption>
+  </figure>
+
+  <h3>3.2 · Tuning practice is stable across eras</h3>
+  <figure>
+    <img class="spec" src="img/fig3_era_comparison.png" alt="era comparison" />
+    <figcaption>
+      Date-stamped recordings, early vs. late: no significant drift in alignment quality
+      (Mann-Whitney <span class="stat">p&nbsp;=&nbsp;0.467</span>) — consistent with a
+      stable oral tuning practice rather than gradual Westernisation.
+    </figcaption>
+  </figure>
+
+  <h3>3.3 · The corpus organises itself by musical similarity</h3>
+  <figure>
+    <img class="spec" src="img/fig4_embedding_map.png" alt="embedding map of the corpus" />
+    <figcaption>
+      Self-supervised audio embeddings of the corpus, projected to 2-D: recordings cluster
+      by ensemble and style without labels — the representation the archive's
+      similarity search runs on.
+    </figcaption>
+  </figure>
+
+  <div class="honest">
+    <b>Honest negative, reported as such:</b> a first-pass generative fine-tune on 95 songs
+    did not beat its base model on held-out token cross-entropy (4.63 vs 6.70 at best),
+    and its high pentatonic-conformity scores (0.96–0.98 vs 0.847 for real recordings)
+    coincide with halved voiced fraction — conformity of sparse residual pitch, reported
+    with the confound. Generation research continues; the transcription and analysis
+    results above stand independently of it.
+  </div>
+
+  <!-- ── 4. Method & limitations ──────────────────────────────────────── -->
+  <h2>4 · Method notes and limitations</h2>
+  <p>
+    Pipeline: four-stem source separation → per-source transcription (10&nbsp;ms
+    monophonic f0 tracking with vibrato-aware note segmentation for voice; register-primed
+    polyphonic note detection for instruments) → per-track tonic and pentatonic-degree
+    estimation with octave folding → tolerance-based snapping that <em>marks rather than
+    corrects</em> out-of-grid notes → beat-tracked rhythm quantisation → engraved
+    MusicXML/MIDI/SVG.
+  </p>
+  <p>
+    Limitations, stated plainly: no ground-truth MIDI exists for this corpus, so note-level
+    F1 is non-computable — evaluation relies on the ablations and corpus statistics above,
+    and a human-correction loop is the intended path to labelled data. Corpus licensing is
+    under audit (<code>license_status=unknown</code> throughout), so generative models
+    trained on it remain gated from public serving.
+  </p>
+
+  <footer>
+    Somali Music Archive — machine listening research. All audio processed from archival
+    digitisations for research demonstration; measured values regenerate from the
+    pipeline&rsquo;s analysis artifacts.
+  </footer>
+</main>
+</body>
+</html>

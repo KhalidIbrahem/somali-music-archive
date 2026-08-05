@@ -146,3 +146,6 @@ runs/smoke/
 # Corpus MP3s staged for the web listening room (~120MB, license_status=unknown):
 # audio belongs in R2/deploy uploads, never in git history.
 apps/web/public/audio/
+# Same rule for the research-demo stems (corpus-derived, ~29MB).
+apps/web/public/demos/audio/
+.vercel-token

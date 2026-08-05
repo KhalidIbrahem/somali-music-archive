@@ -1,7 +1,7 @@
 /**
  * data: URI → cache file (for generated-track playback).
  *
- * In keyless/dev mode the generation API returns Lyria/fake audio as an inline
+ * In keyless/dev mode the generation API returns audio as an inline
  * `data:` URI. expo-audio reliably plays https and file:// sources, but inline
  * base64 URIs are unproven on native — so we stage the bytes into the CACHE
  * directory (ephemeral previews; the OS may evict — unlike the document

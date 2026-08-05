@@ -189,7 +189,7 @@ export function getBookFileUrl(id: string): Promise<SignedBookUrl> {
   return apiFetch<SignedBookUrl>(`/library/books/${id}/file`);
 }
 
-// ── AI music generation (provider-agnostic proxy — Suno/Lyria/local) ──────────
+// ── AI music generation (provider-agnostic proxy; engines are backend detail) ─
 
 /** Submit a generation job. The response may already be terminal (sync providers). */
 export function requestGeneration(input: GenerationRequest): Promise<GenerationJob> {

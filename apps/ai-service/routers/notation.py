@@ -8,7 +8,7 @@ polls the job, then fetches artifacts. Validation is therefore strict here
 
 from __future__ import annotations
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 
 from services import notation_service as svc
@@ -20,13 +20,27 @@ _MEDIA_TYPES = {
     "svg": "image/svg+xml",
     "midi": "audio/midi",
 }
+# The original upload's type follows its suffix (kind == "original").
+_AUDIO_TYPES = {
+    ".wav": "audio/wav", ".mp3": "audio/mpeg", ".m4a": "audio/mp4",
+    ".flac": "audio/flac", ".ogg": "audio/ogg",
+}
 
 
 @router.post("", status_code=202)
-async def create(file: UploadFile, tasks: BackgroundTasks) -> dict:
+async def create(
+    file: UploadFile,
+    tasks: BackgroundTasks,
+    separate: bool = Form(default=False),
+    instrument: str = Form(default="full"),
+) -> dict:
+    """`separate=true` runs Demucs source separation before transcription —
+    slower, but markedly more accurate on band recordings. `instrument`
+    chooses what to transcribe: full | voice | kaban | violin | flute."""
     payload = await file.read()
     try:
-        job_id = svc.create_job(file.filename or "upload.wav", payload)
+        job_id = svc.create_job(file.filename or "upload.wav", payload,
+                                separate=separate, instrument=instrument)
     except svc.NotationError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     tasks.add_task(svc.run_job, job_id)
@@ -47,4 +61,6 @@ async def artifact(job_id: str, kind: str) -> FileResponse:
         path = svc.artifact_path(job_id, kind)
     except svc.NotationError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
-    return FileResponse(path, media_type=_MEDIA_TYPES[kind], filename=path.name)
+    media = (_AUDIO_TYPES.get(path.suffix.lower(), "application/octet-stream")
+             if kind == "original" else _MEDIA_TYPES[kind])
+    return FileResponse(path, media_type=media, filename=path.name)

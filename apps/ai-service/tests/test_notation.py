@@ -22,7 +22,19 @@ def jobs_tmpdir(tmp_path, monkeypatch):
 
 def fake_transcribe_ok(cmd, **kwargs):
     """Stand-in for the somali311 subprocess: writes the artifacts + summary."""
-    audio, out_dir = cmd[-2], cmd[-1]
+
+    # Non-transcribe subprocesses (demucs, vocal_f0) fail politely so the
+    # service's graceful-degradation path runs instead of the real engines.
+    if "scripts.transcribe" not in cmd:
+        class F:
+            returncode = 1
+            stderr = "fake subprocess: only transcribe is stubbed"
+        return F()
+
+    # Positional args follow the module name; flags (--melody, --beat-audio …)
+    # may trail them, so anchor on the module instead of the list tail.
+    i = cmd.index("scripts.transcribe")
+    audio, out_dir = cmd[i + 1], cmd[i + 2]
     from pathlib import Path
 
     stem = Path(audio).stem
@@ -57,6 +69,69 @@ def test_full_job_lifecycle(monkeypatch):
     for kind in ("musicxml", "svg", "midi"):
         a = client.get(f"/notation/jobs/{job_id}/artifacts/{kind}")
         assert a.status_code == 200, kind
+
+
+def test_duplicate_upload_reuses_the_job(monkeypatch):
+    """Identical bytes + options → the SAME job (re-upload herd protection)."""
+    monkeypatch.setattr(svc.subprocess, "run", fake_transcribe_ok)
+    r1 = client.post("/notation", files={"file": ("a.wav", b"RIFFdup1", "audio/wav")})
+    r2 = client.post("/notation", files={"file": ("b.wav", b"RIFFdup1", "audio/wav")})
+    assert r1.json()["job_id"] == r2.json()["job_id"]
+    # Different options are a different request — own job.
+    r3 = client.post("/notation", data={"separate": "true"},
+                     files={"file": ("c.wav", b"RIFFdup1", "audio/wav")})
+    assert r3.json()["job_id"] != r1.json()["job_id"]
+
+
+def test_job_records_stage_and_timings(monkeypatch):
+    monkeypatch.setattr(svc.subprocess, "run", fake_transcribe_ok)
+    r = client.post("/notation", files={"file": ("t.wav", b"RIFFtiming", "audio/wav")})
+    s = client.get(f"/notation/jobs/{r.json()['job_id']}").json()
+    assert s["status"] == "done"
+    assert s["stage"] == "done"
+    assert "transcribe" in s["timings"]
+
+
+def test_run_job_is_idempotent(monkeypatch):
+    """A second run_job for the same id (deduped double-submit) is a no-op."""
+    calls = []
+
+    def counting_fake(cmd, **kwargs):
+        calls.append(cmd)
+        return fake_transcribe_ok(cmd, **kwargs)
+
+    monkeypatch.setattr(svc.subprocess, "run", counting_fake)
+    r = client.post("/notation", files={"file": ("i.wav", b"RIFFidem", "audio/wav")})
+    jid = r.json()["job_id"]  # TestClient ran the background task → done
+    before = len(calls)
+    svc.run_job(jid)  # the ghost second schedule
+    assert len(calls) == before  # nothing re-ran
+    assert client.get(f"/notation/jobs/{jid}").json()["status"] == "done"
+
+
+def test_instrument_routing_and_validation(monkeypatch):
+    calls = []
+
+    def counting_fake(cmd, **kwargs):
+        calls.append(cmd)
+        return fake_transcribe_ok(cmd, **kwargs)
+
+    monkeypatch.setattr(svc.subprocess, "run", counting_fake)
+    # kaban (no separation): register prior + staff name flow into the pipeline
+    r = client.post("/notation", data={"instrument": "kaban"},
+                    files={"file": ("k.wav", b"RIFFkaban", "audio/wav")})
+    assert r.status_code == 202
+    cmd = calls[-1]
+    assert "--part-name" in cmd and cmd[cmd.index("--part-name") + 1] == "Kaban"
+    assert "--fmin" in cmd and cmd[cmd.index("--fmin") + 1] == "70.0"
+    # same bytes, different instrument → its OWN job (dedupe keys on instrument)
+    r2 = client.post("/notation", data={"instrument": "violin"},
+                     files={"file": ("k.wav", b"RIFFkaban", "audio/wav")})
+    assert r2.json()["job_id"] != r.json()["job_id"]
+    # unknown instrument → 422
+    bad = client.post("/notation", data={"instrument": "banjo"},
+                      files={"file": ("k.wav", b"RIFFother", "audio/wav")})
+    assert bad.status_code == 422
 
 
 def test_rejects_bad_format_and_empty():

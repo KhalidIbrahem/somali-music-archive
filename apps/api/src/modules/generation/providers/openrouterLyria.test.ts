@@ -96,8 +96,15 @@ describe('OpenRouterLyriaProvider.submit', () => {
     );
   });
 
-  it('throws when the stream carries no audio frames', async () => {
-    stubFetch(sse({ choices: [{ delta: { content: 'text only' } }] }));
+  it('surfaces the model’s words when a text-only stream carries no audio (refusals)', async () => {
+    stubFetch(sse({ choices: [{ delta: { content: 'I cannot imitate that artist.' } }] }));
+    await expect(provider().submit(INPUT)).rejects.toThrow(
+      'Lyria returned no audio — model said: I cannot imitate that artist.',
+    );
+  });
+
+  it('throws a hint when the stream has neither audio nor text', async () => {
+    stubFetch(sse({ choices: [{ delta: { role: 'assistant' } }] }));
     await expect(provider().submit(INPUT)).rejects.toThrow('OpenRouter returned no audio');
   });
 

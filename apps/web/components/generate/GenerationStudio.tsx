@@ -5,10 +5,11 @@
  *
  * Calls the Node API's provider-agnostic endpoint (POST /generate, then GET
  * /generate/:jobId every 3s until terminal — the API asks clients to poll no
- * faster). The provider field routes to Suno / Lyria / the archive's own
- * future model behind one identical contract, so this page never changes when
- * the backend swaps models. Playback is a native <audio>: `track.audioUrl` is
- * an opaque playable source (https URL, signed R2 URL, or data: URI).
+ * faster). The wire `provider` id selects a QaraamiGen model tier; which
+ * engine serves each tier is a backend implementation detail (lib/brand.ts),
+ * so this page never changes when the backend swaps engines. Playback is a
+ * native <audio>: `track.audioUrl` is an opaque playable source (https URL,
+ * signed R2 URL, or data: URI).
  *
  * Requires a signed-in session (generation spends provider credits); signed-out
  * visitors get an invitation, mirroring LibraryShelf.
@@ -18,16 +19,13 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from '
 import Link from 'next/link';
 import type { GenerationJob, MusicProvider } from '@sma/types';
 import { ApiError, getGenerationJob, requestGeneration } from '@/lib/api';
+import { brandMessage, brandProviderName, MODEL_TIERS } from '@/lib/brand';
 import { getToken } from '@/lib/auth';
 import { Reveal } from '@/components/Reveal';
 
 const POLL_INTERVAL_MS = 3_000;
 
-const PROVIDERS: ReadonlyArray<{ id: MusicProvider; label: string; note: string }> = [
-  { id: 'suno', label: 'Suno', note: 'Full songs with vocals · via reseller API' },
-  { id: 'lyria', label: 'Google Lyria', note: 'Lyria 3 · ~30s clips' },
-  { id: 'local', label: 'Archive model', note: 'Our own fine-tuned model · coming soon' },
-];
+const PROVIDERS = MODEL_TIERS;
 
 /** Prompt starters rooted in the archive's genres — a nudge, not a constraint. */
 const STARTERS: ReadonlyArray<{ label: string; prompt: string }> = [
@@ -54,7 +52,7 @@ export function GenerationStudio(): React.JSX.Element {
   const [authFailed, setAuthFailed] = useState(false);
 
   const [prompt, setPrompt] = useState('');
-  const [provider, setProvider] = useState<MusicProvider>('lyria');
+  const [provider, setProvider] = useState<MusicProvider>('local');
   const [instrumental, setInstrumental] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [job, setJob] = useState<GenerationJob | null>(null);
@@ -106,7 +104,9 @@ export function GenerationStudio(): React.JSX.Element {
       else if (err instanceof ApiError && err.code === 'RATE_LIMITED') {
         setError('You have reached the hourly generation limit — try again a little later.');
       } else {
-        setError(err instanceof ApiError ? err.message : 'Generation failed — try again.');
+        setError(
+          err instanceof ApiError ? brandMessage(err.message) : 'Generation failed — try again.',
+        );
       }
     } finally {
       setSubmitting(false);
@@ -134,10 +134,11 @@ export function GenerationStudio(): React.JSX.Element {
           </Reveal>
           <Reveal delay={180}>
             <p className="max-w-2xl font-body text-lg leading-relaxed text-ink-secondary">
-              Describe a song and let AI compose in the spirit of the tradition. Today the studio
-              speaks through Suno and Google&apos;s Lyria; tomorrow, through a model trained on this
-              archive itself. Generated pieces are experiments — clearly kept apart from the field
-              recordings they learn from.
+              Describe a song and let AI compose in the spirit of the Somali musical tradition. This
+              studio is built on our own AI research, where we are training foundation models using
+              restored Somali music archives to preserve, analyze, and extend the Qaraami tradition.
+              Every generated composition is an experimental interpretation, always kept separate
+              from the authentic archival recordings that inspire it.
             </p>
           </Reveal>
         </div>
@@ -149,8 +150,8 @@ export function GenerationStudio(): React.JSX.Element {
             <div className="flex flex-col items-center gap-4 rounded-2xl border border-line-secondary bg-bg-secondary p-12 text-center">
               <h2 className="font-display text-2xl text-ink-primary">Sign in to generate</h2>
               <p className="max-w-md font-body text-ink-secondary">
-                Generation runs on paid AI providers, so the studio is reserved for signed-in
-                members.
+                Generation runs on dedicated research compute, so the studio is reserved for
+                signed-in members.
               </p>
               <Link
                 href="/login"
@@ -261,9 +262,8 @@ export function GenerationStudio(): React.JSX.Element {
                           {job.state === 'queued' ? 'Queued…' : 'Composing…'}
                         </p>
                         <p className="font-body text-sm text-ink-secondary">
-                          {PROVIDERS.find((p) => p.id === job.provider)?.label ?? job.provider} is
-                          working — this can take a minute or two. The page checks every few
-                          seconds.
+                          {brandProviderName(job.provider)} is working — this can take a minute or
+                          two. The page checks every few seconds.
                         </p>
                       </div>
                     </div>
@@ -272,7 +272,9 @@ export function GenerationStudio(): React.JSX.Element {
                   {job.state === 'failed' ? (
                     <div>
                       <p className="font-body font-semibold text-[#e07070]">Generation failed</p>
-                      <p className="mt-1 font-body text-sm text-ink-secondary">{job.error}</p>
+                      <p className="mt-1 font-body text-sm text-ink-secondary">
+                        {brandMessage(job.error ?? 'Unknown error')}
+                      </p>
                     </div>
                   ) : null}
 
@@ -283,7 +285,7 @@ export function GenerationStudio(): React.JSX.Element {
                           {job.track.title ?? 'Generated track'}
                         </h2>
                         <span className="rounded-full border border-amber/40 px-3 py-1 font-body text-xs uppercase tracking-wider text-amber">
-                          AI-generated · {job.provider}
+                          AI-generated · {brandProviderName(job.provider)}
                         </span>
                       </div>
                       {/* audioUrl is opaque & directly playable: https, signed R2, or data: */}

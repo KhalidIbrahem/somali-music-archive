@@ -12,6 +12,15 @@ const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: repoRoot,
   transpilePackages: ['@sma/types', '@sma/constants', '@sma/validators'],
+  turbopack: {
+    resolveAlias: {
+      // tone's package.json `browser` field points at the UMD bundle
+      // (build/Tone.js), which Turbopack statically reads as having no exports —
+      // breaking /transcribe via html-midi-player → @magenta/music → tone.
+      // Pin the browser resolution to the real ESM build instead.
+      tone: 'tone/build/esm/index.js',
+    },
+  },
 };
 
 export default nextConfig;
