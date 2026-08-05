@@ -18,7 +18,7 @@ export function ScoreCanvasZone(): React.JSX.Element {
   const { session, sessionStatus } = useStudio();
 
   return (
-    <div className="min-h-0 flex-1 overflow-auto bg-page print:overflow-visible">
+    <div data-score-scroll className="min-h-0 flex-1 overflow-auto bg-page print:overflow-visible">
       <div className="mx-auto my-8 w-fit min-w-[520px] rounded-[2px] bg-paper shadow-2xl ring-1 ring-paper-edge print:my-0 print:min-w-0 print:shadow-none print:ring-0">
         <div className="px-16 pt-14 pb-6 text-center">
           <p className="text-[11px] tracking-[0.2em] text-confidence-mid uppercase">

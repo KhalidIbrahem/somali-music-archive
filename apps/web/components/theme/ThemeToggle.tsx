@@ -7,13 +7,19 @@
  * hydration mismatch and layout shift.
  */
 
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { useTheme } from './ThemeProvider';
+
+const emptySubscribe = (): (() => void) => () => {};
 
 export function ThemeToggle(): React.JSX.Element {
   const { theme, toggle } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // true after hydration, false in the server snapshot — no effect, no reflow.
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   const label = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
 

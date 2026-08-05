@@ -8,7 +8,9 @@
  * flag blue; selection and edit states are amber (§1 token roles).
  */
 
+import { useEffect, useRef, useState } from 'react';
 import { ZOOM_MAX, ZOOM_MIN, useStudio } from './StudioState';
+import { useTimeline } from './TimelineEngine';
 import { formatClock, formatDuration } from './format';
 
 function TransportButton({
@@ -44,23 +46,49 @@ function TransportButton({
 
 export function TransportBar(): React.JSX.Element {
   const { session, zoomPercent, zoomIn, zoomOut } = useStudio();
+  const engine = useTimeline();
+  const [playing, setPlaying] = useState(false);
+  const clockRef = useRef<HTMLSpanElement>(null);
   const duration = session?.meta.durationSec;
+
+  useEffect(() => engine.onTransport(setPlaying), [engine]);
+
+  // Timecode ticks via textContent — a per-frame React state would re-render
+  // the transport 60×/s for a number (§1: numbers update, layout never moves).
+  useEffect(
+    () =>
+      engine.onFrame((t) => {
+        if (clockRef.current !== null) clockRef.current.textContent = formatClock(t);
+      }),
+    [engine],
+  );
 
   return (
     <footer className="flex h-(--studio-transport) shrink-0 items-center gap-4 border-t border-hairline bg-chrome-1 px-4 print:hidden">
       <div className="flex items-center gap-2">
-        <TransportButton label="Skip to start">
+        <TransportButton label="Skip to start" onClick={() => engine.seek(0)}>
           <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
             <rect x="1" y="1" width="2" height="10" />
             <path d="M11 1 4 6l7 5V1Z" />
           </svg>
         </TransportButton>
-        <TransportButton label="Play" emphasis>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
-            <path d="M2.5 1.2v9.6L11 6 2.5 1.2Z" />
-          </svg>
+        <TransportButton
+          label={playing ? 'Pause' : 'Play'}
+          emphasis
+          onClick={() => void engine.toggle()}
+        >
+          {playing ? (
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
+              <rect x="2" y="1.5" width="3" height="9" />
+              <rect x="7" y="1.5" width="3" height="9" />
+            </svg>
+          ) : (
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
+              <path d="M2.5 1.2v9.6L11 6 2.5 1.2Z" />
+            </svg>
+          )}
         </TransportButton>
-        <TransportButton label="Skip to end">
+        <TransportButton label="Skip to end" onClick={() => engine.seek(engine.getDuration())}>
           <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
             <rect x="9" y="1" width="2" height="10" />
             <path d="M1 1l7 5-7 5V1Z" />
@@ -69,7 +97,9 @@ export function TransportBar(): React.JSX.Element {
       </div>
 
       <div className="flex items-baseline gap-2">
-        <span className="numeric text-sm text-hi">{formatClock(0)}</span>
+        <span ref={clockRef} className="numeric text-sm text-hi">
+          {formatClock(0)}
+        </span>
         <span className="numeric hidden text-xs text-low sm:inline">
           / {duration === undefined ? '—' : formatDuration(duration)}
         </span>
