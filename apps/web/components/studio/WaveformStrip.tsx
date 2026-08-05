@@ -18,6 +18,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useStudio } from './StudioState';
+import { useTimeline } from './TimelineEngine';
 import { loadSampleBuffer } from './audio';
 import { clampView, tickStep, timeToX, xToTime, type TimeView } from './timelineMath';
 import { formatDuration } from './format';
@@ -32,13 +33,18 @@ type StripStatus = 'loading' | 'ready' | 'error';
 
 export function WaveformStrip(): React.JSX.Element {
   const { session } = useStudio();
+  const engine = useTimeline();
   const [status, setStatus] = useState<StripStatus>('loading');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const bufferRef = useRef<AudioBuffer | null>(null);
   /** Timeline domain end — the session duration (score time span). */
   const totalRef = useRef<number | null>(null);
   const viewRef = useRef<TimeView | null>(null);
-  const dragRef = useRef<{ pointerX: number; viewStart: number } | null>(null);
+  const gestureRef = useRef<{
+    startX: number;
+    viewStart: number;
+    mode: 'scrub' | 'pending' | 'pan';
+  } | null>(null);
 
   const draw = useCallback((): void => {
     const canvas = canvasRef.current;
@@ -108,7 +114,44 @@ export function WaveformStrip(): React.JSX.Element {
     // center line over silence keeps the axis legible
     ctx.fillStyle = hairline;
     ctx.fillRect(0, Math.round(mid), cssWidth, 1);
-  }, []);
+
+    // ── playhead — flag blue, the playback state color (§1) ──────────────
+    const cursorX = timeToX(engine.getTime(), view, cssWidth);
+    if (cursorX >= -1 && cursorX <= cssWidth + 1) {
+      ctx.fillStyle = tokenColor('--accent-live');
+      ctx.fillRect(cursorX - 0.75, 0, 1.5, cssHeight);
+      ctx.beginPath();
+      ctx.moveTo(cursorX - 5, 0);
+      ctx.lineTo(cursorX + 5, 0);
+      ctx.lineTo(cursorX, 7);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }, [engine]);
+
+  // ── shared cursor: repaint every frame; follow the playhead when playing ──
+  useEffect(() => {
+    const unsubFrame = engine.onFrame((t) => {
+      const total = totalRef.current;
+      const view = viewRef.current;
+      const canvas = canvasRef.current;
+      if (total !== null && view !== null && canvas !== null && engine.isPlaying()) {
+        const x = timeToX(t, view, canvas.clientWidth);
+        if (x > canvas.clientWidth * 0.85 || x < 0) {
+          viewRef.current = clampView(
+            { start: t - view.duration * 0.15, duration: view.duration },
+            total,
+          );
+        }
+      }
+      draw();
+    });
+    const unsubTransport = engine.onTransport(() => draw());
+    return () => {
+      unsubFrame();
+      unsubTransport();
+    };
+  }, [engine, draw]);
 
   // Data: decode once; the axis domain comes from the session.
   useEffect(() => {
@@ -165,23 +208,44 @@ export function WaveformStrip(): React.JSX.Element {
       draw();
     };
 
+    const seekAt = (offsetX: number): void => {
+      const view = viewRef.current;
+      if (view === null) return;
+      engine.seek(xToTime(offsetX, view, canvas.clientWidth));
+    };
+
+    // Ruler press scrubs; wave press is a seek-click unless it turns into a
+    // pan drag (§2: scrubbing moves the playhead and highlights the note).
     const onPointerDown = (e: PointerEvent): void => {
       if (viewRef.current === null) return;
-      dragRef.current = { pointerX: e.clientX, viewStart: viewRef.current.start };
+      const mode = e.offsetY <= RULER_PX ? 'scrub' : 'pending';
+      gestureRef.current = { startX: e.clientX, viewStart: viewRef.current.start, mode };
       canvas.setPointerCapture(e.pointerId);
+      if (mode === 'scrub') seekAt(e.offsetX);
     };
     const onPointerMove = (e: PointerEvent): void => {
-      const drag = dragRef.current;
+      const gesture = gestureRef.current;
       const total = totalRef.current;
       const view = viewRef.current;
-      if (drag === null || total === null || view === null) return;
-      const dx = e.clientX - drag.pointerX;
+      if (gesture === null || total === null || view === null) return;
+      if (gesture.mode === 'scrub') {
+        seekAt(e.offsetX);
+        return;
+      }
+      const dx = e.clientX - gesture.startX;
+      if (gesture.mode === 'pending' && Math.abs(dx) > 4) gesture.mode = 'pan';
+      if (gesture.mode !== 'pan') return;
       const dt = (dx / canvas.clientWidth) * view.duration;
-      viewRef.current = clampView({ start: drag.viewStart - dt, duration: view.duration }, total);
+      viewRef.current = clampView(
+        { start: gesture.viewStart - dt, duration: view.duration },
+        total,
+      );
       draw();
     };
-    const onPointerUp = (): void => {
-      dragRef.current = null;
+    const onPointerUp = (e: PointerEvent): void => {
+      const gesture = gestureRef.current;
+      gestureRef.current = null;
+      if (gesture !== null && gesture.mode === 'pending') seekAt(e.offsetX);
     };
 
     canvas.addEventListener('wheel', onWheel, { passive: false });
@@ -205,7 +269,7 @@ export function WaveformStrip(): React.JSX.Element {
       resize.disconnect();
       themeWatch.disconnect();
     };
-  }, [draw]);
+  }, [draw, engine]);
 
   return (
     <section

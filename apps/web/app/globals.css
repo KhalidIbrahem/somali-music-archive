@@ -34,6 +34,20 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Score glyph states (§1 token roles): selection is amber, playback is flag
+   blue. Playback wins when both apply — the .note-playing rule stays last.
+   The `*` leg overrides Verovio's own fill attributes (CSS beats presentation
+   attributes), including the pipeline's red outlier marks, for the duration
+   of the state. */
+.score-svg .note-selected,
+.score-svg .note-selected * {
+  fill: var(--accent-state);
+}
+.score-svg .note-playing,
+.score-svg .note-playing * {
+  fill: var(--accent-live);
+}
+
 /*
  * Tailwind v4 theme mapped to the platform design tokens (CLAUDE.md, ARCHITECTURE.md §7).
  * These MUST stay in sync with the mobile theme in apps/mobile/theme — same hex
