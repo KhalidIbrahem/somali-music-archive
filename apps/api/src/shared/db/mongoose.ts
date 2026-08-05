@@ -20,7 +20,10 @@ export async function connectMongo(uri: string): Promise<void> {
   if (connected) return;
   // Fail fast instead of buffering queries forever against a dead connection.
   mongoose.set('bufferCommands', false);
-  await mongoose.connect(uri);
+  // Bound server selection well under any serverless max duration: a blocked
+  // Atlas (IP allowlist) must surface as a named boot failure, not a hung
+  // cold start that the platform kills into an anonymous 500.
+  await mongoose.connect(uri, { serverSelectionTimeoutMS: 6000 });
   connected = true;
 }
 
