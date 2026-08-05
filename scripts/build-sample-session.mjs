@@ -180,7 +180,42 @@ execFileSync('ffmpeg', ['-y', '-i', wavPath, '-ac', '1', '-b:a', '64k', join(out
 });
 rmSync(wavPath);
 
-// ── 5. Write outputs ─────────────────────────────────────────────────────────
+// ── 5. Hero SVG for the landing page (B1-07) ────────────────────────────────
+// First page of the real engraving, confidence ink baked in as attributes so
+// the landing needs zero JavaScript to show the archive's signature.
+
+const CONFIDENCE_INK = '#0C0B14';
+const tierAlpha = (c) => (c >= 0.9 ? 1 : c >= 0.7 ? 0.62 : 0.34);
+
+tk.setOptions({
+  scale: 40,
+  pageWidth: 2040,
+  pageHeight: 2300,
+  adjustPageHeight: false,
+  breaks: 'auto',
+  header: 'none',
+  footer: 'none',
+  justifyVertically: false,
+});
+tk.redoLayout({});
+let hero = tk.renderToSVG(1);
+
+for (let i = 0; i < pipelineNotes.length; i++) {
+  const alpha = tierAlpha(pipelineNotes[i].confidence);
+  if (alpha >= 1) continue;
+  for (const id of logical[i]) {
+    hero = hero.replace(`<g id="${id}" `, `<g id="${id}" fill-opacity="${alpha}" `);
+  }
+}
+// Responsive + token ink: fixed px dimensions become a viewBox so the page
+// scales with its container, and the root fill is the confidence ink.
+hero = hero.replace(
+  /<svg([^>]*?)\swidth="(\d+)px"\sheight="(\d+)px"/,
+  (_m, pre, w, h) => `<svg${pre} viewBox="0 0 ${w} ${h}" fill="${CONFIDENCE_INK}"`,
+);
+writeFileSync(join(outDir, 'hero.svg'), hero);
+
+// ── 6. Write outputs ─────────────────────────────────────────────────────────
 
 writeFileSync(join(outDir, 'score.mei'), mei);
 writeFileSync(join(outDir, 'session.json'), JSON.stringify(session));
