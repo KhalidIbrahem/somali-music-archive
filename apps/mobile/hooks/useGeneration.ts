@@ -4,7 +4,7 @@
  * Mutation submits POST /generate; the query then polls GET /generate/:jobId
  * every 3s (the API-documented minimum) via react-query's refetchInterval,
  * stopping automatically once the job succeeds or fails. The submit response
- * may itself already be terminal (sync providers like Lyria in-budget), which
+ * may itself already be terminal (synchronous engines finish in-budget), which
  * the interval callback handles by never starting.
  */
 

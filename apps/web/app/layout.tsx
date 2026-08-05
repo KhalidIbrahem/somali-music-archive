@@ -31,7 +31,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
     <html lang="en" className={`${playfair.variable} ${nunito.variable}`}>
-      <body className="font-body antialiased">{children}</body>
+      {/* suppressHydrationWarning: browser extensions (ColorZilla et al.) inject
+          attributes like cz-shortcut-listen into <body> before React hydrates,
+          tripping a false mismatch warning. Scoped to this element only. */}
+      <body className="font-body antialiased" suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }

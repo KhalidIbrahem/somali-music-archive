@@ -29,16 +29,27 @@ interface NotationResult {
 type Phase =
   | { kind: 'idle' }
   | { kind: 'uploading' }
-  | { kind: 'processing'; jobId: string }
+  | { kind: 'processing'; jobId: string; startedAt: number; stage?: string }
   | { kind: 'done'; jobId: string; result: NotationResult; svg: string }
   | { kind: 'error'; message: string };
+
+function elapsedLabel(startedAt: number): string {
+  const s = Math.max(0, Math.round((Date.now() - startedAt) / 1000));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
 
 export function TranscribeStudio(): React.JSX.Element {
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' });
   const [dragOver, setDragOver] = useState(false);
+  // Default ON: most archive material is band recordings, where transcribing
+  // the isolated vocal stem is the single biggest accuracy win. Solo
+  // recordings can untick for a faster run.
+  const [separate, setSeparate] = useState(true);
   const [playerReady, setPlayerReady] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Mirrors `separate` so the deps-free submit callback never reads stale state.
+  const separateRef = useRef(true);
 
   useEffect(() => () => stopPolling(), []);
 
@@ -57,13 +68,15 @@ export function TranscribeStudio(): React.JSX.Element {
     try {
       const form = new FormData();
       form.append('file', file);
+      // Opt-in Demucs stage: transcribe the vocal stem instead of the mix.
+      form.append('separate', String(separateRef.current));
       const res = await fetch(`${AI_URL}/notation`, { method: 'POST', body: form });
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as { detail?: string } | null;
         throw new Error(body?.detail ?? `upload failed (${res.status})`);
       }
       const { job_id: jobId } = (await res.json()) as { job_id: string };
-      setPhase({ kind: 'processing', jobId });
+      setPhase({ kind: 'processing', jobId, startedAt: Date.now() });
       pollRef.current = setInterval(() => {
         void poll(jobId);
       }, 2000);
@@ -78,6 +91,7 @@ export function TranscribeStudio(): React.JSX.Element {
       if (!res.ok) throw new Error(`job lookup failed (${res.status})`);
       const state = (await res.json()) as {
         status: string;
+        stage?: string;
         result?: NotationResult;
         error?: string;
       };
@@ -88,6 +102,11 @@ export function TranscribeStudio(): React.JSX.Element {
       } else if (state.status === 'error') {
         stopPolling();
         setPhase({ kind: 'error', message: state.error ?? 'transcription failed' });
+      } else {
+        // Still working — surface the pipeline's live stage on the page.
+        setPhase((p) =>
+          p.kind === 'processing' ? { ...p, ...(state.stage ? { stage: state.stage } : {}) } : p,
+        );
       }
     } catch {
       // transient poll failure — keep polling
@@ -108,6 +127,21 @@ export function TranscribeStudio(): React.JSX.Element {
         Notes outside the scale are <span className="text-[#e07070]">kept and marked</span> —
         ornaments and microtonal inflections are music, not errors.
       </p>
+
+      {phase.kind === 'idle' || phase.kind === 'error' ? (
+        <label className="mt-6 flex w-fit cursor-pointer items-center gap-2 font-body text-sm text-ink-secondary">
+          <input
+            type="checkbox"
+            checked={separate}
+            onChange={(e) => {
+              setSeparate(e.target.checked);
+              separateRef.current = e.target.checked;
+            }}
+            className="h-4 w-4 accent-amber"
+          />
+          Separate vocals first — best for band recordings (adds a minute or two)
+        </label>
+      ) : null}
 
       {phase.kind === 'idle' || phase.kind === 'error' ? (
         <div
@@ -157,8 +191,13 @@ export function TranscribeStudio(): React.JSX.Element {
           <p className="mt-4 font-body text-sm text-ink-secondary">
             {phase.kind === 'uploading'
               ? 'Uploading…'
-              : 'Detecting notes and scale — this takes ten seconds or so'}
+              : `${phase.stage ?? (separate ? 'separating and transcribing — full songs take 3–8 minutes' : 'detecting notes and scale')} · ${elapsedLabel(phase.startedAt)}`}
           </p>
+          {phase.kind === 'processing' ? (
+            <p className="mt-2 font-body text-xs text-ink-tertiary">
+              Leave this page open — re-uploading the same file won’t start a second job.
+            </p>
+          ) : null}
         </div>
       )}
 
@@ -186,13 +225,31 @@ export function TranscribeStudio(): React.JSX.Element {
             dangerouslySetInnerHTML={{ __html: phase.svg }}
           />
 
-          {playerReady && (
-            <midi-player
-              src={`${AI_URL}/notation/jobs/${phase.jobId}/artifacts/midi`}
-              sound-font=""
-              className="mt-6 block w-full"
-            />
-          )}
+          {/* A/B: the uploaded recording against the transcription, rendered
+              with real instrument samples (empty sound-font = raw oscillator
+              beeps — never that again). */}
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <p className="font-body text-sm font-semibold text-ink-primary">Original recording</p>
+              <audio
+                controls
+                src={`${AI_URL}/notation/jobs/${phase.jobId}/artifacts/original`}
+                className="mt-2 w-full"
+              />
+            </div>
+            <div>
+              <p className="font-body text-sm font-semibold text-ink-primary">
+                Transcription playback
+              </p>
+              {playerReady && (
+                <midi-player
+                  src={`${AI_URL}/notation/jobs/${phase.jobId}/artifacts/midi`}
+                  sound-font="https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus"
+                  className="mt-2 block w-full"
+                />
+              )}
+            </div>
+          </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
             {(['musicxml', 'svg', 'midi'] as const).map((kind) => (

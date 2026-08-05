@@ -15,13 +15,10 @@ import { useGeneration } from '@/hooks/useGeneration';
 import { useAudioPlayer } from '@/hooks/useAudioPlayer';
 import { resolvePlayableUri } from '@/services/audio/dataUri';
 import { ApiRequestError } from '@/services/api/unwrap';
+import { brandMessage, brandProviderName, MODEL_TIERS } from '@/utils/brand';
 import { colors, radius, spacing } from '@/theme';
 
-const PROVIDER_OPTIONS: ReadonlyArray<{ label: string; value: MusicProvider; note: string }> = [
-  { label: 'Google Lyria', value: 'lyria', note: 'Lyria 3 · ~30s clips' },
-  { label: 'Suno', value: 'suno', note: 'Full songs with vocals · via reseller API' },
-  { label: 'Archive model', value: 'local', note: 'Our own fine-tuned model · coming soon' },
-];
+const PROVIDER_OPTIONS = MODEL_TIERS;
 
 const INSTRUMENTAL_CHIP = 'instrumental';
 
@@ -63,7 +60,7 @@ export default function GenerateStudio(): React.JSX.Element {
     start.error instanceof ApiRequestError
       ? start.error.code === 'RATE_LIMITED'
         ? 'You have reached the hourly generation limit — try again a little later.'
-        : start.error.message
+        : brandMessage(start.error.message)
       : start.error
         ? 'Generation failed — check your connection and try again.'
         : null;
@@ -142,7 +139,7 @@ export default function GenerateStudio(): React.JSX.Element {
               Generation failed
             </Text>
             <Text variant="bodySmall" color="secondary">
-              {job.error ?? 'Unknown error'}
+              {brandMessage(job.error ?? 'Unknown error')}
             </Text>
             <Button label="Start over" variant="ghost" onPress={reset} />
           </Card>
@@ -156,7 +153,7 @@ export default function GenerateStudio(): React.JSX.Element {
               </Text>
               <View style={styles.badge}>
                 <Text variant="labelSmall" color="inverse">
-                  AI · {job.provider.toUpperCase()}
+                  AI · {brandProviderName(job.provider)}
                 </Text>
               </View>
             </View>
