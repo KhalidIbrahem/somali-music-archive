@@ -1,4 +1,38 @@
 @import 'tailwindcss';
+@import './tokens.css';
+
+/*
+ * Block 1 semantic studio tokens (tokens.css, GENERATED — npm run tokens:gen)
+ * mapped into Tailwind utilities. `@theme inline` keeps utilities pointed at
+ * the runtime CSS variables so the dark/light switch needs no re-render.
+ * Naming: surfaces/accents keep their token names (bg-chrome-1, text-accent-state);
+ * the text tiers shorten to text-hi / text-mid / text-low.
+ */
+@theme inline {
+  --color-page: var(--page);
+  --color-chrome-1: var(--chrome-1);
+  --color-chrome-2: var(--chrome-2);
+  --color-hairline: var(--hairline);
+  --color-hi: var(--text-hi);
+  --color-mid: var(--text-mid);
+  --color-low: var(--text-low);
+  --color-paper: var(--paper);
+  --color-paper-edge: var(--paper-edge);
+  --color-accent-state: var(--accent-state);
+  --color-accent-live: var(--accent-live);
+  --color-danger: var(--danger);
+  --color-confidence-high: var(--confidence-high);
+  --color-confidence-mid: var(--confidence-mid);
+  --color-confidence-low: var(--confidence-low);
+  --font-numeric: var(--font-plex-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+/* Every numeric readout — timecode, BPM, confidence %, Hz, durations — uses the
+   mono face with tabular figures so numbers never reflow as they update (§1). */
+@utility numeric {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+}
 
 /*
  * Tailwind v4 theme mapped to the platform design tokens (CLAUDE.md, ARCHITECTURE.md §7).

@@ -1,0 +1,75 @@
+/* GENERATED FILE — do not edit by hand.
+ * Source: packages/constants/src/designTokens.json
+ * Regenerate: npm run tokens:gen (root)
+ *
+ * Semantic studio tokens (Block 1 brief §1). Dark is the default; light is
+ * activated by data-theme='light' on <html>. Confidence ink and the 8px-grid
+ * layout vars are theme-independent. Printing always uses the light values —
+ * an engraved score must come out dark ink on a light page.
+ */
+
+:root {
+  --page: #0c0b14;
+  --chrome-1: #14131d;
+  --chrome-2: #1e1c29;
+  --hairline: #2a2836;
+  --text-hi: #edeaf2;
+  --text-mid: #9a96a8;
+  --text-low: #5f5b70;
+  --paper: #f5f1e8;
+  --paper-edge: #e8e2d4;
+  --accent-state: #c89b5f;
+  --accent-live: #4189d4;
+  --danger: #c4574f;
+  --confidence-ink: #0c0b14;
+  --confidence-high: #0c0b14;
+  --confidence-mid: rgba(12, 11, 20, 0.62);
+  --confidence-low: rgba(12, 11, 20, 0.34);
+  --studio-grid: 8px;
+  --studio-control: 32px;
+  --studio-control-compact: 24px;
+  --studio-radius-control: 4px;
+  --studio-radius-panel: 0px;
+  --studio-radius-canvas: 2px;
+  --studio-top-bar: 56px;
+  --studio-library-rail: 280px;
+  --studio-inspector-rail: 320px;
+  --studio-waveform: 96px;
+  --studio-transport: 64px;
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --page: #e4e1da;
+  --chrome-1: #edeae3;
+  --chrome-2: #f7f5f0;
+  --hairline: #cfcbc2;
+  --text-hi: #1a1822;
+  --text-mid: #5a5666;
+  --text-low: #8e8a99;
+  --paper: #ffffff;
+  --paper-edge: #d8d4ca;
+  --accent-state: #876128;
+  --accent-live: #2c6bb0;
+  --danger: #a83f38;
+  color-scheme: light;
+}
+
+@media print {
+  :root,
+  :root[data-theme] {
+    --page: #e4e1da;
+    --chrome-1: #edeae3;
+    --chrome-2: #f7f5f0;
+    --hairline: #cfcbc2;
+    --text-hi: #1a1822;
+    --text-mid: #5a5666;
+    --text-low: #8e8a99;
+    --paper: #ffffff;
+    --paper-edge: #d8d4ca;
+    --accent-state: #876128;
+    --accent-live: #2c6bb0;
+    --danger: #a83f38;
+    color-scheme: light;
+  }
+}

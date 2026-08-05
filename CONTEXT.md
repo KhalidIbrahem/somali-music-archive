@@ -37,8 +37,8 @@ always the lightest surface on screen.
 
 | Task | Status | Commit | Notes |
 |---|---|---|---|
-| B1-00 baseline + CONTEXT seed | done | dff7121 + this | prior WIP preserved |
-| B1-01 token layer | open | | |
+| B1-00 baseline + CONTEXT seed | done | dff7121, c5cf3f6 | prior WIP preserved |
+| B1-01 token layer | done | (next) | JSON source + tokens.css codegen + mobile re-export; 13-test spec (parity, AA, paper-lightest, 8px grid). **Deviation:** light `--accent-state` corrected `#8A6329`→`#876128` — brief's value measured 4.485:1 on light chrome-1, under the AA floor it exists to clear. Web `numeric` utility + `font-numeric`; Tailwind names: `bg-chrome-1`, `text-hi/mid/low`, `text-accent-state`, `bg-paper`… |
 | B1-01b theme switching | open | | |
 | B1-02 chrome shell | open | | |
 | B1-03 score canvas + Verovio | open | | |
