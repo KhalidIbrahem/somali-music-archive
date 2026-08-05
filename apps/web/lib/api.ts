@@ -9,6 +9,7 @@ import type {
   AuthTokens,
   BookContentType,
   CreatedOrganization,
+  FieldError,
   GenerationJob,
   GenerationRequest,
   LibraryBook,
@@ -33,10 +34,15 @@ const NETWORK_ERROR_MESSAGE = 'Could not reach the server. Check your connection
 
 export class ApiError extends Error {
   readonly code: ClientErrorCode;
-  constructor(code: ClientErrorCode, message: string) {
+  /** Per-field validation errors (VALIDATION_ERROR responses) — path + message,
+   *  so forms can attach each message to its input instead of showing only the
+   *  generic envelope line. */
+  readonly fields?: readonly FieldError[];
+  constructor(code: ClientErrorCode, message: string, fields?: readonly FieldError[]) {
     super(message);
     this.name = 'ApiError';
     this.code = code;
+    if (fields !== undefined) this.fields = fields;
   }
 }
 
@@ -63,7 +69,7 @@ async function apiFetch<T>(path: string, init?: RequestInit, auth = true): Promi
     throw new ApiError('INTERNAL_ERROR', `Server error (${res.status})`);
   }
   if (!body.success) {
-    throw new ApiError(body.error.code, body.error.message);
+    throw new ApiError(body.error.code, body.error.message, body.error.fields);
   }
   return body.data;
 }

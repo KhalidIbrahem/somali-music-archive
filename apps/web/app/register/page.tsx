@@ -32,6 +32,8 @@ export default function Register(): React.JSX.Element {
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** Server-side VALIDATION_ERROR details, keyed by field path. */
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   /** Set once registration succeeds — holds the new member's name. */
   const [registered, setRegistered] = useState<string | null>(null);
@@ -39,8 +41,14 @@ export default function Register(): React.JSX.Element {
   const onSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setError(null);
+    setFieldErrors({});
 
-    // Client-side guards for the two rules the server can't infer from one field.
+    // Client-side guards mirroring the server rules that plain HTML attributes
+    // can't express (registerSchema stays the source of truth).
+    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+      setFieldErrors({ password: 'Include at least one letter and one number.' });
+      return;
+    }
     if (password !== confirm) {
       setError('Passwords do not match.');
       return;
@@ -64,8 +72,27 @@ export default function Register(): React.JSX.Element {
       setToken(accessToken);
       setRegistered(user.displayName);
     } catch (err) {
-      // The API returns a per-field VALIDATION_ERROR message we can surface directly.
-      setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
+      if (err instanceof ApiError && err.fields !== undefined && err.fields.length > 0) {
+        // Attach each server message to its input; the banner stays for
+        // anything that doesn't map to a visible field.
+        const byPath: Record<string, string> = {};
+        for (const f of err.fields) byPath[f.path] ??= f.message;
+        setFieldErrors(byPath);
+        const unmapped = err.fields.filter(
+          (f) =>
+            ![
+              'displayName',
+              'email',
+              'password',
+              'language',
+              'dateOfBirth',
+              'acceptedTerms',
+            ].includes(f.path),
+        );
+        if (unmapped.length > 0) setError(unmapped.map((f) => f.message).join(' '));
+      } else {
+        setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
+      }
     } finally {
       setBusy(false);
     }
@@ -118,7 +145,7 @@ export default function Register(): React.JSX.Element {
             onSubmit={onSubmit}
             className="flex flex-col gap-5 rounded-2xl border border-line-secondary bg-bg-secondary p-8"
           >
-            <Field label="Display name">
+            <Field label="Display name" error={fieldErrors['displayName']}>
               <input
                 type="text"
                 value={displayName}
@@ -131,7 +158,7 @@ export default function Register(): React.JSX.Element {
               />
             </Field>
 
-            <Field label="Email">
+            <Field label="Email" error={fieldErrors['email']}>
               <input
                 type="email"
                 value={email}
@@ -142,13 +169,18 @@ export default function Register(): React.JSX.Element {
               />
             </Field>
 
-            <Field label="Password" hint="At least 8 characters, including a letter and a number.">
+            <Field
+              label="Password"
+              hint="At least 8 characters, including a letter and a number."
+              error={fieldErrors['password']}
+            >
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
+                maxLength={72}
                 autoComplete="new-password"
                 className={inputClass}
               />
@@ -185,7 +217,11 @@ export default function Register(): React.JSX.Element {
               </div>
             </Field>
 
-            <Field label="Date of birth" hint="You must be at least 13 years old to register.">
+            <Field
+              label="Date of birth"
+              hint="You must be at least 13 years old to register."
+              error={fieldErrors['dateOfBirth']}
+            >
               <input
                 type="date"
                 value={dateOfBirth}
@@ -214,6 +250,11 @@ export default function Register(): React.JSX.Element {
                 .
               </span>
             </label>
+            {fieldErrors['acceptedTerms'] !== undefined && (
+              <p role="alert" className="-mt-3 font-body text-sm text-red-400">
+                {fieldErrors['acceptedTerms']}
+              </p>
+            )}
 
             {error ? (
               <p role="alert" className="font-body text-sm text-red-400">
@@ -248,17 +289,26 @@ const inputClass =
 function Field({
   label,
   hint,
+  error,
   children,
 }: {
   label: string;
   hint?: string;
+  /** Server-side validation message for this field (VALIDATION_ERROR details). */
+  error?: string | undefined;
   children: React.ReactNode;
 }): React.JSX.Element {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="font-body text-sm text-ink-secondary">{label}</span>
       {children}
-      {hint ? <span className="font-body text-xs text-ink-tertiary">{hint}</span> : null}
+      {error !== undefined ? (
+        <span role="alert" className="font-body text-xs text-red-400">
+          {error}
+        </span>
+      ) : hint ? (
+        <span className="font-body text-xs text-ink-tertiary">{hint}</span>
+      ) : null}
     </label>
   );
 }
