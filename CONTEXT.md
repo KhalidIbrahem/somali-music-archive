@@ -40,7 +40,7 @@ always the lightest surface on screen.
 | B1-00 baseline + CONTEXT seed | done | dff7121, c5cf3f6 | prior WIP preserved |
 | B1-01 token layer | done | (next) | JSON source + tokens.css codegen + mobile re-export; 13-test spec (parity, AA, paper-lightest, 8px grid). **Deviation:** light `--accent-state` corrected `#8A6329`→`#876128` — brief's value measured 4.485:1 on light chrome-1, under the AA floor it exists to clear. Web `numeric` utility + `font-numeric`; Tailwind names: `bg-chrome-1`, `text-hi/mid/low`, `text-accent-state`, `bg-paper`… |
 | B1-01b theme switching | done | (next) | Pre-paint bootstrap script in layout body; explicit-choice-only persistence (`sma.theme`); cross-tab sync; ThemeToggle component (mounts in B1-02 top bar); Expo `StudioThemeProvider` + settings-store preference (in-memory like all mobile settings until P2-07). FOUC/timing screenshot check happens with B1-02; AA-in-both-themes already enforced by studio.test.ts. |
-| B1-02 chrome shell | open | | |
+| B1-02 chrome shell | done | (next) | Four zones live at /studio on layout tokens (`w-(--studio-library-rail)` etc.). qg studio pages deleted (history: dff7121). **Verified headless** (scratchpad cdp.mjs harness — Chrome extension had 2 browsers, user pick timed out): grid holds 1280/1440/1920 no overflow; rails collapse/restore; transport fixed; theme switch 3.6ms; first visit honors system light *without* persisting; explicit choice persists + bootstrap replay honors both values. Real session values in inspector/transport (root A, 2·4·7·9·11, +41.6¢, 106 BPM, 313/412 snapped, conf 165/115/132). |
 | B1-03 score canvas + Verovio | open | | |
 | B1-04 waveform strip | open | | |
 | B1-05 shared timeline | open | | |
