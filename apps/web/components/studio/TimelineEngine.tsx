@@ -30,6 +30,8 @@ export interface TimelineEngine {
   toggle(): Promise<void>;
   /** Move the cursor. Sample-accurate: a new source starts exactly at t. */
   seek(t: number): void;
+  /** Play [start, end) alone — the popover's "play this note" (§3). */
+  playSegment(start: number, end: number): Promise<void>;
   onFrame(cb: FrameCb): () => void;
   onTransport(cb: TransportCb): () => void;
 }
@@ -89,14 +91,15 @@ function createEngine(): InternalEngine {
     if (playing) raf = requestAnimationFrame(tick);
   };
 
-  const startSource = (buffer: AudioBuffer, at: number): void => {
+  const startSource = (buffer: AudioBuffer, at: number, stopAfter?: number): void => {
     const ctx = getAudioContext();
     source = ctx.createBufferSource();
     source.buffer = buffer;
     source.connect(ctx.destination);
     offset = at;
     startCtx = ctx.currentTime;
-    source.start(0, at);
+    if (stopAfter === undefined) source.start(0, at);
+    else source.start(0, at, stopAfter);
   };
 
   return {
@@ -151,6 +154,30 @@ function createEngine(): InternalEngine {
         offset = clamped;
       }
       emitFrame();
+    },
+
+    async playSegment(start: number, end: number): Promise<void> {
+      const ctx = getAudioContext();
+      await ctx.resume();
+      const buffer = await loadSampleBuffer();
+      stopSource();
+      const from = Math.min(duration, Math.max(0, start));
+      const until = Math.min(duration, Math.max(from, end));
+      startSource(buffer, from, until - from);
+      playing = true;
+      emitTransport();
+      if (source !== null) {
+        source.onended = () => {
+          if (!playing) return;
+          playing = false;
+          offset = until;
+          cancelAnimationFrame(raf);
+          emitTransport();
+          emitFrame();
+        };
+      }
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(tick);
     },
 
     onFrame(cb: FrameCb): () => void {
