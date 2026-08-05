@@ -139,6 +139,10 @@ export default function Welcome(): React.JSX.Element {
             <Link href="/(auth)/login" asChild>
               <Button label="Sign in" variant="ghost" />
             </Link>
+            {/* B1-08: the engraved sample is browsable before any account. */}
+            <Link href="/reader" asChild>
+              <Button label="Preview the score reader" variant="ghost" />
+            </Link>
           </View>
         </Slide>
       </Animated.ScrollView>
