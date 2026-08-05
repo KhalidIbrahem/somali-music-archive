@@ -27,6 +27,11 @@ import {
   Nunito_600SemiBold,
   Nunito_700Bold,
 } from '@expo-google-fonts/nunito';
+import {
+  IBMPlexMono_400Regular,
+  IBMPlexMono_500Medium,
+  IBMPlexMono_600SemiBold,
+} from '@expo-google-fonts/ibm-plex-mono';
 import { colors } from '@/theme';
 import { useAuthStore } from '@/stores/authStore';
 import { useSettingsStore } from '@/stores/settingsStore';
@@ -55,6 +60,9 @@ export default function RootLayout(): React.JSX.Element | null {
     Nunito_500Medium,
     Nunito_600SemiBold,
     Nunito_700Bold,
+    IBMPlexMono_400Regular,
+    IBMPlexMono_500Medium,
+    IBMPlexMono_600SemiBold,
   });
 
   const hydrate = useAuthStore((s) => s.hydrate);

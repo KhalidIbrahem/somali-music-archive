@@ -2,7 +2,7 @@
   "name": "somali-music-archive",
   "version": "0.1.0",
   "private": true,
-  "description": "Somali Music AI Preservation Platform — a permanent, research-grade archive of Somali traditional music. Monorepo root.",
+  "description": "Somali Music AI Preservation Platform \u2014 a permanent, research-grade archive of Somali traditional music. Monorepo root.",
   "author": "Khalid Ibrahim <hrgysa123@gmail.com>",
   "license": "UNLICENSED",
   "homepage": "https://somalimusicarchive.com",
@@ -15,7 +15,7 @@
     "apps/*",
     "packages/*"
   ],
-  "//overrides": "React is pinned to the exact version Expo SDK 57 expects. Without this, npm hoists a newer patch for the web app and nests a second copy under apps/mobile — two React instances break hooks on the phone and in jest.",
+  "//overrides": "React is pinned to the exact version Expo SDK 57 expects. Without this, npm hoists a newer patch for the web app and nests a second copy under apps/mobile \u2014 two React instances break hooks on the phone and in jest.",
   "overrides": {
     "react": "19.2.3",
     "react-dom": "19.2.3"
@@ -39,6 +39,7 @@
     "clean": "turbo run clean && rimraf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "tokens:gen": "node scripts/gen-tokens.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "prepare": "husky"
   },

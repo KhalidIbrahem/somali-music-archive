@@ -12,7 +12,8 @@
     "./genres": "./src/genres.ts",
     "./regions": "./src/regions.ts",
     "./languages": "./src/languages.ts",
-    "./instruments": "./src/instruments.ts"
+    "./instruments": "./src/instruments.ts",
+    "./designTokens": "./src/designTokens.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

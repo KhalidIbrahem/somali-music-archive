@@ -1,0 +1,56 @@
+{
+  "$comment": "Block 1 studio design tokens — THE single source of truth (design brief §1). Web consumes the generated apps/web/app/tokens.css (npm run tokens:gen); mobile imports via @sma/constants. Locked brand values (amber #C89B5F, ink-black #0C0B14, flag-blue #4189D4) appear here only as the dark-theme accent/page values and must never change. Governing rule: the score canvas (paper) is always the lightest surface on screen, in both themes. Deviation from the brief: light accent-state is #876128, not #8A6329 — the brief's value measures 4.485:1 on light chrome-1, under the AA 4.5 it was created to pass; #876128 clears 4.6:1 on the same ramp (theme/studio.test.ts enforces this).",
+  "themes": {
+    "dark": {
+      "page": "#0C0B14",
+      "chrome-1": "#14131D",
+      "chrome-2": "#1E1C29",
+      "hairline": "#2A2836",
+      "text-hi": "#EDEAF2",
+      "text-mid": "#9A96A8",
+      "text-low": "#5F5B70",
+      "paper": "#F5F1E8",
+      "paper-edge": "#E8E2D4",
+      "accent-state": "#C89B5F",
+      "accent-live": "#4189D4",
+      "danger": "#C4574F"
+    },
+    "light": {
+      "page": "#E4E1DA",
+      "chrome-1": "#EDEAE3",
+      "chrome-2": "#F7F5F0",
+      "hairline": "#CFCBC2",
+      "text-hi": "#1A1822",
+      "text-mid": "#5A5666",
+      "text-low": "#8E8A99",
+      "paper": "#FFFFFF",
+      "paper-edge": "#D8D4CA",
+      "accent-state": "#876128",
+      "accent-live": "#2C6BB0",
+      "danger": "#A83F38"
+    }
+  },
+  "confidence": {
+    "$comment": "Theme-independent engraved-note ink: always ink-black at these opacities, always on paper. Never inverted to white-on-dark.",
+    "ink": "#0C0B14",
+    "tiers": {
+      "high": { "min": 0.9, "alpha": 1 },
+      "mid": { "min": 0.7, "alpha": 0.62 },
+      "low": { "min": 0, "alpha": 0.34 }
+    }
+  },
+  "layout": {
+    "$comment": "Strict 8px baseline grid — every value below is a multiple of 8 (§2).",
+    "grid": 8,
+    "controlHeight": 32,
+    "controlHeightCompact": 24,
+    "radiusControl": 4,
+    "radiusPanel": 0,
+    "radiusCanvas": 2,
+    "topBarHeight": 56,
+    "libraryRailWidth": 280,
+    "inspectorRailWidth": 320,
+    "waveformHeight": 96,
+    "transportHeight": 64
+  }
+}

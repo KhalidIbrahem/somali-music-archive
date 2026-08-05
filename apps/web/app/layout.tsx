@@ -5,7 +5,7 @@
  */
 
 import type { Metadata } from 'next';
-import { Playfair_Display, Nunito } from 'next/font/google';
+import { Playfair_Display, Nunito, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 
 const playfair = Playfair_Display({
@@ -22,6 +22,14 @@ const nunito = Nunito({
   display: 'swap',
 });
 
+// Mono face for numeric readouts only — timecode, BPM, confidence %, Hz (§1).
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-plex-mono',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: 'Somali Music Archive',
   description:
@@ -30,7 +38,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
-    <html lang="en" className={`${playfair.variable} ${nunito.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${nunito.variable} ${plexMono.variable}`}>
       {/* suppressHydrationWarning: browser extensions (ColorZilla et al.) inject
           attributes like cz-shortcut-listen into <body> before React hydrates,
           tripping a false mismatch warning. Scoped to this element only. */}
