@@ -57,6 +57,9 @@ interface StudioStateValue {
   zoomOut: () => void;
   selectedNote: number | null;
   setSelectedNote: (index: number | null) => void;
+  /** §3 "Show certainty": graded confidence ink vs uniform black for export. */
+  showCertainty: boolean;
+  setShowCertainty: (on: boolean) => void;
 }
 
 const StudioContext = createContext<StudioStateValue | null>(null);
@@ -92,6 +95,7 @@ export function StudioProvider({ children }: { children: React.ReactNode }): Rea
   const [sessionStatus, setSessionStatus] = useState<SessionStatus>('loading');
   const [zoomPercent, setZoomPercent] = useState(100);
   const [selectedNote, setSelectedNote] = useState<number | null>(null);
+  const [showCertainty, setShowCertainty] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -118,8 +122,18 @@ export function StudioProvider({ children }: { children: React.ReactNode }): Rea
   const zoomOut = useCallback(() => setZoomPercent((z) => Math.max(ZOOM_MIN, z - ZOOM_STEP)), []);
 
   const value = useMemo<StudioStateValue>(
-    () => ({ session, sessionStatus, zoomPercent, zoomIn, zoomOut, selectedNote, setSelectedNote }),
-    [session, sessionStatus, zoomPercent, zoomIn, zoomOut, selectedNote],
+    () => ({
+      session,
+      sessionStatus,
+      zoomPercent,
+      zoomIn,
+      zoomOut,
+      selectedNote,
+      setSelectedNote,
+      showCertainty,
+      setShowCertainty,
+    }),
+    [session, sessionStatus, zoomPercent, zoomIn, zoomOut, selectedNote, showCertainty],
   );
 
   return <StudioContext.Provider value={value}>{children}</StudioContext.Provider>;

@@ -15,33 +15,54 @@ import { ScoreCanvas } from './ScoreCanvas';
 import { useStudio } from './StudioState';
 
 export function ScoreCanvasZone(): React.JSX.Element {
-  const { session, sessionStatus } = useStudio();
+  const { session, sessionStatus, showCertainty, setShowCertainty } = useStudio();
 
   return (
-    <div data-score-scroll className="min-h-0 flex-1 overflow-auto bg-page print:overflow-visible">
-      <div className="mx-auto my-8 w-fit min-w-[520px] rounded-[2px] bg-paper shadow-2xl ring-1 ring-paper-edge print:my-0 print:min-w-0 print:shadow-none print:ring-0">
-        <div className="px-16 pt-14 pb-6 text-center">
-          <p className="text-[11px] tracking-[0.2em] text-confidence-mid uppercase">
-            Somali Music Archive — transcription
-          </p>
-          <h2 className="mt-4 font-display text-3xl text-confidence-high">
-            {session?.meta.title ?? 'Sample session'}
-          </h2>
-          <p className="numeric mt-2 text-xs text-confidence-mid">
-            {session === null
-              ? '—'
-              : `${session.meta.instrument} · pentatonic root ${session.meta.tonic} ` +
-                `(+${session.meta.tuningOffsetCents}¢) · ${session.meta.bpm} BPM · ${session.meta.grid}`}
-          </p>
-        </div>
+    <div className="relative min-h-0 flex-1">
+      {/* §3 canvas-level toggle: graded confidence ink ↔ uniform black. */}
+      <button
+        type="button"
+        aria-pressed={showCertainty}
+        onClick={() => setShowCertainty(!showCertainty)}
+        className={`absolute top-2 right-4 z-10 flex h-6 items-center gap-2 rounded-[4px] border border-hairline px-2 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-live print:hidden ${
+          showCertainty ? 'bg-chrome-2 text-hi' : 'bg-chrome-1 text-mid hover:text-hi'
+        }`}
+      >
+        <span
+          aria-hidden
+          className={`h-2 w-2 rounded-full ${showCertainty ? 'bg-accent-state' : 'bg-low'}`}
+        />
+        Show certainty
+      </button>
 
-        {sessionStatus === 'error' ? (
-          <p className="px-16 pb-16 text-center text-sm text-confidence-mid">
-            The session data could not load. Reload the page to try again.
-          </p>
-        ) : (
-          <ScoreCanvas />
-        )}
+      <div
+        data-score-scroll
+        className="h-full min-h-0 overflow-auto bg-page print:overflow-visible"
+      >
+        <div className="mx-auto my-8 w-fit min-w-[520px] rounded-[2px] bg-paper shadow-2xl ring-1 ring-paper-edge print:my-0 print:min-w-0 print:shadow-none print:ring-0">
+          <div className="px-16 pt-14 pb-6 text-center">
+            <p className="text-[11px] tracking-[0.2em] text-confidence-mid uppercase">
+              Somali Music Archive — transcription
+            </p>
+            <h2 className="mt-4 font-display text-3xl text-confidence-high">
+              {session?.meta.title ?? 'Sample session'}
+            </h2>
+            <p className="numeric mt-2 text-xs text-confidence-mid">
+              {session === null
+                ? '—'
+                : `${session.meta.instrument} · pentatonic root ${session.meta.tonic} ` +
+                  `(+${session.meta.tuningOffsetCents}¢) · ${session.meta.bpm} BPM · ${session.meta.grid}`}
+            </p>
+          </div>
+
+          {sessionStatus === 'error' ? (
+            <p className="px-16 pb-16 text-center text-sm text-confidence-mid">
+              The session data could not load. Reload the page to try again.
+            </p>
+          ) : (
+            <ScoreCanvas />
+          )}
+        </div>
       </div>
     </div>
   );

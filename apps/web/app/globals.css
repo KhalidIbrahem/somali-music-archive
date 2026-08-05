@@ -39,6 +39,11 @@
    The `*` leg overrides Verovio's own fill attributes (CSS beats presentation
    attributes), including the pipeline's red outlier marks, for the duration
    of the state. */
+.score-svg svg {
+  /* Engraved ink is the theme-independent confidence ink, never pure #000. */
+  fill: var(--confidence-ink);
+  color: var(--confidence-ink);
+}
 .score-svg .note-selected,
 .score-svg .note-selected * {
   fill: var(--accent-state);
@@ -46,6 +51,17 @@
 .score-svg .note-playing,
 .score-svg .note-playing * {
   fill: var(--accent-live);
+}
+/* State colors stay legible regardless of the glyph's confidence opacity
+   (inline style — hence the !important). */
+.score-svg .note-selected,
+.score-svg .note-playing {
+  fill-opacity: 1 !important;
+}
+/* Keyboard path to the popover: glyphs are focusable buttons (§6 floor). */
+.score-svg g.note:focus-visible {
+  outline: 2px solid var(--accent-live);
+  outline-offset: 2px;
 }
 
 /*
