@@ -3,7 +3,7 @@
 // Usage: node scripts/vercel-deploy.mjs <projectName> [--dry-run]
 import { createHash } from 'node:crypto';
 import { execSync } from 'node:child_process';
-import { existsSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import os from 'node:os';
@@ -14,10 +14,19 @@ const PROJECT = process.argv[2];
 const DRY = process.argv.includes('--dry-run');
 if (!PROJECT) throw new Error('usage: node api-deploy.mjs <projectName>');
 
-const auth = JSON.parse(
-  readFileSync(join(os.homedir(), 'Library/Application Support/com.vercel.cli/auth.json'), 'utf8'),
-);
-const HEADERS = { Authorization: `Bearer ${auth.token}` };
+// Token resolution: durable token first (env or git-ignored .vercel-token
+// file — CLI login sessions on this machine keep expiring), CLI auth last.
+import { existsSync as _ex, readFileSync as _rf } from 'node:fs';
+function resolveToken() {
+  if (process.env.VERCEL_TOKEN) return process.env.VERCEL_TOKEN.trim();
+  const f = join(REPO, '.vercel-token');
+  if (_ex(f)) return _rf(f, 'utf8').trim();
+  const auth = JSON.parse(
+    _rf(join(os.homedir(), 'Library/Application Support/com.vercel.cli/auth.json'), 'utf8'),
+  );
+  return auth.token;
+}
+const HEADERS = { Authorization: `Bearer ${resolveToken()}` };
 
 // Source files: tracked + untracked-but-not-gitignored, then .vercelignore-style trims.
 const raw = execSync('git ls-files -co --exclude-standard', { cwd: REPO, maxBuffer: 64e6 })
@@ -38,6 +47,20 @@ const files = raw.filter((f) => {
   if (base === '.DS_Store' || base.endsWith('.log')) return false;
   return true;
 });
+// The listening-room MP3s are deliberately gitignored (license_status=unknown
+// audio must never enter git history), so `git ls-files` no longer sees them —
+// but the DEPLOYED web app still serves them from /public/audio. Re-attach them
+// from disk for the web project only.
+if (PROJECT === 'somali-music-archive') {
+  for (const dir of ['apps/web/public/audio', 'apps/web/public/demos/audio']) {
+    const abs = join(REPO, dir);
+    if (!existsSync(abs)) continue;
+    for (const name of readdirSync(abs)) {
+      if (name.endsWith('.mp3')) files.push(`${dir}/${name}`);
+    }
+  }
+}
+
 console.log(`files to upload: ${files.length}`);
 if (DRY) {
   console.log(files.slice(0, 30).join('\n'));

@@ -11,7 +11,7 @@ import { GenerationStudio } from '@/components/generate/GenerationStudio';
 export const metadata: Metadata = {
   title: 'Generate — Somali Music Archive',
   description:
-    'Describe a song and let AI compose in the spirit of the Somali tradition — Suno, Google Lyria, and (soon) the archive’s own fine-tuned model.',
+    'Describe a song and let the QaraamiGen models compose in the spirit of the Somali musical tradition.',
 };
 
 export default function GeneratePage(): React.JSX.Element {

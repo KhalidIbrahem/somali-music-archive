@@ -7,14 +7,15 @@
  * source of truth for validation (registerSchema): this form mirrors those rules
  * for fast feedback, but every field is re-checked server-side. Date of birth is
  * required by the API's COPPA age gate (§11) even though it is a light touch here.
- * On success we send the visitor to /login rather than auto-entering a session.
+ * On success the visitor STAYS here: register returns tokens, we store them and
+ * swap the form for a signed-in welcome card — no redirect.
  */
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { UI_LANGUAGES, type UiLanguage } from '@sma/constants';
 import { register, ApiError } from '@/lib/api';
+import { setToken } from '@/lib/auth';
 
 const LANGUAGE_LABELS: Record<UiLanguage, string> = {
   so: 'Somali',
@@ -23,7 +24,6 @@ const LANGUAGE_LABELS: Record<UiLanguage, string> = {
 };
 
 export default function Register(): React.JSX.Element {
-  const router = useRouter();
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,6 +33,8 @@ export default function Register(): React.JSX.Element {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  /** Set once registration succeeds — holds the new member's name. */
+  const [registered, setRegistered] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
@@ -50,7 +52,7 @@ export default function Register(): React.JSX.Element {
 
     setBusy(true);
     try {
-      await register({
+      const { user, accessToken } = await register({
         displayName: displayName.trim(),
         email: email.trim(),
         password,
@@ -58,7 +60,9 @@ export default function Register(): React.JSX.Element {
         dateOfBirth,
         acceptedTerms: true,
       });
-      router.push('/login?registered=1');
+      // Registration IS the sign-in: store the session and stay on this page.
+      setToken(accessToken);
+      setRegistered(user.displayName);
     } catch (err) {
       // The API returns a per-field VALIDATION_ERROR message we can surface directly.
       setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
@@ -80,121 +84,152 @@ export default function Register(): React.JSX.Element {
           </p>
         </div>
 
-        <form
-          onSubmit={onSubmit}
-          className="flex flex-col gap-5 rounded-2xl border border-line-secondary bg-bg-secondary p-8"
-        >
-          <Field label="Display name">
-            <input
-              type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              required
-              minLength={2}
-              maxLength={60}
-              autoComplete="name"
-              className={inputClass}
-            />
-          </Field>
-
-          <Field label="Email">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-              className={inputClass}
-            />
-          </Field>
-
-          <Field label="Password" hint="At least 8 characters, including a letter and a number.">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-              autoComplete="new-password"
-              className={inputClass}
-            />
-          </Field>
-
-          <Field label="Confirm password">
-            <input
-              type="password"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              required
-              autoComplete="new-password"
-              className={inputClass}
-            />
-          </Field>
-
-          <Field label="Preferred language">
-            <div className="grid grid-cols-3 gap-2">
-              {UI_LANGUAGES.map((lang) => (
-                <button
-                  key={lang}
-                  type="button"
-                  onClick={() => setLanguage(lang)}
-                  aria-pressed={language === lang}
-                  className={`rounded-lg border px-3 py-2 font-body text-sm transition-colors ${
-                    language === lang
-                      ? 'border-amber bg-amber/10 text-amber'
-                      : 'border-line-primary text-ink-secondary hover:border-amber/40'
-                  }`}
-                >
-                  {LANGUAGE_LABELS[lang]}
-                </button>
-              ))}
-            </div>
-          </Field>
-
-          <Field label="Date of birth" hint="You must be at least 13 years old to register.">
-            <input
-              type="date"
-              value={dateOfBirth}
-              onChange={(e) => setDateOfBirth(e.target.value)}
-              required
-              className={`${inputClass} [color-scheme:dark]`}
-            />
-          </Field>
-
-          <label className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              checked={acceptedTerms}
-              onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="mt-1 h-4 w-4 shrink-0 accent-amber"
-            />
-            <span className="font-body text-sm text-ink-secondary">
-              I agree to the{' '}
-              <Link href="/terms" className="text-amber hover:underline">
-                Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link href="/privacy" className="text-amber hover:underline">
-                Privacy Policy
-              </Link>
-              .
+        {registered ? (
+          <div className="flex flex-col items-center gap-4 rounded-2xl border border-line-secondary bg-bg-secondary p-10 text-center">
+            <span
+              aria-hidden
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-amber/15 text-2xl text-amber"
+            >
+              ✓
             </span>
-          </label>
-
-          {error ? (
-            <p role="alert" className="font-body text-sm text-red-400">
-              {error}
+            <h2 className="font-display text-2xl text-ink-primary">
+              Ku soo dhawoow, {registered}!
+            </h2>
+            <p className="max-w-sm font-body text-sm text-ink-secondary">
+              Your account is ready and you are signed in on this device — no extra login needed.
             </p>
-          ) : null}
-
-          <button
-            type="submit"
-            disabled={busy}
-            className="rounded-lg bg-amber px-4 py-3 font-body font-semibold text-bg-primary transition-opacity disabled:opacity-50"
+            <div className="mt-2 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/listen"
+                className="rounded-lg bg-amber px-5 py-2.5 font-body text-sm font-semibold text-bg-primary transition-transform hover:-translate-y-0.5"
+              >
+                Enter the listening room
+              </Link>
+              <Link
+                href="/generate"
+                className="rounded-lg border border-amber/40 px-5 py-2.5 font-body text-sm font-semibold text-amber transition-colors hover:bg-amber hover:text-bg-primary"
+              >
+                Try the Generation Studio
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <form
+            onSubmit={onSubmit}
+            className="flex flex-col gap-5 rounded-2xl border border-line-secondary bg-bg-secondary p-8"
           >
-            {busy ? 'Creating account…' : 'Create account'}
-          </button>
-        </form>
+            <Field label="Display name">
+              <input
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                required
+                minLength={2}
+                maxLength={60}
+                autoComplete="name"
+                className={inputClass}
+              />
+            </Field>
+
+            <Field label="Email">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+                className={inputClass}
+              />
+            </Field>
+
+            <Field label="Password" hint="At least 8 characters, including a letter and a number.">
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={8}
+                autoComplete="new-password"
+                className={inputClass}
+              />
+            </Field>
+
+            <Field label="Confirm password">
+              <input
+                type="password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+                required
+                autoComplete="new-password"
+                className={inputClass}
+              />
+            </Field>
+
+            <Field label="Preferred language">
+              <div className="grid grid-cols-3 gap-2">
+                {UI_LANGUAGES.map((lang) => (
+                  <button
+                    key={lang}
+                    type="button"
+                    onClick={() => setLanguage(lang)}
+                    aria-pressed={language === lang}
+                    className={`rounded-lg border px-3 py-2 font-body text-sm transition-colors ${
+                      language === lang
+                        ? 'border-amber bg-amber/10 text-amber'
+                        : 'border-line-primary text-ink-secondary hover:border-amber/40'
+                    }`}
+                  >
+                    {LANGUAGE_LABELS[lang]}
+                  </button>
+                ))}
+              </div>
+            </Field>
+
+            <Field label="Date of birth" hint="You must be at least 13 years old to register.">
+              <input
+                type="date"
+                value={dateOfBirth}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+                required
+                className={`${inputClass} [color-scheme:dark]`}
+              />
+            </Field>
+
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className="mt-1 h-4 w-4 shrink-0 accent-amber"
+              />
+              <span className="font-body text-sm text-ink-secondary">
+                I agree to the{' '}
+                <Link href="/terms" className="text-amber hover:underline">
+                  Terms of Service
+                </Link>{' '}
+                and{' '}
+                <Link href="/privacy" className="text-amber hover:underline">
+                  Privacy Policy
+                </Link>
+                .
+              </span>
+            </label>
+
+            {error ? (
+              <p role="alert" className="font-body text-sm text-red-400">
+                {error}
+              </p>
+            ) : null}
+
+            <button
+              type="submit"
+              disabled={busy}
+              className="rounded-lg bg-amber px-4 py-3 font-body font-semibold text-bg-primary transition-opacity disabled:opacity-50"
+            >
+              {busy ? 'Creating account…' : 'Create account'}
+            </button>
+          </form>
+        )}
 
         <p className="text-center font-body text-sm text-ink-secondary">
           Already have an account?{' '}
