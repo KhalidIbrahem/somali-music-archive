@@ -33,6 +33,7 @@ import {
   IBMPlexMono_600SemiBold,
 } from '@expo-google-fonts/ibm-plex-mono';
 import { colors } from '@/theme';
+import { StudioThemeProvider } from '@/theme/StudioThemeProvider';
 import { useAuthStore } from '@/stores/authStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
@@ -93,19 +94,21 @@ export default function RootLayout(): React.JSX.Element | null {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
-          <StatusBar style="light" />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: colors.bg.primary },
-            }}
-          >
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="archive/[id]" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="artist/[id]" options={{ presentation: 'modal' }} />
-            <Stack.Screen name="lesson/[id]" options={{ presentation: 'modal' }} />
-          </Stack>
+          <StudioThemeProvider>
+            <StatusBar style="light" />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: colors.bg.primary },
+              }}
+            >
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="archive/[id]" options={{ presentation: 'modal' }} />
+              <Stack.Screen name="artist/[id]" options={{ presentation: 'modal' }} />
+              <Stack.Screen name="lesson/[id]" options={{ presentation: 'modal' }} />
+            </Stack>
+          </StudioThemeProvider>
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

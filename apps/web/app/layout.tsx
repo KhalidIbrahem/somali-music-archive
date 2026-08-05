@@ -6,6 +6,8 @@
 
 import type { Metadata } from 'next';
 import { Playfair_Display, Nunito, IBM_Plex_Mono } from 'next/font/google';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { THEME_BOOTSTRAP_SCRIPT } from '@/lib/theme';
 import './globals.css';
 
 const playfair = Playfair_Display({
@@ -38,12 +40,21 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
-    <html lang="en" className={`${playfair.variable} ${nunito.variable} ${plexMono.variable}`}>
-      {/* suppressHydrationWarning: browser extensions (ColorZilla et al.) inject
-          attributes like cz-shortcut-listen into <body> before React hydrates,
+    // suppressHydrationWarning on <html>: the theme bootstrap sets data-theme
+    // before hydration, which the server render cannot know.
+    <html
+      lang="en"
+      className={`${playfair.variable} ${nunito.variable} ${plexMono.variable}`}
+      suppressHydrationWarning
+    >
+      {/* suppressHydrationWarning on <body>: browser extensions (ColorZilla et
+          al.) inject attributes like cz-shortcut-listen before React hydrates,
           tripping a false mismatch warning. Scoped to this element only. */}
       <body className="font-body antialiased" suppressHydrationWarning>
-        {children}
+        {/* First statement the browser executes inside <body>: resolve the
+            theme (stored choice → system preference → dark) before first paint. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
