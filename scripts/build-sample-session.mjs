@@ -19,7 +19,7 @@
  */
 
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -215,7 +215,76 @@ hero = hero.replace(
 );
 writeFileSync(join(outDir, 'hero.svg'), hero);
 
-// ── 6. Write outputs ─────────────────────────────────────────────────────────
+// ── 6. Mobile reader assets (B1-08) ──────────────────────────────────────────
+// The Expo score reader renders pre-paginated SVG pages (react-native-svg has
+// no Verovio), with each logical note's page + y position extracted here so
+// the reader can auto-scroll with playback. Confidence ink is baked in.
+
+const MOBILE_DIR = join(root, 'apps/mobile/assets/sample');
+const PAGE_W_UNITS = 2040; // → 816 px at scale 40
+const PAGE_H_UNITS = 2640; // → 1056 px
+const UNIT_TO_PX = 0.04;
+
+tk.setOptions({
+  scale: 40,
+  pageWidth: PAGE_W_UNITS,
+  pageHeight: PAGE_H_UNITS,
+  adjustPageHeight: false,
+  breaks: 'auto',
+  header: 'none',
+  footer: 'none',
+  justifyVertically: false,
+});
+tk.redoLayout({});
+
+const pageCount = tk.getPageCount();
+const pages = [];
+for (let p = 1; p <= pageCount; p++) {
+  let svg = tk.renderToSVG(p);
+  for (let i = 0; i < pipelineNotes.length; i++) {
+    const alpha = tierAlpha(pipelineNotes[i].confidence);
+    if (alpha >= 1) continue;
+    for (const id of logical[i]) {
+      svg = svg.replace(`<g id="${id}" `, `<g id="${id}" fill-opacity="${alpha}" `);
+    }
+  }
+  svg = svg.replace(
+    /<svg([^>]*?)\swidth="(\d+)px"\sheight="(\d+)px"/,
+    (_m, pre, w, h) => `<svg${pre} viewBox="0 0 ${w} ${h}" fill="${CONFIDENCE_INK}"`,
+  );
+  pages.push(svg);
+}
+
+const readerNotes = pipelineNotes.map((n, i) => {
+  const id = logical[i][0];
+  const page = tk.getPageWithElement(id); // 1-based; 0 = not found
+  if (page < 1) throw new Error(`note ${i} (${id}) not on any page`);
+  const svg = pages[page - 1];
+  const at = svg.indexOf(`id="${id}"`);
+  // Verovio places the notehead <use> via transform="translate(x, y)".
+  const m = at >= 0 ? svg.slice(at, at + 600).match(/translate\((-?\d+),\s*(-?\d+)\)/) : null;
+  if (!m) throw new Error(`no position found for note ${i} (${id})`);
+  return {
+    start: n.start,
+    end: n.end,
+    page: page - 1,
+    y: Math.round(Number(m[2]) * UNIT_TO_PX),
+    confidence: n.confidence,
+  };
+});
+
+mkdirSync(MOBILE_DIR, { recursive: true });
+writeFileSync(
+  join(MOBILE_DIR, 'score-pages.json'),
+  JSON.stringify({ width: 816, height: 1056, pages }),
+);
+writeFileSync(
+  join(MOBILE_DIR, 'notes.json'),
+  JSON.stringify({ durationSec: session.meta.durationSec, notes: readerNotes }),
+);
+copyFileSync(join(outDir, 'audio.mp3'), join(MOBILE_DIR, 'audio.mp3'));
+
+// ── 7. Write outputs ─────────────────────────────────────────────────────────
 
 writeFileSync(join(outDir, 'score.mei'), mei);
 writeFileSync(join(outDir, 'session.json'), JSON.stringify(session));
