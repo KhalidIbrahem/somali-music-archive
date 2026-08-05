@@ -11,3 +11,4 @@ export * from './regions';
 export * from './languages';
 export * from './instruments';
 export * from './generation';
+export * from './designTokens';

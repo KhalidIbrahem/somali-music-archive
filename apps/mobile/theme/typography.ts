@@ -20,6 +20,10 @@ export const fontFamilies = {
   bodySemiBold: 'Nunito_600SemiBold',
   bodyMedium: 'Nunito_500Medium',
   bodyRegular: 'Nunito_400Regular',
+  // Mono — numeric readouts only: timecode, BPM, confidence %, Hz (Block 1 §1).
+  monoSemiBold: 'IBMPlexMono_600SemiBold',
+  monoMedium: 'IBMPlexMono_500Medium',
+  monoRegular: 'IBMPlexMono_400Regular',
 } as const;
 
 /** A single typographic role. Typed as a subset of RN `TextStyle` for safety. */
@@ -40,6 +44,11 @@ export const typography = {
   labelLarge: { fontFamily: fontFamilies.bodyBold, fontSize: 12, lineHeight: 16 },
   labelMedium: { fontFamily: fontFamilies.bodySemiBold, fontSize: 11, lineHeight: 14 },
   labelSmall: { fontFamily: fontFamilies.bodyMedium, fontSize: 10, lineHeight: 12 },
+
+  // Numeric readouts — pair with TABULAR_NUMS from theme/studio so figures
+  // never reflow as they update (timecode, BPM, confidence %, Hz).
+  numericMedium: { fontFamily: fontFamilies.monoRegular, fontSize: 13, lineHeight: 18 },
+  numericSmall: { fontFamily: fontFamilies.monoRegular, fontSize: 11, lineHeight: 14 },
 } as const satisfies Record<string, TypeStyle>;
 
 export type TypographyVariant = keyof typeof typography;
