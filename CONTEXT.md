@@ -63,6 +63,22 @@ browser share one egress IP, so test bursts throttle themselves (5/15min).
 Smoke accounts created: b1-smoke-api@example.com, b1-smoke-web@example.com
 (listener role — delete or keep as test fixtures; rotation task still open).
 
+## Aug 6 — library upload fix
+
+Root cause of "Could not reach the server" on library PDF upload: the R2
+bucket had NO CORS configuration → browser preflight on the presigned PUT got
+403 → fetch rejected client-side (never reached a Vercel function, hence
+empty function logs). Fixed via `scripts/r2-cors.mjs` (infra-as-code; prod +
+localhost origins, PUT/GET/HEAD). Verified E2E in production: presign 201 →
+R2 preflight 204 + PUT 200 → register 201 → shelf renders; object confirmed
+in R2 (439B application/pdf), metadata served by GET /library/books.
+**Two open flags:** (1) web redeploy with the improved storage-error copy is
+pending — Vercel CLI session expired again; needs the durable `.vercel-token`
+(never created; yesterday was a re-login). (2) library.repository is
+in-memory by design ("until a Prisma/Mongo model") — on serverless, shelf
+metadata is lost on cold start while files persist in R2; needs a real model
+before the library is production-durable.
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects
