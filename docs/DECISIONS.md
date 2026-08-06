@@ -104,7 +104,7 @@ is the canonical PG definition and mirrors §9 exactly (soft-delete columns, UUI
 
 ## ADR-0007 — `validate()` reuses `@sma/validators` schemas on the server
 
-**Context.** CLAUDE.md hard rule: "Zod validation on every single API input." The
+**Context.** CONVENTIONS.md hard rule: "Zod validation on every single API input." The
 mobile/web forms also validate with Zod.
 
 **Decision.** One set of Zod schemas in `@sma/validators` is the single source of

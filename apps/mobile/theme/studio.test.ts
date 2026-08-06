@@ -86,7 +86,7 @@ describe('studio tokens match the Block 1 brief', () => {
     });
   });
 
-  test('locked brand values are unchanged (CLAUDE.md)', () => {
+  test('locked brand values are unchanged (CONVENTIONS.md)', () => {
     expect(studioThemes.dark.page).toBe('#0C0B14'); // ink-black
     expect(studioThemes.dark.accentState).toBe('#C89B5F'); // oud amber
     expect(studioThemes.dark.accentLive).toBe('#4189D4'); // flag blue

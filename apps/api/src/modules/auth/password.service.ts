@@ -1,5 +1,5 @@
 /**
- * Password hashing (CLAUDE.md hard rule: bcrypt, 12 rounds).
+ * Password hashing (CONVENTIONS.md hard rule: bcrypt, 12 rounds).
  *
  * Centralised so the cost factor is defined exactly once and can never be set
  * lower by accident elsewhere. A leaked database of these hashes reveals no

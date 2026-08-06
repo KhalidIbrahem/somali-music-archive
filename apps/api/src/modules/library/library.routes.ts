@@ -3,7 +3,7 @@
  *
  * All endpoints require a signed-in user (reads are public-ish — auth still
  * required, matching recordings). Uploads use the presigned-R2 flow; documents
- * never pass through this API (CLAUDE.md hard rule).
+ * never pass through this API (CONVENTIONS.md hard rule).
  */
 
 import { Router } from 'express';

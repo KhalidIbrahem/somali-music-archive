@@ -1,5 +1,5 @@
 {
-  "//": "Extends the strict monorepo baseline, then layers on React Native / Expo Router specifics: JSX transform, the `@/*` path alias to the app root, and Expo's generated router types. We keep every strictness flag from tsconfig.base.json — no loosening (CLAUDE.md hard rule: strict, no any).",
+  "//": "Extends the strict monorepo baseline, then layers on React Native / Expo Router specifics: JSX transform, the `@/*` path alias to the app root, and Expo's generated router types. We keep every strictness flag from tsconfig.base.json — no loosening (CONVENTIONS.md hard rule: strict, no any).",
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",

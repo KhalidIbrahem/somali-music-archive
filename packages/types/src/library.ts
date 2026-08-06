@@ -3,7 +3,7 @@
  *
  * The library holds documents rather than audio: PDF scans (or page images) of
  * notation books, uploaded by contributors through the same presigned-R2 flow
- * as recordings (audio/documents never pass through Node — CLAUDE.md).
+ * as recordings (audio/documents never pass through Node — CONVENTIONS.md).
  */
 
 import type { IsoDateTimeString } from './common';

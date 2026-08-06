@@ -1,7 +1,7 @@
 /**
  * Secure token storage — the ONLY place auth tokens are persisted on device.
  *
- * CLAUDE.md hard rule: never use AsyncStorage for tokens — always expo-secure-store
+ * CONVENTIONS.md hard rule: never use AsyncStorage for tokens — always expo-secure-store
  * (hardware-backed Keychain / Keystore). This wrapper is the single choke point so
  * that rule is enforced by imports, not by discipline.
  */

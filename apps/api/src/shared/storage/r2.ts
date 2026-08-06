@@ -1,7 +1,7 @@
 /**
  * Cloudflare R2 storage (S3-compatible) — presigned URL generation.
  *
- * CLAUDE.md hard rules enforced here:
+ * CONVENTIONS.md hard rules enforced here:
  *   • audio NEVER flows through Node — clients PUT directly to R2 with a short-lived
  *     presigned upload URL (§8),
  *   • objects are keyed by a random UUID, NEVER the original filename (§11 Threat 5),
@@ -133,7 +133,7 @@ export const generatePlaybackUrl = generateDownloadUrl;
 export const verifyExists = objectExists;
 
 /**
- * "Delete" a recording's audio — a SOFT delete by design (CLAUDE.md hard rule,
+ * "Delete" a recording's audio — a SOFT delete by design (CONVENTIONS.md hard rule,
  * Principle 4: recordings are NEVER destroyed). The bytes stay in R2; removal from
  * the archive is a database/visibility change, not an object deletion. This exists
  * as the single, explicit place that decision is enforced — it deliberately does

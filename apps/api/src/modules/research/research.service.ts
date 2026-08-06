@@ -3,7 +3,7 @@
  *
  * Owns research API keys and the dataset export. Keys are `sma_`-prefixed random
  * secrets, returned in plaintext exactly once and stored only as a bcrypt hash
- * (reusing the password hasher — CLAUDE.md bcrypt-12 rule). Verification narrows by
+ * (reusing the password hasher — CONVENTIONS.md bcrypt-12 rule). Verification narrows by
  * the stored prefix, then bcrypt-compares, so a database leak yields no usable keys.
  * The export reuses the recordings repository (published archive only) and projects
  * each recording to the research view — the pitch track is opt-in because it is large.

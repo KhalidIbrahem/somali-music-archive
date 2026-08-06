@@ -11,7 +11,7 @@
  *     handler so the app can route back to sign-in.
  *
  * Tokens are read/written ONLY through `secureStorage` (expo-secure-store),
- * never AsyncStorage (CLAUDE.md hard rule).
+ * never AsyncStorage (CONVENTIONS.md hard rule).
  *
  * The unauthorized handler is a decoupling seam: the store registers a callback
  * here (store → client), so this low-level module never imports the store and no

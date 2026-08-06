@@ -2,7 +2,7 @@
  * Library service — presigned upload + shelf management for music-sheet books.
  *
  * Mirrors the recordings upload flow (§8): issue a presigned R2 PUT (documents
- * never pass through Node — CLAUDE.md hard rule) → client uploads → the shelf
+ * never pass through Node — CONVENTIONS.md hard rule) → client uploads → the shelf
  * record is only created after the object is verified to exist in R2.
  */
 

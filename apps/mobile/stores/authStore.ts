@@ -4,7 +4,7 @@
  * Holds the session in memory: who is signed in (`user`), the current
  * `accessToken`, and derived `isAuthenticated` / `isLoading` flags. Tokens are
  * PERSISTED only to expo-secure-store (hardware keychain) via `secureStorage` —
- * never AsyncStorage, never here on disk (CLAUDE.md hard rule). Server data
+ * never AsyncStorage, never here on disk (CONVENTIONS.md hard rule). Server data
  * (recordings, lessons) belongs in React Query, not this store.
  */
 

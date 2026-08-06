@@ -5,7 +5,7 @@
  * endpoint with a `kind` discriminator. These schemas validate that internal
  * wire contract — snake_case keys exactly as Python emits them (the mapping to
  * camelCase domain fields happens in the internal service, not here). Zod on
- * every input applies to internal callers too (CLAUDE.md hard rule): a bug in
+ * every input applies to internal callers too (CONVENTIONS.md hard rule): a bug in
  * the AI service must not be able to write garbage into the archive.
  */
 

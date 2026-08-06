@@ -3,7 +3,7 @@
  *
  * Design intent: "archival dignity meets modern clarity." Dark-mode primary, warm
  * materials, amber used sparingly as the single signature accent (oud wood). These
- * are the canonical design tokens referenced in CLAUDE.md — do not hardcode hex
+ * are the canonical design tokens referenced in CONVENTIONS.md — do not hardcode hex
  * values anywhere in the app; always import from here.
  *
  * `as const` freezes the literal values so a typo like `colors.amber.primry` is a

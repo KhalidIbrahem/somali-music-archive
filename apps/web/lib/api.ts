@@ -157,7 +157,7 @@ export function requestBookUploadUrl(input: {
 }
 
 /**
- * PUT the document bytes straight to R2 (never through our API — CLAUDE.md).
+ * PUT the document bytes straight to R2 (never through our API — CONVENTIONS.md).
  * Plain fetch on purpose: no auth header, and the Content-Type must match the
  * one the URL was presigned for.
  */
