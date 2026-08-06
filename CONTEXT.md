@@ -91,6 +91,22 @@ before the library is production-durable.
 | B1-15 listening room | done | PlayerProvider in root layout (audio survives routes — verified counter advancing across navigation); PlayerBar: peaks scrubber (8kHz decode, designed flat-bed fallback), mono elapsed/-remaining, prev/next, volume, buffering/error/end states; keyboard space/±5s/volume verified with input+button guards; 9 records ALL with rights lines; 8 honest "No score yet"; sample session = the transcribed track with detected root/tempo chips + ListenScore panel following the player clock (blue cursor + auto-scroll, confidence ink baked). Old ListeningRoom superseded (git history). |
 | B1-13 history scrub | done | Mirror backup at `../somali-music-archive-backup.git` (pre-rewrite). git-filter-repo removed CLAUDE.md/.mcp.json/.claude from all 91 commits + stripped attribution trailers (incl. the "Claude Fable 5" form the provided regex missed). Working-tree citations retarget to root CONVENTIONS.md (rules preserved verbatim). Audits: 0 log matches; tree grep matches only .gitignore's own ignore entries (structural — the spec's gitignore step guarantees it). Fresh clone installs + builds ✓. Force-pushed to github.com/KhalidIbrahem/somali-music-archive (42d3d83→64b876a). **Every pre-Aug-6 hash in this file is now historical.** GitHub-side PR/issue text (if any) needs manual UI review per the spec's own warning. |
 
+## Aug 6 PM — QaraamiGenAI identity import
+
+Logo concepts imported from the claude.ai design project (via the user's
+browser; the design-MCP is now wired in .mcp.json — needs session reconnect +
+/design-login for native access next time). Source of record committed at
+`fixtures/qaraamigen-logo.dc.html` (viewer-runtime scripts stripped;
+`support.js` in the project is the generated dc-runtime harness — nothing to
+implement from it). Four concepts reviewed (1A Seal / 1B Q-String / 1C
+Staff-Horizon / 1D Aperture); **1A implemented** as
+`components/brand/QaraamiGenLogo.tsx` (size-specific redraws per the study;
+waveform on accent-state so light theme stays AA — deliberate deviation from
+the study's single-ink cream sheet), favicon replaced (seal on ink tile),
+landing header/footer carry the lockup. Studio surfaces intentionally
+untouched pending the cinematic landing build, which is STILL BLOCKED on
+`QaraamiGen-landing-copy.md` (not on this machine; user to supply).
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects
