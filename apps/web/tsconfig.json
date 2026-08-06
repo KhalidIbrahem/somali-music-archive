@@ -1,5 +1,5 @@
 {
-  "//": "Extends the strict monorepo baseline with Next.js App Router settings. `jsx: preserve` and the next plugin are required by Next; every strictness flag from tsconfig.base.json is retained (CLAUDE.md: strict, no any).",
+  "//": "Extends the strict monorepo baseline with Next.js App Router settings. `jsx: preserve` and the next plugin are required by Next; every strictness flag from tsconfig.base.json is retained (CONVENTIONS.md: strict, no any).",
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "preserve",

@@ -81,7 +81,7 @@ export async function getUploadUrl(input: UploadUrlRequestInput): Promise<Presig
 /**
  * Step 2 — upload the local audio file DIRECTLY to R2 via the presigned URL.
  * Uses expo-file-system's binary upload (streams the file; no giant in-memory
- * blob). Audio bytes never pass through our own API (CLAUDE.md hard rule).
+ * blob). Audio bytes never pass through our own API (CONVENTIONS.md hard rule).
  */
 export async function uploadToR2(
   uploadUrl: string,

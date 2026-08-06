@@ -6,7 +6,7 @@
  * states: READY → RECORDING → REVIEW (playback + metadata form → upload).
  *
  * Audio is captured locally as WAV and uploaded DIRECTLY to R2 via a presigned URL
- * (CLAUDE.md hard rule — never through our API). Metadata is validated with Zod.
+ * (CONVENTIONS.md hard rule — never through our API). Metadata is validated with Zod.
  */
 
 import { useMemo, useState } from 'react';
