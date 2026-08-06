@@ -102,8 +102,8 @@ export default function Register(): React.JSX.Element {
     <main className="min-h-screen bg-bg-primary px-6 py-16 text-ink-primary">
       <div className="mx-auto flex w-full max-w-md flex-col gap-8">
         <div className="flex flex-col gap-2 text-center">
-          <Link href="/" className="font-body text-sm uppercase tracking-[0.25em] text-amber">
-            Somali Music Archive
+          <Link href="/" className="font-display text-lg tracking-wide text-ink-primary">
+            Qaraami<span className="text-amber">GenAI</span>
           </Link>
           <h1 className="font-display text-4xl text-ink-primary">Create your account</h1>
           <p className="font-body text-sm text-ink-secondary">

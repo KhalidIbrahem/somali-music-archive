@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Somali Music Archive",
+    "name": "QaraamiGenAI",
     "slug": "somali-music-archive",
     "scheme": "somalimusicarchive",
     "version": "0.1.0",
@@ -38,7 +38,7 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "Allow Somali Music Archive to access your microphone to record music and complete pitch exercises."
+          "microphonePermission": "Allow QaraamiGenAI to access your microphone to record music and complete pitch exercises."
         }
       ],
       [

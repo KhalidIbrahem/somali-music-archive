@@ -213,7 +213,7 @@ export function HeroScore({
 
         <div className="mt-4 flex flex-wrap items-end justify-between gap-3 border-t border-paper-edge pt-3">
           <figcaption className="text-[11px] tracking-[0.06em] text-confidence-mid [font-variant:small-caps]">
-            sample edition · audio synthesized from the notation · somali music archive, 2026
+            sample edition · audio synthesized from the notation · qaraamigenai, 2026
           </figcaption>
           {/* confidence legend (§3): how the archive prints certainty */}
           <div className="flex items-center gap-3 text-[10px] text-confidence-mid">

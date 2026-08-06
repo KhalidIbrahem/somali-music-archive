@@ -10,7 +10,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { ListenShelf } from '@/components/listen/ListenShelf';
 
 export const metadata: Metadata = {
-  title: 'Listen — Somali Music Archive',
+  title: 'Listen — QaraamiGenAI',
   description:
     'The listening room: digitised Somali recordings with their sources stated plainly, and a score that follows the one transcribed take.',
 };
