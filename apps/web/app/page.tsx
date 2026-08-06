@@ -1,13 +1,16 @@
 /**
- * Landing (/) — one claim, one engraved excerpt that plays (B1-07/10/11, §4).
+ * Landing (/) — QaraamiGenAI, cinematic build.
  *
- * The hero is the hand-curated excerpt from fixtures/hero-excerpt.mei,
- * engraved by scripts/build-hero.mjs into two inline SVG variants (desktop:
- * both phrases; mobile: two systems at legible scale). Inline because the
- * playhead and reached-note ink need real glyph nodes — the excerpt is small
- * enough (~60KB total) that this stays far under the 500KB pre-interaction
- * budget; the audio never loads until the first press. No stock imagery, no
- * feature grid; the score is the argument.
+ * Documentary + museum exhibit + research lab: near-black with film-grain
+ * warmth, aged-cream paper as the lit object, brass as the only voice of
+ * emphasis. Structure per the build brief: hero (silence, then the turn) →
+ * the proof (engraving that plays) → four storytelling sections including a
+ * waveform-to-notation morph → real stat callouts → a closing that ends on a
+ * single held note fading to silence.
+ *
+ * ALL copy lives in lib/landingCopy.ts with provenance rules — the approved
+ * copy bank (QaraamiGen-landing-copy.md) drops into that file when it lands.
+ * Identity: concept 1A "The Seal" (fixtures/qaraamigen-logo.dc.html).
  */
 
 import { readFileSync } from 'node:fs';
@@ -15,13 +18,17 @@ import { join } from 'node:path';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { HeroScore, type HeroNotes } from '@/components/home/HeroScore';
+import { WaveToScore } from '@/components/home/WaveToScore';
+import { ClosingNote } from '@/components/home/ClosingNote';
 import { QaraamiGenLockup, QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { Reveal } from '@/components/Reveal';
+import { landingCopy as copy } from '@/lib/landingCopy';
 
 export const metadata: Metadata = {
-  title: 'Somali Music Archive — qaraami, written down',
+  title: 'QaraamiGenAI — Somali music, written down',
   description:
-    'Qaraami lived in voices and reels, never on paper. This archive transcribes the recordings that survive into engraved notation, and prints how sure it is, note by note.',
+    'Qaraami lived on tape and in memory. QaraamiGenAI transcribes the recordings that survive into engraved notation that states its own certainty — preservation across AI, computational ethnomusicology, and cultural heritage.',
 };
 
 const sampleDir = join(process.cwd(), 'public/sample');
@@ -31,8 +38,11 @@ const heroNotes = JSON.parse(readFileSync(join(sampleDir, 'hero-notes.json'), 'u
 
 export default function Home(): React.JSX.Element {
   return (
-    <div className="min-h-dvh bg-page font-body text-hi">
-      <header className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
+    <div className="relative min-h-dvh overflow-x-clip bg-page font-body text-hi">
+      {/* film grain — static SVG turbulence, one veil over the whole page */}
+      <div aria-hidden className="film-grain print:hidden" />
+
+      <header className="relative z-10 mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
         <QaraamiGenLockup markSize={28} />
         <nav className="flex items-center gap-5">
           <Link
@@ -57,66 +67,169 @@ export default function Home(): React.JSX.Element {
         </nav>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl px-6">
-        {/* ── The claim and the evidence ──────────────────────────────────── */}
-        <section className="grid gap-12 py-14 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:py-24">
-          <div>
-            <h1 className="font-display text-4xl leading-[1.12] sm:text-5xl">
-              Qaraami lived in voices and reels, never on paper.
-            </h1>
-            <p className="mt-6 max-w-md text-base leading-relaxed text-mid">
-              This archive writes it down: the recordings that survive, transcribed into engraved
-              notation that prints how sure it is, note by note.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link
-                href="/studio"
-                className="flex h-12 w-fit items-center rounded-[4px] bg-accent-state px-6 text-lg font-bold text-page transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none motion-reduce:transition-none"
-              >
-                Open the studio
-              </Link>
-              <Link
-                href="/listen"
-                className="flex h-12 w-fit items-center rounded-[4px] border border-mid px-6 text-base text-mid transition-colors hover:border-hi hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
-              >
-                Enter the listening room
-              </Link>
-            </div>
-          </div>
+      <main className="relative z-10">
+        {/* ── Hero: silence, then the turn ─────────────────────────────────── */}
+        <section className="mx-auto flex min-h-[82dvh] w-full max-w-4xl flex-col items-start justify-center px-6 py-24">
+          <p
+            className="hero-enter numeric text-xs tracking-[0.24em] text-accent-state uppercase"
+            style={{ '--enter-delay': '0ms' } as React.CSSProperties}
+          >
+            {copy.hero.kicker}
+          </p>
+          <h1
+            className="hero-enter mt-6 max-w-3xl font-display text-5xl leading-[1.08] sm:text-6xl"
+            style={{ '--enter-delay': '90ms' } as React.CSSProperties}
+          >
+            {copy.hero.headline}
+          </h1>
+          <p
+            className="hero-enter mt-6 max-w-xl text-lg leading-relaxed text-mid"
+            style={{ '--enter-delay': '260ms' } as React.CSSProperties}
+          >
+            {copy.hero.sub}
+          </p>
+          <p
+            className="hero-enter mt-10 font-display text-3xl text-accent-state italic sm:text-4xl"
+            style={{ '--enter-delay': '850ms' } as React.CSSProperties}
+          >
+            {copy.hero.turn}
+          </p>
+        </section>
 
-          <div className="min-w-0">
-            <HeroScore svgDesktop={heroDesktop} svgMobile={heroMobile} notes={heroNotes} />
-            <p className="mt-3 text-xs leading-relaxed text-low">
-              Press play: the excerpt sounds an octave below written pitch, as the clef says it
-              should. A full transcription with the pipeline&rsquo;s own confidence ink lives in{' '}
-              <Link
-                href="/studio"
-                className="text-accent-live underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
-              >
-                the studio
-              </Link>
-              .
+        {/* ── The proof: the engraving that plays ──────────────────────────── */}
+        <section className="mx-auto w-full max-w-5xl px-6 pb-28">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <p className="numeric text-xs tracking-[0.24em] text-accent-state uppercase">
+              {copy.proof.kicker}
             </p>
+            <h2 className="mt-4 font-display text-3xl">{copy.proof.title}</h2>
+            <p className="mt-3 leading-relaxed text-mid">{copy.proof.body}</p>
+          </Reveal>
+          <Reveal delay={200} className="mt-10">
+            <HeroScore svgDesktop={heroDesktop} svgMobile={heroMobile} notes={heroNotes} />
+          </Reveal>
+        </section>
+
+        {/* ── Story ────────────────────────────────────────────────────────── */}
+        {copy.sections.map((s, i) => (
+          <section key={s.id} className="border-t border-hairline">
+            <div
+              className={`mx-auto grid w-full max-w-5xl gap-10 px-6 py-24 lg:grid-cols-[5fr_6fr] lg:items-center ${
+                i % 2 === 1 ? 'lg:[direction:rtl]' : ''
+              }`}
+            >
+              <Reveal className="lg:[direction:ltr]">
+                <p className="numeric text-xs tracking-[0.24em] text-accent-state uppercase">
+                  {s.kicker}
+                </p>
+                <h2 className="mt-4 max-w-lg font-display text-3xl leading-snug">{s.title}</h2>
+                <p className="mt-4 max-w-lg leading-relaxed text-mid">{s.body}</p>
+              </Reveal>
+              <Reveal delay={150} className="min-w-0 lg:[direction:ltr]">
+                {s.id === 'writing' && <WaveToScore scoreSvg={heroMobile} />}
+                {s.id === 'doubt' && (
+                  <div className="rounded-[2px] bg-paper p-8 ring-1 ring-paper-edge">
+                    <div className="flex items-end justify-center gap-10">
+                      {(
+                        [
+                          ['bg-confidence-high', '≥ 0.90'],
+                          ['bg-confidence-mid', '0.70–0.89'],
+                          ['bg-confidence-low', '< 0.70'],
+                        ] as const
+                      ).map(([cls, label]) => (
+                        <div key={label} className="flex flex-col items-center gap-3">
+                          <span aria-hidden className={`h-10 w-10 rounded-full ${cls}`} />
+                          <span className="numeric text-xs text-confidence-mid">{label}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="numeric mt-6 text-center text-[11px] tracking-[0.18em] text-confidence-mid uppercase">
+                      the ink is the confidence
+                    </p>
+                  </div>
+                )}
+                {s.id === 'tapes' && (
+                  <div className="grain-reveal relative overflow-hidden rounded-[2px] ring-1 ring-hairline">
+                    <div className="flex h-56 items-center justify-center bg-chrome-1">
+                      <QaraamiGenMark size={96} className="text-low" tone="mono" />
+                    </div>
+                    <p className="numeric absolute bottom-3 left-4 text-[10px] tracking-[0.18em] text-low uppercase">
+                      cassette-era masters · decaying
+                    </p>
+                  </div>
+                )}
+                {s.id === 'archive' && (
+                  <div className="flex flex-col gap-3">
+                    <Link
+                      href="/listen"
+                      className="group flex items-center justify-between rounded-[4px] border border-hairline bg-chrome-1 px-5 py-4 transition-colors hover:border-accent-state focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
+                    >
+                      <span className="text-sm text-hi">The listening room</span>
+                      <span className="numeric text-xs text-low group-hover:text-accent-state">
+                        8 recordings · sources stated
+                      </span>
+                    </Link>
+                    <Link
+                      href="/studio"
+                      className="group flex items-center justify-between rounded-[4px] border border-hairline bg-chrome-1 px-5 py-4 transition-colors hover:border-accent-state focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
+                    >
+                      <span className="text-sm text-hi">The transcription studio</span>
+                      <span className="numeric text-xs text-low group-hover:text-accent-state">
+                        one cursor · score, waveform, sound
+                      </span>
+                    </Link>
+                  </div>
+                )}
+              </Reveal>
+            </div>
+          </section>
+        ))}
+
+        {/* ── Stats: museum labels, not dashboards ─────────────────────────── */}
+        <section className="border-t border-hairline">
+          <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-x-8 gap-y-12 px-6 py-24 md:grid-cols-4">
+            {copy.stats.map((stat, i) => (
+              <Reveal key={stat.label} delay={i * 100}>
+                <p className="numeric text-4xl text-hi">{stat.value}</p>
+                <p className="mt-2 max-w-[22ch] text-xs leading-relaxed text-mid">{stat.label}</p>
+              </Reveal>
+            ))}
           </div>
         </section>
 
-        {/* ── How it works — three sentences, no grid ─────────────────────── */}
-        <section className="max-w-2xl border-t border-hairline py-14">
-          <h2 className="font-display text-2xl">Written down, honestly</h2>
-          <p className="mt-4 leading-relaxed text-mid">
-            Upload a recording and the pipeline separates the voice from the band, finds the
-            pentatonic root, scale degrees, and beat grid, then engraves the melody as sheet music
-            you can play, print, or export. Where the model is less certain, it prints lighter ink
-            instead of pretending — the score never claims more than the recording gives it.
-          </p>
-          <p className="mt-3 leading-relaxed text-mid">
-            Solo recordings give the best results. Multiple instruments playing at once are
-            transcribed with lower accuracy.
-          </p>
+        {/* ── Closing: the held note ───────────────────────────────────────── */}
+        <section className="border-t border-hairline">
+          <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 px-6 py-28 text-center">
+            <Reveal>
+              <h2 className="font-display text-3xl leading-snug sm:text-4xl">
+                {copy.closing.title}
+              </h2>
+              <p className="mt-4 text-mid">{copy.closing.body}</p>
+            </Reveal>
+            <Reveal delay={150}>
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <Link
+                  href="/studio"
+                  className="flex h-12 w-fit items-center rounded-[4px] bg-accent-state px-6 text-lg font-bold text-page transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none motion-reduce:transition-none"
+                >
+                  {copy.closing.primaryCta}
+                </Link>
+                <Link
+                  href="/listen"
+                  className="flex h-12 w-fit items-center rounded-[4px] border border-mid px-6 text-base text-mid transition-colors hover:border-hi hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
+                >
+                  {copy.closing.secondaryCta}
+                </Link>
+              </div>
+            </Reveal>
+            <Reveal delay={300} className="mt-8">
+              <ClosingNote hint={copy.closing.noteHint} />
+            </Reveal>
+          </div>
         </section>
       </main>
 
-      <footer className="border-t border-hairline">
+      <footer className="relative z-10 border-t border-hairline">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-6 py-8 text-xs text-low sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <QaraamiGenMark size={20} tone="mono" className="text-mid" />
