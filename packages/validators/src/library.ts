@@ -1,6 +1,6 @@
 /**
  * Library (music-sheet books) schemas — every /library API input validates here
- * (CLAUDE.md hard rule). The upload itself goes straight to R2 via a presigned
+ * (CONVENTIONS.md hard rule). The upload itself goes straight to R2 via a presigned
  * URL; these schemas gate the presign request and the shelf record.
  */
 

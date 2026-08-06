@@ -6,7 +6,7 @@
  *   node scripts/r2-cors.mjs [--dry-run]
  *
  * The platform's upload architecture PUTs files straight from the browser to
- * R2 via presigned URLs (CLAUDE.md: audio/documents never travel through
+ * R2 via presigned URLs (CONVENTIONS.md: audio/documents never travel through
  * Node). That only works if the bucket answers CORS preflights for our web
  * origins — R2 buckets ship with NO CORS rules, which blocks every
  * browser-side upload with an opaque network error.

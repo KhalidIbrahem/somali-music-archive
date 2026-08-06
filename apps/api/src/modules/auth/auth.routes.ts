@@ -1,7 +1,7 @@
 /**
  * Auth routes (ARCHITECTURE.md §12 AUTH). The strict `authLimiter` (5 attempts /
  * 15 min / IP, §11 Threat 2) guards the credential endpoints. Every input passes
- * through `validate` with the shared @sma/validators schemas (CLAUDE.md hard rule).
+ * through `validate` with the shared @sma/validators schemas (CONVENTIONS.md hard rule).
  */
 
 import { Router } from 'express';

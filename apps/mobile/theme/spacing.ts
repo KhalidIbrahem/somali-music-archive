@@ -1,5 +1,5 @@
 /**
- * Spacing system (ARCHITECTURE.md §7, CLAUDE.md design tokens).
+ * Spacing system (ARCHITECTURE.md §7, CONVENTIONS.md design tokens).
  *
  * Base unit: 4px. Every margin, padding, and gap in the app is a value from this
  * scale — never a raw number. A 4px grid keeps rhythm consistent across screens
