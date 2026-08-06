@@ -15,9 +15,9 @@ import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 export const metadata: Metadata = {
-  title: 'Somali Music Archive — the first AI-powered archive of Somali traditional music',
+  title: 'Somali Music Archive — qaraami, written down',
   description:
-    'Qaraami-era recordings transcribed into engraved notation by a pipeline that prints its certainty in the ink. Preserved. Taught. Shared.',
+    'Qaraami lived in voices and reels, never on paper. This archive transcribes the recordings that survive into engraved notation, and prints how sure it is, note by note.',
 };
 
 export default function Home(): React.JSX.Element {
@@ -53,23 +53,22 @@ export default function Home(): React.JSX.Element {
         <section className="grid gap-12 py-14 lg:grid-cols-[1fr_1.1fr] lg:items-center lg:py-24">
           <div>
             <h1 className="font-display text-4xl leading-[1.12] sm:text-5xl">
-              The first AI-powered archive of Somali traditional music.
+              Qaraami lived in voices and reels, never on paper.
             </h1>
             <p className="mt-6 max-w-md text-base leading-relaxed text-mid">
-              Qaraami lived in voices and reels, never on paper. The archive transcribes the
-              recordings that survive into engraved notation — and prints how sure it is, note by
-              note.
+              This archive writes it down: the recordings that survive, transcribed into engraved
+              notation that prints how sure it is, note by note.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
                 href="/studio"
-                className="flex h-12 items-center rounded-[4px] bg-accent-state px-6 text-lg font-bold text-page transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none motion-reduce:transition-none"
+                className="flex h-12 w-fit items-center rounded-[4px] bg-accent-state px-6 text-lg font-bold text-page transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none motion-reduce:transition-none"
               >
                 Open the studio
               </Link>
               <Link
                 href="/listen"
-                className="flex h-12 items-center rounded-[4px] border border-hairline px-6 text-base text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
+                className="flex h-12 w-fit items-center rounded-[4px] border border-mid px-6 text-base text-mid transition-colors hover:border-hi hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
               >
                 Enter the listening room
               </Link>
