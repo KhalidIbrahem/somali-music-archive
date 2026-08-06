@@ -20,6 +20,29 @@ export interface ArchiveTrack {
   sourceUrl: string;
 }
 
+/** Source + rights line — every corpus row renders this, always (B1-15). */
+export const HARVARD_RIGHTS_LINE = 'Source: Harvard Loeb Music Library — rights unverified';
+
+/**
+ * The one recording with an engraved transcription today: the sample session.
+ * Its audio is synthesized from the pipeline's note list — no archival audio —
+ * so it is the archive's own material and the listening room's demonstration
+ * of the score binding (detected root A · 106 BPM · beat-tracked).
+ */
+export const SAMPLE_SESSION_TRACK = {
+  id: 'sample-session',
+  title: 'Sample session — voice',
+  artists: 'Synthesized from the archive’s transcription',
+  year: 2026,
+  durationSec: 349,
+  note: 'The studio’s sample transcription, rendered to sound: 412 notes, pentatonic root A, beat-tracked at 106 BPM.',
+  src: '/sample/audio.mp3',
+  sourceUrl: '',
+} satisfies ArchiveTrack;
+
+export const SAMPLE_RIGHTS_LINE =
+  'Synthesized from the archive’s transcription — no archival audio';
+
 export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
   {
     id: 'track_0253',
