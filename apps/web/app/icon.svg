@@ -1,5 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Favicon: the archive's five-pointed star in oud amber on ink black. -->
-  <rect width="32" height="32" rx="6" fill="#0C0B14"/>
-  <path d="M16 5l2.62 7.24 7.7.26-6.08 4.72 2.14 7.4L16 20.3l-6.38 4.32 2.14-7.4-6.08-4.72 7.7-.26L16 5z" fill="#C89B5F"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Favicon: QaraamiGenAI seal (concept 1A), small redraw per the identity
+       study's 32px spec — ink tile, cream ring + strings, brass waveform. -->
+  <rect width="120" height="120" rx="24" fill="#0C0B14"/>
+  <g fill="none" stroke="#EDE9DC" stroke-width="7">
+    <circle cx="60" cy="60" r="42"/>
+    <path d="M28 44 H92"/>
+    <path d="M28 76 H92"/>
+    <path d="M10 60 H44 L52 46 L60 76 L68 56 L74 60 H110" stroke="#C89B5F"/>
+  </g>
 </svg>
