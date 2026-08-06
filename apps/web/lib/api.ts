@@ -174,7 +174,13 @@ export async function uploadFileToR2(
       body: file,
     });
   } catch {
-    throw new ApiError('NETWORK_ERROR', NETWORK_ERROR_MESSAGE);
+    // Distinct from the API's network message: this leg goes browser→storage,
+    // and a CORS/connectivity failure here is a storage-side problem, not an
+    // API outage. (R2 bucket CORS is managed by scripts/r2-cors.mjs.)
+    throw new ApiError(
+      'NETWORK_ERROR',
+      'The upload could not reach storage. Check your connection and try again.',
+    );
   }
   if (!res.ok) {
     throw new ApiError('INTERNAL_ERROR', `Storage upload failed (${res.status})`);
