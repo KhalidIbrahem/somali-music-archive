@@ -149,3 +149,8 @@ apps/web/public/audio/
 # Same rule for the research-demo stems (corpus-derived, ~29MB).
 apps/web/public/demos/audio/
 .vercel-token
+
+# ── Local AI tooling config — never tracked (history scrubbed 2026-08-06) ───
+.claude/
+CLAUDE.md
+.mcp.json

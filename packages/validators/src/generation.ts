@@ -2,7 +2,7 @@
  * AI music-generation input schemas (POST /api/v1/generate).
  *
  * The single validation gate for generation requests on server and clients
- * (CLAUDE.md hard rule: Zod on every API input). Field limits are the
+ * (CONVENTIONS.md hard rule: Zod on every API input). Field limits are the
  * intersection of what every provider accepts, so a request that validates
  * here can be routed to ANY provider: prompt ≤500 chars is Suno's non-custom
  * ceiling (Lyria takes far more), durationSec 5–180 spans Lyria clips (30s)

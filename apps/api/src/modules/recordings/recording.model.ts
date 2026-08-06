@@ -4,7 +4,7 @@
  * The content-metadata document. Fields mirror the in-memory RecordingDoc so the
  * Mongo-backed repository maps to the same PublicRecording wire shape. AI enrichment
  * lives in an `ai` subdocument; `timestamps` provides createdAt/updatedAt. The raw
- * audio never lives here — only its R2 `fileKey` (CLAUDE.md hard rule).
+ * audio never lives here — only its R2 `fileKey` (CONVENTIONS.md hard rule).
  */
 
 import mongoose from 'mongoose';

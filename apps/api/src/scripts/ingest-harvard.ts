@@ -15,7 +15,7 @@
  * not the public archive — 605 unreviewed tracks must pass through the same admin
  * gate as any field recording. Audio is NOT uploaded by this script: files go to
  * R2 directly (rclone / S3 CLI) at the keys this script prints — audio never
- * flows through Node.js (CLAUDE.md hard rule).
+ * flows through Node.js (CONVENTIONS.md hard rule).
  *
  * Idempotent: a track whose fileKey already exists is skipped, so partial runs
  * and re-runs are safe.
@@ -177,7 +177,7 @@ async function main(): Promise<void> {
       `    failed: ${failures.length}`,
       ...failures.slice(0, 10).map((f) => `      • track ${f.track_id}: ${f.error}`),
       '',
-      'NEXT — upload the audio directly to R2 (never through Node, CLAUDE.md):',
+      'NEXT — upload the audio directly to R2 (never through Node, CONVENTIONS.md):',
       '    rclone copy 03_cleaned_wav/ r2:<bucket>/recordings/harvard/ \\',
       '      --include "track_*.wav"',
       `    (object keys must match ${harvardFileKey(1)} … zero-padded track ids)`,

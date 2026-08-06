@@ -5,7 +5,7 @@
  * (`somali_music_dataset_v1.json` + `pitch_data/track_XXXX_pitch.json`, produced by
  * apps/ai-service/notebooks/harvard_pipeline.ipynb) and the platform's canonical
  * shapes (RecordingCompleteMetadata + the AI patch). Every input crosses a Zod
- * schema (CLAUDE.md hard rule), and the mapping never invents cultural facts:
+ * schema (CONVENTIONS.md hard rule), and the mapping never invents cultural facts:
  * unverified genre falls back to 'other', unknown artists to an explicit
  * "Unknown (Harvard AWM)", and the provenance trail lands in fieldNotes so a
  * reviewer can always see where a value came from.

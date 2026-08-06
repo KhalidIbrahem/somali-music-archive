@@ -4,7 +4,7 @@
 
 ---
 
-> **Document purpose:** This is the single source of truth for the entire platform — architecture, security, infrastructure, AI pipeline, mobile UI/UX direction, data models, API contracts, and production deployment. Written for consumption by AI coding assistants (Fable, Claude, Cursor) and human engineers. Every decision is explained. Every tradeoff is named. Nothing is assumed.
+> **Document purpose:** This is the single source of truth for the entire platform — architecture, security, infrastructure, AI pipeline, mobile UI/UX direction, data models, API contracts, and production deployment. Written for consumption by AI coding assistants and human engineers. Every decision is explained. Every tradeoff is named. Nothing is assumed.
 
 ---
 

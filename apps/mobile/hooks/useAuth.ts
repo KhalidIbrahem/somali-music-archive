@@ -4,7 +4,7 @@
  * Wraps the Zustand auth store (session state + login/logout/register/refresh/
  * updateUser) and adds biometric helpers built on expo-local-authentication.
  *
- * Biometrics NEVER store or transmit biometric data (CLAUDE.md security rule):
+ * Biometrics NEVER store or transmit biometric data (CONVENTIONS.md security rule):
  * Face ID / Touch ID merely unlocks the access token already held in the hardware
  * keychain (expo-secure-store). If no token is stored (never signed in on this
  * device), biometric sign-in is unavailable and the user must use a password.

@@ -2,7 +2,7 @@
  * Recording controllers (ARCHITECTURE.md §8 upload flow, §12 RECORDINGS).
  *
  * Thin adapters over `recordingsService`. The upload endpoints implement the
- * presigned-URL flow (audio never passes through Node — CLAUDE.md hard rule):
+ * presigned-URL flow (audio never passes through Node — CONVENTIONS.md hard rule):
  * upload-url issues a URL + draft, upload-complete verifies + enqueues processing.
  */
 

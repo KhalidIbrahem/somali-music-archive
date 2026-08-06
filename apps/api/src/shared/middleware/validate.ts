@@ -1,5 +1,5 @@
 /**
- * Zod validation middleware (CLAUDE.md hard rule: Zod on every single API input).
+ * Zod validation middleware (CONVENTIONS.md hard rule: Zod on every single API input).
  *
  * Pass the schemas for whichever request parts an endpoint accepts. On success the
  * PARSED (coerced + defaulted) values replace the raw ones, so handlers receive

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "//": "Single strict TypeScript baseline every workspace extends. WHY these exact flags: ARCHITECTURE.md and CLAUDE.md mandate 'TypeScript strict, no any ever'. The flags below go beyond `strict` to close the gaps that let bugs into a 100-year codebase — unchecked array access, implicit override, unused code, and inexact optional properties. Apps override `module`/`moduleResolution`/`lib` for their runtime (Node vs React Native vs Next.js) but must never loosen these correctness flags.",
+  "//": "Single strict TypeScript baseline every workspace extends. WHY these exact flags: ARCHITECTURE.md and CONVENTIONS.md mandate 'TypeScript strict, no any ever'. The flags below go beyond `strict` to close the gaps that let bugs into a 100-year codebase — unchecked array access, implicit override, unused code, and inexact optional properties. Apps override `module`/`moduleResolution`/`lib` for their runtime (Node vs React Native vs Next.js) but must never loosen these correctness flags.",
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022"],

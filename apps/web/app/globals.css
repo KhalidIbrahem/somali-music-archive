@@ -76,7 +76,7 @@
 }
 
 /*
- * Tailwind v4 theme mapped to the platform design tokens (CLAUDE.md, ARCHITECTURE.md §7).
+ * Tailwind v4 theme mapped to the platform design tokens (CONVENTIONS.md, ARCHITECTURE.md §7).
  * These MUST stay in sync with the mobile theme in apps/mobile/theme — same hex
  * values, same intent (oud-wood amber accent on near-black). Fonts are wired via
  * CSS variables set by next/font in app/layout.tsx.

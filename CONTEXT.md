@@ -31,7 +31,7 @@ always the lightest surface on screen.
   Harvard audio must not deploy; `.gitignore` already blocks
   `apps/web/public/audio/` and `public/demos/audio/`).
 - Commit hooks run prettier on staged files automatically.
-- No Claude attribution in commits (project CLAUDE.md).
+- No tooling attribution in commit messages (project convention).
 
 ## Task log
 

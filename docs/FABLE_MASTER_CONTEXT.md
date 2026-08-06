@@ -570,9 +570,9 @@ RULE 5 — Tell Fable which files already exist
 "These files already exist: [list]. Do not recreate them.
 Only create: [new files needed]."
 
-RULE 6 — Use Claude Code for implementation
-For Phase 1 and beyond, use Claude Code CLI with this document as context.
-Fable reads your actual files and writes code directly.
+RULE 6 — Implement against this document
+For Phase 1 and beyond, implement with this document as standing context.
+Work from the actual files in the repository and write code directly.
 More efficient than copy-paste.
 
 RULE 7 — Security check every module

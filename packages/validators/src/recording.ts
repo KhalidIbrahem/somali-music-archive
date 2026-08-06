@@ -1,7 +1,7 @@
 /**
  * Recording input schemas (ARCHITECTURE.md §8 upload flow, §12 RECORDINGS).
  *
- * The upload flow NEVER accepts file bytes through the API (CLAUDE.md hard rule):
+ * The upload flow NEVER accepts file bytes through the API (CONVENTIONS.md hard rule):
  * the client asks for a presigned URL, uploads directly to R2, then notifies the
  * API. These schemas validate the metadata around that flow, not the audio itself.
  */

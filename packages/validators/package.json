@@ -2,7 +2,7 @@
   "name": "@sma/validators",
   "version": "0.1.0",
   "private": true,
-  "description": "Shared Zod schemas for the Somali Music AI Preservation Platform. The single runtime-validation layer applied to every API input (CLAUDE.md hard rule) and reused by mobile/web forms via React Hook Form — so client and server reject exactly the same bad data.",
+  "description": "Shared Zod schemas for the Somali Music AI Preservation Platform. The single runtime-validation layer applied to every API input (CONVENTIONS.md hard rule) and reused by mobile/web forms via React Hook Form — so client and server reject exactly the same bad data.",
   "//": "WHY raw-TypeScript internal package (main points at src): matches @sma/constants and @sma/types. Zod is a real runtime dependency (unlike @sma/types, which is erased). Enum schemas are built from @sma/constants so the allowed values can never drift from the canonical lists.",
   "type": "module",
   "main": "./src/index.ts",
