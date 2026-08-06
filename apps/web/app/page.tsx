@@ -1,17 +1,20 @@
 /**
- * Landing (/) — one claim, one real engraved score (B1-07, §4).
+ * Landing (/) — one claim, one engraved excerpt that plays (B1-07/10/11, §4).
  *
- * The hero is page one of the sample session's actual engraving, pre-rendered
- * to a static SVG by scripts/build-sample-session.mjs with the confidence ink
- * baked in — the archive's signature is visible with zero JavaScript. It
- * ships as an image, not inline markup: the document stays tiny and the
- * manuscript paints without the DOM cost of ~3,600 SVG nodes. No stock
- * imagery, no feature grid; the score is the argument.
+ * The hero is the hand-curated excerpt from fixtures/hero-excerpt.mei,
+ * engraved by scripts/build-hero.mjs into two inline SVG variants (desktop:
+ * both phrases; mobile: two systems at legible scale). Inline because the
+ * playhead and reached-note ink need real glyph nodes — the excerpt is small
+ * enough (~60KB total) that this stays far under the 500KB pre-interaction
+ * budget; the audio never loads until the first press. No stock imagery, no
+ * feature grid; the score is the argument.
  */
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
+import { HeroScore, type HeroNotes } from '@/components/home/HeroScore';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 export const metadata: Metadata = {
@@ -19,6 +22,11 @@ export const metadata: Metadata = {
   description:
     'Qaraami lived in voices and reels, never on paper. This archive transcribes the recordings that survive into engraved notation, and prints how sure it is, note by note.',
 };
+
+const sampleDir = join(process.cwd(), 'public/sample');
+const heroDesktop = readFileSync(join(sampleDir, 'hero-desktop.svg'), 'utf8');
+const heroMobile = readFileSync(join(sampleDir, 'hero-mobile.svg'), 'utf8');
+const heroNotes = JSON.parse(readFileSync(join(sampleDir, 'hero-notes.json'), 'utf8')) as HeroNotes;
 
 export default function Home(): React.JSX.Element {
   return (
@@ -75,31 +83,20 @@ export default function Home(): React.JSX.Element {
             </div>
           </div>
 
-          <figure className="min-w-0">
-            <div className="rounded-[2px] bg-paper p-4 shadow-2xl ring-1 ring-paper-edge sm:p-6">
-              {/* unoptimized: the asset is already an SVG; the optimizer would
-                  refuse it and it needs no resizing. */}
-              <Image
-                src="/sample/hero.svg"
-                alt="Engraved opening page of a transcribed qaraami vocal line — low-confidence notes printed in lighter ink"
-                width={816}
-                height={920}
-                priority
-                unoptimized
-                className="block h-auto w-full"
-              />
-            </div>
-            <figcaption className="mt-3 text-xs leading-relaxed text-low">
-              A real transcription from the archive — voice, pentatonic root A, 106 BPM,
-              beat-tracked. The faint notes are the model&rsquo;s own doubt, printed.{' '}
+          <div className="min-w-0">
+            <HeroScore svgDesktop={heroDesktop} svgMobile={heroMobile} notes={heroNotes} />
+            <p className="mt-3 text-xs leading-relaxed text-low">
+              Press play: the excerpt sounds an octave below written pitch, as the clef says it
+              should. A full transcription with the pipeline&rsquo;s own confidence ink lives in{' '}
               <Link
                 href="/studio"
                 className="text-accent-live underline-offset-2 hover:underline focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
               >
-                Open it in the studio
+                the studio
               </Link>
-            </figcaption>
-          </figure>
+              .
+            </p>
+          </div>
         </section>
 
         {/* ── How it works — three sentences, no grid ─────────────────────── */}
