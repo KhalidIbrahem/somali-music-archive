@@ -52,7 +52,7 @@ class ResendEmailService implements EmailService {
     const link = `${env.API_URL}/verify-email?token=${token}`;
     await this.send(
       to,
-      'Verify your email — Somali Music Archive',
+      'Verify your email — QaraamiGenAI',
       `<p>Welcome. Please verify your email:</p><p><a href="${link}">Verify email</a></p>`,
     );
   }
@@ -61,7 +61,7 @@ class ResendEmailService implements EmailService {
     const link = `${env.API_URL}/reset-password?token=${token}`;
     await this.send(
       to,
-      'Reset your password — Somali Music Archive',
+      'Reset your password — QaraamiGenAI',
       `<p>Reset your password:</p><p><a href="${link}">Reset password</a></p>`,
     );
   }
