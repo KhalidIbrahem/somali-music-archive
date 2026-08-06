@@ -15,6 +15,7 @@ import { join } from 'node:path';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { HeroScore, type HeroNotes } from '@/components/home/HeroScore';
+import { QaraamiGenLockup, QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 export const metadata: Metadata = {
@@ -32,7 +33,7 @@ export default function Home(): React.JSX.Element {
   return (
     <div className="min-h-dvh bg-page font-body text-hi">
       <header className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
-        <p className="font-display text-base tracking-wide">Somali Music Archive</p>
+        <QaraamiGenLockup markSize={28} />
         <nav className="flex items-center gap-5">
           <Link
             href="/studio"
@@ -116,8 +117,11 @@ export default function Home(): React.JSX.Element {
       </main>
 
       <footer className="border-t border-hairline">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-6 py-8 text-xs text-low sm:flex-row sm:items-center sm:justify-between">
-          <p>Somali Music Archive — built in Minneapolis for the diaspora.</p>
+        <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-6 py-8 text-xs text-low sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <QaraamiGenMark size={20} tone="mono" className="text-mid" />
+            <p>QaraamiGenAI — built in Minneapolis for the diaspora.</p>
+          </div>
           <p>
             Recordings remain with their rights holders. Transcriptions carry their own uncertainty.
           </p>
