@@ -107,6 +107,22 @@ landing header/footer carry the lockup. Studio surfaces intentionally
 untouched pending the cinematic landing build, which is STILL BLOCKED on
 `QaraamiGen-landing-copy.md` (not on this machine; user to supply).
 
+## Aug 6 late — cinematic QaraamiGenAI landing
+
+Full documentary-register rebuild of `/` per the QaraamiGen build brief: hero
+(silence→"Until now." beat, CSS-only entry so LCP never waits for hydration),
+proof section (the playable engraving), four story sections incl. a real
+waveform→notation scroll morph (peaks decode gated by IntersectionObserver),
+museum-label stat callouts (real numbers only), closing held-note (in-browser
+KS synth of A2, fades to silence, never autoplays), static film-grain veil.
+**Copy provenance:** `QaraamiGen-landing-copy.md` still does not exist
+anywhere reachable (disk/Canva/design project re-checked); per the brief's
+no-invented-copy rule, every string lives in `lib/landingCopy.ts` and traces
+to the author's own brief text, shipped B1-12 lines, or verifiable project
+numbers — the copy bank drops into that one file when it lands. Perf: 62→94
+Lighthouse (hero was Reveal-gated = 4.2s LCP; WaveToScore eagerly decoded
+audio). 341KB pre-interaction, TBT 30ms, CLS 0.
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects
