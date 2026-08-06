@@ -8,7 +8,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { TranscribeStudio } from '@/components/transcribe/TranscribeStudio';
 
 export const metadata: Metadata = {
-  title: 'Transcribe — Somali Music Archive',
+  title: 'Transcribe — QaraamiGenAI',
   description:
     'Pentatonic-aware transcription: upload a recording, get sheet music that respects the Somali scale system instead of forcing Western keys.',
 };

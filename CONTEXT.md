@@ -123,6 +123,20 @@ numbers — the copy bank drops into that one file when it lands. Perf: 62→94
 Lighthouse (hero was Reveal-gated = 4.2s LCP; WaveToScore eagerly decoded
 audio). 341KB pre-interaction, TBT 30ms, CLS 0.
 
+## Aug 6 night — QaraamiGenAI rebrand sweep
+
+Every user-facing "Somali Music Archive" replaced with the QaraamiGenAI brand:
+web metadata titles (root/studio/listen/library/generate/transcribe), root
+description (drops "AI-powered" phrasing), SiteHeader + studio top bar now
+carry the seal mini-lockup (old LogoMark removed), login/register kickers,
+paper header on the score canvas, hero attribution line; API email subjects +
+notification title; mobile unlock prompt, app display name, and mic
+permission copy (app.json slug untouched). Deliberately KEPT: the lockup's
+designed strapline "Somali music archive" (institution descriptor under the
+brand, per the identity study) and factual rights lines ("Harvard Loeb…").
+Note: `QaraamiGenlandingpageprompt.md` in Downloads is the build brief itself
+— the copy bank `QaraamiGen-landing-copy.md` still does not exist.
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects

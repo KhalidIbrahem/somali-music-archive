@@ -4,6 +4,7 @@
  */
 
 import Link from 'next/link';
+import { QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
 
 const NAV = [
   { label: 'Home', href: '/' },
@@ -19,9 +20,9 @@ export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
     <header className="sticky top-0 z-20 border-b border-line-secondary bg-bg-primary/85 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2">
-          <LogoMark />
+          <QaraamiGenMark size={26} className="text-ink-primary" />
           <span className="font-display text-lg tracking-wide text-ink-primary">
-            Somali Music Archive
+            Qaraami<span className="text-amber">GenAI</span>
           </span>
         </Link>
         <div className="hidden items-center gap-8 md:flex">
@@ -45,22 +46,5 @@ export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
         </Link>
       </nav>
     </header>
-  );
-}
-
-export function LogoMark(): React.JSX.Element {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="12" cy="12" r="10" stroke="#C89B5F" strokeWidth="1.5" />
-      <path
-        d="M9 8l7-2v8.5"
-        stroke="#C89B5F"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="7.5" cy="14.5" r="2" stroke="#C89B5F" strokeWidth="1.5" />
-      <circle cx="14.5" cy="12.5" r="2" stroke="#C89B5F" strokeWidth="1.5" />
-    </svg>
   );
 }

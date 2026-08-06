@@ -8,7 +8,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { LibraryShelf } from '@/components/library/LibraryShelf';
 
 export const metadata: Metadata = {
-  title: 'Library — Somali Music Archive',
+  title: 'Library — QaraamiGenAI',
   description:
     'The archive library: scanned books of Somali music sheets and songbooks, uploaded and preserved alongside the recordings.',
 };

@@ -82,7 +82,7 @@ export function useAuth() {
       return { success: false, error: 'Sign in with your password first to enable biometrics.' };
     }
     const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: 'Unlock Somali Music Archive',
+      promptMessage: 'Unlock QaraamiGenAI',
       cancelLabel: 'Use password',
       disableDeviceFallback: false,
     });

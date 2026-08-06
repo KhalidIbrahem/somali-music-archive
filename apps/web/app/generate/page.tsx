@@ -9,7 +9,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { GenerationStudio } from '@/components/generate/GenerationStudio';
 
 export const metadata: Metadata = {
-  title: 'Generate — Somali Music Archive',
+  title: 'Generate — QaraamiGenAI',
   description:
     'Describe a song and let the QaraamiGen models compose in the spirit of the Somali musical tradition.',
 };

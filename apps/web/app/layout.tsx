@@ -36,9 +36,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Somali Music Archive',
+  title: 'QaraamiGenAI',
   description:
-    'The first AI-powered archive of Somali traditional music. Preserved. Taught. Shared.',
+    'Somali music, written down: recordings transcribed into engraved notation that states its own certainty. Preserved. Taught. Shared.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }): React.JSX.Element {
