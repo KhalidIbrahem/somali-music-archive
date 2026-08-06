@@ -64,6 +64,29 @@
   outline-offset: 2px;
 }
 
+/* Hero entry (landing): CSS-only fade-up that starts at parse time — the LCP
+   headline must never wait for hydration or an IntersectionObserver. */
+.hero-enter {
+  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--enter-delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-enter {
+    animation: none;
+  }
+}
+
+/* Film grain (landing): one static SVG-turbulence veil over the page — warmth
+   without motion, so prefers-reduced-motion needs no exception. */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 /* Landing hero excerpt (B1-11): engraved ink on paper; notes the playhead has
    reached turn amber (selection/reached state — §1 roles). */
 .hero-score svg {
