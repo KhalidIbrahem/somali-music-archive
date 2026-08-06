@@ -64,6 +64,17 @@
   outline-offset: 2px;
 }
 
+/* Landing hero excerpt (B1-11): engraved ink on paper; notes the playhead has
+   reached turn amber (selection/reached state — §1 roles). */
+.hero-score svg {
+  fill: var(--confidence-ink);
+  color: var(--confidence-ink);
+}
+.hero-score .hero-note-reached,
+.hero-score .hero-note-reached * {
+  fill: var(--accent-state);
+}
+
 /*
  * Tailwind v4 theme mapped to the platform design tokens (CLAUDE.md, ARCHITECTURE.md §7).
  * These MUST stay in sync with the mobile theme in apps/mobile/theme — same hex

@@ -79,6 +79,15 @@ in-memory by design ("until a Prisma/Mongo model") — on serverless, shelf
 metadata is lost on cold start while files persist in R2; needs a real model
 before the library is production-durable.
 
+## Addendum task log (Aug 6)
+
+| Task | Status | Notes |
+|---|---|---|
+| B1-09 diagnosis + banner | done | Emulated mobile clean (engrave 241ms @390px, zero console/hydration errors); Verovio wasm INLINED in JS (no .wasm request → header question N/A); IG/FB/Line/TikTok banner verified show/dismiss/absent-in-Safari; favicon added. Real-device pass still needed. Gotcha: orphaned next-server on :3000 serves stale builds — kill by port. |
+| B1-12 landing copy | done | Qaraami-led headline; "AI-powered" removed from hero+title; CTAs content-width; secondary border → mid (≥3:1 both themes). |
+| B1-10 hero replacement | done | fixtures/hero-excerpt.mei hand-curated (12 bars 6/8, A pentatonic naturals-only, treble-8vb, beat beams, phrase-aligned 2 systems via <sb/>+breaks:line — verovio quirks: leading XML comment breaks format sniffing; 'encoded' breaks unreliable, 'line' honors sb). build-hero.mjs asserts mobile ≤2 systems + staff gap ≥6px (10.8px). PLACEHOLDER STATUS: synthesized audio, swap path in fixture header for Khalid's own recording. Old pipeline hero retired. |
+| B1-11 hero playback | done | Inline SVG variants + lazy HTMLAudio (329KB pre-interaction, budget 500; audio only on press). Media clock drives amber reached-ink + blue playhead (26 notes @6s = exact eighth math); reduced-motion steps note-to-note; end resets. Real mobile Safari untested from this machine. |
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects
