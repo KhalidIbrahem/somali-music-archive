@@ -1,23 +1,29 @@
 /**
  * Landing copy — SINGLE SOURCE for every string on the landing page.
  *
- * PROVENANCE RULE: `QaraamiGen-landing-copy.md` (the approved copy bank) is
- * not yet in the repository. Until it lands, every string here traces to
- * material the author wrote or approved — the QaraamiGen build brief's own
- * story text, the shipped B1-12 landing lines, the identity study's language
- * — or to verifiable project numbers (audio inventory, sample session,
- * corpus pipeline). Nothing here is invented marketing. When the copy bank
- * arrives, replace strings in THIS file only; the page reads exclusively
- * from it.
+ * PROVENANCE: strings trace to the approved copy bank
+ * (`QaraamiGen-landing-copy.md`), to the QaraamiGen build brief's own story
+ * text and the shipped B1-12 landing lines, or to verifiable project numbers
+ * (audio inventory, sample session, corpus pipeline). Nothing here is invented
+ * marketing. The page reads EXCLUSIVELY from this file — to change wording,
+ * edit strings here only. Commented `// alt:` lines are approved alternatives
+ * from the copy bank; swap one in by moving it into the active string.
+ *
+ * DO NOT change the `stats` numbers without updating the source data — they
+ * are real figures, not copy.
  */
 
 export const landingCopy = {
   hero: {
-    // Author's story framing (build brief): oral tradition, live performance,
-    // aging cassettes; never written down; recordings decaying.
+    // Situation → stakes → turn. Author's story framing (build brief):
+    // oral tradition, live performance, aging cassettes; never written down.
     kicker: 'Qaraami — the golden age, 1970s–1980s',
-    headline: 'A musical civilization lived on tape and in memory.',
-    sub: 'Almost none of it was ever written into sheet music. The recordings are decaying.',
+    headline: 'A civilization sang, and its song lived only on tape and in memory.',
+    // alt: 'A musical civilization lived on tape and in memory.'
+    // alt: 'The music was never written down.'
+    // alt: 'A nation's memory, held together by cassette tape.'
+    sub: 'Almost none of it was ever written into sheet music — and the recordings are decaying a little more each year.',
+    // alt: 'The voices are aging. The recordings are fading. What was never written down can still be lost.'
     turn: 'Until now.',
   },
 
@@ -25,6 +31,7 @@ export const landingCopy = {
     // The engraved excerpt that plays (B1-10/11) — the page's proof moment.
     kicker: 'From a recording to a page',
     title: 'Sheet music that draws itself from the sound',
+    // alt: 'Watch a melody become memory.'
     body: 'Press play. The engraving follows the audio note by note — the same binding the studio uses on full recordings.',
   },
 
@@ -34,7 +41,7 @@ export const landingCopy = {
       kicker: 'The problem',
       title:
         'For generations, qaraami lived only through oral tradition, live performance, and aging cassette tapes.',
-      body: 'Qaraami lived in voices and reels, never on paper. Tape hiss grows louder every year; the people who carry the melodies grow older. What was never written down can still be lost.',
+      body: 'Qaraami lived in voices and reels, never on paper. The tape hiss grows louder every year; the people who carry the melodies grow older. A tradition remembered by only a few is one silence away from ending — and what was never written down can still be lost.',
     },
     {
       id: 'writing',
@@ -57,7 +64,7 @@ export const landingCopy = {
   ],
 
   // Real, verifiable numbers only (docs/audio-inventory.md, corpus pipeline,
-  // sample session). Update when the numbers move.
+  // sample session). Update when the numbers move. NOT marketing copy.
   stats: [
     { value: '605', label: 'recordings surveyed in the research corpus' },
     { value: '105', label: 'cassette tracks digitised and on hand' },
@@ -68,6 +75,7 @@ export const landingCopy = {
   closing: {
     title: 'Preserve, understand, and extend Somali musical heritage.',
     body: 'The tapes will not wait. The writing down has begun.',
+    // alt body: 'Nothing here will ever be lost again.'
     primaryCta: 'Open the studio',
     secondaryCta: 'Enter the listening room',
     noteHint: 'End on a single held note',
