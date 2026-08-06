@@ -18,7 +18,7 @@ export async function registerToken(req: Request, res: Response): Promise<void> 
 export async function sendTest(req: Request, res: Response): Promise<void> {
   if (!req.user) throw unauthorized();
   const count = await notificationsService.sendToUser(req.user.id, {
-    title: 'Somali Music Archive',
+    title: 'QaraamiGenAI',
     body: 'Push notifications are working. 🎶',
   });
   sendSuccess(res, { sent: count });

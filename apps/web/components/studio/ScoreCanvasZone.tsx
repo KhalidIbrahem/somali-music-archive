@@ -42,7 +42,7 @@ export function ScoreCanvasZone(): React.JSX.Element {
         <div className="mx-auto my-8 w-fit min-w-[520px] rounded-[2px] bg-paper shadow-2xl ring-1 ring-paper-edge print:my-0 print:min-w-0 print:shadow-none print:ring-0">
           <div className="px-16 pt-14 pb-6 text-center">
             <p className="text-[11px] tracking-[0.2em] text-confidence-mid uppercase">
-              Somali Music Archive — transcription
+              QaraamiGenAI — transcription
             </p>
             <h2 className="mt-4 font-display text-3xl text-confidence-high">
               {session?.meta.title ?? 'Sample session'}

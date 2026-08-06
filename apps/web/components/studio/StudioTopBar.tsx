@@ -7,6 +7,7 @@
  */
 
 import Link from 'next/link';
+import { QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 function RailToggle({
@@ -65,9 +66,10 @@ export function StudioTopBar({
 
       <Link
         href="/"
-        className="ml-2 rounded-[4px] font-display text-sm tracking-wide text-mid transition-colors hover:text-hi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-live"
+        className="ml-2 flex items-center gap-2 rounded-[4px] font-display text-sm tracking-wide text-mid transition-colors hover:text-hi focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-live"
       >
-        Somali Music Archive
+        <QaraamiGenMark size={20} />
+        QaraamiGenAI
       </Link>
       <span aria-hidden className="h-4 w-px bg-hairline" />
       <h1 className="truncate text-sm font-semibold text-hi">Sample session — voice</h1>

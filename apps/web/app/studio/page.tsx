@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 import { StudioShell } from '@/components/studio/StudioShell';
 
 export const metadata: Metadata = {
-  title: 'Studio — Somali Music Archive',
+  title: 'Studio — QaraamiGenAI',
   description:
     'Transcription studio: engraved score, source audio, and the AI pipeline’s confidence, side by side.',
 };
