@@ -7,6 +7,7 @@
 import type { Metadata } from 'next';
 import { Playfair_Display, Nunito, IBM_Plex_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { InAppBrowserBanner } from '@/components/InAppBrowserBanner';
 import { THEME_BOOTSTRAP_SCRIPT } from '@/lib/theme';
 import './globals.css';
 
@@ -54,7 +55,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
         {/* First statement the browser executes inside <body>: resolve the
             theme (stored choice → system preference → dark) before first paint. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <InAppBrowserBanner />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
