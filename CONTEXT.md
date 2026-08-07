@@ -137,6 +137,35 @@ brand, per the identity study) and factual rights lines ("Harvard Loeb…").
 Note: `QaraamiGenlandingpageprompt.md` in Downloads is the build brief itself
 — the copy bank `QaraamiGen-landing-copy.md` still does not exist.
 
+## Aug 7 — copy bank curated + Beerdilaacshe score page
+
+**Copy bank (1b2005a):** `QaraamiGen-landing-copy.md` landed at repo root and is
+curated into `lib/landingCopy.ts` under the provenance rule. The user maintains
+their own shortlist in that file as `// alt:` comments — choose within it, never
+overwrite it wholesale (a Write conflict on Aug 6 revealed their curation; my
+independent draft was discarded). Active picks: headline "A nation's memory,
+held together by cassette tape." / closing body "Nothing here will ever be lost
+again." Still open user-side: oud recording → `fixtures/hero-audio-source.wav`;
+their iPhone Safari + IG banner pass.
+
+**Beerdilaacshe (/scores/beerdilaacshe):** first entry in the qaraami songbook —
+engraved sheet music with an in-browser performance. Melody by Abdillahi Qarshe
+(1950s), sheet music by Khalid Ibrahim (credits verbatim from his .ly header,
+also in page metadata authors/other). Assets in `public/scores/beerdilaacshe/`
+(PDF + MIDI + LilyPond source, all downloadable); `scripts/build-score.mjs` is a
+generic SMF parser (VLQ, running status, tempo map) → `notes.json` (126 notes,
+96bpm, 4/4, 87.5s). `components/scores/ScorePlayer.tsx`: NO GM piano — melody is
+Karplus-Strong plucked synthesis voiced after the oud (doubled course ±5¢ +
+0.006s offset, faint f/2 resonance) over a durbaan groove (swept-sine dum,
+highpass-noise tak; dum·tak·ghost·dum·tak per 4/4 bar), whole mix pre-rendered
+to one AudioBuffer inside the tap gesture (264ms), peak-normalized 0.86;
+pause=ctx.suspend/resume=ctx.resume. "Scores" added to SiteHeader NAV. Verified
+headless: play→bar 4.6%→8.6%, pause freezes clock, stop resets; captured buffer
+peak 0.860/RMS 0.054 with signal at t=0 through the final decay; PDF `<object>`
+renders inline (Chrome viewer) with download fallback; 390px no overflow.
+CDP-harness gotcha: promise-returning evals need top-level `await` in the
+expression — bare promises serialize as `{}` despite awaitPromise:true.
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects
