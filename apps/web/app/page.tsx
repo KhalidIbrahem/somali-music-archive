@@ -26,9 +26,9 @@ import { Reveal } from '@/components/Reveal';
 import { landingCopy as copy } from '@/lib/landingCopy';
 
 export const metadata: Metadata = {
-  title: 'QaraamiGenAI — Somali music, written down',
+  title: 'QaraamiGenAI — before the last tape fades',
   description:
-    'Qaraami lived on tape and in memory. QaraamiGenAI transcribes the recordings that survive into engraved notation that states its own certainty — preservation across AI, computational ethnomusicology, and cultural heritage.',
+    'For fifty years, Somali Qaraami lived only in performance and on aging cassettes. QaraamiGen is teaching artificial intelligence to hear it, understand it, and write it down — before it’s gone.',
 };
 
 const sampleDir = join(process.cwd(), 'public/sample');
