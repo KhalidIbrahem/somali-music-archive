@@ -18,10 +18,10 @@ export const landingCopy = {
     // Situation → stakes → turn. Author's story framing (build brief):
     // oral tradition, live performance, aging cassettes; never written down.
     kicker: 'Qaraami — the golden age, 1970s–1980s',
-    headline: 'A civilization sang, and its song lived only on tape and in memory.',
+    headline: 'A nation’s memory, held together by cassette tape.',
+    // alt: 'A civilization sang, and its song lived only on tape and in memory.'
     // alt: 'A musical civilization lived on tape and in memory.'
     // alt: 'The music was never written down.'
-    // alt: 'A nation's memory, held together by cassette tape.'
     sub: 'Almost none of it was ever written into sheet music — and the recordings are decaying a little more each year.',
     // alt: 'The voices are aging. The recordings are fading. What was never written down can still be lost.'
     turn: 'Until now.',
@@ -74,8 +74,8 @@ export const landingCopy = {
 
   closing: {
     title: 'Preserve, understand, and extend Somali musical heritage.',
-    body: 'The tapes will not wait. The writing down has begun.',
-    // alt body: 'Nothing here will ever be lost again.'
+    body: 'Nothing here will ever be lost again.',
+    // alt body: 'The tapes will not wait. The writing down has begun.'
     primaryCta: 'Open the studio',
     secondaryCta: 'Enter the listening room',
     noteHint: 'End on a single held note',
