@@ -9,6 +9,7 @@ import { QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
 const NAV = [
   { label: 'Home', href: '/' },
   { label: 'Listen', href: '/listen' },
+  { label: 'Scores', href: '/scores/beerdilaacshe' },
   { label: 'Library', href: '/library' },
   { label: 'Transcribe', href: '/transcribe' },
   { label: 'Generate', href: '/generate' },
