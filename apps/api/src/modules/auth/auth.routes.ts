@@ -6,6 +6,7 @@
 
 import { Router } from 'express';
 import {
+  googleAuthSchema,
   loginSchema,
   registerSchema,
   refreshSchema,
@@ -33,6 +34,14 @@ authRouter.post(
   authLimiter,
   validate({ body: loginSchema }),
   asyncHandler(controller.login),
+);
+
+// Google sign-in — the credential is a signed Google JWT verified server-side.
+authRouter.post(
+  '/google',
+  authLimiter,
+  validate({ body: googleAuthSchema }),
+  asyncHandler(controller.google),
 );
 
 authRouter.post('/refresh', validate({ body: refreshSchema }), asyncHandler(controller.refresh));

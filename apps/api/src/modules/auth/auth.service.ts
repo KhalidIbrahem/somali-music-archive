@@ -15,11 +15,13 @@
 import type { AuthTokens, PublicUser } from '@sma/types';
 import type {
   ForgotPasswordInput,
+  GoogleAuthInput,
   LoginInput,
   RegisterInput,
   ResetPasswordInput,
   VerifyEmailInput,
 } from '@sma/validators';
+import { E164_PATTERN, normalizePhone } from '@sma/validators';
 import { AppError, badRequest, unauthorized } from '@/shared/errors/AppError';
 import { sha256Hex, randomToken } from '@/shared/crypto';
 import type { TokenBlacklist } from '@/shared/auth/tokenBlacklist';
@@ -27,6 +29,7 @@ import { tokenBlacklist } from '@/shared/auth/tokenBlacklist';
 import type { EmailService } from '@/shared/email/emailService';
 import { emailService } from '@/shared/email/emailService';
 import { hashPassword, verifyPassword } from './password.service';
+import { verifyGoogleCredential, type GoogleIdentityVerifier } from './google.verifier';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from './token.service';
 import {
   toPublicUser,
@@ -58,6 +61,8 @@ export interface AuthServiceDeps {
   verificationTokens: VerificationTokenRepository;
   blacklist: TokenBlacklist;
   email: EmailService;
+  /** Verifies a Google ID-token credential (injected so tests need no network). */
+  googleIdentity: GoogleIdentityVerifier;
 }
 
 export interface LogoutParams {
@@ -68,7 +73,7 @@ export interface LogoutParams {
 }
 
 export function createAuthService(deps: AuthServiceDeps) {
-  const { users, refreshTokens, verificationTokens, blacklist, email } = deps;
+  const { users, refreshTokens, verificationTokens, blacklist, email, googleIdentity } = deps;
 
   /** Issue an access+refresh pair and persist the refresh token's hash. */
   async function issueTokenPair(record: UserRecord): Promise<AuthTokens> {
@@ -87,9 +92,16 @@ export function createAuthService(deps: AuthServiceDeps) {
     if (existing) {
       throw badRequest('AUTH_EMAIL_TAKEN', 'An account with this email already exists');
     }
+    if (input.phone !== undefined) {
+      const phoneTaken = await users.findByPhone(input.phone);
+      if (phoneTaken) {
+        throw badRequest('AUTH_PHONE_TAKEN', 'An account with this phone number already exists');
+      }
+    }
     const passwordHash = await hashPassword(input.password);
     const record = await users.create({
       email: input.email,
+      ...(input.phone !== undefined ? { phone: input.phone } : {}),
       passwordHash,
       displayName: input.displayName,
       language: input.language ?? 'so',
@@ -109,8 +121,22 @@ export function createAuthService(deps: AuthServiceDeps) {
     return { user: toPublicUser(record), ...tokens };
   }
 
+  /**
+   * Resolve a login identifier to a user. `email` (legacy shape) and identifiers
+   * containing `@` are email lookups; anything else is treated as a phone number
+   * and normalised to E.164 first. The schema guarantees exactly one is present.
+   */
+  async function findByIdentifier(input: LoginInput): Promise<UserRecord | null> {
+    if (input.email !== undefined) return users.findByEmail(input.email);
+    const identifier = input.identifier ?? '';
+    if (identifier.includes('@')) return users.findByEmail(identifier.toLowerCase());
+    const phone = normalizePhone(identifier);
+    if (!E164_PATTERN.test(phone)) return null;
+    return users.findByPhone(phone);
+  }
+
   async function login(input: LoginInput): Promise<AuthResult> {
-    const record = await users.findByEmail(input.email);
+    const record = await findByIdentifier(input);
     if (!record) {
       throw unauthorized('AUTH_INVALID_CREDENTIALS', 'Invalid email or password');
     }
@@ -134,6 +160,52 @@ export function createAuthService(deps: AuthServiceDeps) {
         );
       }
       throw unauthorized('AUTH_INVALID_CREDENTIALS', 'Invalid email or password');
+    }
+
+    await users.resetFailedAttempts(record.id);
+    await users.touchLastLogin(record.id);
+    const tokens = await issueTokenPair(record);
+    return { user: toPublicUser(record), ...tokens };
+  }
+
+  /**
+   * Sign in (or sign up) with a verified Google credential. Accounts are linked
+   * by email: an existing member signs straight in; a new visitor gets an
+   * account whose email Google has already verified. Google-created accounts
+   * receive an unguessable random password hash — password login stays unusable
+   * until the member sets one via the reset flow.
+   */
+  async function loginWithGoogle(input: GoogleAuthInput): Promise<AuthResult> {
+    const identity = await googleIdentity(input.credential);
+    if (!identity.emailVerified) {
+      throw unauthorized(
+        'AUTH_INVALID_CREDENTIALS',
+        'This Google account has no verified email address',
+      );
+    }
+
+    let record = await users.findByEmail(identity.email);
+    if (!record) {
+      const passwordHash = await hashPassword(`${randomToken()}G0!`);
+      const fallbackName = identity.email.split('@')[0] ?? 'Member';
+      const rawName = (identity.name ?? fallbackName).trim();
+      // Keep within the displayName policy bounds (2–60 chars).
+      const displayName = rawName.length >= 2 ? rawName.slice(0, 60) : 'Member';
+      record = await users.create({
+        email: identity.email,
+        passwordHash,
+        displayName,
+        language: 'so',
+        emailVerified: true,
+      });
+      if (identity.avatarUrl !== undefined) {
+        record =
+          (await users.updateProfile(record.id, { avatarUrl: identity.avatarUrl })) ?? record;
+      }
+    } else if (!record.emailVerified) {
+      // Google verified ownership of this exact address — reflect that.
+      await users.markEmailVerified(record.id);
+      record = (await users.findById(record.id)) ?? record;
     }
 
     await users.resetFailedAttempts(record.id);
@@ -214,6 +286,7 @@ export function createAuthService(deps: AuthServiceDeps) {
   return {
     register,
     login,
+    loginWithGoogle,
     refresh,
     logout,
     verifyEmail,
@@ -233,4 +306,5 @@ export const authService: AuthService = createAuthService({
   verificationTokens: verificationTokenRepository,
   blacklist: tokenBlacklist,
   email: emailService,
+  googleIdentity: verifyGoogleCredential,
 });

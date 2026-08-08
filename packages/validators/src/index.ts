@@ -12,6 +12,7 @@ export * from './auth';
 export * from './recording';
 export * from './user';
 export * from './lesson';
+export * from './education';
 export * from './subscription';
 export * from './notification';
 export * from './ai';

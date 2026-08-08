@@ -6,7 +6,13 @@
  */
 
 import { z } from 'zod';
-import { emailSchema, passwordSchema, displayNameSchema, uiLanguageSchema } from './common';
+import {
+  emailSchema,
+  passwordSchema,
+  displayNameSchema,
+  phoneSchema,
+  uiLanguageSchema,
+} from './common';
 
 /** Minimum age required to register, per COPPA (ARCHITECTURE.md §11 Compliance). */
 export const MIN_SIGNUP_AGE = 13;
@@ -22,6 +28,8 @@ function isOldEnough(dateOfBirth: string): boolean {
 
 export const registerSchema = z.object({
   email: emailSchema,
+  /** Optional E.164 phone — becomes a second login identifier when provided. */
+  phone: phoneSchema.optional(),
   password: passwordSchema,
   displayName: displayNameSchema,
   language: uiLanguageSchema.optional(),
@@ -35,11 +43,28 @@ export const registerSchema = z.object({
   }),
 });
 
-export const loginSchema = z.object({
-  email: emailSchema,
-  // Do not apply the full password policy on login — just require a non-empty value.
-  // Policy is enforced at registration; login must still work for legacy passwords.
-  password: z.string().min(1, 'Password is required'),
+/**
+ * Login accepts either the original `{ email }` shape (mobile app, admin login)
+ * or `{ identifier }` — an email OR an E.164 phone number in one field (web
+ * sign-in form). Exactly one of the two must be present; the service resolves
+ * which kind of identifier it received.
+ */
+export const loginSchema = z
+  .object({
+    email: emailSchema.optional(),
+    identifier: z.string().trim().min(3, 'Enter your email or phone').max(254).optional(),
+    // Do not apply the full password policy on login — just require a non-empty value.
+    // Policy is enforced at registration; login must still work for legacy passwords.
+    password: z.string().min(1, 'Password is required'),
+  })
+  .refine((d) => (d.email !== undefined) !== (d.identifier !== undefined), {
+    message: 'Provide your email or phone number',
+    path: ['identifier'],
+  });
+
+/** POST /auth/google — the Google Identity Services ID token (JWT credential). */
+export const googleAuthSchema = z.object({
+  credential: z.string().min(20, 'Missing Google credential'),
 });
 
 export const refreshSchema = z.object({
@@ -61,6 +86,7 @@ export const verifyEmailSchema = z.object({
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+export type GoogleAuthInput = z.infer<typeof googleAuthSchema>;
 export type RefreshInput = z.infer<typeof refreshSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

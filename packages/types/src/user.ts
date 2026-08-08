@@ -10,12 +10,22 @@
 import type { UiLanguage } from '@sma/constants';
 import type { Uuid, IsoDateTimeString, SoftDeletable } from './common';
 
-/** Role-based access control tiers (ARCHITECTURE.md §11 Authorization). */
-export type UserRole = 'listener' | 'contributor' | 'admin';
+/**
+ * Role-based access control tiers (ARCHITECTURE.md §11 Authorization).
+ * `educator` (SESSION "teaching") sits beside `contributor`: educators author
+ * lessons/teaching resources and may also contribute recordings; contributors
+ * cannot author lessons. Runtime list + derived union so validators and admin
+ * tooling can enumerate roles without hand-copied string arrays.
+ */
+export const USER_ROLES = ['listener', 'contributor', 'educator', 'admin'] as const;
+export type UserRole = (typeof USER_ROLES)[number];
 
 export interface User extends SoftDeletable {
   readonly id: Uuid;
   readonly email: string;
+  /** E.164 phone number (`+2526…`), when the member registered one. Usable as a
+   * login identifier interchangeably with email. */
+  readonly phone?: string;
   readonly displayName: string;
   readonly avatarUrl?: string;
   /** Preferred UI language. Defaults to Somali (Principle 1). */

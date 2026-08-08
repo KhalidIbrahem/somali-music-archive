@@ -166,6 +166,60 @@ renders inline (Chrome viewer) with download fallback; 390px no overflow.
 CDP-harness gotcha: promise-returning evals need top-level `await` in the
 expression — bare promises serialize as `{}` despite awaitPromise:true.
 
+## Aug 7 PM — accounts + teaching release (pre-domain)
+
+Built for the Hostinger-domain launch and Prof. Rehanna Kashogi (ethnomusicology)
+uploading course material. All layers tested; api 309/310 (the 1 failure is the
+pre-existing lyria one), web builds 18 routes, mongo repos proven against a real
+mongod (mongodb-memory-server).
+
+- **Auth**: login accepts email OR E.164 phone in one identifier field (legacy
+  `{email}` shape still valid — mobile/admin untouched); register takes optional
+  phone (unique, normalised, `AUTH_PHONE_TAKEN`); `POST /auth/google` verifies a
+  GIS credential (google-auth-library), links by email, creates verified
+  accounts with unguessable password hashes — env-gated by `GOOGLE_CLIENT_ID` /
+  `NEXT_PUBLIC_GOOGLE_CLIENT_ID` (unset → button hidden, endpoint 503s
+  `AUTH_PROVIDER_UNAVAILABLE`). Web now stores the REFRESH token too;
+  lib/api single-flight-refreshes on `AUTH_TOKEN_EXPIRED` and replays once —
+  sessions no longer die at 15 min.
+- **Educator role** (`USER_ROLES` in @sma/types is now the canonical list):
+  requireEducator = educator|admin; requireContributor now admits educators.
+  Prisma migration `20260807000000_educator_role_phone` (enum value + nullable
+  unique `users.phone`) APPLIED TO PROD Supabase. Admin endpoints
+  `GET /users?q=` + `PATCH /users/:id/role` (cannot change own role);
+  `npm run promote -- <email> <role>` now updates Postgres when
+  PERSISTENCE=database (dev-store otherwise).
+- **Education module** (`/api/v1/education`): TeachingLesson (title, summary,
+  body, track, ≤10 attachments, draft/published, soft delete) in Mongo
+  (`teaching_lessons`), in-memory driver for tests. Public reads (list shows
+  published only; drafts 404 for non-authors — maybeAuthenticate middleware),
+  educator-gated authoring, presigned R2 uploads under new `lessons/` prefix
+  (+ `audio/mp4` extension mapping), per-lesson signed attachment reads (key
+  must belong to the lesson). Attachment keys are verified to exist in R2
+  before a lesson accepts them.
+- **Library durability FIXED**: `library_books` Mongo model + repository binds
+  when PERSISTENCE=database — the Aug 6 "shelf empties on cold start" flag is
+  closed.
+- **Web**: AuthMenu chip (site + landing variants) in SiteHeader and the
+  landing header — name, role badge, My account / Teaching studio / Admin /
+  Sign out (SIGN OUT NOW EXISTS; calls POST /auth/logout then clears both
+  tokens). `/account` dashboard (profile, phone, editable display name, role
+  sections, sign out). `/learn` + `/learn/[id]` public lesson pages (track
+  filter, paragraph rendering, signed attachment opens, inline audio).
+  `/teach` educator studio (composer with multi-file presigned upload,
+  draft/publish, list with publish-toggle + confirm-delete). Login page:
+  single "Email or phone" field + optional Google button + safe `?next=`
+  redirect. Register: optional phone field + Google. "Learn" added to nav.
+- **Local E2E smoke passed** (memory mode, real HTTP): register w/ phone →
+  login by phone → public lesson reads → 403 for listener authoring → admin
+  role grant → educator draft/publish/delete → R2 presign shape → logout
+  revocation → google 503 when unconfigured.
+- **Docs**: `docs/GOING-LIVE.md` — Rehanna onboarding (register → promote),
+  Google OAuth setup, Hostinger DNS → Vercel, CORS/R2/OAuth origin updates for
+  the new domain. `.env.example`s document the two Google vars.
+- **Gotcha for smoke tests**: authLimiter 5/15min/IP counts register+login+
+  google together — local bursts must restart the API (memory mode) or wait.
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects

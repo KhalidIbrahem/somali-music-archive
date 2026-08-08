@@ -11,6 +11,7 @@ import { authRouter } from '@/modules/auth/auth.routes';
 import { usersRouter } from '@/modules/users/users.routes';
 import { recordingsRouter } from '@/modules/recordings/recordings.routes';
 import { lessonsRouter } from '@/modules/lessons/lessons.routes';
+import { educationRouter } from '@/modules/education/education.routes';
 import { searchRouter } from '@/modules/search/search.routes';
 import { subscriptionsRouter } from '@/modules/subscriptions/subscriptions.routes';
 import { notificationsRouter } from '@/modules/notifications/notifications.routes';
@@ -28,6 +29,8 @@ apiV1Router.use('/auth', authRouter);
 apiV1Router.use('/users', usersRouter);
 apiV1Router.use('/recordings', recordingsRouter);
 apiV1Router.use('/lessons', lessonsRouter);
+// Educator-authored lessons/resources (public reads, educator-gated authoring).
+apiV1Router.use('/education', educationRouter);
 apiV1Router.use('/search', searchRouter);
 apiV1Router.use('/subscriptions', subscriptionsRouter);
 apiV1Router.use('/notifications', notificationsRouter);
