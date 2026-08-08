@@ -126,7 +126,7 @@ export function AuthMenu({ variant = 'site' }: { variant?: AuthMenuVariant }): R
           </div>
           <nav className="flex flex-col py-1.5" aria-label="Account">
             <MenuLink href="/account" onNavigate={() => setOpen(false)}>
-              My account
+              Dashboard
             </MenuLink>
             {canTeach ? (
               <MenuLink href="/teach" onNavigate={() => setOpen(false)}>
