@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 import { getMe, logout } from '@/lib/api';
 import { getToken, clearSession } from '@/lib/auth';
 import { invalidateSessionCache } from '@/lib/session';
+import { SiteHeader } from '@/components/SiteHeader';
 
 export type AdminSection = 'recordings' | 'organizations' | 'invites' | 'members';
 
@@ -64,44 +65,52 @@ export function AdminShell({
 
   if (!ready) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-bg-primary">
-        <p className="font-body text-ink-secondary">Loading…</p>
-      </main>
+      <div className="min-h-screen bg-bg-primary">
+        <SiteHeader />
+        <main className="flex items-center justify-center py-32">
+          <p className="font-body text-ink-secondary">Loading…</p>
+        </main>
+      </div>
     );
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-10">
-      <header className="flex items-center justify-between">
-        <div>
-          <p className="font-body text-sm uppercase tracking-widest text-amber">Admin</p>
-          <h1 className="font-display text-3xl text-ink-primary">Content management</h1>
-        </div>
-        <button
-          onClick={signOut}
-          className="rounded-lg border border-line-primary px-3 py-2 font-body text-sm text-ink-secondary transition-colors hover:text-ink-primary"
-        >
-          Sign out
-        </button>
-      </header>
-
-      <nav className="flex gap-2 border-b border-line-secondary pb-3">
-        {NAV.map((item) => (
-          <Link
-            key={item.key}
-            href={item.href}
-            className={`rounded-full px-4 py-1.5 font-body text-sm ${
-              active === item.key
-                ? 'bg-amber text-bg-primary'
-                : 'border border-line-primary text-ink-secondary hover:text-ink-primary'
-            }`}
+    <div className="min-h-screen bg-bg-primary">
+      {/* The site's sticky top navigation stays visible on every admin page —
+          admin is a section of the platform, not a separate universe. */}
+      <SiteHeader />
+      <main className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-10">
+        <header className="flex items-center justify-between">
+          <div>
+            <p className="font-body text-sm uppercase tracking-widest text-amber">Admin</p>
+            <h1 className="font-display text-3xl text-ink-primary">Content management</h1>
+          </div>
+          <button
+            onClick={signOut}
+            className="rounded-lg border border-line-primary px-3 py-2 font-body text-sm text-ink-secondary transition-colors hover:text-ink-primary"
           >
-            {item.label}
-          </Link>
-        ))}
-      </nav>
+            Sign out
+          </button>
+        </header>
 
-      {children}
-    </main>
+        <nav className="flex gap-2 border-b border-line-secondary pb-3">
+          {NAV.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              className={`rounded-full px-4 py-1.5 font-body text-sm ${
+                active === item.key
+                  ? 'bg-amber text-bg-primary'
+                  : 'border border-line-primary text-ink-secondary hover:text-ink-primary'
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        {children}
+      </main>
+    </div>
   );
 }
