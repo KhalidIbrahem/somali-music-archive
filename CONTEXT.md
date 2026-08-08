@@ -318,6 +318,29 @@ z-50; useSession now re-asserts the gate cookie on any page → no more bounce).
 - **Tiers 2–5 remain** (recording/comping, mixing FX+automation, sampler+
   sound library, pro polish) — Tier 1 is a complete usable studio per plan.
 
+## Aug 8 later — kaban sessions + people-name scrub
+
+- **Kaban (oud) listening-room group**: 9 tracks curated from the user's
+  ~28-file private collection (Downloads/qaraami_from_Ahmed_Ilkacase; deduped
+  by size/duration — kaban-200 dropped as a re-encode of kaban-wadada).
+  Neutral slug filenames under apps/web/public/audio (gitignored; deploy
+  script now re-attaches .m4a AND .mp3). lib/tracks.ts OUD_SESSION_TRACKS +
+  OUD_RIGHTS_LINE ('private collection — performers unlisted'); ListenShelf
+  splices them between the sample session and the Harvard rows. Landing
+  archive card 8 → 18 recordings. Durations measured with afinfo.
+- **NAME SCRUB (owner instruction — STANDING RULE): the names of the elder
+  performer previously used in seeds/fixtures and of the professor must NOT
+  appear anywhere user-facing.** Applied: mobile recorder default singer now
+  empty + neutral copy; seed singerName → 'Fanaan (name withheld)' (dev store
+  regenerated); the 5 PROD Mongo recordings updated the same way (0 mentions
+  left); admin invite placeholder, invite CLI example, GOING-LIVE.md
+  neutralised; every test fixture renamed (searchIndex query term updated to
+  match). Internal planning docs (ARCHITECTURE/DATASET_STRATEGY/ISMIR draft/
+  SESSION_PLAN) intentionally KEEP their historical text — not served on the
+  site; ask the owner before ever surfacing those names in UI copy again.
+  Two source filenames also carried other performers' names — stripped by the
+  rename; titles use song words only.
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects
