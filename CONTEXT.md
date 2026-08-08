@@ -231,6 +231,43 @@ mongod (mongodb-memory-server).
   Login-page fix along the way: ?next read at submit time, not useSearchParams,
   so the form stays in the static HTML (764dbaa).
 
+## Aug 8 — STAGE 1 of the studio master plan: private access (DEPLOYED)
+
+The master plan (user brief, Aug 8): turn the site into a private heritage
+studio platform — Stage 1 private access → Stage 2 landing showcase → Stage 3
+dashboard redesign → Stage 4 courses → Stage 5 the DAW in 5 tiers (data-model
+plan must be agreed BEFORE Tier 1 code). Work stage-by-stage, WAIT for the
+user's OK between stages; commit per feature; never break Beerdilaacshe (its
+audio engine gets refactored into a shared module for the DAW).
+
+Stage 1 shipped + verified in prod (commits 21b9c00, prettier-clean):
+- Registration = username + password + INVITE CODE (unique, atomic CAS burn,
+  label/maxUses/expiry, redemptions recorded; codes QG-XXXX-XXXX from an
+  unambiguous alphabet). Login identifier = username | email | E.164 phone.
+  Google = sign-in only (AUTH_INVITE_REQUIRED for strangers). New codes:
+  AUTH_USERNAME_TAKEN, AUTH_INVITE_INVALID, AUTH_INVITE_REQUIRED.
+- Page gate: web proxy.ts (Next 16 convention) + `sma_session` marker cookie
+  written beside the tokens — signed-out visitors reach only /, /login,
+  /register, /admin/login; dotted paths (static assets) pass. API stays the
+  security boundary; education reads now require auth.
+- Admin: /admin/invites (mint/copy/revoke + redeemers), /admin/members
+  (search/roles/remove — soft delete + refresh revocation; self/admin
+  removal guarded). CLI: `npm run invite -- create|list|revoke` (prod DB or
+  dev store). Seed mints QG-DEV-WELCOME (100 uses) for local dev.
+- Prisma migration 20260808000000_private_access APPLIED TO PROD
+  (users.username unique + invite tables). Khalid is admin via
+  khalid@somalimusicarchive.com AND ibrahimkhalid032@gmail.com (promoted).
+  3 hand-out codes minted (see `npm run invite -- list`).
+- LEGACY prod accounts have username=NULL → they sign in by email/phone
+  until a username backfill ships (fine: identifier field takes all three).
+- Verified: 67 new-module tests + full suites green (lyria still the one
+  pre-existing fail); local browser E2E (gate→invite reg→Beerdilaacshe
+  intact→sign-out→admin mint/revoke/members); prod smoke (gate 307s, bad
+  code rejected, real code admitted, member removed via admin API).
+- OPEN RISK flagged to user: seed password `SomaliArchive2024!` still valid
+  for admin@/khalid@ prod accounts — rotation script exists, needs his call.
+- Local-dev gotcha: web dev server must run on :3000 (API CORS allowlist).
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects
