@@ -14,7 +14,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import type { PublicUser } from '@sma/types';
 import { ApiError, getMe } from '@/lib/api';
-import { clearSession, getToken, subscribeToken } from '@/lib/auth';
+import { clearSession, ensureSessionCookie, getToken, subscribeToken } from '@/lib/auth';
 
 export type Session =
   /** Server render / first client paint — render a neutral shell. */
@@ -64,6 +64,11 @@ export function useSession(): Session {
       setUser(null);
       return;
     }
+    // Sessions created before the page gate shipped have tokens but no marker
+    // cookie — re-assert it on ANY page that reads the session (the landing
+    // page included), so the member never gets bounced to a login they
+    // already passed.
+    ensureSessionCookie();
     let cancelled = false;
     void fetchUserFor(token).then((u) => {
       if (!cancelled) setUser(u);
