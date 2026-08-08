@@ -49,3 +49,9 @@ export async function changeRole(req: Request, res: Response): Promise<void> {
   const user = await usersService.changeRole(req.user.id, req.params['id'] ?? '', role);
   sendSuccess(res, user);
 }
+
+export async function removeUser(req: Request, res: Response): Promise<void> {
+  if (!req.user) throw unauthorized();
+  await usersService.removeUser(req.user.id, req.params['id'] ?? '');
+  sendSuccess(res, { removed: true });
+}

@@ -74,6 +74,8 @@ describe('authStore.register', () => {
     jest.mocked(authApi.register).mockResolvedValue({ user: fakeUser(), ...TOKENS });
 
     await useAuthStore.getState().register({
+      inviteCode: 'QG-TEST-2026',
+      username: 'atest',
       email: 'e@x.co',
       password: 'pw',
       displayName: 'A',

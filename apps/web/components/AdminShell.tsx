@@ -15,11 +15,13 @@ import { getMe, logout } from '@/lib/api';
 import { getToken, clearSession } from '@/lib/auth';
 import { invalidateSessionCache } from '@/lib/session';
 
-export type AdminSection = 'recordings' | 'organizations';
+export type AdminSection = 'recordings' | 'organizations' | 'invites' | 'members';
 
 const NAV: ReadonlyArray<{ key: AdminSection; label: string; href: string }> = [
   { key: 'recordings', label: 'Recordings', href: '/admin' },
   { key: 'organizations', label: 'Organizations', href: '/admin/organizations' },
+  { key: 'invites', label: 'Invites', href: '/admin/invites' },
+  { key: 'members', label: 'Members', href: '/admin/members' },
 ];
 
 export function AdminShell({

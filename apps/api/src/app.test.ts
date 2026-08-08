@@ -1,13 +1,18 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import request from 'supertest';
 import { createApp } from '@/app';
+import { seedTestInvite, TEST_INVITE_CODE } from '@/shared/testing/seedInvite';
 
 const app = createApp();
 
-// A unique email per run so the process-wide in-memory repo does not collide
-// across repeated local runs within the same process.
+beforeAll(seedTestInvite);
+
+// A unique email/username per run so the process-wide in-memory repo does not
+// collide across repeated local runs within the same process.
 const email = `elder+${Date.now()}@example.com`;
 const registration = {
+  inviteCode: TEST_INVITE_CODE,
+  username: `elder${Date.now()}`,
   email,
   password: 'oudwood7',
   displayName: 'Ahmed Ali Egal',
@@ -59,7 +64,7 @@ describe('API integration', () => {
     const uniqueEmail = `logout+${Date.now()}@example.com`;
     const reg = await request(app)
       .post('/api/v1/auth/register')
-      .send({ ...registration, email: uniqueEmail });
+      .send({ ...registration, email: uniqueEmail, username: `logout${Date.now()}` });
     const token = reg.body.data.accessToken as string;
 
     // The token works before logout.
@@ -85,7 +90,7 @@ describe('API integration', () => {
     const uniqueEmail = `rotate+${Date.now()}@example.com`;
     const reg = await request(app)
       .post('/api/v1/auth/register')
-      .send({ ...registration, email: uniqueEmail });
+      .send({ ...registration, email: uniqueEmail, username: `rotate${Date.now()}` });
     const refreshToken = reg.body.data.refreshToken as string;
 
     const rotated = await request(app).post('/api/v1/auth/refresh').send({ refreshToken });
@@ -133,7 +138,7 @@ describe('API integration', () => {
     const uniqueEmail = `lock+${Date.now()}@example.com`;
     await request(app)
       .post('/api/v1/auth/register')
-      .send({ ...registration, email: uniqueEmail });
+      .send({ ...registration, email: uniqueEmail, username: `lock${Date.now()}` });
 
     let lastCode = '';
     for (let i = 0; i < 10; i += 1) {

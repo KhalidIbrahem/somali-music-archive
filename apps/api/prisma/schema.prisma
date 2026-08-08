@@ -52,6 +52,9 @@ enum OrganizationStatus {
 model User {
   id              String    @id @default(uuid()) @db.Uuid
   email           String    @unique
+  // Unique lowercase handle — the primary login identifier on the invite-only
+  // platform. Nullable so pre-username accounts keep working via email/phone.
+  username        String?   @unique
   // E.164 phone (`+2526…`) — optional second login identifier. Nullable unique:
   // Postgres allows any number of NULLs, so members without a phone are unaffected.
   phone           String?   @unique
@@ -81,8 +84,45 @@ model User {
   organizationMember OrganizationMember?
   comments           Comment[]
   collections        Collection[]
+  invitesCreated     InviteCode[]           @relation("InviteCreator")
+  inviteRedemptions  InviteRedemption[]
 
   @@map("users")
+}
+
+// Invite-only registration (SESSION "private access"): an admin mints a code,
+// hands it to a guest, and registration burns one use. Revocation is soft
+// (revokedAt) so the admin panel keeps the full history.
+model InviteCode {
+  id          String    @id @default(uuid()) @db.Uuid
+  code        String    @unique // human-friendly, stored uppercase
+  label       String? // admin note: who this code was minted for
+  maxUses     Int       @default(1) @map("max_uses")
+  usedCount   Int       @default(0) @map("used_count")
+  expiresAt   DateTime? @map("expires_at") @db.Timestamptz
+  revokedAt   DateTime? @map("revoked_at") @db.Timestamptz
+  createdById String    @map("created_by_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  createdBy   User               @relation("InviteCreator", fields: [createdById], references: [id])
+  redemptions InviteRedemption[]
+
+  @@index([createdById])
+  @@map("invite_codes")
+}
+
+model InviteRedemption {
+  id         String   @id @default(uuid()) @db.Uuid
+  codeId     String   @map("code_id") @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  redeemedAt DateTime @default(now()) @map("redeemed_at") @db.Timestamptz
+
+  code InviteCode @relation(fields: [codeId], references: [id], onDelete: Cascade)
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([codeId, userId])
+  @@index([userId])
+  @@map("invite_redemptions")
 }
 
 // One-time, single-use tokens for email verification and password reset

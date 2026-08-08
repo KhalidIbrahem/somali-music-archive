@@ -10,12 +10,12 @@
  * registration (?registered=1).
  */
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { login, ApiError } from '@/lib/api';
-import { setSession } from '@/lib/auth';
-import { invalidateSessionCache } from '@/lib/session';
+import { ensureSessionCookie, setSession } from '@/lib/auth';
+import { invalidateSessionCache, useSession } from '@/lib/session';
 import { GoogleSignInButton } from '@/components/GoogleSignInButton';
 
 /** Where to land after a successful sign-in. Read lazily from the URL at
@@ -46,10 +46,20 @@ function RegisteredBanner(): React.JSX.Element | null {
 
 function LoginForm(): React.JSX.Element {
   const router = useRouter();
+  const session = useSession();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  // Already signed in (e.g. bounced here by the page gate because the session
+  // predates the marker cookie): heal the cookie and continue to the target.
+  useEffect(() => {
+    if (session.status === 'signed-in') {
+      ensureSessionCookie();
+      router.replace(nextPath());
+    }
+  }, [session.status, router]);
 
   const finish = (): void => {
     invalidateSessionCache();
@@ -88,14 +98,15 @@ function LoginForm(): React.JSX.Element {
         className="flex flex-col gap-5 rounded-2xl border border-line-secondary bg-bg-secondary p-8"
       >
         <label className="flex flex-col gap-1.5">
-          <span className="font-body text-sm text-ink-secondary">Email or phone</span>
+          <span className="font-body text-sm text-ink-secondary">Username, email or phone</span>
           <input
             type="text"
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             required
+            autoCapitalize="none"
             autoComplete="username"
-            placeholder="you@example.com or +252 61 234 5678"
+            placeholder="your username · you@example.com · +252 61…"
             className="w-full rounded-lg border border-line-primary bg-bg-tertiary px-3 py-2 font-body text-ink-primary outline-none transition-colors placeholder:text-ink-tertiary/60 focus:border-amber"
           />
         </label>

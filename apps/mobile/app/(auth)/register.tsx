@@ -54,6 +54,8 @@ export default function Register(): React.JSX.Element {
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
+      inviteCode: '',
+      username: '',
       displayName: '',
       email: '',
       password: '',
@@ -70,6 +72,8 @@ export default function Register(): React.JSX.Element {
     // intentionally not sent to the server.
     try {
       await register({
+        inviteCode: values.inviteCode,
+        username: values.username,
         email: values.email,
         password: values.password,
         displayName: values.displayName,
@@ -117,6 +121,39 @@ export default function Register(): React.JSX.Element {
           </View>
 
           <View style={styles.form}>
+            <Controller
+              control={control}
+              name="inviteCode"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Invite code"
+                  placeholder="QG-XXXX-XXXX"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  autoCapitalize="characters"
+                  autoCorrect={false}
+                  error={errors.inviteCode?.message}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="username"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input
+                  label="Username"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  autoComplete="username-new"
+                  textContentType="username"
+                  error={errors.username?.message}
+                />
+              )}
+            />
             <Controller
               control={control}
               name="displayName"
