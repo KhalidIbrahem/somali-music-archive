@@ -52,7 +52,7 @@ export default function Home(): React.JSX.Element {
         <QaraamiGenLockup markSize={28} />
         <nav className="flex items-center gap-5">
           <Link
-            href="/studio"
+            href="/daw"
             className="rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
           >
             Studio
@@ -253,7 +253,7 @@ export default function Home(): React.JSX.Element {
             <Reveal delay={150}>
               <div className="flex flex-wrap items-center justify-center gap-4">
                 <Link
-                  href="/studio"
+                  href="/daw"
                   className="flex h-12 w-fit items-center rounded-[4px] bg-accent-state px-6 text-lg font-bold text-page transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none motion-reduce:transition-none"
                 >
                   {copy.closing.primaryCta}
