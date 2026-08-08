@@ -43,6 +43,109 @@ export const SAMPLE_SESSION_TRACK = {
 export const SAMPLE_RIGHTS_LINE =
   'Synthesized from the archive’s transcription — no archival audio';
 
+/**
+ * Kaban (oud) sessions — a privately shared qaraami collection (added
+ * 2026-08-08). Performer names are deliberately not listed on the site;
+ * rights remain with the performers and rights holders. Files live under
+ * /public/audio (gitignored like all archival audio; the deploy script
+ * re-attaches them).
+ */
+export const OUD_RIGHTS_LINE =
+  'Source: private collection — performers unlisted; rights remain with their holders';
+
+export const OUD_SESSION_TRACKS: readonly ArchiveTrack[] = [
+  {
+    id: 'oud_kaban_wadada',
+    title: 'Kaban wadada',
+    artists: 'Kaban (oud) — instrumental',
+    year: null,
+    durationSec: 370,
+    note: 'A solo oud working through the qaraami repertoire, unhurried.',
+    src: '/audio/qaraami-kaban-wadada.m4a',
+    sourceUrl: '',
+  },
+  {
+    id: 'oud_isku_shuban',
+    title: 'Isku shuban — kaban keliya',
+    artists: 'Kaban (oud) — instrumental medley',
+    year: 2022,
+    durationSec: 606,
+    note: 'A ten-minute medley on the oud alone — no voice, just the strings.',
+    src: '/audio/qaraami-isku-shuban-kaban.mp3',
+    sourceUrl: '',
+  },
+  {
+    id: 'oud_awliyo_heelo',
+    title: 'Awliyo heelo',
+    artists: 'Kaban and voice',
+    year: null,
+    durationSec: 165,
+    note: 'A short heelo in the qaraami manner, oud-led.',
+    src: '/audio/qaraami-awliyo-heelo.mp3',
+    sourceUrl: '',
+  },
+  {
+    id: 'oud_heeri_maahee',
+    title: 'Heeri maahee',
+    artists: 'Kaban and voice',
+    year: null,
+    durationSec: 276,
+    note: 'Qaraami song with the oud carrying the line throughout.',
+    src: '/audio/qaraami-heeri-maahee.mp3',
+    sourceUrl: '',
+  },
+  {
+    id: 'oud_raaxeeye',
+    title: 'Raaxeeye hadmooyee',
+    artists: 'Kaban and voice',
+    year: null,
+    durationSec: 369,
+    note: 'A patient qaraami performance built on the oud’s pulse.',
+    src: '/audio/qaraami-raaxeeye.mp3',
+    sourceUrl: '',
+  },
+  {
+    id: 'oud_tagay_luula',
+    title: 'Tagay — luula',
+    artists: 'Kaban and voice',
+    year: null,
+    durationSec: 261,
+    note: 'Slow qaraami — the oud and the melody leaning on each other.',
+    src: '/audio/qaraami-tagay-luula.mp3',
+    sourceUrl: '',
+  },
+  {
+    id: 'oud_caruuskayagoow',
+    title: 'Caruuskayagoow',
+    artists: 'Kaban and voice',
+    year: null,
+    durationSec: 305,
+    note: 'A wedding-song setting in the qaraami style.',
+    src: '/audio/qaraami-caruuskayagoow.m4a',
+    sourceUrl: '',
+  },
+  {
+    id: 'oud_subcis_balwo',
+    title: 'Subcis — balwo',
+    artists: 'Kaban and voice',
+    year: null,
+    durationSec: 555,
+    note: 'Balwo verses over the oud — the short love-lyric form qaraami grew from.',
+    src: '/audio/qaraami-subcis-balwo.mp3',
+    sourceUrl: '',
+  },
+  {
+    id: 'oud_laxanka',
+    title: 'Laxanka qaraamiga — riftoon',
+    artists: 'Kaban and voice',
+    year: null,
+    durationSec: 265,
+    note: 'A qaraami melody in the riftoon manner.',
+    src: '/audio/qaraami-laxanka.mp3',
+    sourceUrl: '',
+  },
+];
+
 export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
   {
     id: 'track_0253',

@@ -210,7 +210,7 @@ export default function Home(): React.JSX.Element {
                     >
                       <span className="text-sm text-hi">The listening room</span>
                       <span className="numeric text-xs text-low group-hover:text-accent-state">
-                        8 recordings · sources stated
+                        18 recordings · sources stated
                       </span>
                     </Link>
                     <Link

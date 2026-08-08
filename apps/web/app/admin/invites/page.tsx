@@ -110,7 +110,7 @@ function CreateInviteForm({ onCreated }: { onCreated: () => void }): React.JSX.E
             value={label}
             onChange={(e) => setLabel(e.target.value)}
             maxLength={120}
-            placeholder="e.g. MIT faculty — Prof. Kashogi"
+            placeholder="e.g. university faculty — visiting professor"
             className={inputClass}
           />
         </label>

@@ -8,7 +8,7 @@ import { createCommentsService, type CommentsService } from './comments.service'
 const USER = 'user-1';
 const users = {
   findById: async (id: string): Promise<UserRecord | null> =>
-    id === USER ? ({ id, displayName: 'Ahmed Ali Egal' } as unknown as UserRecord) : null,
+    id === USER ? ({ id, displayName: 'Test Artist' } as unknown as UserRecord) : null,
 };
 
 let repo: InMemoryCommentRepository;
@@ -43,7 +43,7 @@ describe('createComment', () => {
   it('posts a comment with the author name snapshot', async () => {
     const comment = await service.createComment(USER, { recordingId: publishedId, body: 'Heylo!' });
     expect(comment.body).toBe('Heylo!');
-    expect(comment.author.name).toBe('Ahmed Ali Egal');
+    expect(comment.author.name).toBe('Test Artist');
     expect(comment.author.id).toBe(USER);
   });
 

@@ -49,7 +49,7 @@ beforeAll(async () => {
   });
   await recordingRepository.complete(recordingId, {
     title: { somali: 'Balwo Hobalka' },
-    singerName: 'Ahmed Ali Egal',
+    singerName: 'Test Artist',
     genre: 'qaraami',
     instruments: ['oud', 'voice'],
   });
@@ -105,7 +105,7 @@ describe('research dataset (API key)', () => {
     expect(res.status).toBe(200);
     expect(res.body.data.total).toBeGreaterThanOrEqual(1);
     const record = res.body.data.data[0];
-    expect(record.artist).toBe('Ahmed Ali Egal');
+    expect(record.artist).toBe('Test Artist');
     expect(record).toHaveProperty('durationSec');
     expect(record.ai).not.toHaveProperty('pitch'); // opt-in, off by default
   });

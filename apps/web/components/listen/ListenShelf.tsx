@@ -11,6 +11,8 @@ import { useMemo, useState } from 'react';
 import {
   ARCHIVE_TRACKS,
   HARVARD_RIGHTS_LINE,
+  OUD_RIGHTS_LINE,
+  OUD_SESSION_TRACKS,
   SAMPLE_RIGHTS_LINE,
   SAMPLE_SESSION_TRACK,
   type ArchiveTrack,
@@ -33,6 +35,8 @@ const SHELF: readonly ShelfTrack[] = [
     hasScore: true,
     detected: { root: 'A', bpm: 106, grid: 'beat-tracked' },
   },
+  // Kaban (oud) sessions — performers deliberately unlisted on the site.
+  ...OUD_SESSION_TRACKS.map((t) => ({ ...t, rightsLine: OUD_RIGHTS_LINE, hasScore: false })),
   ...ARCHIVE_TRACKS.map((t) => ({ ...t, rightsLine: HARVARD_RIGHTS_LINE, hasScore: false })),
 ];
 
