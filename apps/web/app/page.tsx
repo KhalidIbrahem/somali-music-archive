@@ -22,6 +22,7 @@ import { WaveToScore } from '@/components/home/WaveToScore';
 import { ClosingNote } from '@/components/home/ClosingNote';
 import { QaraamiGenLockup, QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { AuthMenu } from '@/components/AuthMenu';
 import { Reveal } from '@/components/Reveal';
 import { landingCopy as copy } from '@/lib/landingCopy';
 
@@ -57,12 +58,7 @@ export default function Home(): React.JSX.Element {
           >
             Listening room
           </Link>
-          <Link
-            href="/login"
-            className="rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
-          >
-            Sign in
-          </Link>
+          <AuthMenu variant="landing" />
           <ThemeToggle />
         </nav>
       </header>

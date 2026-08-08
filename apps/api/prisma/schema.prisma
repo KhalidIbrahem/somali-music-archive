@@ -22,6 +22,7 @@ datasource db {
 enum UserRole {
   listener
   contributor
+  educator
   admin
 }
 
@@ -51,6 +52,9 @@ enum OrganizationStatus {
 model User {
   id              String    @id @default(uuid()) @db.Uuid
   email           String    @unique
+  // E.164 phone (`+2526…`) — optional second login identifier. Nullable unique:
+  // Postgres allows any number of NULLs, so members without a phone are unaffected.
+  phone           String?   @unique
   passwordHash    String    @map("password_hash")
   displayName     String    @map("display_name")
   avatarUrl       String?   @map("avatar_url")

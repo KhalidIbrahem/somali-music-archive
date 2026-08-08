@@ -10,13 +10,21 @@
 
 import { Prisma, type PrismaClient, type User } from '@prisma/client';
 import type { UiLanguage } from '@sma/constants';
-import type { CreateUserInput, ProfilePatch, UserRepository, UserRecord } from './user.repository';
+import type { UserRole } from '@sma/types';
+import type {
+  CreateUserInput,
+  ListUsersParams,
+  ProfilePatch,
+  UserRepository,
+  UserRecord,
+} from './user.repository';
 
 /** Map a Prisma row to the internal `UserRecord` (language/role are enum-narrowed). */
 function toUserRecord(row: User): UserRecord {
   return {
     id: row.id,
     email: row.email,
+    phone: row.phone,
     passwordHash: row.passwordHash,
     displayName: row.displayName,
     avatarUrl: row.avatarUrl,
@@ -48,6 +56,11 @@ export class PrismaUserRepository implements UserRepository {
     return row ? toUserRecord(row) : null;
   }
 
+  async findByPhone(phone: string): Promise<UserRecord | null> {
+    const row = await this.prisma.user.findFirst({ where: { phone, deletedAt: null } });
+    return row ? toUserRecord(row) : null;
+  }
+
   async findById(id: string): Promise<UserRecord | null> {
     const row = await this.prisma.user.findFirst({ where: { id, deletedAt: null } });
     return row ? toUserRecord(row) : null;
@@ -57,10 +70,12 @@ export class PrismaUserRepository implements UserRepository {
     const row = await this.prisma.user.create({
       data: {
         email: input.email,
+        ...(input.phone ? { phone: input.phone } : {}),
         passwordHash: input.passwordHash,
         displayName: input.displayName,
         language: input.language,
         ...(input.role ? { role: input.role } : {}),
+        ...(input.emailVerified ? { emailVerified: true, emailVerifiedAt: new Date() } : {}),
       },
     });
     return toUserRecord(row);
@@ -118,6 +133,37 @@ export class PrismaUserRepository implements UserRepository {
       },
     });
     return toUserRecord(row);
+  }
+
+  async updateRole(id: string, role: UserRole): Promise<UserRecord | null> {
+    const existing = await this.findById(id);
+    if (!existing) return null;
+    const row = await this.prisma.user.update({ where: { id }, data: { role } });
+    return toUserRecord(row);
+  }
+
+  async listUsers(params: ListUsersParams): Promise<{ users: UserRecord[]; total: number }> {
+    const where: Prisma.UserWhereInput = {
+      deletedAt: null,
+      ...(params.q
+        ? {
+            OR: [
+              { email: { contains: params.q, mode: 'insensitive' } },
+              { displayName: { contains: params.q, mode: 'insensitive' } },
+            ],
+          }
+        : {}),
+    };
+    const [rows, total] = await this.prisma.$transaction([
+      this.prisma.user.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (params.page - 1) * params.limit,
+        take: params.limit,
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+    return { users: rows.map(toUserRecord), total };
   }
 
   async addSaved(userId: string, recordingId: string): Promise<void> {

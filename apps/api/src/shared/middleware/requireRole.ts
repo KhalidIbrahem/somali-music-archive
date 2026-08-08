@@ -24,8 +24,12 @@ export function requireRole(...allowed: readonly UserRole[]) {
   };
 }
 
-/** Convenience: contributor OR admin (the roles allowed to record/upload). */
-export const requireContributor = requireRole('contributor', 'admin');
+/** Convenience: the roles allowed to record/upload. Educators may contribute
+ * recordings too — a professor's field material belongs in the archive. */
+export const requireContributor = requireRole('contributor', 'educator', 'admin');
+
+/** Convenience: the roles allowed to author lessons/teaching resources. */
+export const requireEducator = requireRole('educator', 'admin');
 
 /** Convenience: admin only (dashboard/moderation endpoints). */
 export const requireAdmin = requireRole('admin');

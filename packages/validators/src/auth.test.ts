@@ -42,10 +42,48 @@ describe('registerSchema', () => {
   });
 });
 
+describe('registerSchema phone', () => {
+  const valid = {
+    email: 'member@example.com',
+    password: 'oudwood7',
+    displayName: 'Ahmed Ali Egal',
+    dateOfBirth: dobYearsAgo(40),
+    acceptedTerms: true as const,
+  };
+
+  it('is optional', () => {
+    expect(registerSchema.safeParse(valid).success).toBe(true);
+  });
+
+  it('normalises spaces, dashes and 00-prefix to E.164', () => {
+    const parsed = registerSchema.parse({ ...valid, phone: '00252 61-234 5678' });
+    expect(parsed.phone).toBe('+252612345678');
+  });
+
+  it('rejects a local number without a country code', () => {
+    const result = registerSchema.safeParse({ ...valid, phone: '0612345678' });
+    expect(result.success).toBe(false);
+  });
+});
+
 describe('loginSchema', () => {
   it('does not enforce the full password policy (legacy passwords must still log in)', () => {
     const result = loginSchema.safeParse({ email: 'a@b.co', password: 'x' });
     expect(result.success).toBe(true);
+  });
+
+  it('accepts an identifier (email or phone) instead of email', () => {
+    expect(loginSchema.safeParse({ identifier: '+252612345678', password: 'x' }).success).toBe(
+      true,
+    );
+    expect(loginSchema.safeParse({ identifier: 'a@b.co', password: 'x' }).success).toBe(true);
+  });
+
+  it('rejects both email and identifier together, and neither', () => {
+    expect(
+      loginSchema.safeParse({ email: 'a@b.co', identifier: 'a@b.co', password: 'x' }).success,
+    ).toBe(false);
+    expect(loginSchema.safeParse({ password: 'x' }).success).toBe(false);
   });
 });
 

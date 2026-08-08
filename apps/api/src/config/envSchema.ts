@@ -53,6 +53,15 @@ export const envSchema = z.object({
    */
   RATE_LIMIT_BACKEND: z.enum(['memory', 'redis']).default('memory'),
 
+  /**
+   * Google sign-in (OAuth web client ID from console.cloud.google.com). Empty →
+   * POST /auth/google answers AUTH_PROVIDER_UNAVAILABLE and the web app hides
+   * its Google button (it gates on NEXT_PUBLIC_GOOGLE_CLIENT_ID). The same
+   * client ID is used to verify ID-token audience — no client secret is needed
+   * for the Identity Services credential flow.
+   */
+  GOOGLE_CLIENT_ID: z.string().default(''),
+
   // Cloudflare R2
   R2_ACCOUNT_ID: z.string().min(1),
   R2_ACCESS_KEY_ID: z.string().min(1),

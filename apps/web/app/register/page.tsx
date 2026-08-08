@@ -15,7 +15,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { UI_LANGUAGES, type UiLanguage } from '@sma/constants';
 import { register, ApiError } from '@/lib/api';
-import { setToken } from '@/lib/auth';
+import { setSession } from '@/lib/auth';
+import { invalidateSessionCache } from '@/lib/session';
+import { GoogleSignInButton } from '@/components/GoogleSignInButton';
 
 const LANGUAGE_LABELS: Record<UiLanguage, string> = {
   so: 'Somali',
@@ -26,6 +28,7 @@ const LANGUAGE_LABELS: Record<UiLanguage, string> = {
 export default function Register(): React.JSX.Element {
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [language, setLanguage] = useState<UiLanguage>('so');
@@ -60,16 +63,19 @@ export default function Register(): React.JSX.Element {
 
     setBusy(true);
     try {
-      const { user, accessToken } = await register({
+      const { user, accessToken, refreshToken } = await register({
         displayName: displayName.trim(),
         email: email.trim(),
+        // Optional — omitted entirely when left blank.
+        ...(phone.trim() !== '' ? { phone: phone.trim() } : {}),
         password,
         language,
         dateOfBirth,
         acceptedTerms: true,
       });
       // Registration IS the sign-in: store the session and stay on this page.
-      setToken(accessToken);
+      setSession({ accessToken, refreshToken });
+      invalidateSessionCache();
       setRegistered(user.displayName);
     } catch (err) {
       if (err instanceof ApiError && err.fields !== undefined && err.fields.length > 0) {
@@ -83,6 +89,7 @@ export default function Register(): React.JSX.Element {
             ![
               'displayName',
               'email',
+              'phone',
               'password',
               'language',
               'dateOfBirth',
@@ -166,6 +173,21 @@ export default function Register(): React.JSX.Element {
                 required
                 autoComplete="email"
                 className={inputClass}
+              />
+            </Field>
+
+            <Field
+              label="Phone (optional)"
+              hint="International format with country code — you can sign in with it."
+              error={fieldErrors['phone']}
+            >
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                autoComplete="tel"
+                placeholder="+252 61 234 5678"
+                className={`${inputClass} placeholder:text-ink-tertiary/60`}
               />
             </Field>
 
@@ -269,6 +291,11 @@ export default function Register(): React.JSX.Element {
             >
               {busy ? 'Creating account…' : 'Create account'}
             </button>
+
+            <GoogleSignInButton
+              onSignedIn={(user) => setRegistered(user.displayName)}
+              onError={setError}
+            />
           </form>
         )}
 
