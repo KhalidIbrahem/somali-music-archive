@@ -16,6 +16,12 @@ export const API_ERROR_CODES = [
   'AUTH_EMAIL_NOT_VERIFIED',
   'AUTH_EMAIL_TAKEN',
   'AUTH_PHONE_TAKEN',
+  'AUTH_USERNAME_TAKEN',
+  /** The invite code is missing, unknown, revoked, expired, or fully used. */
+  'AUTH_INVITE_INVALID',
+  /** Registration path reached without an invite (e.g. Google sign-in by a
+   * stranger) — the platform is invite-only. */
+  'AUTH_INVITE_REQUIRED',
   'AUTH_ACCOUNT_LOCKED',
   'AUTH_FORBIDDEN',
   /** A third-party sign-in (e.g. Google) is not configured on this deployment. */

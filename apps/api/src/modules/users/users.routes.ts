@@ -39,3 +39,5 @@ usersRouter.patch(
   validate({ body: changeRoleSchema }),
   asyncHandler(controller.changeRole),
 );
+// Member removal — soft delete + refresh-token revocation (see users.service).
+usersRouter.delete('/:id', requireAdmin, asyncHandler(controller.removeUser));

@@ -11,6 +11,8 @@ function dobYearsAgo(years: number): string {
 
 describe('registerSchema', () => {
   const valid = {
+    inviteCode: 'qg-test-2026',
+    username: 'Elder_1950',
     email: 'Elder@Example.com ',
     password: 'oudwood7',
     displayName: 'Ahmed Ali Egal',
@@ -18,9 +20,22 @@ describe('registerSchema', () => {
     acceptedTerms: true as const,
   };
 
-  it('accepts a valid registration and normalises the email', () => {
+  it('accepts a valid registration, normalising email, username, and invite code', () => {
     const parsed = registerSchema.parse(valid);
     expect(parsed.email).toBe('elder@example.com');
+    expect(parsed.username).toBe('elder_1950');
+    expect(parsed.inviteCode).toBe('QG-TEST-2026');
+  });
+
+  it('requires an invite code (the platform is invite-only)', () => {
+    const { inviteCode: _dropped, ...withoutCode } = valid;
+    expect(registerSchema.safeParse(withoutCode).success).toBe(false);
+  });
+
+  it('rejects malformed usernames', () => {
+    for (const username of ['ab', '1starts.with.digit', 'has space', 'x'.repeat(25), 'a@b']) {
+      expect(registerSchema.safeParse({ ...valid, username }).success).toBe(false);
+    }
   });
 
   it('rejects a user younger than the COPPA minimum age', () => {
@@ -44,6 +59,8 @@ describe('registerSchema', () => {
 
 describe('registerSchema phone', () => {
   const valid = {
+    inviteCode: 'QG-TEST-2026',
+    username: 'member',
     email: 'member@example.com',
     password: 'oudwood7',
     displayName: 'Ahmed Ali Egal',

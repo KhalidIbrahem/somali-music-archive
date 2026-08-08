@@ -14,6 +14,7 @@
 import { env } from '@/config/env';
 import { logger } from '@/shared/logger';
 import { InMemoryUserRepository, userRepository } from '@/modules/auth/user.repository';
+import { InMemoryInviteRepository, inviteRepository } from '@/modules/invites/invite.repository';
 import {
   InMemoryRecordingRepository,
   recordingRepository,
@@ -29,6 +30,10 @@ export async function hydrateFromDevStore(): Promise<void> {
 
   if (userRepository instanceof InMemoryUserRepository) {
     userRepository.hydrate(data.users);
+  }
+
+  if (inviteRepository instanceof InMemoryInviteRepository) {
+    inviteRepository.hydrate(data.invites ?? [], data.inviteRedemptions ?? []);
   }
 
   if (recordingRepository instanceof InMemoryRecordingRepository) {

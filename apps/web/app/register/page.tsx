@@ -17,7 +17,6 @@ import { UI_LANGUAGES, type UiLanguage } from '@sma/constants';
 import { register, ApiError } from '@/lib/api';
 import { setSession } from '@/lib/auth';
 import { invalidateSessionCache } from '@/lib/session';
-import { GoogleSignInButton } from '@/components/GoogleSignInButton';
 
 const LANGUAGE_LABELS: Record<UiLanguage, string> = {
   so: 'Somali',
@@ -26,6 +25,8 @@ const LANGUAGE_LABELS: Record<UiLanguage, string> = {
 };
 
 export default function Register(): React.JSX.Element {
+  const [inviteCode, setInviteCode] = useState('');
+  const [username, setUsername] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -64,6 +65,8 @@ export default function Register(): React.JSX.Element {
     setBusy(true);
     try {
       const { user, accessToken, refreshToken } = await register({
+        inviteCode: inviteCode.trim(),
+        username: username.trim(),
         displayName: displayName.trim(),
         email: email.trim(),
         // Optional — omitted entirely when left blank.
@@ -87,6 +90,8 @@ export default function Register(): React.JSX.Element {
         const unmapped = err.fields.filter(
           (f) =>
             ![
+              'inviteCode',
+              'username',
               'displayName',
               'email',
               'phone',
@@ -114,7 +119,7 @@ export default function Register(): React.JSX.Element {
           </Link>
           <h1 className="font-display text-4xl text-ink-primary">Create your account</h1>
           <p className="font-body text-sm text-ink-secondary">
-            Join the effort to preserve Somali musical heritage.
+            QaraamiGenAI is a private heritage studio — registration is by invitation.
           </p>
         </div>
 
@@ -152,6 +157,44 @@ export default function Register(): React.JSX.Element {
             onSubmit={onSubmit}
             className="flex flex-col gap-5 rounded-2xl border border-line-secondary bg-bg-secondary p-8"
           >
+            <Field
+              label="Invite code"
+              hint="The code you received from the archive team."
+              error={fieldErrors['inviteCode']}
+            >
+              <input
+                type="text"
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value)}
+                required
+                minLength={4}
+                maxLength={64}
+                autoCapitalize="characters"
+                autoComplete="one-time-code"
+                placeholder="QG-XXXX-XXXX"
+                className={`${inputClass} font-numeric uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal placeholder:text-ink-tertiary/60`}
+              />
+            </Field>
+
+            <Field
+              label="Username"
+              hint="3–24 characters: letters, numbers, dots or underscores."
+              error={fieldErrors['username']}
+            >
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                minLength={3}
+                maxLength={24}
+                autoCapitalize="none"
+                autoComplete="username"
+                spellCheck={false}
+                className={inputClass}
+              />
+            </Field>
+
             <Field label="Display name" error={fieldErrors['displayName']}>
               <input
                 type="text"
@@ -291,11 +334,6 @@ export default function Register(): React.JSX.Element {
             >
               {busy ? 'Creating account…' : 'Create account'}
             </button>
-
-            <GoogleSignInButton
-              onSignedIn={(user) => setRegistered(user.displayName)}
-              onError={setError}
-            />
           </form>
         )}
 

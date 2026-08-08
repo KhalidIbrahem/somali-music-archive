@@ -8,6 +8,7 @@
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
 import { createApp } from '@/app';
+import { seedTestInvite } from '@/shared/testing/seedInvite';
 import { signAccessToken } from '@/modules/auth/token.service';
 
 const app = createApp();
@@ -15,14 +16,18 @@ const adminToken = signAccessToken('admin-http-1', 'admin', true);
 
 /** Register a fresh user; return its token and id. */
 async function registerUser(): Promise<{ token: string; id: string }> {
-  const email = `member+${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`;
-  const reg = await request(app).post('/api/v1/auth/register').send({
-    email,
-    password: 'oudwood7',
-    displayName: 'Member',
-    dateOfBirth: '1980-01-01',
-    acceptedTerms: true,
-  });
+  const slug = Math.random().toString(36).slice(2, 10);
+  const reg = await request(app)
+    .post('/api/v1/auth/register')
+    .send({
+      inviteCode: await seedTestInvite(),
+      username: `member${slug}`,
+      email: `member+${Date.now()}-${slug}@example.com`,
+      password: 'oudwood7',
+      displayName: 'Member',
+      dateOfBirth: '1980-01-01',
+      acceptedTerms: true,
+    });
   return { token: reg.body.data.accessToken as string, id: reg.body.data.user.id as string };
 }
 

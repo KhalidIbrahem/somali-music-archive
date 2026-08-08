@@ -16,6 +16,7 @@
     "test:watch": "vitest",
     "seed": "tsx src/scripts/seed.ts",
     "promote": "tsx src/scripts/promote.ts",
+    "invite": "tsx src/scripts/invite.ts",
     "ingest:harvard": "tsx src/scripts/ingest-harvard.ts",
     "migrate:devstore": "tsx src/scripts/migrate-devstore.ts",
     "rotate:seed-passwords": "tsx src/scripts/rotate-seed-passwords.ts",

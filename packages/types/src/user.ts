@@ -23,6 +23,10 @@ export type UserRole = (typeof USER_ROLES)[number];
 export interface User extends SoftDeletable {
   readonly id: Uuid;
   readonly email: string;
+  /** Unique handle (SESSION "private access") — the primary login identifier on
+   * the invite-only platform. Absent only on accounts created before usernames
+   * existed; email/phone login keeps those working. */
+  readonly username?: string;
   /** E.164 phone number (`+2526…`), when the member registered one. Usable as a
    * login identifier interchangeably with email. */
   readonly phone?: string;

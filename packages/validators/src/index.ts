@@ -11,6 +11,7 @@ export * from './common';
 export * from './auth';
 export * from './recording';
 export * from './user';
+export * from './invite';
 export * from './lesson';
 export * from './education';
 export * from './subscription';

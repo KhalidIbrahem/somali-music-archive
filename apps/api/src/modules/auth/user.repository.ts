@@ -20,6 +20,8 @@ import { PrismaUserRepository } from './user.prisma.repository';
 export interface UserRecord {
   id: string;
   email: string;
+  /** Unique lowercase handle — primary login identifier (null on legacy rows). */
+  username: string | null;
   /** E.164 phone (`+2526…`) — optional second login identifier. */
   phone: string | null;
   passwordHash: string;
@@ -42,6 +44,7 @@ export interface UserRecord {
 /** Fields required to create a user. */
 export interface CreateUserInput {
   email: string;
+  username?: string | null;
   phone?: string | null;
   passwordHash: string;
   displayName: string;
@@ -53,10 +56,14 @@ export interface CreateUserInput {
 
 export interface UserRepository {
   findByEmail(email: string): Promise<UserRecord | null>;
+  /** Exact-match lookup on the lowercase username. */
+  findByUsername(username: string): Promise<UserRecord | null>;
   /** Exact-match lookup on the normalised E.164 phone. */
   findByPhone(phone: string): Promise<UserRecord | null>;
   findById(id: string): Promise<UserRecord | null>;
   create(input: CreateUserInput): Promise<UserRecord>;
+  /** Admin removal — soft delete (Principle 4); the row and its history stay. */
+  softDelete(id: string): Promise<boolean>;
   touchLastLogin(id: string): Promise<void>;
   /** Increment the failed-attempt counter and return the new value. */
   incrementFailedAttempts(id: string): Promise<number>;
@@ -95,6 +102,7 @@ export function toPublicUser(record: UserRecord): PublicUser {
   return {
     id: asUuid(record.id),
     email: record.email,
+    ...(record.username ? { username: record.username } : {}),
     ...(record.phone ? { phone: record.phone } : {}),
     displayName: record.displayName,
     ...(record.avatarUrl ? { avatarUrl: record.avatarUrl } : {}),
@@ -127,6 +135,14 @@ export class InMemoryUserRepository implements UserRepository {
     return null;
   }
 
+  async findByUsername(username: string): Promise<UserRecord | null> {
+    const needle = username.toLowerCase();
+    for (const record of this.byId.values()) {
+      if (record.username === needle && !record.deletedAt) return record;
+    }
+    return null;
+  }
+
   async findByPhone(phone: string): Promise<UserRecord | null> {
     for (const record of this.byId.values()) {
       if (record.phone === phone && !record.deletedAt) return record;
@@ -139,11 +155,20 @@ export class InMemoryUserRepository implements UserRepository {
     return record && !record.deletedAt ? record : null;
   }
 
+  async softDelete(id: string): Promise<boolean> {
+    const record = this.byId.get(id);
+    if (!record || record.deletedAt) return false;
+    record.deletedAt = new Date();
+    record.updatedAt = new Date();
+    return true;
+  }
+
   async create(input: CreateUserInput): Promise<UserRecord> {
     const now = new Date();
     const record: UserRecord = {
       id: randomUUID(),
       email: input.email,
+      username: input.username ?? null,
       phone: input.phone ?? null,
       passwordHash: input.passwordHash,
       displayName: input.displayName,
@@ -239,7 +264,8 @@ export class InMemoryUserRepository implements UserRepository {
         (r) =>
           !needle ||
           r.email.toLowerCase().includes(needle) ||
-          r.displayName.toLowerCase().includes(needle),
+          r.displayName.toLowerCase().includes(needle) ||
+          (r.username ?? '').includes(needle),
       )
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     const start = (params.page - 1) * params.limit;

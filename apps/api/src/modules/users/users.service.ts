@@ -6,8 +6,12 @@
 
 import type { Paginated, PublicRecording, PublicUser, UserRole } from '@sma/types';
 import type { ListUsersQuery, UpdateProfileInput } from '@sma/validators';
-import { badRequest, notFound } from '@/shared/errors/AppError';
+import { badRequest, forbidden, notFound } from '@/shared/errors/AppError';
 import { toPublicUser, userRepository, type UserRepository } from '@/modules/auth/user.repository';
+import {
+  refreshTokenRepository,
+  type RefreshTokenRepository,
+} from '@/modules/auth/refreshToken.repository';
 import {
   recordingRepository,
   type RecordingRepository,
@@ -16,8 +20,9 @@ import {
 export function createUsersService(deps: {
   users: UserRepository;
   recordings: RecordingRepository;
+  refreshTokens: RefreshTokenRepository;
 }) {
-  const { users, recordings } = deps;
+  const { users, recordings, refreshTokens } = deps;
 
   async function getProfile(userId: string): Promise<PublicUser> {
     const record = await users.findById(userId);
@@ -78,6 +83,26 @@ export function createUsersService(deps: {
     return toPublicUser(updated);
   }
 
+  /**
+   * Remove a member (SESSION "private access"). SOFT delete (Principle 4) plus
+   * refresh-token revocation, so the account stops working within the access
+   * token's 15-minute lifetime. Admins cannot remove themselves, and removing
+   * another admin requires demoting them first — one deliberate extra step
+   * before an account with full power disappears.
+   */
+  async function removeUser(actorId: string, targetUserId: string): Promise<void> {
+    if (actorId === targetUserId) {
+      throw badRequest('VALIDATION_ERROR', 'You cannot remove your own account');
+    }
+    const target = await users.findById(targetUserId);
+    if (!target) throw notFound('USER_NOT_FOUND', 'User not found');
+    if (target.role === 'admin') {
+      throw forbidden('Demote this admin to another role before removing the account');
+    }
+    await users.softDelete(targetUserId);
+    await refreshTokens.revokeAllForUser(targetUserId);
+  }
+
   return {
     getProfile,
     updateProfile,
@@ -86,6 +111,7 @@ export function createUsersService(deps: {
     unsaveRecording,
     listUsers,
     changeRole,
+    removeUser,
   };
 }
 
@@ -94,4 +120,5 @@ export type UsersService = ReturnType<typeof createUsersService>;
 export const usersService: UsersService = createUsersService({
   users: userRepository,
   recordings: recordingRepository,
+  refreshTokens: refreshTokenRepository,
 });

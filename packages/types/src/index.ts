@@ -12,6 +12,7 @@ export * from './common';
 export * from './artist';
 export * from './recording';
 export * from './user';
+export * from './invite';
 export * from './subscription';
 export * from './lesson';
 export * from './education';
