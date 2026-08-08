@@ -43,7 +43,10 @@ export default function Home(): React.JSX.Element {
       {/* film grain — static SVG turbulence, one veil over the whole page */}
       <div aria-hidden className="film-grain print:hidden" />
 
-      <header className="relative z-10 mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
+      {/* z-30 (not z-10 like main): the account dropdown lives inside this
+          stacking context — at equal z the LATER sibling (main) would sit above
+          it and swallow its clicks while the pixels showed through. */}
+      <header className="relative z-30 mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
         <QaraamiGenLockup markSize={28} />
         <nav className="flex items-center gap-5">
           <Link
