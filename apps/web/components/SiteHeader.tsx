@@ -13,6 +13,7 @@ const NAV = [
   { label: 'Scores', href: '/scores/beerdilaacshe' },
   { label: 'Library', href: '/library' },
   { label: 'Learn', href: '/learn' },
+  { label: 'Courses', href: '/courses' },
   { label: 'Transcribe', href: '/transcribe' },
   { label: 'Generate', href: '/generate' },
   { label: 'Research', href: '/#research' },
@@ -28,7 +29,7 @@ export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
             Qaraami<span className="text-amber">GenAI</span>
           </span>
         </Link>
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-5 lg:flex">
           {NAV.map((item) => (
             <Link
               key={item.label}
