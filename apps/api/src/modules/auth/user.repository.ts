@@ -20,6 +20,8 @@ import { PrismaUserRepository } from './user.prisma.repository';
 export interface UserRecord {
   id: string;
   email: string;
+  /** E.164 phone (`+2526…`) — optional second login identifier. */
+  phone: string | null;
   passwordHash: string;
   displayName: string;
   avatarUrl: string | null;
@@ -40,14 +42,19 @@ export interface UserRecord {
 /** Fields required to create a user. */
 export interface CreateUserInput {
   email: string;
+  phone?: string | null;
   passwordHash: string;
   displayName: string;
   language: UiLanguage;
   role?: UserRole;
+  /** Pre-verified email (Google sign-in — Google already verified ownership). */
+  emailVerified?: boolean;
 }
 
 export interface UserRepository {
   findByEmail(email: string): Promise<UserRecord | null>;
+  /** Exact-match lookup on the normalised E.164 phone. */
+  findByPhone(phone: string): Promise<UserRecord | null>;
   findById(id: string): Promise<UserRecord | null>;
   create(input: CreateUserInput): Promise<UserRecord>;
   touchLastLogin(id: string): Promise<void>;
@@ -60,6 +67,10 @@ export interface UserRepository {
   updatePassword(id: string, passwordHash: string): Promise<void>;
   /** Update editable profile fields; returns the updated record (or null). */
   updateProfile(id: string, patch: ProfilePatch): Promise<UserRecord | null>;
+  /** Change a member's RBAC role (admin action); returns the record (or null). */
+  updateRole(id: string, role: UserRole): Promise<UserRecord | null>;
+  /** Admin listing, newest first, optional case-insensitive email/name filter. */
+  listUsers(params: ListUsersParams): Promise<{ users: UserRecord[]; total: number }>;
   // ── Saved recordings (bookmarks, ARCHITECTURE.md §9 saved_recordings) ──
   addSaved(userId: string, recordingId: string): Promise<void>;
   removeSaved(userId: string, recordingId: string): Promise<void>;
@@ -72,11 +83,19 @@ export interface ProfilePatch {
   avatarUrl?: string | undefined;
 }
 
+export interface ListUsersParams {
+  page: number;
+  limit: number;
+  /** Case-insensitive substring match against email and display name. */
+  q?: string | undefined;
+}
+
 /** Strip secrets and map an internal row to the public wire shape. */
 export function toPublicUser(record: UserRecord): PublicUser {
   return {
     id: asUuid(record.id),
     email: record.email,
+    ...(record.phone ? { phone: record.phone } : {}),
     displayName: record.displayName,
     ...(record.avatarUrl ? { avatarUrl: record.avatarUrl } : {}),
     language: record.language,
@@ -108,6 +127,13 @@ export class InMemoryUserRepository implements UserRepository {
     return null;
   }
 
+  async findByPhone(phone: string): Promise<UserRecord | null> {
+    for (const record of this.byId.values()) {
+      if (record.phone === phone && !record.deletedAt) return record;
+    }
+    return null;
+  }
+
   async findById(id: string): Promise<UserRecord | null> {
     const record = this.byId.get(id);
     return record && !record.deletedAt ? record : null;
@@ -118,13 +144,14 @@ export class InMemoryUserRepository implements UserRepository {
     const record: UserRecord = {
       id: randomUUID(),
       email: input.email,
+      phone: input.phone ?? null,
       passwordHash: input.passwordHash,
       displayName: input.displayName,
       avatarUrl: null,
       language: input.language,
       role: input.role ?? 'listener',
-      emailVerified: false,
-      emailVerifiedAt: null,
+      emailVerified: input.emailVerified ?? false,
+      emailVerifiedAt: input.emailVerified ? now : null,
       lastLoginAt: null,
       failedLoginAttempts: 0,
       lockedUntil: null,
@@ -194,6 +221,29 @@ export class InMemoryUserRepository implements UserRepository {
     if (patch.avatarUrl !== undefined) record.avatarUrl = patch.avatarUrl;
     record.updatedAt = new Date();
     return record;
+  }
+
+  async updateRole(id: string, role: UserRole): Promise<UserRecord | null> {
+    const record = this.byId.get(id);
+    if (!record || record.deletedAt) return null;
+    record.role = role;
+    record.updatedAt = new Date();
+    return record;
+  }
+
+  async listUsers(params: ListUsersParams): Promise<{ users: UserRecord[]; total: number }> {
+    const needle = params.q?.toLowerCase();
+    const all = [...this.byId.values()]
+      .filter((r) => !r.deletedAt)
+      .filter(
+        (r) =>
+          !needle ||
+          r.email.toLowerCase().includes(needle) ||
+          r.displayName.toLowerCase().includes(needle),
+      )
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    const start = (params.page - 1) * params.limit;
+    return { users: all.slice(start, start + params.limit), total: all.length };
   }
 
   async addSaved(userId: string, recordingId: string): Promise<void> {

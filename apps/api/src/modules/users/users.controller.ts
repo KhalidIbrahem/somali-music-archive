@@ -3,7 +3,7 @@
  */
 
 import type { Request, Response } from 'express';
-import type { UpdateProfileInput } from '@sma/validators';
+import type { ChangeRoleInput, ListUsersQuery, UpdateProfileInput } from '@sma/validators';
 import { sendSuccess } from '@/shared/http/respond';
 import { unauthorized } from '@/shared/errors/AppError';
 import { usersService } from './users.service';
@@ -34,4 +34,18 @@ export async function removeSaved(req: Request, res: Response): Promise<void> {
   if (!req.user) throw unauthorized();
   await usersService.unsaveRecording(req.user.id, req.params['id'] ?? '');
   sendSuccess(res, { saved: false });
+}
+
+// ── Admin: member management ──────────────────────────────────────────────────
+
+export async function listUsers(req: Request, res: Response): Promise<void> {
+  // validate({ query }) has already coerced page/limit and trimmed q.
+  sendSuccess(res, await usersService.listUsers(req.query as unknown as ListUsersQuery));
+}
+
+export async function changeRole(req: Request, res: Response): Promise<void> {
+  if (!req.user) throw unauthorized();
+  const { role } = req.body as ChangeRoleInput;
+  const user = await usersService.changeRole(req.user.id, req.params['id'] ?? '', role);
+  sendSuccess(res, user);
 }

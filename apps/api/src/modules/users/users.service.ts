@@ -4,9 +4,9 @@
  * Saved-recording ids are hydrated into full public recordings for the client.
  */
 
-import type { PublicRecording, PublicUser } from '@sma/types';
-import type { UpdateProfileInput } from '@sma/validators';
-import { notFound } from '@/shared/errors/AppError';
+import type { Paginated, PublicRecording, PublicUser, UserRole } from '@sma/types';
+import type { ListUsersQuery, UpdateProfileInput } from '@sma/validators';
+import { badRequest, notFound } from '@/shared/errors/AppError';
 import { toPublicUser, userRepository, type UserRepository } from '@/modules/auth/user.repository';
 import {
   recordingRepository,
@@ -46,7 +46,47 @@ export function createUsersService(deps: {
     await users.removeSaved(userId, recordingId);
   }
 
-  return { getProfile, updateProfile, listSaved, saveRecording, unsaveRecording };
+  // ── Admin: member management (SESSION "teaching" — granting educator) ────────
+
+  async function listUsers(query: ListUsersQuery): Promise<Paginated<PublicUser>> {
+    const { users: rows, total } = await users.listUsers({
+      page: query.page,
+      limit: query.limit,
+      q: query.q,
+    });
+    return {
+      data: rows.map(toPublicUser),
+      total,
+      page: query.page,
+      limit: query.limit,
+      hasMore: query.page * query.limit < total,
+    };
+  }
+
+  /** Change a member's role. Admins cannot change their OWN role — that path
+   * removes the last admin by accident; another admin must do it. */
+  async function changeRole(
+    actorId: string,
+    targetUserId: string,
+    role: UserRole,
+  ): Promise<PublicUser> {
+    if (actorId === targetUserId) {
+      throw badRequest('VALIDATION_ERROR', 'You cannot change your own role');
+    }
+    const updated = await users.updateRole(targetUserId, role);
+    if (!updated) throw notFound('USER_NOT_FOUND', 'User not found');
+    return toPublicUser(updated);
+  }
+
+  return {
+    getProfile,
+    updateProfile,
+    listSaved,
+    saveRecording,
+    unsaveRecording,
+    listUsers,
+    changeRole,
+  };
 }
 
 export type UsersService = ReturnType<typeof createUsersService>;

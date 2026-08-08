@@ -15,8 +15,11 @@ export const API_ERROR_CODES = [
   'AUTH_TOKEN_EXPIRED',
   'AUTH_EMAIL_NOT_VERIFIED',
   'AUTH_EMAIL_TAKEN',
+  'AUTH_PHONE_TAKEN',
   'AUTH_ACCOUNT_LOCKED',
   'AUTH_FORBIDDEN',
+  /** A third-party sign-in (e.g. Google) is not configured on this deployment. */
+  'AUTH_PROVIDER_UNAVAILABLE',
   // Validation
   'VALIDATION_ERROR',
   // Resources

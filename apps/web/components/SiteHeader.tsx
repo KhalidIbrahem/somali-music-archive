@@ -5,12 +5,14 @@
 
 import Link from 'next/link';
 import { QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
+import { AuthMenu } from '@/components/AuthMenu';
 
 const NAV = [
   { label: 'Home', href: '/' },
   { label: 'Listen', href: '/listen' },
   { label: 'Scores', href: '/scores/beerdilaacshe' },
   { label: 'Library', href: '/library' },
+  { label: 'Learn', href: '/learn' },
   { label: 'Transcribe', href: '/transcribe' },
   { label: 'Generate', href: '/generate' },
   { label: 'Research', href: '/#research' },
@@ -26,7 +28,7 @@ export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
             Qaraami<span className="text-amber">GenAI</span>
           </span>
         </Link>
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="hidden items-center gap-6 md:flex">
           {NAV.map((item) => (
             <Link
               key={item.label}
@@ -39,12 +41,7 @@ export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
             </Link>
           ))}
         </div>
-        <Link
-          href="/login"
-          className="rounded-lg border border-amber/40 px-4 py-2 font-body text-sm font-semibold text-amber transition-colors hover:bg-amber hover:text-bg-primary"
-        >
-          Sign in
-        </Link>
+        <AuthMenu variant="site" />
       </nav>
     </header>
   );

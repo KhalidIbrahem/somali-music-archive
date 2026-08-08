@@ -8,7 +8,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login, ApiError } from '@/lib/api';
-import { setToken } from '@/lib/auth';
+import { setSession } from '@/lib/auth';
 
 export default function AdminLogin(): React.JSX.Element {
   const router = useRouter();
@@ -22,12 +22,12 @@ export default function AdminLogin(): React.JSX.Element {
     setError(null);
     setBusy(true);
     try {
-      const { user, accessToken } = await login(email, password);
+      const { user, accessToken, refreshToken } = await login(email, password);
       if (user.role !== 'admin') {
         setError('This account is not an administrator.');
         return;
       }
-      setToken(accessToken);
+      setSession({ accessToken, refreshToken });
       router.push('/admin');
     } catch (err) {
       // Only bad credentials get the canned line; locked/rate-limited/network
