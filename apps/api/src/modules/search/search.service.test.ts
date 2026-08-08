@@ -7,7 +7,7 @@ import { createSearchService, type SearchService } from './search.service';
 
 const metadata: RecordingCompleteMetadata = {
   title: { somali: 'Balwo Hobalka' },
-  singerName: 'Ahmed Ali Egal',
+  singerName: 'Test Artist',
   genre: 'qaraami',
   instruments: ['oud', 'voice'],
 };
@@ -41,7 +41,7 @@ beforeEach(() => {
 
 describe('search', () => {
   it('hydrates ranked index hits into full published recordings', async () => {
-    await seed({ title: { somali: 'Balwo Hobalka' }, singerName: 'Ahmed Ali Egal' });
+    await seed({ title: { somali: 'Balwo Hobalka' }, singerName: 'Test Artist' });
     await seed({ title: { somali: 'Dhaanto' }, singerName: 'Cumar Dhuule', genre: 'dhaanto' });
 
     const res = await service.search({ page: 1, limit: 20, q: 'balwo' });
@@ -49,7 +49,7 @@ describe('search', () => {
     expect(res.data).toHaveLength(1);
     expect(res.data[0]?.title.somali).toBe('Balwo Hobalka');
     // The hydrated payload is the full recording, not the bare index document.
-    expect(res.data[0]?.artist.name).toBe('Ahmed Ali Egal');
+    expect(res.data[0]?.artist.name).toBe('Test Artist');
   });
 
   it('combines free text with a genre facet', async () => {

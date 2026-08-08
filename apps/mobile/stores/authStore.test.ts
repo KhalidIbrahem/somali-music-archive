@@ -25,7 +25,7 @@ const fakeUser = (overrides: Partial<PublicUser> = {}): PublicUser =>
   ({
     id: 'u-1',
     email: 'elder@example.com',
-    displayName: 'Ahmed Ali Egal',
+    displayName: 'Test Artist',
     language: 'so',
     role: 'listener',
     emailVerified: false,

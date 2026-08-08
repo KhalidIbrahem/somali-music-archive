@@ -56,7 +56,7 @@ if (PROJECT === 'somali-music-archive') {
     const abs = join(REPO, dir);
     if (!existsSync(abs)) continue;
     for (const name of readdirSync(abs)) {
-      if (name.endsWith('.mp3')) files.push(`${dir}/${name}`);
+      if (/\.(mp3|m4a)$/.test(name)) files.push(`${dir}/${name}`);
     }
   }
 }

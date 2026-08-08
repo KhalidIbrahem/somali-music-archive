@@ -31,7 +31,7 @@ function makeHarness(): Harness {
       verifyExists: async (fileKey) => stored.has(fileKey),
     },
     resolveAuthorName: async (userId) =>
-      userId === educator.id ? 'Prof. Rehanna Kashogi' : 'Someone Else',
+      userId === educator.id ? 'Guest Professor' : 'Someone Else',
   });
   return { service, stored };
 }
@@ -55,7 +55,7 @@ describe('createLesson', () => {
   it('creates a published lesson with the author name snapshot', async () => {
     const lesson = await h.service.createLesson(lessonInput(), educator);
     expect(lesson.status).toBe('published');
-    expect(lesson.authorName).toBe('Prof. Rehanna Kashogi');
+    expect(lesson.authorName).toBe('Guest Professor');
     expect(lesson.track).toBe('general');
   });
 

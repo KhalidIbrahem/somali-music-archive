@@ -1,7 +1,7 @@
 /**
  * Record screen (SESSION P1-03, ARCHITECTURE.md §7 "Record").
  *
- * The field-recording tool Khalid uses at Ahmed Ali Egal's home. Role-gated to
+ * The field-recording tool for sessions with elder musicians. Role-gated to
  * contributor/admin (§11 — enforced here, not just hidden in the tab bar). Three
  * states: READY → RECORDING → REVIEW (playback + metadata form → upload).
  *
@@ -48,7 +48,7 @@ import {
 import { formatDuration } from '@/utils/formatters';
 import { colors, spacing } from '@/theme';
 
-const DEFAULT_SINGER = 'Ahmed Ali Egal';
+const DEFAULT_SINGER = '';
 
 /** UI form schema — captures exactly the record screen's fields (RHF + Zod). */
 const recordingFormSchema = z.object({

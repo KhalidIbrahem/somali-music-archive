@@ -46,7 +46,7 @@ describe('tokenize', () => {
 
 describe('full-text matching', () => {
   beforeEach(async () => {
-    await index.index(doc({ id: 'a', title: 'Balwo Hobalka', artistName: 'Ahmed Ali Egal' }));
+    await index.index(doc({ id: 'a', title: 'Balwo Hobalka', artistName: 'Test Artist' }));
     await index.index(doc({ id: 'b', title: 'Dhaanto', artistName: 'Cumar Dhuule' }));
   });
 
@@ -57,7 +57,7 @@ describe('full-text matching', () => {
   });
 
   it('matches a term against the artist name', async () => {
-    expect((await index.search(q({ q: 'ahmed' }))).ids).toEqual(['a']);
+    expect((await index.search(q({ q: 'artist' }))).ids).toEqual(['a']);
     expect((await index.search(q({ q: 'cumar' }))).ids).toEqual(['b']);
   });
 
@@ -156,7 +156,7 @@ describe('toSearchDocument', () => {
     const recording = {
       _id: 'abc123',
       title: { somali: 'Balwo', english: 'Love Song' },
-      artist: { name: 'Ahmed Ali Egal' },
+      artist: { name: 'Test Artist' },
       poet: { name: 'Cabdi' },
       genre: 'qaraami',
       region: 'banaadir',
@@ -169,7 +169,7 @@ describe('toSearchDocument', () => {
     expect(toSearchDocument(recording)).toEqual({
       id: 'abc123',
       title: 'Balwo Love Song',
-      artistName: 'Ahmed Ali Egal',
+      artistName: 'Test Artist',
       poetName: 'Cabdi',
       genre: 'qaraami',
       region: 'banaadir',

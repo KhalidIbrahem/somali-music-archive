@@ -8,7 +8,7 @@ import { createRecordingsService, type RecordingsService } from './recordings.se
 
 const metadata: RecordingCompleteMetadata = {
   title: { somali: 'Balwo' },
-  singerName: 'Ahmed Ali Egal',
+  singerName: 'Test Artist',
   genre: 'qaraami',
   instruments: ['oud', 'voice'],
 };
@@ -78,7 +78,7 @@ describe('completeUpload', () => {
 
     const recording = await ctx.service.getRecording(recordingId);
     expect(recording.title.somali).toBe('Balwo');
-    expect(recording.artist.name).toBe('Ahmed Ali Egal');
+    expect(recording.artist.name).toBe('Test Artist');
     expect(recording.ai.status).toBe('processing');
   });
 
