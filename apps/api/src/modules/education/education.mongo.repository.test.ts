@@ -32,7 +32,7 @@ const lessonInput: CreateTeachingLessonRecord = {
     },
   ],
   authorId: 'educator-1',
-  authorName: 'Prof. Rehanna Kashogi',
+  authorName: 'Guest Professor',
   status: 'published',
 };
 
@@ -59,7 +59,7 @@ describe('MongoEducationRepository', () => {
     expect(read).toMatchObject({
       title: lessonInput.title,
       track: 'beginner',
-      authorName: 'Prof. Rehanna Kashogi',
+      authorName: 'Guest Professor',
       status: 'published',
     });
     expect(read?.attachments).toEqual(lessonInput.attachments);

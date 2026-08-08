@@ -37,7 +37,7 @@ beforeAll(async () => {
   });
   await recordingRepository.complete(draft.recordingId, {
     title: { somali: 'Balwo' },
-    singerName: 'Ahmed Ali Egal',
+    singerName: 'Test Artist',
     genre: 'qaraami',
     instruments: ['oud'],
   });

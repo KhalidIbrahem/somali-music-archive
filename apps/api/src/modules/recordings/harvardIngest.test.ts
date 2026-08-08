@@ -14,7 +14,7 @@ const base: HarvardRecord = {
   track_id: 42,
   filename: 'track_0042_Kaana_Siib_Ahmed_Ali_Egal.wav',
   title: 'Kaana Siib Kaana Saar',
-  artists: 'Ahmed Ali Egal',
+  artists: 'Test Artist',
   duration_sec: 187.4,
   quality_score: 74.5,
   transcript_somali: 'hobalayow heedhe',

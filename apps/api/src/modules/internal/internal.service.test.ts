@@ -25,7 +25,7 @@ beforeEach(async () => {
   recordingId = draft.recordingId;
   await recordings.complete(recordingId, {
     title: { somali: 'Balwo' },
-    singerName: 'Ahmed Ali Egal',
+    singerName: 'Test Artist',
     genre: 'qaraami',
     instruments: ['voice'],
   });

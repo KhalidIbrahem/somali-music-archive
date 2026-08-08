@@ -10,12 +10,12 @@ const rec = (artistId: string, artistName: string): PublicRecording =>
 describe('deriveFeaturedArtists', () => {
   it('groups recordings by artist and counts them', () => {
     const featured = deriveFeaturedArtists([
-      rec('a1', 'Ahmed Ali Egal'),
-      rec('a1', 'Ahmed Ali Egal'),
+      rec('a1', 'Test Artist'),
+      rec('a1', 'Test Artist'),
       rec('a2', 'Hibo Nuura'),
     ]);
     expect(featured).toHaveLength(2);
-    expect(featured[0]).toEqual({ id: 'a1', name: 'Ahmed Ali Egal', recordingCount: 2 });
+    expect(featured[0]).toEqual({ id: 'a1', name: 'Test Artist', recordingCount: 2 });
     expect(featured[1]?.recordingCount).toBe(1);
   });
 

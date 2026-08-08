@@ -82,7 +82,7 @@ describe('notifyComplete', () => {
     (apiClient.post as jest.Mock).mockResolvedValue({ data: { success: true, data: {} } });
     const metadata: RecordingMetadata = {
       title: { somali: 'Balwo' },
-      singerName: 'Ahmed Ali Egal',
+      singerName: 'Test Artist',
       genre: 'qaraami',
       instruments: ['oud', 'voice'],
     };

@@ -20,7 +20,7 @@ import { MongoRecordingRepository } from './recordings.mongo.repository';
 
 const metadata: RecordingCompleteMetadata = {
   title: { somali: 'Balwo' },
-  singerName: 'Ahmed Ali Egal',
+  singerName: 'Test Artist',
   genre: 'qaraami',
   instruments: ['oud', 'voice'],
 };
