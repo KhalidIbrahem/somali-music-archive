@@ -24,6 +24,7 @@ function toUserRecord(row: User): UserRecord {
   return {
     id: row.id,
     email: row.email,
+    username: row.username,
     phone: row.phone,
     passwordHash: row.passwordHash,
     displayName: row.displayName,
@@ -56,9 +57,24 @@ export class PrismaUserRepository implements UserRepository {
     return row ? toUserRecord(row) : null;
   }
 
+  async findByUsername(username: string): Promise<UserRecord | null> {
+    const row = await this.prisma.user.findFirst({
+      where: { username: username.toLowerCase(), deletedAt: null },
+    });
+    return row ? toUserRecord(row) : null;
+  }
+
   async findByPhone(phone: string): Promise<UserRecord | null> {
     const row = await this.prisma.user.findFirst({ where: { phone, deletedAt: null } });
     return row ? toUserRecord(row) : null;
+  }
+
+  async softDelete(id: string): Promise<boolean> {
+    const result = await this.prisma.user.updateMany({
+      where: { id, deletedAt: null },
+      data: { deletedAt: new Date() },
+    });
+    return result.count > 0;
   }
 
   async findById(id: string): Promise<UserRecord | null> {
@@ -70,6 +86,7 @@ export class PrismaUserRepository implements UserRepository {
     const row = await this.prisma.user.create({
       data: {
         email: input.email,
+        ...(input.username ? { username: input.username } : {}),
         ...(input.phone ? { phone: input.phone } : {}),
         passwordHash: input.passwordHash,
         displayName: input.displayName,
@@ -150,6 +167,7 @@ export class PrismaUserRepository implements UserRepository {
             OR: [
               { email: { contains: params.q, mode: 'insensitive' } },
               { displayName: { contains: params.q, mode: 'insensitive' } },
+              { username: { contains: params.q, mode: 'insensitive' } },
             ],
           }
         : {}),

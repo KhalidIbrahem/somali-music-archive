@@ -7,20 +7,25 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import request from 'supertest';
 import { createApp } from '@/app';
+import { seedTestInvite } from '@/shared/testing/seedInvite';
 import { recordingRepository } from '@/modules/recordings/recordings.repository';
 
 const app = createApp();
 let recordingId = '';
 
 async function registerUser(): Promise<{ token: string; id: string }> {
-  const email = `commenter+${Date.now()}-${Math.random().toString(36).slice(2)}@example.com`;
-  const reg = await request(app).post('/api/v1/auth/register').send({
-    email,
-    password: 'oudwood7',
-    displayName: 'Commenter',
-    dateOfBirth: '1980-01-01',
-    acceptedTerms: true,
-  });
+  const slug = Math.random().toString(36).slice(2, 10);
+  const reg = await request(app)
+    .post('/api/v1/auth/register')
+    .send({
+      inviteCode: await seedTestInvite(),
+      username: `commenter${slug}`,
+      email: `commenter+${Date.now()}-${slug}@example.com`,
+      password: 'oudwood7',
+      displayName: 'Commenter',
+      dateOfBirth: '1980-01-01',
+      acceptedTerms: true,
+    });
   return { token: reg.body.data.accessToken as string, id: reg.body.data.user.id as string };
 }
 

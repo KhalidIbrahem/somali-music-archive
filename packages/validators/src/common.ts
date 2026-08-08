@@ -47,6 +47,21 @@ export const displayNameSchema = z
   .max(60, 'Name is too long');
 
 /**
+ * Unique member handle (SESSION "private access") — the primary login
+ * identifier on the invite-only platform. Lowercased so lookups are
+ * case-insensitive by construction; must start with a letter so a username can
+ * never look like a phone number to the login identifier resolver.
+ */
+export const usernameSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .regex(
+    /^[a-z][a-z0-9._]{2,23}$/,
+    '3–24 characters: letters, numbers, dots or underscores, starting with a letter',
+  );
+
+/**
  * Normalise a phone number towards E.164: strip spaces/dashes/dots/parentheses
  * and convert an international `00` prefix to `+`. Returns the cleaned string
  * (which may still be invalid — the schema below decides validity). Exported so

@@ -12,7 +12,16 @@ import {
   displayNameSchema,
   phoneSchema,
   uiLanguageSchema,
+  usernameSchema,
 } from './common';
+
+/** Invite codes are matched case-insensitively (stored uppercase). */
+export const inviteCodeInputSchema = z
+  .string()
+  .trim()
+  .toUpperCase()
+  .min(4, 'Enter your invite code')
+  .max(64);
 
 /** Minimum age required to register, per COPPA (ARCHITECTURE.md §11 Compliance). */
 export const MIN_SIGNUP_AGE = 13;
@@ -27,6 +36,10 @@ function isOldEnough(dateOfBirth: string): boolean {
 }
 
 export const registerSchema = z.object({
+  /** The platform is invite-only (SESSION "private access"): registration
+   * requires a live code minted by an admin. */
+  inviteCode: inviteCodeInputSchema,
+  username: usernameSchema,
   email: emailSchema,
   /** Optional E.164 phone — becomes a second login identifier when provided. */
   phone: phoneSchema.optional(),
