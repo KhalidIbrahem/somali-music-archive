@@ -25,6 +25,14 @@ export const landingCopy = {
     sub: 'Almost none of it was ever written into sheet music — and the recordings are decaying a little more each year.',
     // alt: 'The voices are aging. The recordings are fading. What was never written down can still be lost.'
     turn: 'Until now.',
+    // The three pillars, named in the author's own master-plan brief
+    // (2026-08-08): "transcription of 1950s qaraami scores, playable sheet
+    // music, and a professional DAW dedicated to Somali music."
+    pillars: [
+      'Transcription of 1950s qaraami scores',
+      'Playable sheet music',
+      'A professional studio (DAW) dedicated to Somali music',
+    ],
   },
 
   proof: {
@@ -72,6 +80,22 @@ export const landingCopy = {
     { value: '0.68', label: 'its mean confidence — printed, not hidden' },
   ],
 
+  // Research demos (author's master-plan brief, 2026-08-08: "Audio demos
+  // section … each demo = title + paragraph. First demo: the Beerdilaacshe
+  // oud + drum rendering". Section format after the author's reference,
+  // mit.edu/~paris/demos.)
+  demos: {
+    kicker: 'Research demos',
+    title: 'Listen to the work',
+    intro:
+      'Short audio results from the project, each with what it is and how it was made. More are added as the research moves.',
+    film: {
+      title: 'The studio, filmed',
+      body: 'A screen recording of the QaraamiGenAI studio — composing with the oud and durbaan instruments — will sit here.',
+      badge: 'Coming with the studio release',
+    },
+  },
+
   closing: {
     title: 'Preserve, understand, and extend Somali musical heritage.',
     body: 'Nothing here will ever be lost again.',
@@ -80,4 +104,7 @@ export const landingCopy = {
     secondaryCta: 'Enter the listening room',
     noteHint: 'End on a single held note',
   },
+
+  // Author credit (master-plan brief: 'Credits: "Built by Khalid Ibrahim"').
+  credit: 'Built by Khalid Ibrahim',
 } as const;
