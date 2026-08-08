@@ -61,7 +61,11 @@ export function loadDevStore(): DevStoreData | null {
     recordings?: unknown[];
   };
   return {
-    users: reviveDates<UserRecord>(parsed.users ?? [], USER_DATE_KEYS),
+    // Backfill fields added after a store was written (older snapshots lack them).
+    users: reviveDates<UserRecord>(parsed.users ?? [], USER_DATE_KEYS).map((u) => ({
+      ...u,
+      phone: u.phone ?? null,
+    })),
     recordings: reviveDates<RecordingDoc>(parsed.recordings ?? [], RECORDING_DATE_KEYS),
   };
 }

@@ -3,6 +3,7 @@ import type { RegisterInput } from '@sma/validators';
 import type { EmailService } from '@/shared/email/emailService';
 import { AppError } from '@/shared/errors/AppError';
 import { InMemoryTokenBlacklist } from '@/shared/auth/tokenBlacklist';
+import type { GoogleIdentity } from './google.verifier';
 import { InMemoryUserRepository } from './user.repository';
 import { InMemoryRefreshTokenRepository } from './refreshToken.repository';
 import { InMemoryVerificationTokenRepository } from './verificationToken.repository';
@@ -23,6 +24,8 @@ interface Harness {
   refreshTokens: InMemoryRefreshTokenRepository;
   blacklist: InMemoryTokenBlacklist;
   email: EmailService;
+  /** Mutable per-test Google identity; null → the verifier throws (bad token). */
+  google: { identity: GoogleIdentity | null };
 }
 
 function makeHarness(): Harness {
@@ -34,8 +37,19 @@ function makeHarness(): Harness {
     sendVerificationEmail: vi.fn(async () => {}),
     sendPasswordResetEmail: vi.fn(async () => {}),
   };
-  const service = createAuthService({ users, refreshTokens, verificationTokens, blacklist, email });
-  return { service, users, refreshTokens, blacklist, email };
+  const google: Harness['google'] = { identity: null };
+  const service = createAuthService({
+    users,
+    refreshTokens,
+    verificationTokens,
+    blacklist,
+    email,
+    googleIdentity: async () => {
+      if (!google.identity) throw new AppError(401, 'AUTH_INVALID_TOKEN', 'Bad Google credential');
+      return google.identity;
+    },
+  });
+  return { service, users, refreshTokens, blacklist, email, google };
 }
 
 let h: Harness;
@@ -56,6 +70,15 @@ describe('register', () => {
   it('rejects a duplicate email', async () => {
     await h.service.register(registration);
     await expect(h.service.register(registration)).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('stores an E.164 phone and rejects a duplicate phone', async () => {
+    const withPhone = { ...registration, phone: '+252612345678' };
+    const result = await h.service.register(withPhone);
+    expect(result.user.phone).toBe('+252612345678');
+    await expect(
+      h.service.register({ ...withPhone, email: 'other@example.com' }),
+    ).rejects.toMatchObject({ code: 'AUTH_PHONE_TAKEN' });
   });
 });
 
@@ -101,6 +124,71 @@ describe('login', () => {
     await expect(
       h.service.login({ email: registration.email, password: 'wrong-password9' }),
     ).rejects.toMatchObject({ code: 'AUTH_INVALID_CREDENTIALS' });
+  });
+});
+
+describe('login by identifier (email or phone)', () => {
+  beforeEach(async () => {
+    await h.service.register({ ...registration, phone: '+252612345678' });
+  });
+
+  it('accepts the email as an identifier', async () => {
+    const result = await h.service.login({ identifier: 'elder@example.com', password: 'oudwood7' });
+    expect(result.user.email).toBe('elder@example.com');
+  });
+
+  it('accepts the phone in any reasonable formatting', async () => {
+    const result = await h.service.login({
+      identifier: '00252 61-234 5678',
+      password: 'oudwood7',
+    });
+    expect(result.user.phone).toBe('+252612345678');
+  });
+
+  it('rejects an unknown or malformed phone identifier with INVALID_CREDENTIALS', async () => {
+    await expect(
+      h.service.login({ identifier: '+252699999999', password: 'oudwood7' }),
+    ).rejects.toMatchObject({ code: 'AUTH_INVALID_CREDENTIALS' });
+    await expect(
+      h.service.login({ identifier: 'not-a-phone', password: 'oudwood7' }),
+    ).rejects.toMatchObject({ code: 'AUTH_INVALID_CREDENTIALS' });
+  });
+});
+
+describe('loginWithGoogle', () => {
+  it('creates a verified account for a new Google user and signs them in', async () => {
+    h.google.identity = {
+      email: 'professor@university.edu',
+      emailVerified: true,
+      name: 'Rehanna Kashogi',
+    };
+    const result = await h.service.loginWithGoogle({ credential: 'x'.repeat(32) });
+    expect(result.user.email).toBe('professor@university.edu');
+    expect(result.user.displayName).toBe('Rehanna Kashogi');
+    expect(result.user.emailVerified).toBe(true);
+    expect(result.accessToken).toBeTruthy();
+  });
+
+  it('links to an existing account by email and marks it verified', async () => {
+    const registered = await h.service.register(registration);
+    h.google.identity = { email: registration.email, emailVerified: true };
+    const result = await h.service.loginWithGoogle({ credential: 'x'.repeat(32) });
+    expect(result.user.id).toBe(registered.user.id);
+    expect(result.user.emailVerified).toBe(true);
+  });
+
+  it('rejects a Google identity whose email is unverified', async () => {
+    h.google.identity = { email: 'shady@example.com', emailVerified: false };
+    await expect(h.service.loginWithGoogle({ credential: 'x'.repeat(32) })).rejects.toMatchObject({
+      code: 'AUTH_INVALID_CREDENTIALS',
+    });
+  });
+
+  it('propagates a failed credential verification', async () => {
+    h.google.identity = null;
+    await expect(h.service.loginWithGoogle({ credential: 'x'.repeat(32) })).rejects.toMatchObject({
+      code: 'AUTH_INVALID_TOKEN',
+    });
   });
 });
 

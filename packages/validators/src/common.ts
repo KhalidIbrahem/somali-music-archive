@@ -46,6 +46,35 @@ export const displayNameSchema = z
   .min(2, 'Name is too short')
   .max(60, 'Name is too long');
 
+/**
+ * Normalise a phone number towards E.164: strip spaces/dashes/dots/parentheses
+ * and convert an international `00` prefix to `+`. Returns the cleaned string
+ * (which may still be invalid — the schema below decides validity). Exported so
+ * the API's login-identifier resolution and the web form share one definition.
+ */
+export function normalizePhone(raw: string): string {
+  let cleaned = raw.replace(/[\s\-().]/g, '');
+  if (cleaned.startsWith('00')) cleaned = `+${cleaned.slice(2)}`;
+  return cleaned;
+}
+
+/** E.164 shape after normalisation: `+` then 7–15 digits, no leading zero. */
+export const E164_PATTERN = /^\+[1-9]\d{6,14}$/;
+
+/**
+ * International phone number, normalised to E.164. Requires the country code
+ * (`+252…`) — a bare local number is ambiguous across the diaspora (§2 users
+ * span Somalia, Ethiopia, Kenya, US, Europe), so we never guess one.
+ */
+export const phoneSchema = z
+  .string()
+  .trim()
+  .transform(normalizePhone)
+  .refine(
+    (v) => E164_PATTERN.test(v),
+    'Enter the phone number in international format, e.g. +252 61 234 5678',
+  );
+
 // ── Enums (built from the canonical constant lists — never drift) ─────────────
 
 export const genreSchema = z.enum(GENRES);

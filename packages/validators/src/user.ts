@@ -3,7 +3,8 @@
  */
 
 import { z } from 'zod';
-import { displayNameSchema, uiLanguageSchema } from './common';
+import { USER_ROLES } from '@sma/types';
+import { displayNameSchema, paginationQuerySchema, uiLanguageSchema } from './common';
 
 /** PATCH /users/me — update a subset of the caller's own profile. */
 export const updateProfileSchema = z
@@ -17,3 +18,17 @@ export const updateProfileSchema = z
   });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+
+/** PATCH /users/:id/role — an admin granting a member a role (e.g. educator). */
+export const changeRoleSchema = z.object({
+  role: z.enum(USER_ROLES),
+});
+
+export type ChangeRoleInput = z.infer<typeof changeRoleSchema>;
+
+/** GET /users (admin) — paginated member list with an optional search term. */
+export const listUsersQuerySchema = paginationQuerySchema.extend({
+  q: z.string().trim().min(1).max(200).optional(),
+});
+
+export type ListUsersQuery = z.output<typeof listUsersQuerySchema>;

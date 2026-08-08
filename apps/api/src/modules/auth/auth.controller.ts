@@ -8,6 +8,7 @@
 import type { Request, Response } from 'express';
 import type {
   ForgotPasswordInput,
+  GoogleAuthInput,
   LoginInput,
   RefreshInput,
   RegisterInput,
@@ -25,6 +26,11 @@ export async function register(req: Request, res: Response): Promise<void> {
 
 export async function login(req: Request, res: Response): Promise<void> {
   const result = await authService.login(req.body as LoginInput);
+  sendSuccess(res, result);
+}
+
+export async function google(req: Request, res: Response): Promise<void> {
+  const result = await authService.loginWithGoogle(req.body as GoogleAuthInput);
   sendSuccess(res, result);
 }
 

@@ -1,6 +1,8 @@
 /**
- * Typed fetch wrapper to the backend API for the admin dashboard. Unwraps the
- * shared `ApiResponse<T>` envelope (@sma/types) and attaches the admin bearer token.
+ * Typed fetch wrapper to the backend API. Unwraps the shared `ApiResponse<T>`
+ * envelope (@sma/types), attaches the bearer token, and transparently renews an
+ * expired access token with the stored refresh token (single-flight, one retry)
+ * so a signed-in member stays signed in across the 15-minute access window.
  */
 
 import type {
@@ -12,6 +14,7 @@ import type {
   FieldError,
   GenerationJob,
   GenerationRequest,
+  LessonAttachmentContentType,
   LibraryBook,
   OrganizationMemberView,
   Paginated,
@@ -20,10 +23,19 @@ import type {
   PublicUser,
   RecordingStatus,
   RecordingVisibility,
+  SignedAttachmentUrl,
   SignedBookUrl,
+  TeachingLesson,
 } from '@sma/types';
-import type { BookCreateInput, CreateOrganizationInput, RegisterInput } from '@sma/validators';
-import { getToken } from './auth';
+import type {
+  BookCreateInput,
+  CreateOrganizationInput,
+  LessonCreateInput,
+  LessonUpdateInput,
+  RegisterInput,
+  UpdateProfileInput,
+} from '@sma/validators';
+import { clearSession, getRefreshToken, getToken, setSession } from './auth';
 
 const API_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api/v1';
 
@@ -46,7 +58,7 @@ export class ApiError extends Error {
   }
 }
 
-async function apiFetch<T>(path: string, init?: RequestInit, auth = true): Promise<T> {
+async function rawFetch<T>(path: string, init: RequestInit | undefined, auth: boolean): Promise<T> {
   const token = auth ? getToken() : null;
   let res: Response;
   try {
@@ -74,12 +86,62 @@ async function apiFetch<T>(path: string, init?: RequestInit, auth = true): Promi
   return body.data;
 }
 
+/** Single-flight refresh: concurrent 401s share one /auth/refresh call. */
+let refreshInFlight: Promise<boolean> | null = null;
+
+/** Trade the stored refresh token for a new pair. False → session is dead. */
+function tryRefreshSession(): Promise<boolean> {
+  refreshInFlight ??= (async () => {
+    const refreshToken = getRefreshToken();
+    if (!refreshToken) return false;
+    try {
+      const tokens = await rawFetch<AuthTokens>(
+        '/auth/refresh',
+        { method: 'POST', body: JSON.stringify({ refreshToken }) },
+        false,
+      );
+      setSession(tokens);
+      return true;
+    } catch {
+      // Rotated-out, revoked, or expired: the member must sign in again.
+      clearSession();
+      return false;
+    } finally {
+      refreshInFlight = null;
+    }
+  })();
+  return refreshInFlight;
+}
+
+async function apiFetch<T>(path: string, init?: RequestInit, auth = true): Promise<T> {
+  try {
+    return await rawFetch<T>(path, init, auth);
+  } catch (err) {
+    // An expired access token is renewable — refresh once and replay the call.
+    if (auth && err instanceof ApiError && err.code === 'AUTH_TOKEN_EXPIRED') {
+      const renewed = await tryRefreshSession();
+      if (renewed) return rawFetch<T>(path, init, auth);
+    }
+    throw err;
+  }
+}
+
 export type AuthResult = { user: PublicUser } & AuthTokens;
 
-export function login(email: string, password: string): Promise<AuthResult> {
+/** Sign in with an email OR an E.164 phone number in one identifier field. */
+export function login(identifier: string, password: string): Promise<AuthResult> {
   return apiFetch<AuthResult>(
     '/auth/login',
-    { method: 'POST', body: JSON.stringify({ email, password }) },
+    { method: 'POST', body: JSON.stringify({ identifier, password }) },
+    false,
+  );
+}
+
+/** Sign in/up with a Google Identity Services credential (POST /auth/google). */
+export function loginWithGoogle(credential: string): Promise<AuthResult> {
+  return apiFetch<AuthResult>(
+    '/auth/google',
+    { method: 'POST', body: JSON.stringify({ credential }) },
     false,
   );
 }
@@ -93,8 +155,19 @@ export function register(input: RegisterInput): Promise<AuthResult> {
   );
 }
 
+/** Revoke this session server-side (blacklists the access token's jti and all
+ * refresh tokens). The caller clears local storage regardless of the outcome. */
+export function logout(): Promise<{ success: boolean }> {
+  return apiFetch<{ success: boolean }>('/auth/logout', { method: 'POST' });
+}
+
 export function getMe(): Promise<PublicUser> {
   return apiFetch<PublicUser>('/users/me');
+}
+
+/** PATCH /users/me — update the caller's own profile (validated server-side). */
+export function updateMyProfile(patch: UpdateProfileInput): Promise<PublicUser> {
+  return apiFetch<PublicUser>('/users/me', { method: 'PATCH', body: JSON.stringify(patch) });
 }
 
 export function listModeration(status?: RecordingStatus): Promise<Paginated<PublicRecording>> {
@@ -159,12 +232,12 @@ export function requestBookUploadUrl(input: {
 /**
  * PUT the document bytes straight to R2 (never through our API — CONVENTIONS.md).
  * Plain fetch on purpose: no auth header, and the Content-Type must match the
- * one the URL was presigned for.
+ * one the URL was presigned for. Shared by library books and lesson attachments.
  */
 export async function uploadFileToR2(
   uploadUrl: string,
   file: File,
-  contentType: BookContentType,
+  contentType: BookContentType | LessonAttachmentContentType,
 ): Promise<void> {
   let res: Response;
   try {
@@ -199,6 +272,69 @@ export function listBooks(): Promise<LibraryBook[]> {
 /** Short-lived signed read URL for a book (opens the PDF/scan). */
 export function getBookFileUrl(id: string): Promise<SignedBookUrl> {
   return apiFetch<SignedBookUrl>(`/library/books/${id}/file`);
+}
+
+// ── Education — educator-authored lessons/resources (presigned-R2 attachments) ─
+
+export interface LessonPresign {
+  uploadUrl: string;
+  fileKey: string;
+  expiresAt: string;
+}
+
+/** Published lessons — public, no session required. */
+export function listTeachingLessons(): Promise<TeachingLesson[]> {
+  return apiFetch<TeachingLesson[]>('/education/lessons', undefined, false);
+}
+
+/** One lesson. Sends the token when present so authors can open their drafts. */
+export function getTeachingLesson(id: string): Promise<TeachingLesson> {
+  return apiFetch<TeachingLesson>(`/education/lessons/${id}`);
+}
+
+/** The signed-in educator's own lessons, drafts included. */
+export function listMyTeachingLessons(): Promise<TeachingLesson[]> {
+  return apiFetch<TeachingLesson[]>('/education/lessons/mine');
+}
+
+/** Ask the API for a presigned R2 PUT for a lesson attachment (educator only). */
+export function requestLessonUploadUrl(input: {
+  filename: string;
+  contentType: LessonAttachmentContentType;
+  sizeBytes?: number;
+}): Promise<LessonPresign> {
+  return apiFetch<LessonPresign>('/education/lessons/upload-url', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export function createTeachingLesson(input: LessonCreateInput): Promise<TeachingLesson> {
+  return apiFetch<TeachingLesson>('/education/lessons', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export function updateTeachingLesson(
+  id: string,
+  patch: LessonUpdateInput,
+): Promise<TeachingLesson> {
+  return apiFetch<TeachingLesson>(`/education/lessons/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteTeachingLesson(id: string): Promise<{ deleted: boolean }> {
+  return apiFetch<{ deleted: boolean }>(`/education/lessons/${id}`, { method: 'DELETE' });
+}
+
+/** Short-lived signed read URL for one attachment of a lesson. */
+export function getLessonAttachmentUrl(id: string, fileKey: string): Promise<SignedAttachmentUrl> {
+  return apiFetch<SignedAttachmentUrl>(
+    `/education/lessons/${id}/file?key=${encodeURIComponent(fileKey)}`,
+  );
 }
 
 // ── AI music generation (provider-agnostic proxy; engines are backend detail) ─

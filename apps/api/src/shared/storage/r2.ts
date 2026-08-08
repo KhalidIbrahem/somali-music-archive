@@ -30,14 +30,16 @@ const CONTENT_TYPE_EXTENSION: Record<string, string> = {
   'audio/webm': 'webm',
   'audio/flac': 'flac',
   'audio/mpeg': 'mp3',
+  'audio/mp4': 'm4a',
   'application/pdf': 'pdf',
   'image/jpeg': 'jpg',
   'image/png': 'png',
 };
 
-/** Object-key namespaces — recordings (audio), library (scanned books), and
- * generated (AI-provider output; see uploadObject for why it exists). */
-export type StoragePrefix = 'recordings' | 'library' | 'generated';
+/** Object-key namespaces — recordings (audio), library (scanned books), lessons
+ * (educator teaching material), and generated (AI-provider output; see
+ * uploadObject for why it exists). */
+export type StoragePrefix = 'recordings' | 'library' | 'lessons' | 'generated';
 
 const client = new S3Client({
   region: 'auto',

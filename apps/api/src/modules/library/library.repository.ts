@@ -2,13 +2,16 @@
  * Library persistence — the shelf of scanned music-sheet books.
  *
  * Books are archive material, so removal is a SOFT delete (Principle 4 — nothing
- * contributed to the archive is ever destroyed). Interface-first (ADR-0005); the
- * in-memory implementation is the dev/test driver, and a database driver can bind
- * here when the library grows a Prisma/Mongo model.
+ * contributed to the archive is ever destroyed). Interface-first (ADR-0005): the
+ * in-memory implementation drives tests/dev; the Mongo-backed implementation
+ * binds in production (PERSISTENCE=database) so the shelf survives serverless
+ * cold starts — closing the Aug 6 durability flag.
  */
 
 import type { BookContentType } from '@sma/types';
 import { randomUUID } from '@/shared/crypto';
+import { useDatabase } from '@/shared/db/driver';
+import { MongoLibraryRepository } from './library.mongo.repository';
 
 export interface BookRecord {
   id: string;
@@ -77,4 +80,7 @@ export class InMemoryLibraryRepository implements LibraryRepository {
   }
 }
 
-export const libraryRepository: LibraryRepository = new InMemoryLibraryRepository();
+/** Mongo in production (PERSISTENCE=database), in-memory for tests/local dev. */
+export const libraryRepository: LibraryRepository = useDatabase()
+  ? new MongoLibraryRepository()
+  : new InMemoryLibraryRepository();

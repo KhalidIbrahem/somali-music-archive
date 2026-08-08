@@ -79,3 +79,39 @@ describe('saved recordings', () => {
     expect(await service.listSaved(userId)).toHaveLength(1);
   });
 });
+
+describe('admin member management', () => {
+  it('lists users newest-first with a search filter', async () => {
+    await users.create({
+      email: 'professor@university.edu',
+      passwordHash: 'x',
+      displayName: 'Rehanna Kashogi',
+      language: 'en',
+    });
+    const all = await service.listUsers({ page: 1, limit: 20 });
+    expect(all.total).toBe(2);
+    const filtered = await service.listUsers({ page: 1, limit: 20, q: 'kashogi' });
+    expect(filtered.total).toBe(1);
+    expect(filtered.data[0]?.email).toBe('professor@university.edu');
+  });
+
+  it('changes a role (listener → educator) but never the actor’s own', async () => {
+    const professor = await users.create({
+      email: 'professor@university.edu',
+      passwordHash: 'x',
+      displayName: 'Rehanna Kashogi',
+      language: 'en',
+    });
+    const promoted = await service.changeRole(userId, professor.id, 'educator');
+    expect(promoted.role).toBe('educator');
+    await expect(service.changeRole(userId, userId, 'listener')).rejects.toMatchObject({
+      code: 'VALIDATION_ERROR',
+    });
+  });
+
+  it('throws USER_NOT_FOUND when the target does not exist', async () => {
+    await expect(service.changeRole(userId, 'missing-id', 'educator')).rejects.toMatchObject({
+      code: 'USER_NOT_FOUND',
+    });
+  });
+});

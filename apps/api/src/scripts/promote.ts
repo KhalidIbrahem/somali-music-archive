@@ -1,22 +1,22 @@
 /**
- * Change a user's role in the dev store (SESSION "admin promote").
+ * Change a user's role (SESSION "admin promote", extended for the real database).
  *
+ *   npm run promote -- professor@university.edu educator
  *   npm run promote -- admin@somalimusicarchive.com admin
- *   npm run promote -- someone@example.com contributor
  *
- * Validates the email exists and the target role is one of listener | contributor
- * | admin, updates the dev store, and prints a confirmation. Operates on the same
- * file-backed dev store as `npm run seed` (env-free — no `.env` required). When the
- * real user database is wired, this is reimplemented as a query against it.
+ * Where it acts depends on the persistence mode in `.env` (same switch the API
+ * uses): PERSISTENCE=database updates the row in Postgres via Prisma — including
+ * the PRODUCTION database when POSTGRES_URL points there — otherwise it edits
+ * the local dev store (`npm run seed` state). Roles come from the shared
+ * USER_ROLES list, so `educator` is grantable the moment it exists.
  */
 
-import type { UserRole } from '@sma/types';
+import { USER_ROLES, type UserRole } from '@sma/types';
+import { loadEnvFile } from '@/config/loadEnv';
 import { loadDevStore, saveDevStore } from '@/shared/devStore/devStore';
 
-const ROLES: readonly UserRole[] = ['listener', 'contributor', 'admin'];
-
 function isRole(value: string): value is UserRole {
-  return (ROLES as readonly string[]).includes(value);
+  return (USER_ROLES as readonly string[]).includes(value);
 }
 
 function fail(message: string): never {
@@ -25,16 +25,29 @@ function fail(message: string): never {
   process.exit(1);
 }
 
-function main(): void {
-  const [email, role] = process.argv.slice(2);
-
-  if (!email || !role) {
-    fail('Usage: npm run promote -- <email> <listener|contributor|admin>');
+async function promoteInDatabase(email: string, role: UserRole): Promise<void> {
+  // Imported lazily so the dev-store path never needs a Prisma client.
+  const { getPrisma } = await import('@/shared/db/prisma');
+  const prisma = getPrisma();
+  try {
+    const user = await prisma.user.findFirst({
+      where: { email: email.toLowerCase(), deletedAt: null },
+    });
+    if (!user) fail(`No user found with email "${email}" in the database.`);
+    if (user.role === role) {
+      // eslint-disable-next-line no-console
+      console.log(`• ${user.email} is already "${role}" — no change.`);
+      return;
+    }
+    await prisma.user.update({ where: { id: user.id }, data: { role } });
+    // eslint-disable-next-line no-console
+    console.log(`✓ ${user.email}: role ${user.role} → ${role} (database)`);
+  } finally {
+    await prisma.$disconnect();
   }
-  if (!isRole(role)) {
-    fail(`Invalid role "${role}". Choose one of: ${ROLES.join(', ')}.`);
-  }
+}
 
+function promoteInDevStore(email: string, role: UserRole): void {
   const store = loadDevStore();
   if (!store) {
     fail('No dev store found. Run `npm run seed` first.');
@@ -57,7 +70,29 @@ function main(): void {
   saveDevStore(store);
 
   // eslint-disable-next-line no-console
-  console.log(`✓ ${user.email}: role ${previous} → ${role}`);
+  console.log(`✓ ${user.email}: role ${previous} → ${role} (dev store)`);
 }
 
-main();
+async function main(): Promise<void> {
+  const [email, role] = process.argv.slice(2);
+
+  if (!email || !role) {
+    fail(`Usage: npm run promote -- <email> <${USER_ROLES.join('|')}>`);
+  }
+  if (!isRole(role)) {
+    fail(`Invalid role "${role}". Choose one of: ${USER_ROLES.join(', ')}.`);
+  }
+
+  // Same resolution the API uses: .env fills the gaps, real env always wins.
+  loadEnvFile();
+  if (process.env['PERSISTENCE'] === 'database') {
+    if (!process.env['POSTGRES_URL']) {
+      fail('PERSISTENCE=database but POSTGRES_URL is not set.');
+    }
+    await promoteInDatabase(email, role);
+  } else {
+    promoteInDevStore(email, role);
+  }
+}
+
+await main();

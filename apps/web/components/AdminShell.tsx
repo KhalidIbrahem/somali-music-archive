@@ -11,8 +11,9 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { getMe } from '@/lib/api';
-import { getToken, clearToken } from '@/lib/auth';
+import { getMe, logout } from '@/lib/api';
+import { getToken, clearSession } from '@/lib/auth';
+import { invalidateSessionCache } from '@/lib/session';
 
 export type AdminSection = 'recordings' | 'organizations';
 
@@ -39,20 +40,23 @@ export function AdminShell({
     getMe()
       .then((user) => {
         if (user.role !== 'admin') {
-          clearToken();
+          clearSession();
           router.replace('/admin/login');
           return;
         }
         setReady(true);
       })
       .catch(() => {
-        clearToken();
+        clearSession();
         router.replace('/admin/login');
       });
   }, [router]);
 
   const signOut = (): void => {
-    clearToken();
+    // Best-effort server-side revocation; local sign-out never waits on it.
+    void logout().catch(() => undefined);
+    clearSession();
+    invalidateSessionCache();
     router.replace('/admin/login');
   };
 
