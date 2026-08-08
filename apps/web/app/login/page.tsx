@@ -18,6 +18,16 @@ import { setSession } from '@/lib/auth';
 import { invalidateSessionCache } from '@/lib/session';
 import { GoogleSignInButton } from '@/components/GoogleSignInButton';
 
+/** Where to land after a successful sign-in. Read lazily from the URL at
+ * submit time (NOT useSearchParams — that would force the whole form under a
+ * Suspense boundary and out of the static HTML). Only same-site paths are
+ * honoured so ?next can never bounce a member to another origin. */
+function nextPath(): string {
+  if (typeof window === 'undefined') return '/';
+  const next = new URLSearchParams(window.location.search).get('next');
+  return next && next.startsWith('/') && !next.startsWith('//') ? next : '/';
+}
+
 /** Shown when arriving straight from registration (?registered=1). Reads the
  * query string via useSearchParams, so it must live under a Suspense boundary
  * to keep the rest of the page fully static. */
@@ -34,16 +44,8 @@ function RegisteredBanner(): React.JSX.Element | null {
   );
 }
 
-/** Where to land after a successful sign-in. Only same-site paths are honoured
- * so ?next can never bounce a member to another origin. */
-function useNextPath(): string {
-  const next = useSearchParams().get('next');
-  return next && next.startsWith('/') && !next.startsWith('//') ? next : '/';
-}
-
 function LoginForm(): React.JSX.Element {
   const router = useRouter();
-  const nextPath = useNextPath();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -51,7 +53,7 @@ function LoginForm(): React.JSX.Element {
 
   const finish = (): void => {
     invalidateSessionCache();
-    router.push(nextPath);
+    router.push(nextPath());
   };
 
   const onSubmit = async (e: React.FormEvent): Promise<void> => {
@@ -144,11 +146,7 @@ export default function LoginPage(): React.JSX.Element {
           <RegisteredBanner />
         </Suspense>
 
-        {/* The form reads ?next= via useSearchParams, so it renders inside the
-            same Suspense pattern as the banner to keep the page static. */}
-        <Suspense fallback={null}>
-          <LoginForm />
-        </Suspense>
+        <LoginForm />
 
         <p className="text-center font-body text-sm text-ink-secondary">
           New here?{' '}
