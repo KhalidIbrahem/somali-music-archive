@@ -61,7 +61,7 @@ describe('createInvite / listInvites / revokeInvite', () => {
     const member = await users.create({
       email: 'professor@university.edu',
       passwordHash: 'x',
-      displayName: 'Rehanna Kashogi',
+      displayName: 'Guest Professor',
       language: 'en',
     });
     const created = await service.createInvite('admin-1', { maxUses: 2 });
@@ -72,7 +72,7 @@ describe('createInvite / listInvites / revokeInvite', () => {
     expect(listed[0]?.usedCount).toBe(1);
     expect(listed[0]?.redemptions[0]).toMatchObject({
       email: 'professor@university.edu',
-      displayName: 'Rehanna Kashogi',
+      displayName: 'Guest Professor',
     });
   });
 });

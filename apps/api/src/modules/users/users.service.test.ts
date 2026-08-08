@@ -33,7 +33,7 @@ async function completedRecording(): Promise<string> {
   });
   await recordings.complete(recordingId, {
     title: { somali: 'Balwo' },
-    singerName: 'Ahmed Ali Egal',
+    singerName: 'Test Artist',
     genre: 'qaraami',
     instruments: ['voice'],
   });
@@ -43,10 +43,10 @@ async function completedRecording(): Promise<string> {
 describe('updateProfile', () => {
   it('updates editable fields and returns the public user', async () => {
     const updated = await service.updateProfile(userId, {
-      displayName: 'Ahmed Ali Egal',
+      displayName: 'Test Artist',
       language: 'en',
     });
-    expect(updated.displayName).toBe('Ahmed Ali Egal');
+    expect(updated.displayName).toBe('Test Artist');
     expect(updated.language).toBe('en');
   });
 
@@ -88,12 +88,12 @@ describe('admin member management', () => {
     await users.create({
       email: 'professor@university.edu',
       passwordHash: 'x',
-      displayName: 'Rehanna Kashogi',
+      displayName: 'Guest Professor',
       language: 'en',
     });
     const all = await service.listUsers({ page: 1, limit: 20 });
     expect(all.total).toBe(2);
-    const filtered = await service.listUsers({ page: 1, limit: 20, q: 'kashogi' });
+    const filtered = await service.listUsers({ page: 1, limit: 20, q: 'professor' });
     expect(filtered.total).toBe(1);
     expect(filtered.data[0]?.email).toBe('professor@university.edu');
   });
@@ -102,7 +102,7 @@ describe('admin member management', () => {
     const professor = await users.create({
       email: 'professor@university.edu',
       passwordHash: 'x',
-      displayName: 'Rehanna Kashogi',
+      displayName: 'Guest Professor',
       language: 'en',
     });
     const promoted = await service.changeRole(userId, professor.id, 'educator');

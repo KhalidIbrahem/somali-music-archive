@@ -15,7 +15,7 @@ describe('registerSchema', () => {
     username: 'Elder_1950',
     email: 'Elder@Example.com ',
     password: 'oudwood7',
-    displayName: 'Ahmed Ali Egal',
+    displayName: 'Test Artist',
     dateOfBirth: dobYearsAgo(40),
     acceptedTerms: true as const,
   };
@@ -63,7 +63,7 @@ describe('registerSchema phone', () => {
     username: 'member',
     email: 'member@example.com',
     password: 'oudwood7',
-    displayName: 'Ahmed Ali Egal',
+    displayName: 'Test Artist',
     dateOfBirth: dobYearsAgo(40),
     acceptedTerms: true as const,
   };

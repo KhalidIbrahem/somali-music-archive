@@ -50,7 +50,7 @@ const USERS: ReadonlyArray<Omit<CreateUserInput, 'passwordHash'>> = [
 const RECORDINGS: readonly RecordingCompleteMetadata[] = [
   {
     title: { somali: 'Kaana Siib Kaana Saar' },
-    singerName: 'Ahmed Ali Egal',
+    singerName: 'Fanaan (name withheld)',
     poetName: 'Cabdullahi Qarshe',
     genre: 'heello',
     occasion: 'Independence-era nationalist heello',
@@ -61,7 +61,7 @@ const RECORDINGS: readonly RecordingCompleteMetadata[] = [
   },
   {
     title: { somali: 'Balwo Hobalka' },
-    singerName: 'Ahmed Ali Egal',
+    singerName: 'Fanaan (name withheld)',
     poetName: 'Cabdi Deeqsi (Sinimo)',
     genre: 'qaraami',
     occasion: 'Balwo love lyric',
@@ -72,7 +72,7 @@ const RECORDINGS: readonly RecordingCompleteMetadata[] = [
   },
   {
     title: { somali: 'Hooyo Macaan' },
-    singerName: 'Ahmed Ali Egal',
+    singerName: 'Fanaan (name withheld)',
     genre: 'heello',
     occasion: 'Praise of the mother',
     region: 'banaadir',
@@ -82,7 +82,7 @@ const RECORDINGS: readonly RecordingCompleteMetadata[] = [
   },
   {
     title: { somali: 'Dhulkayaga' },
-    singerName: 'Ahmed Ali Egal',
+    singerName: 'Fanaan (name withheld)',
     poetName: 'Cabdullahi Qarshe',
     genre: 'qaraami',
     occasion: 'Homeland qaraami',
@@ -93,7 +93,7 @@ const RECORDINGS: readonly RecordingCompleteMetadata[] = [
   },
   {
     title: { somali: 'Jacayl Dhiig Ma Lagu Qoray' },
-    singerName: 'Ahmed Ali Egal',
+    singerName: 'Fanaan (name withheld)',
     genre: 'heello',
     occasion: 'Love heello',
     region: 'woqooyi-galbeed',
@@ -159,7 +159,7 @@ async function main(): Promise<void> {
       ...users.map(
         (u) => `    • ${u.email} (${u.username ?? '—'}, ${u.role}) — password: ${SHARED_PASSWORD}`,
       ),
-      `  ${recordings.length} published recordings by Ahmed Ali Egal`,
+      `  ${recordings.length} published sample recordings (artist name withheld)`,
       `  1 invite code for local registration: ${DEV_INVITE_CODE} (100 uses)`,
       '  (lessons ship as authored content in lessons.repository.ts — not seeded here)',
       '',

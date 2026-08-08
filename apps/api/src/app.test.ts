@@ -15,7 +15,7 @@ const registration = {
   username: `elder${Date.now()}`,
   email,
   password: 'oudwood7',
-  displayName: 'Ahmed Ali Egal',
+  displayName: 'Test Artist',
   dateOfBirth: '1950-01-01',
   acceptedTerms: true,
 };

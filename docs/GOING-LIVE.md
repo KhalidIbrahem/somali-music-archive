@@ -21,25 +21,25 @@ doable in under an hour; the code side is already deployed.
   keys, soft delete only). The library shelf is now Mongo-backed too — uploads
   no longer vanish on serverless cold starts.
 
-## 1 · Give Prof. Rehanna Kashogi educator access
+## 1 · Give a professor educator access
 
-1. Send her the register link: `https://<your-domain>/register` (works today at
+1. Send them the register link: `https://<your-domain>/register` (works today at
    the vercel.app URL). Any account type is fine; phone is optional.
-2. Ask which email she used, then from `apps/api/` run:
+2. Ask which email they used, then from `apps/api/` run:
 
    ```bash
-   npm run promote -- her-email@university.edu educator
+   npm run promote -- professor-email@university.edu educator
    ```
 
    The local `.env` already points `PERSISTENCE=database` at production
    Postgres, so this updates the live row (the script prints
    `role listener → educator (database)`).
 
-3. That's it — next time she signs in, the header menu shows **Teaching
-   studio** and `/teach` unlocks. Drafts stay private until she publishes.
+3. That's it — next time they sign in, the header menu shows **Teaching
+   studio** and `/teach` unlocks. Drafts stay private until they publish.
 
 There is also an admin API if you prefer UI-less promotion from anywhere:
-`GET /api/v1/users?q=kashogi` then `PATCH /api/v1/users/:id/role`
+`GET /api/v1/users?q=professor` then `PATCH /api/v1/users/:id/role`
 `{"role":"educator"}` — both admin-token only. Educators can also upload to
 the Library and contribute recordings (educator ≥ contributor).
 

@@ -7,7 +7,7 @@ import { createResearchService, type ResearchService } from './research.service'
 
 const metadata: RecordingCompleteMetadata = {
   title: { somali: 'Balwo' },
-  singerName: 'Ahmed Ali Egal',
+  singerName: 'Test Artist',
   genre: 'qaraami',
   instruments: ['oud', 'voice'],
 };
@@ -121,7 +121,7 @@ describe('exportDataset', () => {
 
     const page = await service.exportDataset({ page: 1, limit: 20, includePitch: false });
     expect(page.total).toBe(2);
-    expect(page.data[0]?.artist).toBe('Ahmed Ali Egal');
+    expect(page.data[0]?.artist).toBe('Test Artist');
     expect(page.data[0]).toHaveProperty('durationSec');
   });
 

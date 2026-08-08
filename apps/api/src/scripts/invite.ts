@@ -2,7 +2,7 @@
  * Invite-code CLI (SESSION "private access") — mint, list, and revoke the
  * codes that gate registration, without opening the admin panel.
  *
- *   npm run invite -- create --label "MIT faculty — Prof. Kashogi" --uses 1 --days 30
+ *   npm run invite -- create --label "University faculty — guest" --uses 1 --days 30
  *   npm run invite -- list
  *   npm run invite -- revoke QG-XXXX-XXXX
  *
