@@ -18,3 +18,10 @@ export const lessonProgressSchema = z
   });
 
 export type LessonProgressInput = z.infer<typeof lessonProgressSchema>;
+
+/** POST /courses/:id/lessons/:lessonId/progress — mark a course lesson done/undone. */
+export const courseLessonProgressSchema = z.object({
+  completed: z.boolean(),
+});
+
+export type CourseLessonProgressInput = z.infer<typeof courseLessonProgressSchema>;
