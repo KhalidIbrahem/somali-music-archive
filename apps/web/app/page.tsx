@@ -23,6 +23,8 @@ import { ClosingNote } from '@/components/home/ClosingNote';
 import { QaraamiGenLockup, QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { AuthMenu } from '@/components/AuthMenu';
+import { DemoPlayer } from '@/components/home/DemoPlayer';
+import { RESEARCH_DEMOS } from '@/lib/demos';
 import { Reveal } from '@/components/Reveal';
 import { landingCopy as copy } from '@/lib/landingCopy';
 
@@ -93,6 +95,20 @@ export default function Home(): React.JSX.Element {
           >
             {copy.hero.turn}
           </p>
+          <ul
+            className="hero-enter mt-10 flex flex-wrap gap-x-6 gap-y-2"
+            style={{ '--enter-delay': '1100ms' } as React.CSSProperties}
+          >
+            {copy.hero.pillars.map((pillar) => (
+              <li
+                key={pillar}
+                className="numeric flex items-center gap-2 text-[11px] tracking-[0.16em] text-mid uppercase"
+              >
+                <span aria-hidden className="h-1 w-1 rounded-full bg-accent-state" />
+                {pillar}
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* ── The proof: the engraving that plays ──────────────────────────── */}
@@ -107,6 +123,35 @@ export default function Home(): React.JSX.Element {
           <Reveal delay={200} className="mt-10">
             <HeroScore svgDesktop={heroDesktop} svgMobile={heroMobile} notes={heroNotes} />
           </Reveal>
+        </section>
+
+        {/* ── Research demos (Stage 2) — the shareable results ─────────────── */}
+        <section id="research" className="border-t border-hairline">
+          <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-24">
+            <Reveal className="max-w-2xl">
+              <p className="numeric text-xs tracking-[0.24em] text-accent-state uppercase">
+                {copy.demos.kicker}
+              </p>
+              <h2 className="mt-4 font-display text-3xl">{copy.demos.title}</h2>
+              <p className="mt-3 leading-relaxed text-mid">{copy.demos.intro}</p>
+            </Reveal>
+            {RESEARCH_DEMOS.map((demo, i) => (
+              <Reveal key={demo.slug} delay={100 + i * 100}>
+                <DemoPlayer demo={demo} />
+              </Reveal>
+            ))}
+            <Reveal delay={200}>
+              <div className="flex flex-col items-start justify-between gap-3 rounded-[4px] border border-dashed border-hairline px-6 py-5 sm:flex-row sm:items-center">
+                <div>
+                  <h3 className="font-display text-lg text-hi">{copy.demos.film.title}</h3>
+                  <p className="mt-1 max-w-xl text-sm text-mid">{copy.demos.film.body}</p>
+                </div>
+                <span className="numeric shrink-0 rounded-full border border-hairline px-3 py-1 text-[11px] tracking-[0.14em] text-low uppercase">
+                  {copy.demos.film.badge}
+                </span>
+              </div>
+            </Reveal>
+          </div>
         </section>
 
         {/* ── Story ────────────────────────────────────────────────────────── */}
@@ -232,7 +277,10 @@ export default function Home(): React.JSX.Element {
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-6 py-8 text-xs text-low sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <QaraamiGenMark size={20} tone="mono" className="text-mid" />
-            <p>QaraamiGenAI — built in Minneapolis for the diaspora.</p>
+            <p>
+              QaraamiGenAI — built in Minneapolis for the diaspora.{' '}
+              <span className="text-mid">{copy.credit}.</span>
+            </p>
           </div>
           <p>
             Recordings remain with their rights holders. Transcriptions carry their own uncertainty.
