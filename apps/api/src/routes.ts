@@ -13,6 +13,7 @@ import { usersRouter } from '@/modules/users/users.routes';
 import { recordingsRouter } from '@/modules/recordings/recordings.routes';
 import { lessonsRouter } from '@/modules/lessons/lessons.routes';
 import { educationRouter } from '@/modules/education/education.routes';
+import { coursesRouter } from '@/modules/courses/courses.routes';
 import { searchRouter } from '@/modules/search/search.routes';
 import { subscriptionsRouter } from '@/modules/subscriptions/subscriptions.routes';
 import { notificationsRouter } from '@/modules/notifications/notifications.routes';
@@ -34,6 +35,8 @@ apiV1Router.use('/recordings', recordingsRouter);
 apiV1Router.use('/lessons', lessonsRouter);
 // Educator-authored lessons/resources (public reads, educator-gated authoring).
 apiV1Router.use('/education', educationRouter);
+// Structured curricula (Stage 4) — authored courses + per-user progress.
+apiV1Router.use('/courses', coursesRouter);
 apiV1Router.use('/search', searchRouter);
 apiV1Router.use('/subscriptions', subscriptionsRouter);
 apiV1Router.use('/notifications', notificationsRouter);
