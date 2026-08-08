@@ -14,6 +14,7 @@ import type {
   FieldError,
   GenerationJob,
   GenerationRequest,
+  InviteCodeView,
   LessonAttachmentContentType,
   LibraryBook,
   OrganizationMemberView,
@@ -30,6 +31,7 @@ import type {
 import type {
   BookCreateInput,
   CreateOrganizationInput,
+  InviteCreateInput,
   LessonCreateInput,
   LessonUpdateInput,
   RegisterInput,
@@ -185,6 +187,36 @@ export function updateRecording(
   });
 }
 
+// ── Invites + members (SESSION "private access"; admin only) ──────────────────
+
+/** Mint an invite code (POST /invites). */
+export function createInvite(input: InviteCreateInput): Promise<InviteCodeView> {
+  return apiFetch<InviteCodeView>('/invites', { method: 'POST', body: JSON.stringify(input) });
+}
+
+/** Every code ever minted, with usage + who redeemed it. */
+export function listInvites(): Promise<InviteCodeView[]> {
+  return apiFetch<InviteCodeView[]>('/invites');
+}
+
+export function revokeInvite(id: string): Promise<InviteCodeView> {
+  return apiFetch<InviteCodeView>(`/invites/${id}/revoke`, { method: 'POST' });
+}
+
+/** Paginated member list with optional search (GET /users, admin). */
+export function listUsers(params: { page?: number; q?: string }): Promise<Paginated<PublicUser>> {
+  const search = new URLSearchParams();
+  if (params.page !== undefined) search.set('page', String(params.page));
+  if (params.q !== undefined && params.q !== '') search.set('q', params.q);
+  const query = search.toString();
+  return apiFetch<Paginated<PublicUser>>(`/users${query ? `?${query}` : ''}`);
+}
+
+/** Remove a member (DELETE /users/:id, admin — soft delete server-side). */
+export function removeUser(id: string): Promise<{ removed: boolean }> {
+  return apiFetch<{ removed: boolean }>(`/users/${id}`, { method: 'DELETE' });
+}
+
 // ── Institutional licenses (SESSION P4-03; admin manages the P4-02 orgs) ──────
 
 /** Issue an institutional license (POST /organizations). Returns the key once. */
@@ -282,9 +314,9 @@ export interface LessonPresign {
   expiresAt: string;
 }
 
-/** Published lessons — public, no session required. */
+/** Published lessons. Members-only since the platform went invite-only. */
 export function listTeachingLessons(): Promise<TeachingLesson[]> {
-  return apiFetch<TeachingLesson[]>('/education/lessons', undefined, false);
+  return apiFetch<TeachingLesson[]>('/education/lessons');
 }
 
 /** One lesson. Sends the token when present so authors can open their drafts. */

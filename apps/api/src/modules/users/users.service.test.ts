@@ -1,18 +1,21 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { AppError } from '@/shared/errors/AppError';
 import { InMemoryUserRepository } from '@/modules/auth/user.repository';
+import { InMemoryRefreshTokenRepository } from '@/modules/auth/refreshToken.repository';
 import { InMemoryRecordingRepository } from '@/modules/recordings/recordings.repository';
 import { createUsersService, type UsersService } from './users.service';
 
 let users: InMemoryUserRepository;
 let recordings: InMemoryRecordingRepository;
+let refreshTokens: InMemoryRefreshTokenRepository;
 let service: UsersService;
 let userId: string;
 
 beforeEach(async () => {
   users = new InMemoryUserRepository();
   recordings = new InMemoryRecordingRepository();
-  service = createUsersService({ users, recordings });
+  refreshTokens = new InMemoryRefreshTokenRepository();
+  service = createUsersService({ users, recordings, refreshTokens });
   const user = await users.create({
     email: 'elder@example.com',
     passwordHash: 'x',
@@ -112,6 +115,37 @@ describe('admin member management', () => {
   it('throws USER_NOT_FOUND when the target does not exist', async () => {
     await expect(service.changeRole(userId, 'missing-id', 'educator')).rejects.toMatchObject({
       code: 'USER_NOT_FOUND',
+    });
+  });
+});
+
+describe('removeUser (SESSION "private access")', () => {
+  it('soft-deletes a member and revokes their refresh tokens', async () => {
+    const member = await users.create({
+      email: 'guest@example.com',
+      passwordHash: 'x',
+      displayName: 'Guest',
+      language: 'en',
+    });
+    await refreshTokens.create(member.id, 'hash', new Date(Date.now() + 1000));
+    await service.removeUser(userId, member.id);
+    expect(await users.findById(member.id)).toBeNull();
+    expect(await refreshTokens.findActive(member.id, 'hash')).toBeNull();
+  });
+
+  it('refuses to remove yourself or another admin', async () => {
+    await expect(service.removeUser(userId, userId)).rejects.toMatchObject({
+      code: 'VALIDATION_ERROR',
+    });
+    const otherAdmin = await users.create({
+      email: 'admin2@example.com',
+      passwordHash: 'x',
+      displayName: 'Second Admin',
+      language: 'so',
+      role: 'admin',
+    });
+    await expect(service.removeUser(userId, otherAdmin.id)).rejects.toMatchObject({
+      code: 'AUTH_FORBIDDEN',
     });
   });
 });

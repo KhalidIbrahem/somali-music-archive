@@ -20,21 +20,26 @@ import {
   type CreateUserInput,
   type UserRecord,
 } from '@/modules/auth/user.repository';
+import { InMemoryInviteRepository } from '@/modules/invites/invite.repository';
 import { InMemoryRecordingRepository } from '@/modules/recordings/recordings.repository';
 import { randomUUID } from '@/shared/crypto';
 import { saveDevStore } from '@/shared/devStore/devStore';
 
 const SHARED_PASSWORD = 'SomaliArchive2024!';
+/** Fixed dev invite so registering locally never needs the admin panel first. */
+const DEV_INVITE_CODE = 'QG-DEV-WELCOME';
 
 const USERS: ReadonlyArray<Omit<CreateUserInput, 'passwordHash'>> = [
   {
     email: 'admin@somalimusicarchive.com',
+    username: 'admin',
     displayName: 'Archive Admin',
     language: 'so',
     role: 'admin',
   },
   {
     email: 'khalid@somalimusicarchive.com',
+    username: 'khalid',
     displayName: 'Khalid Ibrahim',
     language: 'so',
     role: 'contributor',
@@ -124,20 +129,38 @@ async function seedRecordings(): Promise<InMemoryRecordingRepository> {
   return repo;
 }
 
+async function seedInvites(adminId: string): Promise<InMemoryInviteRepository> {
+  const repo = new InMemoryInviteRepository();
+  await repo.create({
+    code: DEV_INVITE_CODE,
+    label: 'Local development — shared invite',
+    maxUses: 100,
+    expiresAt: null,
+    createdById: adminId,
+  });
+  return repo;
+}
+
 async function main(): Promise<void> {
   const users = await seedUsers();
   const recordingsRepo = await seedRecordings();
   const recordings = recordingsRepo.snapshot();
+  const admin = users.find((u) => u.role === 'admin');
+  const inviteRepo = await seedInvites(admin?.id ?? users[0]?.id ?? 'seed-admin');
+  const { codes: invites, redemptions: inviteRedemptions } = inviteRepo.snapshot();
 
-  saveDevStore({ users, recordings });
+  saveDevStore({ users, recordings, invites, inviteRedemptions });
 
   // eslint-disable-next-line no-console
   console.log(
     [
       '✓ Seeded dev store:',
       `  ${users.length} users:`,
-      ...users.map((u) => `    • ${u.email} (${u.role}) — password: ${SHARED_PASSWORD}`),
+      ...users.map(
+        (u) => `    • ${u.email} (${u.username ?? '—'}, ${u.role}) — password: ${SHARED_PASSWORD}`,
+      ),
       `  ${recordings.length} published recordings by Ahmed Ali Egal`,
+      `  1 invite code for local registration: ${DEV_INVITE_CODE} (100 uses)`,
       '  (lessons ship as authored content in lessons.repository.ts — not seeded here)',
       '',
       '  Start the API (npm run dev) to load this data.',

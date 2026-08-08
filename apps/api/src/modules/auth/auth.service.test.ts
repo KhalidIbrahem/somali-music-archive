@@ -3,6 +3,8 @@ import type { RegisterInput } from '@sma/validators';
 import type { EmailService } from '@/shared/email/emailService';
 import { AppError } from '@/shared/errors/AppError';
 import { InMemoryTokenBlacklist } from '@/shared/auth/tokenBlacklist';
+import { InMemoryInviteRepository } from '@/modules/invites/invite.repository';
+import { createInvitesService } from '@/modules/invites/invites.service';
 import type { GoogleIdentity } from './google.verifier';
 import { InMemoryUserRepository } from './user.repository';
 import { InMemoryRefreshTokenRepository } from './refreshToken.repository';
@@ -10,7 +12,12 @@ import { InMemoryVerificationTokenRepository } from './verificationToken.reposit
 import { verifyAccessToken } from './token.service';
 import { createAuthService, MAX_FAILED_ATTEMPTS, type AuthService } from './auth.service';
 
+/** The harness pre-creates this many-use code; tests mint their own for edge cases. */
+const TEST_INVITE = 'QG-TEST-2026';
+
 const registration: RegisterInput = {
+  inviteCode: TEST_INVITE,
+  username: 'elder',
   email: 'elder@example.com',
   password: 'oudwood7',
   displayName: 'Ahmed Ali Egal',
@@ -24,11 +31,12 @@ interface Harness {
   refreshTokens: InMemoryRefreshTokenRepository;
   blacklist: InMemoryTokenBlacklist;
   email: EmailService;
+  invites: InMemoryInviteRepository;
   /** Mutable per-test Google identity; null → the verifier throws (bad token). */
   google: { identity: GoogleIdentity | null };
 }
 
-function makeHarness(): Harness {
+async function makeHarness(): Promise<Harness> {
   const users = new InMemoryUserRepository();
   const refreshTokens = new InMemoryRefreshTokenRepository();
   const verificationTokens = new InMemoryVerificationTokenRepository();
@@ -38,6 +46,14 @@ function makeHarness(): Harness {
     sendPasswordResetEmail: vi.fn(async () => {}),
   };
   const google: Harness['google'] = { identity: null };
+  const invites = new InMemoryInviteRepository();
+  await invites.create({
+    code: TEST_INVITE,
+    label: 'test fixture',
+    maxUses: 1000,
+    expiresAt: null,
+    createdById: 'seed-admin',
+  });
   const service = createAuthService({
     users,
     refreshTokens,
@@ -48,13 +64,14 @@ function makeHarness(): Harness {
       if (!google.identity) throw new AppError(401, 'AUTH_INVALID_TOKEN', 'Bad Google credential');
       return google.identity;
     },
+    invites: createInvitesService({ invites, users }),
   });
-  return { service, users, refreshTokens, blacklist, email, google };
+  return { service, users, refreshTokens, blacklist, email, invites, google };
 }
 
 let h: Harness;
-beforeEach(() => {
-  h = makeHarness();
+beforeEach(async () => {
+  h = await makeHarness();
 });
 
 describe('register', () => {
@@ -77,8 +94,77 @@ describe('register', () => {
     const result = await h.service.register(withPhone);
     expect(result.user.phone).toBe('+252612345678');
     await expect(
-      h.service.register({ ...withPhone, email: 'other@example.com' }),
+      h.service.register({ ...withPhone, email: 'other@example.com', username: 'other' }),
     ).rejects.toMatchObject({ code: 'AUTH_PHONE_TAKEN' });
+  });
+
+  it('rejects a duplicate username', async () => {
+    await h.service.register(registration);
+    await expect(
+      h.service.register({ ...registration, email: 'other@example.com' }),
+    ).rejects.toMatchObject({ code: 'AUTH_USERNAME_TAKEN' });
+  });
+});
+
+describe('invite gate (SESSION "private access")', () => {
+  it('rejects an unknown code before leaking anything else', async () => {
+    await expect(
+      h.service.register({ ...registration, inviteCode: 'QG-DOES-NOTEXIST' }),
+    ).rejects.toMatchObject({ code: 'AUTH_INVITE_INVALID' });
+  });
+
+  it('rejects a revoked code', async () => {
+    const code = await h.invites.create({
+      code: 'QG-REVO-KED22',
+      label: null,
+      maxUses: 5,
+      expiresAt: null,
+      createdById: 'seed-admin',
+    });
+    await h.invites.revoke(code.id);
+    await expect(
+      h.service.register({ ...registration, inviteCode: 'QG-REVO-KED22' }),
+    ).rejects.toMatchObject({ code: 'AUTH_INVITE_INVALID' });
+  });
+
+  it('rejects an expired code', async () => {
+    await h.invites.create({
+      code: 'QG-EXPI-RED22',
+      label: null,
+      maxUses: 5,
+      expiresAt: new Date(Date.now() - 1000),
+      createdById: 'seed-admin',
+    });
+    await expect(
+      h.service.register({ ...registration, inviteCode: 'QG-EXPI-RED22' }),
+    ).rejects.toMatchObject({ code: 'AUTH_INVITE_INVALID' });
+  });
+
+  it('burns one use per registration and exhausts at maxUses', async () => {
+    await h.invites.create({
+      code: 'QG-ONEU-SE222',
+      label: null,
+      maxUses: 1,
+      expiresAt: null,
+      createdById: 'seed-admin',
+    });
+    await h.service.register({ ...registration, inviteCode: 'QG-ONEU-SE222' });
+    await expect(
+      h.service.register({
+        ...registration,
+        inviteCode: 'QG-ONEU-SE222',
+        email: 'second@example.com',
+        username: 'second',
+      }),
+    ).rejects.toMatchObject({ code: 'AUTH_INVITE_INVALID' });
+  });
+
+  it('matches codes case-insensitively (stored uppercase)', async () => {
+    const result = await h.service.register({
+      ...registration,
+      inviteCode: TEST_INVITE.toLowerCase() as RegisterInput['inviteCode'],
+    });
+    expect(result.user.username).toBe('elder');
   });
 });
 
@@ -137,6 +223,11 @@ describe('login by identifier (email or phone)', () => {
     expect(result.user.email).toBe('elder@example.com');
   });
 
+  it('accepts the username as an identifier, case-insensitively', async () => {
+    const result = await h.service.login({ identifier: 'Elder', password: 'oudwood7' });
+    expect(result.user.username).toBe('elder');
+  });
+
   it('accepts the phone in any reasonable formatting', async () => {
     const result = await h.service.login({
       identifier: '00252 61-234 5678',
@@ -156,17 +247,15 @@ describe('login by identifier (email or phone)', () => {
 });
 
 describe('loginWithGoogle', () => {
-  it('creates a verified account for a new Google user and signs them in', async () => {
+  it('turns away a Google identity with no account (invite-only platform)', async () => {
     h.google.identity = {
-      email: 'professor@university.edu',
+      email: 'stranger@university.edu',
       emailVerified: true,
-      name: 'Rehanna Kashogi',
+      name: 'A Stranger',
     };
-    const result = await h.service.loginWithGoogle({ credential: 'x'.repeat(32) });
-    expect(result.user.email).toBe('professor@university.edu');
-    expect(result.user.displayName).toBe('Rehanna Kashogi');
-    expect(result.user.emailVerified).toBe(true);
-    expect(result.accessToken).toBeTruthy();
+    await expect(h.service.loginWithGoogle({ credential: 'x'.repeat(32) })).rejects.toMatchObject({
+      code: 'AUTH_INVITE_REQUIRED',
+    });
   });
 
   it('links to an existing account by email and marks it verified', async () => {

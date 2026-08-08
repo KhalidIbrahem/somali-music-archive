@@ -16,12 +16,16 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import type { UserRecord } from '@/modules/auth/user.repository';
+import type { InviteCodeRecord, InviteRedemptionRecord } from '@/modules/invites/invite.repository';
 import type { RecordingDoc } from '@/modules/recordings/recordings.repository';
 
 /** The complete dev snapshot: everything a fresh API process needs to look seeded. */
 export interface DevStoreData {
   users: UserRecord[];
   recordings: RecordingDoc[];
+  /** Optional — absent in stores written before invite-only registration. */
+  invites?: InviteCodeRecord[];
+  inviteRedemptions?: InviteRedemptionRecord[];
 }
 
 /** File location, relative to the api package root (scripts run from apps/api). */
@@ -37,6 +41,8 @@ const USER_DATE_KEYS = [
   'deletedAt',
 ] as const;
 const RECORDING_DATE_KEYS = ['aiProcessedAt', 'createdAt', 'updatedAt', 'deletedAt'] as const;
+const INVITE_DATE_KEYS = ['expiresAt', 'revokedAt', 'createdAt'] as const;
+const REDEMPTION_DATE_KEYS = ['redeemedAt'] as const;
 
 /**
  * Rebuild `Date` instances from the ISO strings JSON.stringify produced, so the
@@ -59,14 +65,22 @@ export function loadDevStore(): DevStoreData | null {
   const parsed = JSON.parse(readFileSync(DEV_STORE_PATH, 'utf8')) as {
     users?: unknown[];
     recordings?: unknown[];
+    invites?: unknown[];
+    inviteRedemptions?: unknown[];
   };
   return {
     // Backfill fields added after a store was written (older snapshots lack them).
     users: reviveDates<UserRecord>(parsed.users ?? [], USER_DATE_KEYS).map((u) => ({
       ...u,
+      username: u.username ?? null,
       phone: u.phone ?? null,
     })),
     recordings: reviveDates<RecordingDoc>(parsed.recordings ?? [], RECORDING_DATE_KEYS),
+    invites: reviveDates<InviteCodeRecord>(parsed.invites ?? [], INVITE_DATE_KEYS),
+    inviteRedemptions: reviveDates<InviteRedemptionRecord>(
+      parsed.inviteRedemptions ?? [],
+      REDEMPTION_DATE_KEYS,
+    ),
   };
 }
 

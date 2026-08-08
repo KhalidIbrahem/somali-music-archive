@@ -28,6 +28,7 @@ import type { TokenBlacklist } from '@/shared/auth/tokenBlacklist';
 import { tokenBlacklist } from '@/shared/auth/tokenBlacklist';
 import type { EmailService } from '@/shared/email/emailService';
 import { emailService } from '@/shared/email/emailService';
+import { invitesService } from '@/modules/invites/invites.service';
 import { hashPassword, verifyPassword } from './password.service';
 import { verifyGoogleCredential, type GoogleIdentityVerifier } from './google.verifier';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from './token.service';
@@ -63,6 +64,11 @@ export interface AuthServiceDeps {
   email: EmailService;
   /** Verifies a Google ID-token credential (injected so tests need no network). */
   googleIdentity: GoogleIdentityVerifier;
+  /** Invite gate (SESSION "private access") — registration burns one code use. */
+  invites: {
+    checkCode(code: string): Promise<{ id: string }>;
+    redeemFor(codeId: string, userId: string): Promise<boolean>;
+  };
 }
 
 export interface LogoutParams {
@@ -73,7 +79,8 @@ export interface LogoutParams {
 }
 
 export function createAuthService(deps: AuthServiceDeps) {
-  const { users, refreshTokens, verificationTokens, blacklist, email, googleIdentity } = deps;
+  const { users, refreshTokens, verificationTokens, blacklist, email, googleIdentity, invites } =
+    deps;
 
   /** Issue an access+refresh pair and persist the refresh token's hash. */
   async function issueTokenPair(record: UserRecord): Promise<AuthTokens> {
@@ -88,9 +95,17 @@ export function createAuthService(deps: AuthServiceDeps) {
   }
 
   async function register(input: RegisterInput): Promise<AuthResult> {
+    // Invite gate first — no other detail (email taken, …) leaks to someone
+    // holding no valid code. Throws AUTH_INVITE_INVALID with the reason.
+    const invite = await invites.checkCode(input.inviteCode);
+
     const existing = await users.findByEmail(input.email);
     if (existing) {
       throw badRequest('AUTH_EMAIL_TAKEN', 'An account with this email already exists');
+    }
+    const usernameTaken = await users.findByUsername(input.username);
+    if (usernameTaken) {
+      throw badRequest('AUTH_USERNAME_TAKEN', 'This username is already taken');
     }
     if (input.phone !== undefined) {
       const phoneTaken = await users.findByPhone(input.phone);
@@ -101,11 +116,23 @@ export function createAuthService(deps: AuthServiceDeps) {
     const passwordHash = await hashPassword(input.password);
     const record = await users.create({
       email: input.email,
+      username: input.username,
       ...(input.phone !== undefined ? { phone: input.phone } : {}),
       passwordHash,
       displayName: input.displayName,
       language: input.language ?? 'so',
     });
+
+    // Burn one use, tied to the new account. A lost race (the code's last use
+    // claimed between check and redeem) rolls the account back.
+    const redeemed = await invites.redeemFor(invite.id, record.id);
+    if (!redeemed) {
+      await users.softDelete(record.id);
+      throw badRequest(
+        'AUTH_INVITE_INVALID',
+        'This invite code was just used up — ask for a new one',
+      );
+    }
 
     // Issue and email a one-time verification token (raw token only in the email).
     const rawToken = randomToken();
@@ -123,16 +150,18 @@ export function createAuthService(deps: AuthServiceDeps) {
 
   /**
    * Resolve a login identifier to a user. `email` (legacy shape) and identifiers
-   * containing `@` are email lookups; anything else is treated as a phone number
-   * and normalised to E.164 first. The schema guarantees exactly one is present.
+   * containing `@` are email lookups; phone-shaped identifiers (E.164 after
+   * normalisation) are phone lookups; everything else is a username. Usernames
+   * must start with a letter (usernameSchema), so the two spaces cannot collide.
+   * The schema guarantees exactly one of email/identifier is present.
    */
   async function findByIdentifier(input: LoginInput): Promise<UserRecord | null> {
     if (input.email !== undefined) return users.findByEmail(input.email);
     const identifier = input.identifier ?? '';
     if (identifier.includes('@')) return users.findByEmail(identifier.toLowerCase());
     const phone = normalizePhone(identifier);
-    if (!E164_PATTERN.test(phone)) return null;
-    return users.findByPhone(phone);
+    if (E164_PATTERN.test(phone)) return users.findByPhone(phone);
+    return users.findByUsername(identifier.toLowerCase());
   }
 
   async function login(input: LoginInput): Promise<AuthResult> {
@@ -186,23 +215,17 @@ export function createAuthService(deps: AuthServiceDeps) {
 
     let record = await users.findByEmail(identity.email);
     if (!record) {
-      const passwordHash = await hashPassword(`${randomToken()}G0!`);
-      const fallbackName = identity.email.split('@')[0] ?? 'Member';
-      const rawName = (identity.name ?? fallbackName).trim();
-      // Keep within the displayName policy bounds (2–60 chars).
-      const displayName = rawName.length >= 2 ? rawName.slice(0, 60) : 'Member';
-      record = await users.create({
-        email: identity.email,
-        passwordHash,
-        displayName,
-        language: 'so',
-        emailVerified: true,
-      });
-      if (identity.avatarUrl !== undefined) {
-        record =
-          (await users.updateProfile(record.id, { avatarUrl: identity.avatarUrl })) ?? record;
-      }
-    } else if (!record.emailVerified) {
+      // SIGN-IN ONLY on the invite-only platform (SESSION "private access"):
+      // a Google identity with no existing account is turned away, never minted
+      // one. Members register with their invite code first; after that the
+      // Google button is a convenience login.
+      throw new AppError(
+        403,
+        'AUTH_INVITE_REQUIRED',
+        'This platform is invite-only. Register with your invite code first — after that, Google sign-in works.',
+      );
+    }
+    if (!record.emailVerified) {
       // Google verified ownership of this exact address — reflect that.
       await users.markEmailVerified(record.id);
       record = (await users.findById(record.id)) ?? record;
@@ -307,4 +330,5 @@ export const authService: AuthService = createAuthService({
   blacklist: tokenBlacklist,
   email: emailService,
   googleIdentity: verifyGoogleCredential,
+  invites: invitesService,
 });
