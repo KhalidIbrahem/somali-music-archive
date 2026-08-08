@@ -369,6 +369,98 @@ export function getLessonAttachmentUrl(id: string, fileKey: string): Promise<Sig
   );
 }
 
+// ── Courses (Stage 4) ─────────────────────────────────────────────────────────
+
+export interface CourseSummary {
+  id: string;
+  title: string;
+  description: string;
+  instrument: string;
+  lessonCount: number;
+  /** Lessons the CALLER has completed (server-computed per user). */
+  completedCount: number;
+}
+
+export interface CourseLessonView {
+  id: string;
+  title: string;
+  description: string;
+  order: number;
+  /** Media + score attachments follow the education attachment shape. */
+  mediaUrl: string | null;
+  mediaKind: 'audio' | 'video' | null;
+  pdfUrl: string | null;
+  notesUrl: string | null;
+  completed: boolean;
+}
+
+export interface CourseDetail extends CourseSummary {
+  lessons: CourseLessonView[];
+}
+
+export function listCourses(): Promise<CourseSummary[]> {
+  return apiFetch<CourseSummary[]>('/courses');
+}
+
+export function getCourse(id: string): Promise<CourseDetail> {
+  return apiFetch<CourseDetail>(`/courses/${id}`);
+}
+
+export function setCourseLessonProgress(
+  courseId: string,
+  lessonId: string,
+  completed: boolean,
+): Promise<{ completed: boolean }> {
+  return apiFetch<{ completed: boolean }>(`/courses/${courseId}/lessons/${lessonId}/progress`, {
+    method: 'POST',
+    body: JSON.stringify({ completed }),
+  });
+}
+
+// ── Studio (DAW) projects (Stage 5) ───────────────────────────────────────────
+
+export interface StudioProjectSummary {
+  id: string;
+  name: string;
+  bpm: number;
+  updatedAt: string;
+}
+
+export interface StudioProjectRecord extends StudioProjectSummary {
+  /** The plain-data project document (see docs/DAW-PROJECT-FORMAT.md). */
+  data: unknown;
+  version: number;
+}
+
+export function listStudioProjects(): Promise<StudioProjectSummary[]> {
+  return apiFetch<StudioProjectSummary[]>('/studio/projects');
+}
+
+export function getStudioProject(id: string): Promise<StudioProjectRecord> {
+  return apiFetch<StudioProjectRecord>(`/studio/projects/${id}`);
+}
+
+export function saveStudioProject(input: {
+  id?: string;
+  name: string;
+  bpm: number;
+  data: unknown;
+}): Promise<StudioProjectRecord> {
+  return input.id !== undefined
+    ? apiFetch<StudioProjectRecord>(`/studio/projects/${input.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ name: input.name, bpm: input.bpm, data: input.data }),
+      })
+    : apiFetch<StudioProjectRecord>('/studio/projects', {
+        method: 'POST',
+        body: JSON.stringify({ name: input.name, bpm: input.bpm, data: input.data }),
+      });
+}
+
+export function deleteStudioProject(id: string): Promise<{ deleted: boolean }> {
+  return apiFetch<{ deleted: boolean }>(`/studio/projects/${id}`, { method: 'DELETE' });
+}
+
 // ── AI music generation (provider-agnostic proxy; engines are backend detail) ─
 
 /** Submit a generation job. The response may already be terminal (sync providers). */
