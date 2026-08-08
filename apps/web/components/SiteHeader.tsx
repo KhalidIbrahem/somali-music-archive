@@ -9,6 +9,7 @@ import { AuthMenu } from '@/components/AuthMenu';
 
 const NAV = [
   { label: 'Home', href: '/' },
+  { label: 'Studio', href: '/daw' },
   { label: 'Listen', href: '/listen' },
   { label: 'Scores', href: '/scores/beerdilaacshe' },
   { label: 'Library', href: '/library' },
