@@ -45,27 +45,30 @@ export default function Home(): React.JSX.Element {
       {/* film grain — static SVG turbulence, one veil over the whole page */}
       <div aria-hidden className="film-grain print:hidden" />
 
-      {/* z-30 (not z-10 like main): the account dropdown lives inside this
-          stacking context — at equal z the LATER sibling (main) would sit above
-          it and swallow its clicks while the pixels showed through. */}
-      <header className="relative z-30 mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
-        <QaraamiGenLockup markSize={28} />
-        <nav className="flex items-center gap-5">
-          <Link
-            href="/daw"
-            className="rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
-          >
-            Studio
-          </Link>
-          <Link
-            href="/listen"
-            className="hidden rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none sm:block"
-          >
-            Listening room
-          </Link>
-          <AuthMenu variant="landing" />
-          <ThemeToggle />
-        </nav>
+      {/* Sticky so the menus never leave the top of the screen. z-30 (not z-10
+          like main): the account dropdown lives inside this stacking context —
+          at equal z the LATER sibling (main) would sit above it and swallow its
+          clicks while the pixels showed through. */}
+      <header className="sticky top-0 z-30 border-b border-hairline bg-page/85 backdrop-blur">
+        <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
+          <QaraamiGenLockup markSize={28} />
+          <nav className="flex items-center gap-5">
+            <Link
+              href="/daw"
+              className="rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
+            >
+              Studio
+            </Link>
+            <Link
+              href="/listen"
+              className="hidden rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none sm:block"
+            >
+              Listening room
+            </Link>
+            <AuthMenu variant="landing" />
+            <ThemeToggle />
+          </nav>
+        </div>
       </header>
 
       <main className="relative z-10">
