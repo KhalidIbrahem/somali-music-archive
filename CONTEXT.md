@@ -268,6 +268,56 @@ Stage 1 shipped + verified in prod (commits 21b9c00, prettier-clean):
   for admin@/khalid@ prod accounts — rotation script exists, needs his call.
 - Local-dev gotcha: web dev server must run on :3000 (API CORS allowlist).
 
+## Aug 8 overnight — Stages 2–5(T1) SHIPPED + the two Stage-1 bug fixes
+
+User feedback loop (morning): landing dropdown unclickable + login bounce for
+signed-in members; user removed the stage-gate waits ("I put you on a loop"),
+wants the full system by morning. Both bugs fixed and verified with REAL
+pointer events (el.click() bypasses hit-testing — that's how the z-index bug
+slipped: landing header z-10 tied with main z-10, later-DOM main swallowed the
+dropdown's clicks while its pixels showed through; header now z-30, dropdown
+z-50; useSession now re-asserts the gate cookie on any page → no more bounce).
+
+- **Stage 2 (landing)**: qaraami synthesis extracted VERBATIM to
+  lib/audio/qaraamiEngine (ScorePlayer now imports it — one engine for score
+  page, landing demos, and the DAW oud). #research demos section (nav link
+  finally lands): lib/demos.ts registry (one entry per demo; file OR
+  engine-rendered), DemoPlayer (peak waveform from real samples,
+  click-to-seek, progress tint, credits), DAW-film placeholder card, hero
+  pillars from the brief, "Built by Khalid Ibrahim" in the footer.
+- **Stage 3 (dashboard)**: /account rebuilt on studio tokens — My Studio /
+  Courses / Library / Teaching / admin band with live counts; skeletons +
+  designed empty states; missing backends degrade quietly. /dashboard alias.
+- **Stage 4 (courses)**: /api/v1/courses — course content as authored code
+  (lessons-curriculum precedent), per-user progress in lesson_progress
+  (moduleId `course:<id>`); seeded "Qaraami Oud Basics" L1 Beerdilaacshe.
+  Web /courses + /courses/[id]: lesson cards w/ PDF embed + ScorePlayer +
+  mark-complete. Verified against PROD Postgres (complete→undo round-trip).
+- **Stage 5 Tier 1 (THE DAW, /daw)**: format contract in
+  docs/DAW-PROJECT-FORMAT.md (beats everywhere, additive evolution).
+  lib/daw/engine.ts: 25ms lookahead/150ms horizon scheduler, loop range
+  (mid-loop starts correct), metronome+count-in, oud (shared KS module,
+  buffer-cached), durbaan dum/tak/slap, bass/keys subtractive voices,
+  per-track gain/pan/analyser, audition, OfflineAudioContext mixdown → WAV
+  (16-bit PCM encoder, no deps). UI: Transport (BPM/timesig/click/loop/
+  scale-lock/name/save/Projects/Export), ArrangeView (ruler tap-seek +
+  drag-loop, region move/trim/split/duplicate/loop±/delete, imperative
+  playhead), PianoRoll with QARAAMI SCALE LOCK (in-scale rows only; 5
+  pentatonic modes × 12 roots), 16-step durbaan grid with dhaanto/jiifto/
+  heello/banaadiri presets, Mixer w/ live RMS meters. Persistence:
+  IndexedDB autosave (1.5s) + server sync (8s) → /api/v1/studio (Mongo,
+  owner-scoped; verified create/list/delete in PROD). Boots into the
+  Beerdilaacshe demo (126 notes + heello groove). Nav "Studio" → /daw
+  everywhere; old transcription studio untouched at /studio.
+- **E2E evidence (local CDP)**: login → demo boots (2 regions) → transport
+  advances exactly at 96 BPM (1.2→2.4 over 4s) → **WAV export: 15.8MB RIFF,
+  PCM peak 17181 (real audio)** → piano roll renders all 126 notes → groove
+  presets apply → 390px no overflow → zero page exceptions. Prod smoke:
+  gate holds on /daw, courses+studio APIs owner-gated and round-tripping.
+- Suites: 331/332 api (lyria pre-existing), all other workspaces green.
+- **Tiers 2–5 remain** (recording/comping, mixing FX+automation, sampler+
+  sound library, pro polish) — Tier 1 is a complete usable studio per plan.
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects
