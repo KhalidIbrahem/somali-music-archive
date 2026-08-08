@@ -219,6 +219,17 @@ mongod (mongodb-memory-server).
   the new domain. `.env.example`s document the two Google vars.
 - **Gotcha for smoke tests**: authLimiter 5/15min/IP counts register+login+
   google together — local bursts must restart the API (memory mode) or wait.
+- **DEPLOYED + VERIFIED IN PROD** (somali-music-archive-api / somali-music-archive
+  on Vercel, via scripts/vercel-deploy.mjs — the durable `.vercel-token` file now
+  exists, so the CLI-session expiry problem is gone). Prod smoke: register w/
+  phone → phone-identifier login → educator promote (script, live Postgres) →
+  refresh picks up role → draft in prod Mongo (privacy held) → R2 presign →
+  soft delete → demoted back. Headless-Chrome CDP pass on the live site:
+  login → header chip → /account (email/phone/educator card) → /teach unlocked
+  → menu sign-out cleared both tokens. Fixture account
+  teaching-smoke-1786151232@example.com (listener) joins the b1-smoke pair.
+  Login-page fix along the way: ?next read at submit time, not useSearchParams,
+  so the form stays in the static HTML (764dbaa).
 
 ## Open items for the next session
 
