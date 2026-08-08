@@ -23,3 +23,4 @@ export * from './comment';
 export * from './collection';
 export * from './library';
 export * from './generation';
+export * from './studio';

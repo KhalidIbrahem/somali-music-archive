@@ -14,6 +14,7 @@ import { recordingsRouter } from '@/modules/recordings/recordings.routes';
 import { lessonsRouter } from '@/modules/lessons/lessons.routes';
 import { educationRouter } from '@/modules/education/education.routes';
 import { coursesRouter } from '@/modules/courses/courses.routes';
+import { studioRouter } from '@/modules/studio/studio.routes';
 import { searchRouter } from '@/modules/search/search.routes';
 import { subscriptionsRouter } from '@/modules/subscriptions/subscriptions.routes';
 import { notificationsRouter } from '@/modules/notifications/notifications.routes';
@@ -37,6 +38,8 @@ apiV1Router.use('/lessons', lessonsRouter);
 apiV1Router.use('/education', educationRouter);
 // Structured curricula (Stage 4) — authored courses + per-user progress.
 apiV1Router.use('/courses', coursesRouter);
+// DAW project sync (Stage 5) — compositions follow the member across devices.
+apiV1Router.use('/studio', studioRouter);
 apiV1Router.use('/search', searchRouter);
 apiV1Router.use('/subscriptions', subscriptionsRouter);
 apiV1Router.use('/notifications', notificationsRouter);
