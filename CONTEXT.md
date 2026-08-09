@@ -341,6 +341,24 @@ z-50; useSession now re-asserts the gate cookie on any page → no more bounce).
   Two source filenames also carried other performers' names — stripped by the
   rename; titles use song words only.
 
+## Aug 9 overnight — oud LoRA: root cause found, FIRST POSITIVE RESULT
+
+Full story + numbers in docs/OUD-LORA-RESULTS.md. Short form: the July
+"honest negative" was a HARNESS BUG — MusicGen's decoder functional dropout
+(37 float attrs F.dropout misses) made train-mode loss 9.79 vs 4.05 eval on
+identical weights; all three old runs fit the corrupted path (probe:
+scripts/probe_train_eval_gap.py). Fixed in phase2_train (zeroed at build).
+Oud dataset (28 songs → 1,921 clips, data/oud_*) trained 1,000 steps
+(runs/oud_lora_r16_nodrop_20260809, ~3h M1): EVERY ckpt beat base — val
+4.5132→4.4785 (best step 500), test CE 2.6302→2.6092, PCS 0.929→0.942 with
+voiced fraction UP 64% (0.538 vs base 0.329, above real 0.435) — July's
+sparse-pitch confound REVERSED. n=8 gen prompts (test split has only 8
+distinct captions) — directional, listening is the arbiter:
+**data/oud_ab_listening/ pairNNN_base vs pairNNN_finetuned — KHALID MUST
+LISTEN before anything ships to the site.** Ops lessons: harness background
+tasks get reaped (~10 min?) — long jobs need nohup+caffeinate+disown+pid
+file + Monitor; run/eval logs in the session scratchpad.
+
 ## Open items for the next session
 
 - **Pre-existing api test failure (not Block 1):** `apps/api` lyria.test.ts expects
