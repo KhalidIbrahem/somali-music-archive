@@ -1,7 +1,7 @@
 /**
  * QaraamiGenAI identity — concept 1A "The Seal" from the identity study
- * (fixtures/qaraamigen-logo.dc.html, imported from the claude.ai design
- * project on 2026-08-06).
+ * (fixtures/qaraamigen-logo.fixture.html, the identity study committed
+ * 2026-08-06).
  *
  * Five kaban strings held inside an archive stamp; the centre string breaks
  * into waveform and runs past the ring — the recording escaping the artifact.

@@ -4,7 +4,7 @@
  * The shelf metadata for scanned music-sheet books. Files themselves live in R2
  * (only the `fileKey` is stored — CONVENTIONS.md hard rule). Until this model,
  * shelf metadata was in-memory only: on serverless every cold start emptied the
- * shelf while the uploaded files lived on in R2 (CONTEXT.md Aug 6 open flag).
+ * shelf while the uploaded files lived on in R2.
  */
 
 import mongoose from 'mongoose';
