@@ -12,6 +12,9 @@
  */
 
 import { useEffect, useState, useSyncExternalStore } from 'react';
+
+/** Never fires — used to read a constant that only differs between server and client. */
+const emptySubscribe = (): (() => void) => () => {};
 import type { PublicUser } from '@sma/types';
 import { ApiError, getMe } from '@/lib/api';
 import { clearSession, ensureSessionCookie, getToken, subscribeToken } from '@/lib/auth';
@@ -54,16 +57,20 @@ export function useSession(): Session {
     () => getToken(),
     () => null,
   );
-  const [hydrated, setHydrated] = useState(false);
-  const [user, setUser] = useState<PublicUser | null>(null);
-
-  useEffect(() => setHydrated(true), []);
+  // False on the server and during hydration, true from the first client
+  // render on — same signal as a mount effect, without a setState-in-effect.
+  const hydrated = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+  // The fetched profile, tagged with the token it belongs to. Deriving `user`
+  // from the tag (instead of clearing state in an effect) means a sign-out or
+  // token swap invalidates the old profile on the very same render.
+  const [fetched, setFetched] = useState<{ token: string; user: PublicUser | null } | null>(null);
 
   useEffect(() => {
-    if (token === null) {
-      setUser(null);
-      return;
-    }
+    if (token === null) return;
     // Sessions created before the page gate shipped have tokens but no marker
     // cookie — re-assert it on ANY page that reads the session (the landing
     // page included), so the member never gets bounced to a login they
@@ -71,7 +78,7 @@ export function useSession(): Session {
     ensureSessionCookie();
     let cancelled = false;
     void fetchUserFor(token).then((u) => {
-      if (!cancelled) setUser(u);
+      if (!cancelled) setFetched({ token, user: u });
     });
     return () => {
       cancelled = true;
@@ -80,6 +87,7 @@ export function useSession(): Session {
 
   if (!hydrated) return { status: 'unknown' };
   if (token === null) return { status: 'signed-out' };
+  const user = fetched !== null && fetched.token === token ? fetched.user : null;
   if (user === null) return { status: 'loading' };
   return { status: 'signed-in', user };
 }

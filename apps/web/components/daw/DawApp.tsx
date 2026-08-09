@@ -47,9 +47,9 @@ type BottomTab = 'editor' | 'mixer';
 
 export function DawApp(): React.JSX.Element {
   const search = useSearchParams();
-  const engineRef = useRef<DawEngine | null>(null);
-  if (engineRef.current === null) engineRef.current = new DawEngine();
-  const engine = engineRef.current;
+  // One engine per mounted studio; the lazy initializer keeps construction
+  // out of re-renders without touching a ref during render.
+  const [engine] = useState(() => new DawEngine());
 
   const [project, setProject] = useState<DawProject | null>(null);
   const [selection, setSelection] = useState<Selection | null>(null);
