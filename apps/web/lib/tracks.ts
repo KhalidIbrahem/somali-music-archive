@@ -18,6 +18,11 @@ export interface ArchiveTrack {
   note: string;
   src: string;
   sourceUrl: string;
+  /**
+   * True when the hosted file is withheld for rights reasons (src is '').
+   * Metadata and the Harvard source link remain; no player is offered.
+   */
+  audioWithheld?: true;
 }
 
 /** Source + rights line — every corpus row renders this, always (B1-15). */
@@ -146,6 +151,12 @@ export const OUD_SESSION_TRACKS: readonly ArchiveTrack[] = [
   },
 ];
 
+/**
+ * Hosted audio withheld since 2026-08-09 (docs/DATA_PROVENANCE.md §1): the
+ * collection is not rights-cleared and written permission from the Loeb Music
+ * Library is outstanding, so no file ships and `src` stays empty. Catalogue
+ * metadata and each track's Harvard source link remain.
+ */
 export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
   {
     id: 'track_0253',
@@ -154,7 +165,8 @@ export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
     year: null,
     durationSec: 466,
     note: 'The clearest take in the corpus — a full ensemble in close balance.',
-    src: '/audio/track_0253.mp3',
+    src: '',
+    audioWithheld: true,
     sourceUrl: 'https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33907408',
   },
   {
@@ -164,7 +176,8 @@ export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
     year: 1974,
     durationSec: 244,
     note: 'A 1974 session — the tape ends mid-song, as so many of them do.',
-    src: '/audio/track_0302.mp3',
+    src: '',
+    audioWithheld: true,
     sourceUrl: 'https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:42355413',
   },
   {
@@ -174,7 +187,8 @@ export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
     year: null,
     durationSec: 410,
     note: 'A solo voice carrying the qaraami style across four decades.',
-    src: '/audio/track_0311.mp3',
+    src: '',
+    audioWithheld: true,
     sourceUrl: 'https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:42355444',
   },
   {
@@ -184,7 +198,8 @@ export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
     year: 1966,
     durationSec: 374,
     note: 'An independence-era flag song, six years after the union of 1960.',
-    src: '/audio/track_0360.mp3',
+    src: '',
+    audioWithheld: true,
     sourceUrl: 'https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:42382757',
   },
   {
@@ -194,7 +209,8 @@ export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
     year: 1965,
     durationSec: 422,
     note: 'Recorded July 1965 — among the earliest dated tapes in the corpus.',
-    src: '/audio/track_0249.mp3',
+    src: '',
+    audioWithheld: true,
     sourceUrl: 'https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33907400',
   },
   {
@@ -204,7 +220,8 @@ export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
     year: 1966,
     durationSec: 342,
     note: 'Theatre music — Somali plays of the 1960s premiered songs like singles.',
-    src: '/audio/track_0241.mp3',
+    src: '',
+    audioWithheld: true,
     sourceUrl: 'https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33944730',
   },
   {
@@ -214,7 +231,8 @@ export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
     year: 1973,
     durationSec: 464,
     note: 'A 1973 trio recording, cassette-traded across the Horn and the Gulf.',
-    src: '/audio/track_0300.mp3',
+    src: '',
+    audioWithheld: true,
     sourceUrl: 'https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:42355411',
   },
   {
@@ -224,7 +242,8 @@ export const ARCHIVE_TRACKS: readonly ArchiveTrack[] = [
     year: 1976,
     durationSec: 426,
     note: 'The latest dated take in the set — June 1976, on the eve of the tape boom.',
-    src: '/audio/track_0301.mp3',
+    src: '',
+    audioWithheld: true,
     sourceUrl: 'https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:42355423',
   },
 ];
