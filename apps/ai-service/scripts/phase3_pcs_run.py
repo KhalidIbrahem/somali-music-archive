@@ -35,6 +35,13 @@ def clip_list(group: str) -> list[tuple[Path, str | None]]:
                 if json.loads(l)["split"] == "test"}
         d = REPO / "data/clips/test"
         return [(p, caps.get(p.name)) for p in sorted(d.glob("*.wav"))]
+    if group == "oud_real":
+        # The oud collection's held-out test clips (reference distribution).
+        caps = {Path(json.loads(l)["clip_path"]).name: json.loads(l)["caption"]
+                for l in open(REPO / "data/oud_captions.jsonl")
+                if json.loads(l)["split"] == "test"}
+        d = REPO / "data/oud_clips/test"
+        return [(p, caps.get(p.name)) for p in sorted(d.glob("*.wav"))]
     d = REPO / "data/eval_gen" / group
     idx = json.loads((d / "captions_index.json").read_text())
     return [(d / name, cap) for name, cap in sorted(idx.items()) if (d / name).exists()]
