@@ -33,6 +33,8 @@ from peft import LoraConfig, get_peft_model
 from transformers import AutoProcessor, MusicgenForConditionalGeneration, get_cosine_schedule_with_warmup
 
 REPO = Path(__file__).resolve().parents[3]
+# Defaults = the Harvard corpus; --captions/--tokens-dir switch datasets
+# (e.g. the oud collection) without touching the Harvard artifacts.
 CAPTIONS = REPO / "data/captions.jsonl"
 TOKENS_DIR = REPO / "data/tokens"
 RUNS_DIR = REPO / "runs"
@@ -72,6 +74,15 @@ def load_split(split: str) -> list[dict]:
     return [r for r in rows if r["split"] == split]
 
 
+def set_dataset(captions: str | None, tokens_dir: str | None) -> None:
+    """Repoint the module-level dataset paths (defaults stay the Harvard set)."""
+    global CAPTIONS, TOKENS_DIR
+    if captions:
+        CAPTIONS = Path(captions)
+    if tokens_dir:
+        TOKENS_DIR = Path(tokens_dir)
+
+
 def delayed_labels(npy_path: Path) -> torch.Tensor:
     """(4, 750) codes -> (753, 4) delay-pattern labels, -100 outside each codebook's span."""
     codes = np.load(npy_path)
@@ -94,6 +105,26 @@ def git_commit() -> str:
         return "unknown"
 
 
+def zero_functional_dropout(model) -> int:
+    """Zero the decoder/encoder FUNCTIONAL dropout (float attrs used via
+    F.dropout(..., training=self.training)) that nn.Dropout sweeps miss.
+
+    Root cause of the July+Aug failed runs (probe_train_eval_gap): with these
+    active, train-mode loss is ~9.8 vs 4.05 eval on identical weights — worse
+    than uniform-random — so optimization fits a corrupted forward path and
+    drags eval performance from ~4.5 to ~7.2. Zeroing them makes train ≡ eval
+    exactly. LoRA's own nn.Dropout (p=0.05) is left as the only regularizer.
+    """
+    zeroed = 0
+    for module in model.modules():
+        for attr in ("dropout", "activation_dropout", "attention_dropout"):
+            value = getattr(module, attr, None)
+            if isinstance(value, float) and value > 0:
+                setattr(module, attr, 0.0)
+                zeroed += 1
+    return zeroed
+
+
 def build_model(resume_from: str | None = None):
     model = MusicgenForConditionalGeneration.from_pretrained(
         HP["model"], torch_dtype=torch.float32
@@ -113,6 +144,8 @@ def build_model(resume_from: str | None = None):
             target_modules=HP["lora_targets"], bias="none",
         )
         model = get_peft_model(model, lcfg)
+    n_zeroed = zero_functional_dropout(model)
+    print(f"functional dropout zeroed on {n_zeroed} attrs (train path ≡ eval path)", flush=True)
     model.to(DEVICE)
     lora_modules = sum(1 for n, _ in model.named_modules() if n.endswith("lora_A"))
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -203,8 +236,14 @@ def main() -> None:
                     help="optimizer step the resume checkpoint was saved at")
     ap.add_argument("--lr", type=float, default=HP["lr"],
                     help="peak learning rate (recorded in config.json)")
+    ap.add_argument("--total-steps", type=int, default=HP["total_steps"],
+                    help="optimizer steps (drives the cosine schedule too)")
+    ap.add_argument("--captions", default=None, help="captions.jsonl override")
+    ap.add_argument("--tokens-dir", default=None, help="token .npy dir override")
     args = ap.parse_args()
     HP["lr"] = args.lr
+    HP["total_steps"] = args.total_steps
+    set_dataset(args.captions, args.tokens_dir)
 
     torch.manual_seed(HP["seed"])
     random.seed(HP["seed"])
@@ -239,6 +278,7 @@ def main() -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
     (run_dir / "config.json").write_text(json.dumps(
         {**HP, "smoke": args.smoke, "git_commit": git_commit(), "device": DEVICE,
+         "captions": str(CAPTIONS), "tokens_dir": str(TOKENS_DIR),
          "train_clips": len(train_rows), "val_clips_used": len(val_rows),
          "resumed_from": args.resume_from, "resume_start_step": args.start_step,
          "resume_optimizer_state": "reinitialized" if args.resume_from else None},

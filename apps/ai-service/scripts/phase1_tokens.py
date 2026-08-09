@@ -37,19 +37,25 @@ def pick_device() -> str:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--smoke", type=int, default=0, help="only encode N clips and report rate")
+    # Optional dataset overrides (defaults = the Harvard corpus, unchanged) so
+    # additional datasets (e.g. the oud collection) reuse this encoder as-is.
+    ap.add_argument("--captions", default=str(CAPTIONS))
+    ap.add_argument("--tokens-dir", default=str(TOKENS_DIR))
     args = ap.parse_args()
+    captions_path = Path(args.captions)
+    tokens_dir = Path(args.tokens_dir)
 
-    clips = [REPO / json.loads(l)["clip_path"] for l in open(CAPTIONS)]
+    clips = [REPO / json.loads(l)["clip_path"] for l in open(captions_path)]
     if args.smoke:
         clips = clips[: args.smoke]
-    todo = [c for c in clips if not (TOKENS_DIR / f"{c.stem}.npy").exists()]
+    todo = [c for c in clips if not (tokens_dir / f"{c.stem}.npy").exists()]
     print(f"{len(clips)} clips, {len(todo)} to encode", flush=True)
     if not todo:
         return
 
     device = pick_device()
     model = EncodecModel.from_pretrained("facebook/encodec_32khz").to(device).eval()
-    TOKENS_DIR.mkdir(parents=True, exist_ok=True)
+    tokens_dir.mkdir(parents=True, exist_ok=True)
 
     t0 = time.time()
     done = 0
@@ -64,7 +70,7 @@ def main() -> None:
             codes = codes[0].cpu().numpy().astype(np.int16)  # (B, K, F)
             assert codes.shape[1:] == (EXPECT_CODEBOOKS, EXPECT_FRAMES), tuple(codes.shape)
             for p, c in zip(batch, codes):
-                np.save(TOKENS_DIR / f"{p.stem}.npy", c)
+                np.save(tokens_dir / f"{p.stem}.npy", c)
             done += len(batch)
             if device == "mps" and done % 400 == 0:
                 torch.mps.empty_cache()
