@@ -67,8 +67,11 @@ export function ListenShelf(): React.JSX.Element {
   }, [query]);
 
   const playAt = (track: ShelfTrack): void => {
-    const index = visible.findIndex((t) => t.id === track.id);
-    player.play(visible.map(toPlayerTrack), Math.max(0, index));
+    // Withheld records never enter the queue — next/prev must skip them.
+    const playable = visible.filter((t) => t.audioWithheld !== true);
+    const index = playable.findIndex((t) => t.id === track.id);
+    if (index === -1) return;
+    player.play(playable.map(toPlayerTrack), index);
     if (track.hasScore) setScoreOpen(true);
   };
 
@@ -119,43 +122,67 @@ export function ListenShelf(): React.JSX.Element {
             return (
               <li key={t.id} className={`py-4 ${isActive ? 'bg-chrome-1/60' : ''}`}>
                 <div className="flex items-start gap-4 px-2">
-                  <button
-                    type="button"
-                    aria-label={
-                      isActive && player.status === 'playing'
-                        ? `Pause ${t.title}`
-                        : `Play ${t.title}`
-                    }
-                    onClick={() => (isActive ? player.toggle() : playAt(t))}
-                    className={`mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-[4px] border transition-colors focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none ${
-                      isActive
-                        ? 'border-hairline bg-chrome-2 text-accent-live'
-                        : 'border-hairline text-mid hover:text-hi'
-                    }`}
-                  >
-                    {isActive && (player.status === 'playing' || player.status === 'loading') ? (
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 12 12"
-                        fill="currentColor"
-                        aria-hidden
-                      >
-                        <rect x="2" y="1.5" width="3" height="9" />
-                        <rect x="7" y="1.5" width="3" height="9" />
+                  {t.audioWithheld === true ? (
+                    <span
+                      title="Hosted audio withheld pending rights clearance"
+                      className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-[4px] border border-hairline text-low"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+                        <rect
+                          x="2.5"
+                          y="5.2"
+                          width="7"
+                          height="5"
+                          rx="1"
+                          stroke="currentColor"
+                          strokeWidth="1.2"
+                        />
+                        <path
+                          d="M4 5V3.8a2 2 0 0 1 4 0V5"
+                          stroke="currentColor"
+                          strokeWidth="1.2"
+                        />
                       </svg>
-                    ) : (
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 12 12"
-                        fill="currentColor"
-                        aria-hidden
-                      >
-                        <path d="M2.5 1.2v9.6L11 6 2.5 1.2Z" />
-                      </svg>
-                    )}
-                  </button>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      aria-label={
+                        isActive && player.status === 'playing'
+                          ? `Pause ${t.title}`
+                          : `Play ${t.title}`
+                      }
+                      onClick={() => (isActive ? player.toggle() : playAt(t))}
+                      className={`mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-[4px] border transition-colors focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none ${
+                        isActive
+                          ? 'border-hairline bg-chrome-2 text-accent-live'
+                          : 'border-hairline text-mid hover:text-hi'
+                      }`}
+                    >
+                      {isActive && (player.status === 'playing' || player.status === 'loading') ? (
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="currentColor"
+                          aria-hidden
+                        >
+                          <rect x="2" y="1.5" width="3" height="9" />
+                          <rect x="7" y="1.5" width="3" height="9" />
+                        </svg>
+                      ) : (
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="currentColor"
+                          aria-hidden
+                        >
+                          <path d="M2.5 1.2v9.6L11 6 2.5 1.2Z" />
+                        </svg>
+                      )}
+                    </button>
+                  )}
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-baseline gap-x-3">
@@ -190,6 +217,12 @@ export function ListenShelf(): React.JSX.Element {
                         </>
                       )}
                     </p>
+                    {t.audioWithheld === true && (
+                      <p className="mt-1 text-[12px] text-low">
+                        Hosted audio withheld pending written permission from the Loeb Music Library
+                        — the Harvard record link is the listening copy.
+                      </p>
+                    )}
                     {t.hasScore ? (
                       <button
                         type="button"
