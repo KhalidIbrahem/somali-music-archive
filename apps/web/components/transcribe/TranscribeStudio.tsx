@@ -51,8 +51,6 @@ export function TranscribeStudio(): React.JSX.Element {
   // Mirrors `separate` so the deps-free submit callback never reads stale state.
   const separateRef = useRef(true);
 
-  useEffect(() => () => stopPolling(), []);
-
   useEffect(() => {
     // registers the <midi-player> custom element (client only, tone.js inside)
     void import('html-midi-player').then(() => setPlayerReady(true));
@@ -63,27 +61,7 @@ export function TranscribeStudio(): React.JSX.Element {
     pollRef.current = null;
   };
 
-  const submit = useCallback(async (file: File) => {
-    setPhase({ kind: 'uploading' });
-    try {
-      const form = new FormData();
-      form.append('file', file);
-      // Opt-in Demucs stage: transcribe the vocal stem instead of the mix.
-      form.append('separate', String(separateRef.current));
-      const res = await fetch(`${AI_URL}/notation`, { method: 'POST', body: form });
-      if (!res.ok) {
-        const body = (await res.json().catch(() => null)) as { detail?: string } | null;
-        throw new Error(body?.detail ?? `upload failed (${res.status})`);
-      }
-      const { job_id: jobId } = (await res.json()) as { job_id: string };
-      setPhase({ kind: 'processing', jobId, startedAt: Date.now() });
-      pollRef.current = setInterval(() => {
-        void poll(jobId);
-      }, 2000);
-    } catch (err) {
-      setPhase({ kind: 'error', message: err instanceof Error ? err.message : 'upload failed' });
-    }
-  }, []);
+  useEffect(() => () => stopPolling(), []);
 
   const poll = async (jobId: string) => {
     try {
@@ -112,6 +90,28 @@ export function TranscribeStudio(): React.JSX.Element {
       // transient poll failure — keep polling
     }
   };
+
+  const submit = useCallback(async (file: File) => {
+    setPhase({ kind: 'uploading' });
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      // Opt-in Demucs stage: transcribe the vocal stem instead of the mix.
+      form.append('separate', String(separateRef.current));
+      const res = await fetch(`${AI_URL}/notation`, { method: 'POST', body: form });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as { detail?: string } | null;
+        throw new Error(body?.detail ?? `upload failed (${res.status})`);
+      }
+      const { job_id: jobId } = (await res.json()) as { job_id: string };
+      setPhase({ kind: 'processing', jobId, startedAt: Date.now() });
+      pollRef.current = setInterval(() => {
+        void poll(jobId);
+      }, 2000);
+    } catch (err) {
+      setPhase({ kind: 'error', message: err instanceof Error ? err.message : 'upload failed' });
+    }
+  }, []);
 
   const onFiles = (files: FileList | null) => {
     const file = files?.[0];

@@ -70,16 +70,22 @@ type PlayerState = 'idle' | 'loading' | 'playing' | 'paused';
 export function DemoPlayer({ demo }: { demo: ResearchDemo }): React.JSX.Element {
   const [state, setState] = useState<PlayerState>('idle');
   const [error, setError] = useState<string | null>(null);
+  /** Mirror of durationRef for JSX (refs must not be read during render). */
+  const [durationSec, setDurationSec] = useState(0);
   const ctxRef = useRef<AudioContext | null>(null);
   const srcRef = useRef<AudioBufferSourceNode | null>(null);
   /** Context-clock time at which playback of the current source began, minus its offset. */
   const originRef = useRef(0);
   const durationRef = useRef(0);
   const rafRef = useRef(0);
+  /** Latest tick(), read inside rAF callbacks so the loop never self-references. */
+  const tickRef = useRef<() => void>(() => {});
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const clockRef = useRef<HTMLSpanElement>(null);
   const stateRef = useRef<PlayerState>('idle');
-  stateRef.current = state;
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   const draw = useCallback(
     (progress: number): void => {
@@ -117,19 +123,18 @@ export function DemoPlayer({ demo }: { demo: ResearchDemo }): React.JSX.Element 
     [demo.slug],
   );
 
+  const currentProgress = useCallback((): number => {
+    const ctx = ctxRef.current;
+    if (!ctx || durationRef.current === 0) return 0;
+    return Math.min(1, (ctx.currentTime - originRef.current) / durationRef.current);
+  }, []);
+
   useEffect(() => {
     draw(0);
     const onResize = (): void => draw(currentProgress());
     window.addEventListener('resize', onResize);
     return () => window.removeEventListener('resize', onResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draw]);
-
-  const currentProgress = (): number => {
-    const ctx = ctxRef.current;
-    if (!ctx || durationRef.current === 0) return 0;
-    return Math.min(1, (ctx.currentTime - originRef.current) / durationRef.current);
-  };
+  }, [draw, currentProgress]);
 
   const stopTicker = (): void => cancelAnimationFrame(rafRef.current);
 
@@ -152,9 +157,12 @@ export function DemoPlayer({ demo }: { demo: ResearchDemo }): React.JSX.Element 
       finish();
       return;
     }
-    rafRef.current = requestAnimationFrame(tick);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draw, finish]);
+    rafRef.current = requestAnimationFrame(() => tickRef.current());
+  }, [currentProgress, draw, finish]);
+
+  useEffect(() => {
+    tickRef.current = tick;
+  }, [tick]);
 
   /** Start (or restart) buffer playback at `offsetSec`. */
   const startAt = useCallback(
@@ -170,6 +178,7 @@ export function DemoPlayer({ demo }: { demo: ResearchDemo }): React.JSX.Element 
       srcRef.current = src;
       originRef.current = ctx.currentTime - offsetSec;
       durationRef.current = entry.durationSec;
+      setDurationSec(entry.durationSec);
       setState('playing');
       stopTicker();
       rafRef.current = requestAnimationFrame(tick);
@@ -272,10 +281,7 @@ export function DemoPlayer({ demo }: { demo: ResearchDemo }): React.JSX.Element 
 
         <span className="numeric shrink-0 text-xs text-hi">
           <span ref={clockRef}>0:00</span>
-          <span className="text-low">
-            {' '}
-            / {durationRef.current > 0 ? formatClock(durationRef.current) : '·'}
-          </span>
+          <span className="text-low"> / {durationSec > 0 ? formatClock(durationSec) : '·'}</span>
         </span>
       </div>
 
