@@ -1779,3 +1779,105 @@ This narrative is specific, urgent, and yours alone. No other applicant in the w
 *Version 1.0 — Prepared June 2024*
 *Author: Khalid Ibrahim*
 *For questions or contributions: See CONTRIBUTING.md*
+
+---
+
+# Appendix A — As-built engineering notes (August 2026)
+
+The sections above are the design specification. This appendix records how the
+implemented system differs from or extends it, in the areas reviewers are most
+likely to inspect. Deeper references: `docs/DAW-PROJECT-FORMAT.md` (the studio
+document format), `docs/OUD-LORA-RESULTS.md` (model experiments),
+`docs/DATA_PROVENANCE.md` (data sources and rights).
+
+## A.1 Web design system
+
+The web client runs two coordinated token sets. The public/brand surfaces use
+the palette in §7. The working surfaces (transcription studio, dashboard, DAW)
+use a semantic set — chrome surfaces, hairline borders, three text emphasis
+tiers, a single amber accent, and confidence colours — defined once as JSON in
+`packages/constants/src/designTokens.ts` and consumed as generated CSS custom
+properties on the web and re-exported constants on mobile, so parity between
+platforms is by construction. Two invariants are enforced by unit tests: all
+text/background pairs meet WCAG AA in both themes, and the score canvas is
+always the lightest surface on screen (the "paper" reads as the lit object).
+
+## A.2 Notation rendering and the confidence layer
+
+Transcriptions render as MEI engraved client-side with Verovio (first engrave
+of a 421-glyph page ≈ 240 ms; zoom re-engraves at constant paper width). Each
+note's transcription confidence is painted directly into the engraving as
+per-glyph ink opacity in three tiers, applied imperatively after engraving so
+toggling "show certainty" does not re-render the SVG. Glyphs are focusable
+controls (keyboard and screen-reader reachable) exposing name, frequency,
+confidence, and onset, with per-note audition.
+
+## A.3 Timeline and playback model
+
+All score/waveform surfaces share one timeline engine whose position is
+*derived from the audio clock* (`AudioContext.currentTime`) rather than
+accumulated — drift is zero by construction. The engine fans out to
+imperative subscribers on animation frames; React state never updates per
+frame. Waveform, ruler, and playhead share a single linear time map
+(measured alignment error < 1 px across zoom levels). The axis domain is the
+session's stated duration, never the decoded buffer length, because encoder
+padding differs between formats.
+
+## A.4 The performance engine (oud + durbaan synthesis)
+
+Playable scores do not use General MIDI. A shared module
+(`apps/web/lib/audio/qaraamiEngine.ts`) synthesises an oud-like voice with
+Karplus–Strong plucked strings — each note a doubled course two strings ±5
+cents apart with a 6 ms pick offset and a faint octave-below resonance — over
+a frame-drum pattern built from a swept-sine "dum" and a highpass-noise "tak".
+The whole mix pre-renders into one AudioBuffer inside the user's first tap
+(~200 ms for an 87-second score), which satisfies mobile autoplay policies and
+makes pause/resume trivial. The same module drives the score pages, the
+landing-page demos, and the studio's oud instrument.
+
+## A.5 The studio (browser DAW)
+
+The DAW keeps a strict engine/UI boundary: the React UI edits a plain-data
+project document (beats-based, JSON-serialisable, additively versioned — see
+`docs/DAW-PROJECT-FORMAT.md`) and the audio engine consumes it through
+methods and subscriptions only. Scheduling uses a 25 ms lookahead with a
+150 ms horizon, so UI jank cannot drop notes; the identical scheduling path
+renders WAV exports through an `OfflineAudioContext`. A scale lock constrains
+the piano roll to a selected pentatonic mode and root by construction
+(out-of-scale rows are simply not offered), and the drum grid is a 16-step
+view over ordinary MIDI notes on three percussion lanes, with editable
+presets for common Somali rhythm families. Projects persist offline-first
+(IndexedDB, debounced autosave) with background sync to an owner-scoped
+server store.
+
+## A.6 Access model (as deployed)
+
+The platform is invite-only. Registration requires a username and a live
+invite code (admin-minted, label + max-uses + expiry, atomically redeemed and
+audited); login accepts username, email, or E.164 phone through one
+identifier field; third-party sign-in is sign-in-only and cannot create
+accounts. A middleware page gate serves signed-out visitors only the landing
+and auth pages; authorization proper is enforced at the API with short-lived
+JWTs, rotating refresh tokens, per-IP auth throttling, and role-based access
+(listener / contributor / educator / admin). Removal flows are soft-delete
+throughout, honouring the archive's never-destroy principle.
+
+## A.7 Content modules (as deployed)
+
+Educator-authored lessons and member curricula extend §7's learn design:
+lesson documents live in MongoDB with attachments uploaded straight to
+object storage via presigned URLs (never through the API), and structured
+courses ship as versioned authored content with per-user progress in
+PostgreSQL. The library shelf (scanned songbooks) and studio projects are
+MongoDB-backed so serverless cold starts lose nothing.
+
+## A.8 Model-training infrastructure
+
+Fine-tuning experiments run on consumer Apple-silicon hardware against
+MusicGen-small with LoRA adapters over precomputed EnCodec tokens
+(delay-pattern labels). One methodological finding is recorded for
+reproducers: the decoder applies functional dropout that module-level sweeps
+miss, which makes the optimised training path diverge from the evaluation
+path; the training harness aligns them explicitly. Dataset construction,
+metrics (held-out token cross-entropy and a pentatonic-conformity score over
+CREPE-tracked frames), and results are in `docs/OUD-LORA-RESULTS.md`.
