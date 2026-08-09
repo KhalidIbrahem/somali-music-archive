@@ -48,8 +48,10 @@ packages/*       shared types, validators (Zod), constants (genres/instruments
 - **Principles:** soft delete only — recordings are never destroyed; UUID object
   keys; bcrypt(12); provenance recorded on every archival item.
 
-Full specification: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md). Decisions:
-[`docs/DECISIONS.md`](docs/DECISIONS.md). Build plan: [`docs/SESSION_PLAN.md`](docs/SESSION_PLAN.md).
+Full specification: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (build phases
+in §16; as-built notes in Appendix A). Decisions:
+[`docs/DECISIONS.md`](docs/DECISIONS.md). Data sources and rights:
+[`docs/DATA_PROVENANCE.md`](docs/DATA_PROVENANCE.md).
 
 ## AI music generation (Suno · Lyria · our own model)
 
@@ -135,8 +137,8 @@ database verdicts are themselves integration-tested.
 
 Phases 0–4 complete (auth, recording flow, AI pipeline, search, lessons,
 payments, i18n with RTL, admin, community features, performance). Phase 5 —
-production cutover and public beta — is specified in
-[`docs/SESSION_PLAN.md`](docs/SESSION_PLAN.md) and in progress.
+production cutover — is in progress; the build-phase plan is
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) §16.
 
 ## License & contact
 

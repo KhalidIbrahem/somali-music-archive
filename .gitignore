@@ -143,6 +143,14 @@ runs/*/samples/
 runs/*/samples_smoke/
 runs/smoke/
 
+# ── Oud fine-tune artifacts (Aug 2026): corpus-derived audio + EnCodec tokens ─
+# never enter git history (size + unresolved rights — see docs/DATA_PROVENANCE.md).
+# Small text provenance (captions, dataset card, eval CSVs, run configs) stays
+# eligible for tracking, same policy as the July run.
+data/oud_clips/
+data/oud_tokens/
+data/oud_ab_listening/
+
 # Corpus MP3s staged for the web listening room (~120MB, license_status=unknown):
 # audio belongs in R2/deploy uploads, never in git history.
 apps/web/public/audio/
@@ -150,7 +158,6 @@ apps/web/public/audio/
 apps/web/public/demos/audio/
 .vercel-token
 
-# ── Local AI tooling config — never tracked (history scrubbed 2026-08-06) ───
-.claude/
-CLAUDE.md
-.mcp.json
+# ── Local tooling ──────────────────────────────────────────────────────────────
+# Machine-local editor/dev-environment config is ignored via .git/info/exclude
+# (untracked by design); nothing tool-specific belongs in this file.
