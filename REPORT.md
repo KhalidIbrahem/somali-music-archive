@@ -25,6 +25,16 @@ output. 3.2 GB of GPU memory at rest and under load.
 - **Tailscale URL (the only non-loopback address it binds):**
   `http://100.65.5.120:8765` — demo at `http://100.65.5.120:8765/demo`,
   health at `/health`. Local: `http://127.0.0.1:8765`. Never `0.0.0.0`.
+- **Caveat found at the end of the run:** the Tailscale address passed the
+  full 25-check smoke test at 11:49, but after the 14:07 sleep/wake (the laptop
+  came back on a phone-hotspot network, en0 = 192.0.0.2) the laptop can no
+  longer reach *its own* Tailscale address — requests arrive and are answered in 1 ms per the
+  server log, the response never returns locally; a service restart does not
+  change it. Loopback is unaffected. **On this laptop use
+  `http://127.0.0.1:8765/demo`; from a phone or second laptop on the tailnet
+  use the Tailscale URL, after `curl http://100.65.5.120:8765/health` from
+  that device.** Not verified from a peer tonight (the M1 was off limits).
+  Details and recovery steps: `docs/deploy/DEPLOY.md`, "Known issue".
 - **Token:** `~/ai/musicgen-api/musicgen-api.env` (mode 600, outside the repo).
   Paste it once into the demo page.
 - **Start / stop / restart:**
