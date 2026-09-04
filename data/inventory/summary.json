@@ -1,0 +1,63 @@
+[
+  {
+    "name": "harvard_raw",
+    "rights": "NOT cleared \u2014 Harvard Loeb Music Library (AWM Spec Coll 103); written permission outstanding; research use only",
+    "notes": "Maryan 'Aryette' Omar Ali Collection, mid-century Somali ensemble songs (vocals). Trained harvard_raw adapter.",
+    "files": 105,
+    "unreadable": 0,
+    "unique_by_sha256": 105,
+    "hours": 22.64,
+    "hours_vocals_likely": 2.93,
+    "hours_instrumental_likely": 12.37,
+    "hours_uncertain": 7.34,
+    "sample_rates": [
+      44100
+    ],
+    "channels": [
+      2
+    ],
+    "mean_trackable_melody": NaN,
+    "mean_percussive_ratio": 0.149
+  },
+  {
+    "name": "oud_ilkacase",
+    "rights": "private collection \u2014 performers unlisted, rights with holders; research use only; not redistributed",
+    "notes": "Ilkacase Qays oud (kaban) qaraami; source of the oud adapter's processed clips. Copied M1->this Mac 2026-09-04.",
+    "files": 40,
+    "unreadable": 0,
+    "unique_by_sha256": 28,
+    "hours": 5.41,
+    "hours_vocals_likely": 0.0,
+    "hours_instrumental_likely": 5.41,
+    "hours_uncertain": 0.0,
+    "sample_rates": [
+      44100
+    ],
+    "channels": [
+      2
+    ],
+    "mean_trackable_melody": NaN,
+    "mean_percussive_ratio": 0.342
+  },
+  {
+    "name": "band_qaraami",
+    "rights": "unknown/mixed \u2014 GarageBand/Logic imports; some named after artists (archival/commercial), some 'No Effects' takes; research use only",
+    "notes": "197 unique-by-content qaraami media from .band projects on the SSD; the new vocal-bearing material.",
+    "files": 197,
+    "unreadable": 0,
+    "unique_by_sha256": 197,
+    "hours": 15.09,
+    "hours_vocals_likely": 2.9,
+    "hours_instrumental_likely": 10.67,
+    "hours_uncertain": 1.52,
+    "sample_rates": [
+      44100
+    ],
+    "channels": [
+      1,
+      2
+    ],
+    "mean_trackable_melody": NaN,
+    "mean_percussive_ratio": 0.282
+  }
+]
