@@ -161,3 +161,36 @@ apps/web/public/demos/audio/
 # ── Local tooling ──────────────────────────────────────────────────────────────
 # Machine-local editor/dev-environment config is ignored via .git/info/exclude
 # (untracked by design); nothing tool-specific belongs in this file.
+
+# ── Audio, tokens, checkpoints (rights + size) — deploy-v1, 2026-09-04 ──────
+# No corpus-derived audio, EnCodec tokens, or model weights ever enter git.
+# The two negations keep the project's OWN synthesised sample fixtures
+# (DATA_PROVENANCE.md §3), which were already tracked.
+*.wav
+*.mp3
+*.m4a
+*.flac
+*.aiff
+*.ogg
+!apps/web/public/sample/*.mp3
+!apps/mobile/assets/sample/*.mp3
+*.npy
+*.safetensors
+*.ckpt
+*.pt
+*.bin
+**/ckpt_step_*/
+data/clips/
+data/clips_denoised/*/
+data/oud_clips/
+data/tokens/
+data/tokens_denoised/
+data/oud_tokens/
+data/eval_gen/
+data/*_ab_listening/*.wav
+runs/**/samples/
+runs/**/samples_smoke/
+runs/**/train.log
+# service runtime state
+services/musicgen-api/outputs/
+services/musicgen-api/*.log
