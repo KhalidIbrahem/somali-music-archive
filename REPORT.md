@@ -25,34 +25,14 @@ output. 3.2 GB of GPU memory at rest and under load.
 - **Tailscale URL (the only non-loopback address it binds):**
   `http://100.65.5.120:8765` — demo at `http://100.65.5.120:8765/demo`,
   health at `/health`. Local: `http://127.0.0.1:8765`. Never `0.0.0.0`.
-- **Caveat found at the end of the run:** the Tailscale address passed the
-  full 25-check smoke test at 11:49, but after the 14:07 sleep/wake (the laptop
-  came back on a phone-hotspot network, en0 = 192.0.0.2) the laptop can no
-  longer reach *its own* Tailscale address — requests arrive and are answered in 1 ms per the
-  server log, the response never returns locally; a service restart does not
-  change it. Loopback is unaffected. **On this laptop use
-  `http://127.0.0.1:8765/demo`; from any other tailnet device use the
-  Tailscale URL.** Verified from the peer `khalid-m1-server` at 14:34 on
-  your request: `/health` 200 in 0.64 s, `/demo` 200 in 0.49 s. **Your phone
-  is not on the tailnet** (it has two devices: this Mac and the M1), which is
-  why the URL fails there — install Tailscale on the phone and sign in with
-  the same account; nothing on the server side needs changing. Details:
+- **Own-address caveat (OS-level, confirmed):** this Mac cannot reach its
+  *own* Tailscale address — a throwaway listener bound to it fails the same
+  way while the peer reaches it — so on the laptop use
+  `http://127.0.0.1:8765/demo`. **From peers the Tailscale URL is fully
+  verified:** the complete smoke test run from `khalid-m1-server` passed
+  24/24 at 14:40 (`/health` 0.64 s, `/demo` 0.49 s). The tailnet has this Mac
+  and the M1; any phone must sign into Tailscale first. Details:
   `docs/deploy/DEPLOY.md`, "Known issue".
-- **Token:** `~/ai/musicgen-api/musicgen-api.env` (mode 600, outside the repo).
-  Paste it once into the demo page.
-- **Start / stop / restart:**
-  ```sh
-  launchctl bootstrap gui/501 ~/ai/launchd/com.qaraamigen.musicgen-api.plist   # start (also after each login, see below)
-  launchctl bootout   gui/501/com.qaraamigen.musicgen-api                       # stop
-  launchctl kickstart -k gui/501/com.qaraamigen.musicgen-api                    # restart
-  curl -s http://127.0.0.1:8765/health ; tail -f ~/ai/musicgen-api/logs/musicgen-api.log
-  services/musicgen-api/smoke_test.sh 100.65.5.120                              # 25 checks
-  ```
-- Full details: `docs/deploy/DEPLOY.md`. Load test: `docs/deploy/LOAD_TEST.md`.
-
-**Load test (20 sequential 10-s generations, adapters alternating):** wall-clock
-p50 **8.35 s**, p95 **8.58 s**, real-time factor 0.82, peak MPS driver 3,240 MB,
-server RSS 1,477 MB. Hot-swap cost not measurable.
 
 ## Evaluation headline
 
@@ -107,7 +87,7 @@ All tables and figures are generated from artifacts by
 3. **Record the 3-minute walkthrough** from `docs/demo/DEMO_SCRIPT.md` (pre-warm first; say the rights line once). The service is up now; check `launchctl print gui/501/com.qaraamigen.musicgen-api | grep state` before you start.
 4. **Fix the blocking rights exception on the deployed site** before any public link goes into an application: `DATA_PROVENANCE.md` says collection audio is still publicly reachable at `/demos/audio/…` and `/audio/…` on the Vercel deployment (code commit cc0533b withheld it; whether that build is live is unverified).
 5. **Send the Harvard Loeb Music Library letter** requesting written permission. Until it exists, everything Aryette-derived — including the `harvard_raw` adapter's outputs — stays inside the research context; the application package may describe the results but should not link generated Harvard audio publicly.
-6. **Make the service survive login:** `ln -s ~/ai/launchd/com.qaraamigen.musicgen-api.plist ~/Library/LaunchAgents/` (I was not allowed to write there).
+6. ~~Make the service survive login~~ — done (symlink into `~/Library/LaunchAgents` created 14:37 at your request to solve everything I could).
 7. **Rotate the token if you share the demo URL with anyone** (`~/ai/musicgen-api/musicgen-api.env`, then `launchctl kickstart -k …`). The service is only reachable on your tailnet, but the token is the only gate.
 8. Optional, cheap: generate the two still-missing figures listed in `docs/application/FIGURES.md` (a spectrogram pair and the system diagram with the rights boundary).
 
@@ -115,6 +95,5 @@ All tables and figures are generated from artifacts by
 
 - No listening study beyond your own oud A/B; no significance claims anywhere.
 - The web app's `/generate` page is not wired to the new service (D1); the path is documented, not implemented.
-- The launchd job will not auto-start after a reboot until the symlink in (6) exists.
 - The pre-existing platform test suites (233 API + 102 mobile + 48 Python) were not run tonight; nothing in them was changed.
 - The M1 node was not touched; Flash-Next was never loaded; peak wired GPU memory during the whole run stayed far below 90 GB (the service uses ~3.2 GB).

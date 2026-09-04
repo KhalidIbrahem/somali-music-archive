@@ -31,37 +31,32 @@ curl -s http://127.0.0.1:8765/health
 tail -f ~/ai/musicgen-api/logs/musicgen-api.log
 ```
 
-**Persistence across login:** launchd only auto-loads plists from
-`~/Library/LaunchAgents`. The plist deliberately lives under `~/ai` (the only
-location outside the repo this deployment was allowed to write). To make it
-start at every login, create the symlink yourself:
-`ln -s ~/ai/launchd/com.qaraamigen.musicgen-api.plist ~/Library/LaunchAgents/`.
-Until then, run the `bootstrap` line once after each login.
+**Persistence across login:** the plist lives under `~/ai/launchd/` and is
+symlinked into `~/Library/LaunchAgents/` (done 2026-09-04 14:37), so launchd
+loads it at every login. If you ever remove the symlink, run the `bootstrap`
+line once after each login instead.
 
-## Known issue: local hairpin to the Tailscale address (2026-09-04)
+## Known issue: this Mac cannot reach its own Tailscale address (2026-09-04)
 
-Verified 25/25 over `http://100.65.5.120:8765` at 11:49. After the 14:07
-sleep/wake the laptop came back on a phone-hotspot network (en0 =
-192.0.0.2) and requests from this machine *to its own* Tailscale address
-started to stall: the server log shows the request arriving and answering in
-1 ms, `nc` connects, but the response never returns to the local client.
-Restarting the service does not change it (fresh sockets bind fine). Loopback
-is unaffected. Tailscale reports no exit node, no shields-up, no health warning.
+Confirmed OS-level, not the service: a throwaway `python -m http.server`
+bound to 100.65.5.120 is also unreachable from this Mac (connect succeeds,
+no response) while the peer `khalid-m1-server` gets 200 from it. Toggling the
+Tailscale connection does not change it; there is no exit node, no
+`serve`/`funnel` config, no health warning. It appeared after the 14:07
+sleep/wake onto a phone-hotspot network (en0 = 192.0.0.2). Loopback is
+unaffected.
 
-- **On this laptop, always use `http://127.0.0.1:8765/demo`.**
-- **From another tailnet device** use `http://100.65.5.120:8765` or the
-  MagicDNS name `http://khalid-m5-work.tail71bdbf.ts.net:8765`. **Verified
-  from the peer `khalid-m1-server` on 2026-09-04 14:34:** `/health` 200 in
-  0.64 s, `/demo` 200 in 0.49 s. The peer path does not hairpin.
-- **A phone must be on the tailnet first.** At the time of writing the
-  tailnet has exactly two devices (this Mac and the M1); a phone that is not
-  signed into Tailscale gets nothing at that address. Install the Tailscale
-  app on the phone, sign in with the same account (ibrahimkhalid032@…),
-  confirm it appears in `tailscale status` here, then open the demo URL in
-  the phone's browser and paste the token.
-- If a peer ever fails: `launchctl kickstart -k gui/501/com.qaraamigen.musicgen-api`,
-  then toggle Tailscale off/on in the menu bar, then re-run
-  `services/musicgen-api/smoke_test.sh 100.65.5.120` from the peer.
+- **On this laptop use `http://127.0.0.1:8765/demo`.**
+- **From any other tailnet device** use `http://100.65.5.120:8765` or
+  `http://khalid-m5-work.tail71bdbf.ts.net:8765`. **Verified from the peer
+  `khalid-m1-server` on 2026-09-04:** the full smoke test run *from that
+  machine* passed 24/24 (auth, limits, all three adapters, PCS by id and by
+  upload, queue overflow, demo page; the bind check is local-only), with
+  `/health` in 0.64 s and `/demo` in 0.49 s. Run it yourself from a peer:
+  `MUSICGEN_API_TOKEN=<token> bash smoke_test.sh 100.65.5.120`
+  (or from this Mac: `ssh khalidibrahim@khalid-m1-server "MUSICGEN_API_TOKEN=<token> bash -s 100.65.5.120" < services/musicgen-api/smoke_test.sh`).
+- A phone needs the Tailscale app signed into the same account before the
+  address exists for it; check it appears in `tailscale status` first.
 
 ## Endpoints
 
