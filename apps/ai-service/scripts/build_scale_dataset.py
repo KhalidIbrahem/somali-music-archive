@@ -171,6 +171,10 @@ def main() -> None:
     inv = Path(args.inventory)
     clips_root = Path(args.out_clips)
     clips_root.mkdir(parents=True, exist_ok=True)
+    try:
+        clips_rel = clips_root.resolve().relative_to(REPO)
+    except ValueError:
+        clips_rel = clips_root
 
     # 1. gather source records with a stable per-song sha (full-file sha256)
     records = []
@@ -241,7 +245,7 @@ def main() -> None:
             rel = f"{split}/{stem}_seg{si:03d}.wav"
             sf.write(clips_root / rel, clip.astype(np.float32), SR, subtype="PCM_16")
             caps.append({
-                "clip_path": f"data/scale_clips/{rel}",
+                "clip_path": f"{clips_rel}/{rel}",
                 "caption": build_caption(r["source"], r["name"], bpm, tonic, r, hmeta),
                 "song_sha256": r["song_sha"], "split": split, "source": r["source"],
                 "source_name": r["name"], "rights": r["source"],
