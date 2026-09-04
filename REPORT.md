@@ -31,10 +31,13 @@ output. 3.2 GB of GPU memory at rest and under load.
   longer reach *its own* Tailscale address — requests arrive and are answered in 1 ms per the
   server log, the response never returns locally; a service restart does not
   change it. Loopback is unaffected. **On this laptop use
-  `http://127.0.0.1:8765/demo`; from a phone or second laptop on the tailnet
-  use the Tailscale URL, after `curl http://100.65.5.120:8765/health` from
-  that device.** Not verified from a peer tonight (the M1 was off limits).
-  Details and recovery steps: `docs/deploy/DEPLOY.md`, "Known issue".
+  `http://127.0.0.1:8765/demo`; from any other tailnet device use the
+  Tailscale URL.** Verified from the peer `khalid-m1-server` at 14:34 on
+  your request: `/health` 200 in 0.64 s, `/demo` 200 in 0.49 s. **Your phone
+  is not on the tailnet** (it has two devices: this Mac and the M1), which is
+  why the URL fails there — install Tailscale on the phone and sign in with
+  the same account; nothing on the server side needs changing. Details:
+  `docs/deploy/DEPLOY.md`, "Known issue".
 - **Token:** `~/ai/musicgen-api/musicgen-api.env` (mode 600, outside the repo).
   Paste it once into the demo page.
 - **Start / stop / restart:**

@@ -49,12 +49,19 @@ Restarting the service does not change it (fresh sockets bind fine). Loopback
 is unaffected. Tailscale reports no exit node, no shields-up, no health warning.
 
 - **On this laptop, always use `http://127.0.0.1:8765/demo`.**
-- **From another tailnet device** (phone, other laptop) use
-  `http://100.65.5.120:8765` — that path does not hairpin and was not tested
-  from a peer tonight; run `curl -s http://100.65.5.120:8765/health` from the
-  peer before a demo. If it fails there too: return to a normal Wi-Fi
-  network, `launchctl kickstart -k gui/501/com.qaraamigen.musicgen-api`, then
-  toggle Tailscale off/on in the menu bar.
+- **From another tailnet device** use `http://100.65.5.120:8765` or the
+  MagicDNS name `http://khalid-m5-work.tail71bdbf.ts.net:8765`. **Verified
+  from the peer `khalid-m1-server` on 2026-09-04 14:34:** `/health` 200 in
+  0.64 s, `/demo` 200 in 0.49 s. The peer path does not hairpin.
+- **A phone must be on the tailnet first.** At the time of writing the
+  tailnet has exactly two devices (this Mac and the M1); a phone that is not
+  signed into Tailscale gets nothing at that address. Install the Tailscale
+  app on the phone, sign in with the same account (ibrahimkhalid032@…),
+  confirm it appears in `tailscale status` here, then open the demo URL in
+  the phone's browser and paste the token.
+- If a peer ever fails: `launchctl kickstart -k gui/501/com.qaraamigen.musicgen-api`,
+  then toggle Tailscale off/on in the menu bar, then re-run
+  `services/musicgen-api/smoke_test.sh 100.65.5.120` from the peer.
 
 ## Endpoints
 
