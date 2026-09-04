@@ -11,7 +11,14 @@ Somali Music Preservation Foundation, Minneapolis, MN, USA
 
 ## Abstract
 
-Somali music has, to our knowledge, no dedicated dataset anywhere in the music-information-retrieval literature. We present **SomaliMusicCorpus**, a labeled corpus built from the Maryan "Aryette" Omar Ali Collection at Harvard University's Archive of World Music (AWM Spec Coll 103): 605 digitized tracks drawn from a 504-cassette collection of twentieth-century Somali song — *heello*, *qaraami*, theatre and praise songs, 1955–1991 — with structured metadata recovered from the Harvard finding aid, including exact recording dates for a subset of tracks. We contribute (1) the annotated corpus and its open, resumable processing pipeline; (2) a method for measuring intonation in archival cassette audio that fits a pentatonic reference grid *per track*, making the measurement invariant to key, tape speed, and A440 assumptions — deviations that smear to 63 cents against a fixed grid concentrate to a median per-track dispersion of 26 cents after alignment, with 86% of voiced frames within a quarter tone of the fitted grid *(dev subset: 105 tracks, 706,483 gated frames)*; and (3) a pre-registered diachronic test of whether intonation moved toward equal temperament as Western fixed-pitch instruments entered Somali ensembles: on date-stamped tracks (1964–1976) we find **stability, not drift** (median dispersion 25.7 vs 26.8 cents, Mann–Whitney p = 0.47; n = 13 + 6, preliminary). An embedding-space audit adds a caution with reach beyond this corpus: MERT nearest neighbours retrieve same-cassette material at 13× chance (66% vs 5%), quantifying the channel leakage that makes cassette-level evaluation splits mandatory on archival audio. Two downstream probes sharpen that caution into results. LoRA fine-tuning of a text-to-music model (MusicGen-small) on the corpus *degrades* held-out token loss at both learning rates tested (4.63 → 6.70 nats at best) while voiced melodic content in its outputs halves — on hiss-dominated archival audio, generative adaptation learns the channel, not the tradition. And a transcription ablation quantifies a harm long suspected: standard Western major/minor key correction alters 77% of detected notes on this repertoire and *lowers* pentatonic scale conformity (0.898 → 0.862), whereas a scale-aware quantization stage that snaps only within-tolerance notes preserves the 11% of notes that carry ornamental or microtonal inflection — marked, never "corrected". Annotations, schema, and code are released under community governance; audio remains with Harvard Library. The corpus positions Somali song alongside recent East African, Arab, and cross-cultural corpus work, and doubles as a stress test for MIR robustness on real archival material.
+Somali music has, to our knowledge, no dedicated dataset anywhere in the music-information-retrieval literature. We present **SomaliMusicCorpus**, a labeled corpus built from the Maryan "Aryette" Omar Ali Collection at Harvard University's Archive of World Music (AWM Spec Coll 103): 605 digitized tracks drawn from a 504-cassette collection of twentieth-century Somali song — *heello*, *qaraami*, theatre and praise songs, 1955–1991 — with structured metadata recovered from the Harvard finding aid, including exact recording dates for a subset of tracks. We contribute (1) the annotated corpus and its open, resumable processing pipeline; (2) a method for measuring intonation in archival cassette audio that fits a pentatonic reference grid *per track*, making the measurement invariant to key, tape speed, and A440 assumptions — deviations that smear to 63 cents against a fixed grid concentrate to a median per-track dispersion of 26 cents after alignment, with 86% of voiced frames within a quarter tone of the fitted grid *(dev subset: 105 tracks, 706,483 gated frames)*; and (3) a pre-registered diachronic test of whether intonation moved toward equal temperament as Western fixed-pitch instruments entered Somali ensembles: on date-stamped tracks (1964–1976) we find **stability, not drift** (median dispersion 25.7 vs 26.8 cents, Mann–Whitney p = 0.47; n = 13 + 6, preliminary). An embedding-space audit adds a caution with reach beyond this corpus: MERT nearest neighbours retrieve same-cassette material at 13× chance (66% vs 5%), quantifying the channel leakage that makes cassette-level evaluation splits mandatory on archival audio. Two downstream probes sharpen that caution into results. LoRA fine-tuning of a text-to-music model (MusicGen-small) on the corpus *degrades* held-out token loss at both learning rates tested (4.63 → 6.70 nats at best) while voiced melodic content in its outputs halves — on hiss-dominated archival audio, generative adaptation learns the channel, not the tradition.
+
+> **[TODO — SUPERSEDED (2026-09-04) — Khalid to approve] Abstract — the fine-tuning sentence states the July negative**
+> *Why:* the July collapse was a training-harness defect (the HF MusicGen decoder's 37 functional-dropout attributes were active in training and absent in evaluation; train-mode loss 9.74 vs eval 4.05 nats on identical weights). Under the fixed harness every checkpoint beats the base model on both corpora.
+> *Proposed replacement (approve, edit, or reject; the original text above is untouched):*
+> LoRA fine-tuning of a text-to-music model (MusicGen-small) on the corpus *improves* held-out token loss on unseen songs (4.63 → 4.55 validation, 4.84 → 4.75 test) once a harness defect is removed — the same experiment had first appeared to collapse (4.63 → 6.70) because the decoder's functional dropout was active in training and absent in evaluation, a failure mode we document because it is generic to HF MusicGen — and its outputs carry 68% more trackable melody than the base model's while inheriting the cassettes' ~25-cent tuning offset; on hiss-dominated archival audio, generative adaptation learns the tradition *and* the channel, and a speech-enhancer "denoise first" step makes it learn an altered corpus instead (negative control).
+
+And a transcription ablation quantifies a harm long suspected: standard Western major/minor key correction alters 77% of detected notes on this repertoire and *lowers* pentatonic scale conformity (0.898 → 0.862), whereas a scale-aware quantization stage that snaps only within-tolerance notes preserves the 11% of notes that carry ornamental or microtonal inflection — marked, never "corrected". Annotations, schema, and code are released under community governance; audio remains with Harvard Library. The corpus positions Somali song alongside recent East African, Arab, and cross-cultural corpus work, and doubles as a stress test for MIR robustness on real archival material.
 
 ## 1. Introduction
 
@@ -27,7 +34,14 @@ This paper contributes:
 2. **A measurement method for archival intonation.** Per-track alignment of a pentatonic interval grid that absorbs key transposition, cassette speed error, and reference-pitch assumptions in a single fitted parameter (§5). On the development subset this turns an uninterpretable 63-cent fixed-grid smear into a coherent picture: Somali song concentrates 86% of its voiced frames within a quarter tone of a track-specific pentatonic grid.
 3. **A diachronic test with a preliminary answer.** Because part of the corpus is date-stamped across the very years Western fixed-pitch instruments entered Somali ensembles, the corpus can ask — apparently for the first time for any Horn of Africa tradition — whether intonation regularized toward equal temperament. Preliminary result: no detectable drift (§6.3).
 4. **Infrastructure.** An open, resumable pipeline (inventory → quality audit → enhancement → separation → transcription → pitch → embeddings → assembly) whose scientific core is dependency-free and unit-tested (151 tests), with honest, cassette-level evaluation splits — a design choice validated empirically by the embedding audit of §7.3.
-5. **Two downstream stress tests with honest verdicts.** A controlled negative: LoRA adaptation of MusicGen-small on the corpus collapses held-out token loss at two learning rates and its generations inherit the tapes' noise floor rather than their melody (§7.5) — the generative face of §7.3's channel-leakage result. And a controlled positive: a pentatonic-aware transcription stage — the same per-track grid philosophy as §5, applied to note events — against which Western key correction is shown to alter 77% of notes and measurably damage scale conformity (§7.6).
+5. **Two downstream stress tests with honest verdicts.** A controlled negative: LoRA adaptation of MusicGen-small on the corpus collapses held-out token loss at two learning rates and its generations inherit the tapes' noise floor rather than their melody (§7.5) — the generative face of §7.3's channel-leakage result.
+
+> **[TODO — SUPERSEDED (2026-09-04) — Khalid to approve] Contribution 5 — "a controlled negative"**
+> *Why:* the negative did not survive the harness fix; the honest verdict is now a positive with a documented defect and a negative control.
+> *Proposed replacement (approve, edit, or reject; the original text above is untouched):*
+> 5. **Two downstream stress tests with honest verdicts.** A generative test that first produced a convincing negative and then, once a training-harness defect was found (§7.5), a positive: LoRA adaptation of MusicGen-small beats the base model on held-out token loss at every checkpoint on two corpora, doubles the trackable melody in its outputs, and learns the tapes' tuning offset — while a DeepFilterNet-denoised variant is a negative control that specialises to an altered corpus and transfers *worse* than base to raw audio. And a controlled positive: a pentatonic-aware transcription stage — the same per-track grid philosophy as §5, applied to note events — against which Western key correction is shown to alter 77% of notes and measurably damage scale conformity (§7.6).
+
+And a controlled positive: a pentatonic-aware transcription stage — the same per-track grid philosophy as §5, applied to note events — against which Western key correction is shown to alter 77% of notes and measurably damage scale conformity (§7.6).
 
 We write "to our knowledge" deliberately throughout: Ethiopian music has labeled datasets [3] and classifiers whose corpora may incidentally contain Somali-adjacent material; our claim is that no *dedicated, labeled, documented* Somali music dataset exists, and we would welcome correction.
 
@@ -61,7 +75,12 @@ The pipeline is nine resumable stages (open source; every stage skips existing o
 
 1. **Inventory.** Filename/catalog parsing, SHA-1 duplicate detection, date recovery → `harvard_inventory.csv`.
 2. **Quality audit.** Peak/RMS, percentile-frame SNR, clipping fraction, silence bounds; low-SNR tracks are *flagged, never dropped*.
-3. **Enhancement** (DeepFilterNet [12]) and **4. Separation** (Demucs [6]) — for the listening platform and transcription front-end only. Both are Western-trained models with unquantified artifact behavior on this material; the tuning analysis therefore runs on **unprocessed transfers** so that no enhancement or separation model sits upstream of the paper's empirical claims.
+3. **Enhancement** (DeepFilterNet [12]) and **4. Separation** (Demucs [6]) — for the listening platform and transcription front-end only.
+
+> **[TODO — ADD (2026-09-04) — Khalid to approve] §4 pipeline step 3 — methods caveat on denoising**
+> *Why:* the 2026-09 negative control quantified what DeepFilterNet does to this corpus; the paper should say it here so no reader trains on the "cleaned" audio.
+> *Proposed addition (approve, edit, or reject; the original text above is untouched):*
+> **Caveat (methods).** DeepFilterNet is a speech enhancer. Applied clip-for-clip to the fine-tuning set it removed a median ~15 dB of energy — mostly the 1–3 kHz band, where the oud and the vocal presence live — and its output correlates only 0.41 (p10–p90 0.24–0.64) with the raw waveform. An adapter trained on the denoised clips improves held-out loss on denoised tokens (2.35 → 2.28) but is *worse than the base model on raw audio* (4.87 vs 4.84): it specialised to an altered corpus. We therefore use enhancement only for listening and transcription, never as training data, and report it as a negative control (§7.5′, Table T3). Both are Western-trained models with unquantified artifact behavior on this material; the tuning analysis therefore runs on **unprocessed transfers** so that no enhancement or separation model sits upstream of the paper's empirical claims.
 5. **Normalization.** −23 LUFS (EBU R128 [25]) with an 80 Hz high-pass, for playback copies.
 6. **Transcription.** Whisper large-v3 [16], Somali, transcribe + translate, word timestamps. A sung/spoken gate built on compression-ratio, log-probability, and no-speech statistics flags sung segments, whose text is stored but marked *unreliable* — never treated as lyric ground truth [40, 41].
 7. **Pitch.** torchcrepe (the CREPE architecture [11] in PyTorch), 10 ms steps, weighted-argmax decoding with 3-frame median smoothing, confidence gate 0.80, on a centered excerpt of up to 6 minutes per track. Capacity is `tiny` for the corpus sweep, validated against `full` on a held-out subset (§7.2); the octave-folded pitch-class analysis (§5) is invariant to the octave errors Viterbi decoding exists to prevent, which is what makes the fast decoder admissible. The gate retains a median 19% of frames *(dev subset)* — a selection toward loud, sustained, periodic material that we report rather than hide: ornaments and transitions are under-sampled by construction, so ornament statistics are exploratory only.
@@ -130,9 +149,19 @@ Whisper's Somali performance is among its weakest [16], and sung Somali is harde
 
 ### 7.5 Generative fine-tuning as a stress test: a controlled negative *(dev subset)*
 
+> **[TODO — SUPERSEDED (2026-09-04) — Khalid to approve] §7.5 title**
+> *Why:* the section's verdict is reversed by the harness fix.
+> *Proposed replacement (approve, edit, or reject; the original text above is untouched):*
+> ### 7.5 Generative fine-tuning as a stress test: a harness defect, then a positive *(dev subset)*
+
 If §7.3 shows the recording channel dominating *learned representations*, the natural next question is whether it also dominates *generative adaptation*. We fine-tuned MusicGen-small (300 M) [44] with LoRA [46] (r = 16, α = 32, dropout 0.05, on all decoder self- and cross-attention projections; 6.29 M trainable parameters), float32 on a single M1/16 GB laptop, on 9,174 fifteen-second clips (95 songs; 32 kHz mono, −14 LUFS) with delay-pattern EnCodec token targets [47] and captions synthesized from measured audio features plus catalog metadata only (genre is never guessed from audio). Splits are song-level by content hash (80/10/10 over 119 tracks); we note plainly that this is *weaker* than the cassette-level splits §4 mandates — but the leakage it permits can only *flatter* the fine-tune's held-out numbers, so the negative result below survives a fortiori.
 
 **Result: held-out token cross-entropy never approaches the base model.** Base MusicGen-small scores 4.63 nats on validation clips and 4.84 on test; the fine-tune's best checkpoint reaches only 6.70 (val) / 6.75 (test) — the adapter jumps to ~6.8 by step 250 at peak lr 1e-4 and the cosine tail recovers barely 0.1 nat over the remaining 1,250 steps. A controlled rerun at peak lr 2e-5 isolates the cause: validation stays flat through step 100 (4.76) and then collapses to the *same* level (6.79) by step 250. Lower learning rate delays the collapse; it does not prevent it — the failure is structural to the data regime (95 songs, ~19 h, SNR median 9.5 dB), not a tuning artifact.
+
+> **[TODO — SUPERSEDED (2026-09-04) — Khalid to approve] §7.5 result paragraph — "never approaches the base model" / "structural to the data regime"**
+> *Why:* reproducing the identical collapse on a different corpus (the oud collection, lr 1e-5, 4.51 → 7.23 by step 250) ruled out the data regime; a probe on identical zero-init-LoRA weights then isolated the cause (train 9.74 vs eval 4.05 nats; zeroing every `nn.Dropout` module: 9.73). See the draft section 7.5′ at the end of this file for the corrected results and tables T1, T2, T5 in `docs/eval/EVALUATION.md`.
+> *Proposed replacement (approve, edit, or reject; the original text above is untouched):*
+> **Result: a convincing negative that was the harness.** Under our first training harness, held-out token cross-entropy never approached the base model: base MusicGen-small scores 4.63 nats on validation and 4.84 on test; the fine-tune's best checkpoint reached only 6.70 / 6.75, jumping to ~6.8 by step 250 at lr 1e-4, and a rerun at lr 2e-5 delayed but did not prevent the same collapse (4.76 at step 100, 6.79 by step 250). We initially read this as structural to the data regime. It was not: the same collapse reproduced on an unrelated oud collection (lr 1e-5, 4.51 → 7.23 by step 250), and a probe on identical zero-initialised LoRA weights measured train-mode loss of 9.74 nats against 4.05 in eval mode — worse than uniform random over the 2,048-entry codebook (7.62) — with no change when every `nn.Dropout` module was set to p = 0 (9.73). The HF MusicGen decoder applies dropout *functionally* through 37 float attributes (`dropout`, `activation_dropout`, `attention_dropout`) consumed by `F.dropout(..., training=self.training)`, which module-level sweeps do not touch; optimisation had been fitting a forward path that evaluation never saw. Zeroing those attributes at model build makes train and eval losses agree to four decimals. Under the fixed harness, every checkpoint beats the base model: oud 4.51 → 4.48 (val) / 2.63 → 2.61 (test, unseen songs) at 1,000 steps; Harvard raw 4.63 → 4.55 (val) / 4.84 → 4.75 (test) with the curve flat by ~2,500 of 3,000 steps (best checkpoint 2,750). We keep the negative in the record because the defect is generic to HF MusicGen fine-tuning and the diagnosis is the reusable result.
 
 The Pentatonic Conformity Score explains *what* was learned instead. We define **PCS** as the duration-weighted fraction of voiced pitch falling within ±50 cents (a quarter tone) of a degree of the best-fitting anhemitonic-pentatonic set, computed per clip from CREPE-full f0 [11] after fitting a global tuning offset — the same per-track alignment philosophy as §5, at clip scale (median absolute tape offset on real test clips: 26 cents). Scored over 100 generations per model from identical held-out captions:
 
@@ -144,6 +173,11 @@ The Pentatonic Conformity Score explains *what* was learned instead. We define *
 | LoRA, final checkpoint | 99 | 0.962 | **0.18** |
 
 All pairwise differences are significant (Mann–Whitney, p < 10⁻⁴; base vs. best LoRA p ≈ 3×10⁻¹²). Read jointly, the two columns are the finding: the fine-tune's near-perfect conformity applies to *half as much* trackable melody — its outputs drift toward the corpus's dominant statistical feature, the tape texture itself, and informal listening confirms the generations are noise-like. Note also that the real corpus is *not* a ceiling for PCS: vibrato, ornament, and portamento push real performance frames outside ±50 cents (0.847), so PCS must always be reported with voiced fraction, never alone. Caption tonic adherence is weak for every model (22–28% vs. 8.3% chance). The constructive levers this diagnosis implies — stem-separated or denoised training audio, and the full 605-track corpus — are future work (§9); we publish the negative because a clean method with a negative verdict is exactly what the "stress test" framing of this corpus promises.
+
+> **[TODO — SUPERSEDED (2026-09-04) — Khalid to approve] §7.5 PCS interpretation — "half as much trackable melody", "noise-like"**
+> *Why:* the July PCS table describes generations of the broken-harness checkpoints. Fixed-harness generations reverse the voiced-fraction finding: the adapters produce 64% (oud) and 68% (Harvard) MORE trackable melody than base, at similar (oud) or lower (Harvard) conformity, and learn the real cassettes' ~25-cent tuning offset. n = 8 per group; no significance claimed.
+> *Proposed replacement (approve, edit, or reject; the original text above is untouched):*
+> The Pentatonic Conformity Score explains *what* each regime learned. [definition unchanged] Under the broken harness the table above was the finding: near-perfect conformity applied to half as much trackable melody — conformity of sparse residual pitch, the tape texture rather than the music, and informal listening confirmed the generations were noise-like. Under the fixed harness the pattern reverses. On eight paired held-out prompts per corpus (same seed for base and adapter), the oud adapter raises voiced fraction from 0.33 to 0.54 (real held-out clips: 0.44) at PCS 0.90 vs 0.93, and the Harvard adapter raises it from 0.40 to 0.66 (real test clips: 0.53) at PCS 0.71 vs 0.87; both adapters' outputs sit at a median absolute tuning offset of ~23–26 cents where the base model sits near 5 — the real cassettes' offset (26 cents) learned. Whether the Harvard conformity drop reflects non-pentatonic content or noisier pitch tracking on vocal-plus-tape texture is a listening question; at n = 8 the PCS column is within scorer noise (re-scoring identical files under a new torch build moved one group by 0.04), the voiced-fraction column is not, and we claim no significance. PCS must still be reported with voiced fraction, never alone — the July table is the demonstration of why.
 
 ### 7.6 Pentatonic-aware music transcription: the cost of Western key correction *(dev subset)*
 
@@ -171,7 +205,13 @@ Conformity is evaluated for all conditions against the scale detected from the *
 
 SomaliMusicCorpus makes a musical tradition computationally legible for the first time we know of — from a collection assembled by a Somali woman collector and preserved at Harvard, through a pipeline whose scientific core is small, tested, and honest about what archival cassettes permit. The methodological contribution — per-track pentatonic-grid alignment — turns cassette audio from a confound into a measurement instrument, and the corpus's date-stamped spine lets it ask a question no other Horn-of-Africa resource can: what happened to intonation when equal temperament arrived? The preliminary answer, stability, is itself a statement about the tradition's tonal identity.
 
-Next: (1) full 605-track processing and re-estimation of every number in this paper; (2) expert annotation — genre labels, transcript correction, intonation audit, and expert-verified transcriptions to give §7.6 a true F1 — under a documented multi-annotator protocol with Somali musicians; (3) stem-separated per-degree tuning profiles with mode disambiguation; (4) MERT-probe and fine-tuned Whisper baselines, and revisiting generative adaptation (§7.5) on stem-separated audio at full-corpus scale, where the channel-dominance diagnosis predicts the negative should soften; (5) consented field recordings with living masters as the calibration standard; (6) public release (annotations + code) with DOI, and a research-access pathway for audio with Harvard Library.
+Next: (1) full 605-track processing and re-estimation of every number in this paper; (2) expert annotation — genre labels, transcript correction, intonation audit, and expert-verified transcriptions to give §7.6 a true F1 — under a documented multi-annotator protocol with Somali musicians; (3) stem-separated per-degree tuning profiles with mode disambiguation; (4) MERT-probe and fine-tuned Whisper baselines, and revisiting generative adaptation (§7.5) on stem-separated audio at full-corpus scale, where the channel-dominance diagnosis predicts the negative should soften;
+
+> **[TODO — SUPERSEDED (2026-09-04) — Khalid to approve] §9 future work item (4) — "revisiting generative adaptation … the negative should soften"**
+> *Why:* generative adaptation has been revisited; the negative did not soften, it disappeared with the harness fix. The forward-looking items are now the listening study, MusicGen-medium / longer clips, melody-conditioned generation, and cassette-level splits.
+> *Proposed replacement (approve, edit, or reject; the original text above is untouched):*
+> (4) MERT-probe and fine-tuned Whisper baselines, and, for generative adaptation (§7.5), a listening study with Somali musicians on the base-vs-adapter pairs, MusicGen-medium with longer clips, melody-conditioned generation from the platform's own transcriptions, and cassette-level splits for the Harvard corpus;
+ (5) consented field recordings with living masters as the calibration standard; (6) public release (annotations + code) with DOI, and a research-access pathway for audio with Harvard Library.
 
 ## 10. References
 
@@ -231,3 +271,53 @@ Next: (1) full 605-track processing and re-estimation of every number in this pa
 - **Analysis constants:** pitch step 10 ms; confidence gate 0.80; excerpt ≤ 360 s centered; alignment kernel half-width 20 cents; minimum 300 gated frames per fit; era split 1970. §§7.5–7.6: PCS tolerance ±50 cents; CREPE-full, 20 ms hop, periodicity gate 0.50, minimum 1 s voiced; quantization tolerance 50 cents; clip length 15 s, 50% overlap, quiet-segment drop at 20 dB below file median. All in code, none hand-tuned per result.
 - **Figures** are generated by `analyze_corpus.py` from the same JSON the text cites; no hand-edited numbers exist anywhere in the chain.
 - **Bibliographic verification:** every reference above was verified against publisher/indexer records.
+
+---
+
+## 7.5′ (DRAFT SECTION — 2026-09-04 — for Khalid's review; numbers generated from run artifacts, see `docs/eval/EVALUATION.md`; figures `docs/figures/ft1–ft6`)
+
+### 7.5′.1 The defect
+
+A probe on identical zero-initialised LoRA weights (four held-out oud clips; Table T5) measured the loss the optimiser saw against the loss evaluation reported:
+
+| condition | mean token CE |
+| --- | --- |
+| A. eval mode (what validation measured) | 4.05 |
+| B. train mode, as trained in July | 9.74 |
+| C. train mode, every `nn.Dropout` module p = 0 (229 modules) | 9.73 |
+| D. train mode, no gradient checkpointing | 9.79 |
+| E. train mode, text and audio encoders in eval | 9.75 |
+| uniform random over the codebook, ln 2048 | 7.62 |
+
+The HF MusicGen decoder applies dropout functionally through 37 float attributes; a module-level sweep (C) cannot reach them. Zeroing them at build time makes A ≡ B to four decimals (Fig. ft2).
+
+### 7.5′.2 Results under the fixed harness
+
+| run | corpus | steps | val CE base → best (step) | test CE base → best (step) |
+| --- | --- | --- | --- | --- |
+| July 17 (broken harness) | Harvard raw | 1500 | 4.6262 → 6.6977 (1000) | 4.8363 → 6.7525 (1000) |
+| Aug 9 (fixed) | oud, 28 songs | 1000 | 4.5132 → 4.4785 (500) | 2.6302 → 2.6092 (500) |
+| Sep 3 (fixed) | Harvard raw | 1500 | 4.6262 → 4.5585 (1500) | 4.8363 → 4.7585 (1500) |
+| Sep 3 (fixed) | Harvard raw | 3000 | 4.6262 → 4.5501 (2750) | 4.8363 → 4.7468 (2750) |
+| Sep 3 (fixed, negative control) | Harvard denoised | 1500 | 2.3524 → 2.2780 (1500) | 2.4852 → 2.4081 (1500); on raw test tokens 4.8705 (base 4.8363) |
+
+Every checkpoint of every fixed run beats base (Fig. ft1). The 3000-step curve flattens by ~2,500 steps: the per-250-step validation drop falls from 0.0065 to 0.0005 (Fig. ft4); the second 1,500 steps bought 0.012 nats on test.
+
+### 7.5′.3 What the adapters generate
+
+Eight paired 10-second prompts per corpus, same seed on both sides (Table T4, Fig. ft3):
+
+| group | PCS mean | voiced fraction | median \|tuning\| (c) |
+| --- | --- | --- | --- |
+| oud — base | 0.932 | 0.329 | 4.6 |
+| oud — adapter (step 500) | 0.900 | 0.538 | 25.8 |
+| oud — real held-out clips (164) | 0.914 | 0.435 | 3.6 |
+| Harvard — base | 0.869 | 0.395 | 6.4 |
+| Harvard — adapter (step 1500) | 0.706 | 0.663 | 22.8 |
+| Harvard — real test clips (1076) | 0.847 | 0.530 | 26.1 |
+
+The adapters produce 64 % (oud) and 68 % (Harvard) more trackable melody than base and adopt the real cassettes' ~25-cent tuning offset. PCS is similar (oud) or lower (Harvard) than base; at n = 8 the column is within scorer noise and no significance is claimed. Listening remains the arbiter: the oud pairs passed the owner's A/B gate; the Harvard pairs await it.
+
+### 7.5′.4 Methods caveat: denoising
+
+See the §4 caveat block: a speech enhancer alters this corpus (~15 dB removed, 1–3 kHz band gutted, waveform correlation 0.41); the adapter it yields does not transfer to raw audio.
