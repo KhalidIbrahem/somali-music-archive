@@ -1,0 +1,12 @@
+# QaraamiGen inference service — installed into ~/ai/musicgen-env (Python 3.11).
+# The model stack matches the training harness (transformers 4.57.x, peft 0.20, torch 2.14).
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart
+torch
+transformers>=4.57,<4.58
+peft
+soundfile
+numpy
+scipy
+torchcrepe
