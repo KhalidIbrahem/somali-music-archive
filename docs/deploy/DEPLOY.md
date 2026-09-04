@@ -38,6 +38,24 @@ start at every login, create the symlink yourself:
 `ln -s ~/ai/launchd/com.qaraamigen.musicgen-api.plist ~/Library/LaunchAgents/`.
 Until then, run the `bootstrap` line once after each login.
 
+## Known issue: local hairpin to the Tailscale address (2026-09-04)
+
+Verified 25/25 over `http://100.65.5.120:8765` at 11:49. After the 14:07
+sleep/wake the laptop came back on a phone-hotspot network (en0 =
+192.0.0.2) and requests from this machine *to its own* Tailscale address
+started to stall: the server log shows the request arriving and answering in
+1 ms, `nc` connects, but the response never returns to the local client.
+Restarting the service does not change it (fresh sockets bind fine). Loopback
+is unaffected. Tailscale reports no exit node, no shields-up, no health warning.
+
+- **On this laptop, always use `http://127.0.0.1:8765/demo`.**
+- **From another tailnet device** (phone, other laptop) use
+  `http://100.65.5.120:8765` — that path does not hairpin and was not tested
+  from a peer tonight; run `curl -s http://100.65.5.120:8765/health` from the
+  peer before a demo. If it fails there too: return to a normal Wi-Fi
+  network, `launchctl kickstart -k gui/501/com.qaraamigen.musicgen-api`, then
+  toggle Tailscale off/on in the menu bar.
+
 ## Endpoints
 
 | route | auth | purpose |

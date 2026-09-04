@@ -4,8 +4,12 @@
 
 1. `launchctl print gui/501/com.qaraamigen.musicgen-api | grep state` → `running`.
    If not: `launchctl bootstrap gui/501 ~/ai/launchd/com.qaraamigen.musicgen-api.plist`.
-2. Open `http://100.65.5.120:8765/demo` (or `http://127.0.0.1:8765/demo`) in a
-   clean browser window, dark theme, 1280×800 or wider. Paste the token from
+2. Open `http://127.0.0.1:8765/demo` in a clean browser window on this
+   laptop, dark theme, 1280×800 or wider. (Use the Tailscale address
+   `http://100.65.5.120:8765/demo` only from another device on your tailnet,
+   after `curl http://100.65.5.120:8765/health` works from that device — the
+   laptop cannot reliably reach its own Tailscale address; see DEPLOY.md
+   "Known issue".) Paste the token from
    `~/ai/musicgen-api/musicgen-api.env` into the API token field once (it
    stays for the tab).
 3. Pre-warm: generate once with any adapter so the first on-camera run is not
