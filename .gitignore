@@ -194,3 +194,7 @@ runs/**/train.log
 # service runtime state
 services/musicgen-api/outputs/
 services/musicgen-api/*.log
+# run-tooling flag files
+**/ALL_DONE
+**/PAUSED
+**/.DONE
