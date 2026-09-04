@@ -1,0 +1,8 @@
+pair000: Qaraami, traditional Somali music, moderate at 99 BPM, pentatonic melody rooted on D, vintage archival recording
+pair001: Qaraami, traditional Somali music, lively at 144 BPM, pentatonic melody rooted on D, vintage archival recording
+pair002: traditional Somali song, lively at 139 BPM, pentatonic melody rooted on C#, vintage archival recording
+pair003: traditional Somali song, lively at 134 BPM, pentatonic melody rooted on C#, vintage archival recording
+pair004: traditional Somali song, lively at 129 BPM, pentatonic melody rooted on E, vintage archival recording
+pair005: traditional Somali song, lively at 121 BPM, pentatonic melody rooted on E, vintage archival recording
+pair006: Qaraami, traditional Somali music, moderate at 96 BPM, pentatonic melody rooted on D, vintage archival recording
+pair007: Qaraami, traditional Somali music, moderate at 117 BPM, pentatonic melody rooted on D, vintage archival recording

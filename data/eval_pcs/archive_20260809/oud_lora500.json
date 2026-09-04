@@ -1,0 +1,12 @@
+{
+  "group": "oud_lora500",
+  "clips_scored": 8,
+  "clips_skipped_unvoiced": 0,
+  "pcs_mean": 0.942,
+  "pcs_median": 0.9777,
+  "pcs_std": 0.0661,
+  "voiced_fraction_mean": 0.538,
+  "tuning_offset_abs_median": 27.4,
+  "tonic_match_rate": 0.25,
+  "sec_total": 18.2
+}

@@ -1,0 +1,23 @@
+{
+  "denoiser": "DeepFilterNet3 (df.enhance, default settings)",
+  "source_captions": "data/captions.jsonl",
+  "clips_listed": 11386,
+  "denoised_this_run": 11296,
+  "failures_this_run": 0,
+  "missing_after_run": 0,
+  "diagnostics_median": {
+    "gain_db": 15.55,
+    "raw_lufs": -16.39,
+    "denoised_lufs_pre_gain": -29.55,
+    "corr_raw_vs_denoised": 0.41
+  },
+  "diagnostics_p10_p90_corr": [
+    0.235,
+    0.635
+  ],
+  "note": "DeepFilterNet3 is a speech enhancer; on this corpus it removes ~13-18 dB of energy (mostly 1-3 kHz) and the output correlates only ~0.3-0.45 with the raw waveform. This is the project's documented `clean` stage, reproduced as-is.",
+  "spec": "32 kHz mono PCM_16, 15.0 s, -14 LUFS, peak<=0.99 (phase1_preprocess spec)",
+  "resample": "scipy resample_poly 32k->48k->32k",
+  "seconds": 1638.9,
+  "failures": []
+}

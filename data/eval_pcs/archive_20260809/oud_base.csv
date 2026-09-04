@@ -1,0 +1,9 @@
+clip,pcs,tonic,mode,tonic_score,tuning_offset_cents,voiced_fraction,n_voiced_frames,caption_tonic,tonic_match
+gen_000.wav,,,,,,,,,
+gen_001.wav,0.9854,B,2,0.866,-12.3,0.414,206,11,1
+gen_002.wav,0.9898,E,2,0.844,-0.9,0.394,196,11,0
+gen_003.wav,0.9669,A#,2,0.841,-23.1,0.243,121,11,0
+gen_004.wav,0.9957,D,0,0.875,-4.7,0.47,234,2,1
+gen_005.wav,0.9556,C,0,0.83,-13.3,0.181,90,4,0
+gen_006.wav,0.9162,A,4,0.895,3.3,0.359,179,11,0
+gen_007.wav,0.6942,A#,2,0.759,-2.5,0.243,121,4,0

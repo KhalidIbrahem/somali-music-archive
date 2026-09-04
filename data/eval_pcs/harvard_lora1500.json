@@ -1,0 +1,12 @@
+{
+  "group": "harvard_lora1500",
+  "clips_scored": 8,
+  "clips_skipped_unvoiced": 0,
+  "pcs_mean": 0.7057,
+  "pcs_median": 0.7044,
+  "pcs_std": 0.143,
+  "voiced_fraction_mean": 0.663,
+  "tuning_offset_abs_median": 22.8,
+  "tonic_match_rate": 0.25,
+  "sec_total": 6.6
+}

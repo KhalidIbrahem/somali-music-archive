@@ -1,0 +1,14 @@
+{
+  "A_eval_mode": 4.051067471504211,
+  "B_train_mode_full": 9.735575199127197,
+  "C_train_no_dropout": 9.733668565750122,
+  "D_train_no_checkpointing": 9.787895441055298,
+  "E_train_decoder_only": 9.752533674240112,
+  "_meta": {
+    "date": "2026-09-04",
+    "machine": "M5 Max",
+    "dataset": "oud val clips (4)",
+    "harness": "probe_train_eval_gap.py (pre-fix forward path)",
+    "note": "B/C/D/E are TRAIN-mode losses on identical zero-init LoRA weights; A is eval mode. ln(2048)=7.624 is uniform-random."
+  }
+}
