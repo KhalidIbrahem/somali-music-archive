@@ -1,0 +1,183 @@
+{
+  "source": "privately shared oud-led qaraami collection (performers unlisted)",
+  "songs": 28,
+  "clips": {
+    "train": 1512,
+    "val": 133,
+    "test": 276
+  },
+  "clip_seconds": 15.0,
+  "sample_rate": 32000,
+  "loudness_lufs": -14.0,
+  "caption_template": "Somali qaraami led by the oud (kaban), moderate at 100 BPM, pentatonic melody rooted on A, intimate home recording",
+  "songs_detail": [
+    {
+      "sha256": "91513f95d40ce784",
+      "split": "train",
+      "clips": 31,
+      "tonic": "A"
+    },
+    {
+      "sha256": "35aff2c66d2e4354",
+      "split": "train",
+      "clips": 21,
+      "tonic": "A#"
+    },
+    {
+      "sha256": "fc7a8b233f286691",
+      "split": "test",
+      "clips": 55,
+      "tonic": "E"
+    },
+    {
+      "sha256": "a34b2da024a00bb8",
+      "split": "train",
+      "clips": 48,
+      "tonic": "A"
+    },
+    {
+      "sha256": "5ec30d9f3f21989e",
+      "split": "train",
+      "clips": 55,
+      "tonic": "E"
+    },
+    {
+      "sha256": "d2e59af453c63610",
+      "split": "val",
+      "clips": 48,
+      "tonic": "A"
+    },
+    {
+      "sha256": "8fcbc2bb43d06591",
+      "split": "train",
+      "clips": 73,
+      "tonic": "G#"
+    },
+    {
+      "sha256": "7658cbdfe1228593",
+      "split": "train",
+      "clips": 126,
+      "tonic": "A"
+    },
+    {
+      "sha256": "06b352d0acbff24e",
+      "split": "train",
+      "clips": 126,
+      "tonic": "A"
+    },
+    {
+      "sha256": "d887e3cd5694828b",
+      "split": "val",
+      "clips": 39,
+      "tonic": "C"
+    },
+    {
+      "sha256": "34b47544682025e4",
+      "split": "train",
+      "clips": 39,
+      "tonic": "C"
+    },
+    {
+      "sha256": "990f3e7999819b67",
+      "split": "train",
+      "clips": 35,
+      "tonic": "C#"
+    },
+    {
+      "sha256": "35829d2dfe24f26a",
+      "split": "train",
+      "clips": 34,
+      "tonic": "A"
+    },
+    {
+      "sha256": "09f9b9759382b814",
+      "split": "train",
+      "clips": 79,
+      "tonic": "G"
+    },
+    {
+      "sha256": "75e0f928f85bce24",
+      "split": "train",
+      "clips": 50,
+      "tonic": "C#"
+    },
+    {
+      "sha256": "e168df0f28cdd9ad",
+      "split": "val",
+      "clips": 46,
+      "tonic": "A"
+    },
+    {
+      "sha256": "395658281e76c97b",
+      "split": "train",
+      "clips": 48,
+      "tonic": "B"
+    },
+    {
+      "sha256": "8b41bf132ab7b11d",
+      "split": "train",
+      "clips": 48,
+      "tonic": "C"
+    },
+    {
+      "sha256": "69f314cec2e9f0a3",
+      "split": "train",
+      "clips": 33,
+      "tonic": "A"
+    },
+    {
+      "sha256": "8ec8d184731617f3",
+      "split": "train",
+      "clips": 90,
+      "tonic": "A"
+    },
+    {
+      "sha256": "63c405a18dddd0f3",
+      "split": "train",
+      "clips": 51,
+      "tonic": "B"
+    },
+    {
+      "sha256": "050390345e8a45c6",
+      "split": "train",
+      "clips": 64,
+      "tonic": "G#"
+    },
+    {
+      "sha256": "c2ac236fe95c3cba",
+      "split": "train",
+      "clips": 35,
+      "tonic": "G"
+    },
+    {
+      "sha256": "a5805ffbab246f63",
+      "split": "train",
+      "clips": 45,
+      "tonic": "A"
+    },
+    {
+      "sha256": "ee2f15f0eaf574a8",
+      "split": "test",
+      "clips": 184,
+      "tonic": "B"
+    },
+    {
+      "sha256": "2ec070fbfa2c7613",
+      "split": "train",
+      "clips": 197,
+      "tonic": "C"
+    },
+    {
+      "sha256": "83286a4e5a213fca",
+      "split": "train",
+      "clips": 184,
+      "tonic": "C"
+    },
+    {
+      "sha256": "e3a5312fef04244b",
+      "split": "test",
+      "clips": 37,
+      "tonic": "D"
+    }
+  ]
+}

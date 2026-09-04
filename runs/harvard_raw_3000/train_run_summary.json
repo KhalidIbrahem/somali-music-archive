@@ -1,0 +1,10 @@
+{
+  "run_id": "harvard_raw_3000",
+  "train_wall_s": 14314,
+  "final_ckpt": "/Users/khalidibrahimm5max/Projects/somali-music-archive/runs/harvard_raw_3000/ckpt_step_3000",
+  "sample_wav": "/Users/khalidibrahimm5max/Projects/somali-music-archive/runs/harvard_raw_3000/samples/final_step3000_batch1_cfg3.wav",
+  "sample_caption": "Qaraami, traditional Somali music, lively at 129 BPM, pentatonic melody rooted on F#, vintage archival recording",
+  "sample_gen_s": 8.4,
+  "sample_batch": 1,
+  "guidance_scale": 3.0
+}

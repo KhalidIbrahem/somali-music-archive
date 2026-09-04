@@ -1,0 +1,65 @@
+{
+  "run": "harvard_raw_3000",
+  "n_test_clips": 128,
+  "captions": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/captions.jsonl",
+  "tokens": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/tokens",
+  "val_ce": {
+    "0": 4.6262,
+    "100": 4.5944,
+    "250": 4.5804,
+    "500": 4.5702,
+    "750": 4.5656,
+    "1000": 4.561,
+    "1250": 4.5586,
+    "1500": 4.5549,
+    "1750": 4.5539,
+    "2000": 4.5523,
+    "2250": 4.5516,
+    "2500": 4.5503,
+    "2750": 4.5501,
+    "3000": 4.5501
+  },
+  "test_ce": {
+    "base": 4.8363,
+    "step_250": 4.7823,
+    "step_500": 4.7723,
+    "step_750": 4.7658,
+    "step_1000": 4.7602,
+    "step_1250": 4.7575,
+    "step_1500": 4.7542,
+    "step_1750": 4.7517,
+    "step_2000": 4.7494,
+    "step_2250": 4.7482,
+    "step_2500": 4.7473,
+    "step_2750": 4.7468,
+    "step_3000": 4.7468
+  },
+  "best_val_step": "2750",
+  "best_test_ckpt": "step_2750",
+  "median_sec_per_step": 1.15,
+  "mean_sec_per_step": 4.75,
+  "flattening": {
+    "val_drop_per_ckpt_first_quarter": 0.00647,
+    "val_drop_per_ckpt_last_quarter": 0.0005,
+    "last_three_val": {
+      "2500": 4.5503,
+      "2750": 4.5501,
+      "3000": 4.5501
+    },
+    "last_three_test": {
+      "step_2500": 4.7473,
+      "step_2750": 4.7468,
+      "step_3000": 4.7468
+    }
+  },
+  "sample": {
+    "run_id": "harvard_raw_3000",
+    "train_wall_s": 14314,
+    "final_ckpt": "/Users/khalidibrahimm5max/Projects/somali-music-archive/runs/harvard_raw_3000/ckpt_step_3000",
+    "sample_wav": "/Users/khalidibrahimm5max/Projects/somali-music-archive/runs/harvard_raw_3000/samples/final_step3000_batch1_cfg3.wav",
+    "sample_caption": "Qaraami, traditional Somali music, lively at 129 BPM, pentatonic melody rooted on F#, vintage archival recording",
+    "sample_gen_s": 8.4,
+    "sample_batch": 1,
+    "guidance_scale": 3.0
+  }
+}

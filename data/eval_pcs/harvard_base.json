@@ -1,0 +1,12 @@
+{
+  "group": "harvard_base",
+  "clips_scored": 8,
+  "clips_skipped_unvoiced": 0,
+  "pcs_mean": 0.8685,
+  "pcs_median": 0.9117,
+  "pcs_std": 0.1198,
+  "voiced_fraction_mean": 0.395,
+  "tuning_offset_abs_median": 6.4,
+  "tonic_match_rate": 0.0,
+  "sec_total": 11.5
+}
