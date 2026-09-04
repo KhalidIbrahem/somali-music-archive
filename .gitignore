@@ -198,3 +198,9 @@ services/musicgen-api/*.log
 **/ALL_DONE
 **/PAUSED
 **/.DONE
+# Stage-1 copied source audio (rights: never in git) and scale datasets
+data/raw_incoming/
+data/scale_clips/
+data/scale_tokens/
+data/ab_*/
+data/ace_step_zeroshot/
