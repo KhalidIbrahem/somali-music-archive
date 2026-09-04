@@ -1,0 +1,8 @@
+# Placeholder qaraami verse for Stage 3 zero-shot vocal generation.
+# Replace with your own lyrics; one song per .txt file. Somali, qaraami register.
+# (Public-domain-style couplet in the qaraami idiom; replace before any real use.)
+
+Hobalka qalbigayga, hees baan kuu tirinayaa
+Kaban iyo cod baa, jacaylkaaga ii sheegaya
+Habeenkii dayaxu, waa ku dhalaalayaa
+Waa adiga oo keliya, kalgacalkaygu hayaa
