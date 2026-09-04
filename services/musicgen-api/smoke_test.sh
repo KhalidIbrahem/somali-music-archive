@@ -3,7 +3,8 @@
 # Usage: ./smoke_test.sh [host]   (default 127.0.0.1)
 set -u
 HOST=${1:-127.0.0.1}; PORT=${MUSICGEN_API_PORT:-8765}; BASE="http://$HOST:$PORT"
-TOKEN=$(grep '^MUSICGEN_API_TOKEN=' ~/ai/musicgen-api/musicgen-api.env | cut -d= -f2)
+TOKEN=${MUSICGEN_API_TOKEN:-$(grep '^MUSICGEN_API_TOKEN=' ~/ai/musicgen-api/musicgen-api.env 2>/dev/null | cut -d= -f2)}
+[ -n "$TOKEN" ] || { echo "no token: set MUSICGEN_API_TOKEN or provide ~/ai/musicgen-api/musicgen-api.env"; exit 2; }
 AUTH="Authorization: Bearer $TOKEN"
 pass=0; fail=0
 check() { if [ "$2" = "$3" ]; then echo "PASS $1 ($2)"; pass=$((pass+1)); else echo "FAIL $1 (got $2, want $3)"; fail=$((fail+1)); fi; }
@@ -37,7 +38,9 @@ codes=$(for i in 1 2 3 4 5 6; do curl -s -o /dev/null -w '%{http_code}\n' -H "$A
 check "queue refuses overflow (some 429)" "$(echo "$codes" | grep -c 429 | awk '{print ($1>=1)?"yes":"no"}')" yes
 echo "     queue codes: $(echo $codes | tr '\n' ' ')"
 check "demo page 200" "$(curl -s -o /dev/null -w '%{http_code}' $BASE/demo)" 200
-check "bound on 0.0.0.0? (must be no)" "$(lsof -nP -iTCP:$PORT -sTCP:LISTEN | grep -c '\*:'$PORT)" 0
-echo "listening on: $(lsof -nP -iTCP:$PORT -sTCP:LISTEN | awk 'NR>1{print $9}' | tr '\n' ' ')"
+if [ "$HOST" = "127.0.0.1" ]; then
+  check "bound on 0.0.0.0? (must be no)" "$(lsof -nP -iTCP:$PORT -sTCP:LISTEN | grep -c '\*:'$PORT)" 0
+  echo "listening on: $(lsof -nP -iTCP:$PORT -sTCP:LISTEN | awk 'NR>1{print $9}' | tr '\n' ' ')"
+fi
 echo "== $pass passed, $fail failed =="
 [ $fail -eq 0 ]
