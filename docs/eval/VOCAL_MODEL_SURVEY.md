@@ -51,3 +51,38 @@ archival material into a vocal model. The same rules apply: research only,
 nothing uploaded, every output labelled, and the Harvard-derived portion stays
 inside the research context until the Loeb letter clears. The corpus-hours
 question (Stage 1) decides whether a vocal fine-tune is even worth attempting.
+
+## Stage 3 result — ACE-Step zero-shot (2026-09-04, executed)
+
+Installed into `~/ai/ace-step-env` (isolated; `pip install git+…ACE-Step`), 3.5B
+checkpoint auto-downloaded to `~/.cache/ace-step/checkpoints` (7.7 GB). Generated
+three zero-shot samples from the placeholder Somali qaraami verse
+(`data/lyrics/placeholder_qaraami.txt`), style prompt "Somali qaraami,
+traditional, oud (kaban), hand drums, male vocal, pentatonic melody, acoustic",
+`infer_step=60`, `guidance_scale=15`, float32 on MPS. Output in
+`data/ace_step_zeroshot/` (not distributed).
+
+| sample | seconds | PCS | voiced fraction | detected tonic | gen time |
+| --- | --- | --- | --- | --- | --- |
+| seed 42 | 29.9 | 0.794 | 0.537 | G | 40 s |
+| seed 7 | 29.9 | 0.842 | 0.546 | B | 35 s |
+| seed 123 | 45.0 | 0.774 | 0.377 | E | 44 s |
+
+**Runs on this machine:** ~1.2× real time (30 s in ~35 s) at float32 on MPS,
+well within memory. One save fix was needed: ffmpeg 9 breaks torchcodec (which
+ACE-Step's `torchaudio.save` now requires); the generation script monkeypatches
+`torchaudio.save` to write via soundfile.
+
+**Is fine-tuning on our corpus realistic? Yes, with one caveat.** ACE-Step
+supports LoRA (its own RapMachine and Lyric2Vocal LoRAs are the precedent),
+3.5B fits with huge headroom, and generation is ~real-time — a LoRA run on the
+qaraami corpus is feasible on this laptop. The zero-shot output is already
+plausibly pentatonic (PCS 0.77–0.84, in the range of real qaraami) and sings
+(voiced 0.38–0.55), so a fine-tune has a real base to improve. **The caveat is
+data shape:** ACE-Step LoRA wants (style-tags, lyrics, audio) triples, and our
+corpus has audio + synthesised style captions but **not time-aligned Somali
+lyrics per song** — transcribing/aligning lyrics for even a few hours of the
+band + Harvard vocal material is the prerequisite, and is the same
+lyric-alignment scarcity flagged in `docs/data/CORPUS_INVENTORY.md`. Verdict:
+ACE-Step LoRA is the recommended Stage-3 training path once lyrics are prepared;
+it is **not** started here (survey + zero-shot only, per the objective).
