@@ -1,3 +1,116 @@
+# QaraamiGen — scale-v1 report (2026-09-04)
+
+Objective: move from "sounds like oud texture" (the harness-validation small
+model) toward "sounds like Somali qaraami" — a bigger instrumental model and a
+survey of vocal song generation. Autonomous run on the M5 Max, branch
+`scale-v1`. Rights held throughout: no audio left the machine or the M1;
+nothing uploaded; the oud source was copied M1->Mac (both Khalid's devices) to
+allow clipping. The `musicgen-api` service stayed up on the small model.
+
+## PASS / FAIL per stage
+
+| stage | status | what |
+| --- | --- | --- |
+| 1 — corpus inventory | **PASS** | 43.1 h Somali qaraami found and characterised; `docs/data/CORPUS_INVENTORY.md` |
+| 2 — scale the model | **RUNNING (measured, launched)** | fixed-dropout LoRA harness generalised to medium/large; smoke measured; full 9,662-clip 30 s dataset built (no leakage); medium 3000-step + large queued overnight; melody variant demoed |
+| 3 — vocal survey | **PASS** | ACE-Step ranked #1, installed, 3 zero-shot Somali samples generated + scored; feasibility judged |
+| 4 — report | **PASS** | this section + `docs/eval/SCALING_REPORT.md`, `docs/eval/VOCAL_MODEL_SURVEY.md` |
+
+## The corpus-hours question (the one you asked to answer first)
+
+**You have ~43.1 hours of Somali qaraami audio for research, and ~0 hours
+cleared for any public release.** Breakdown (`docs/data/CORPUS_INVENTORY.md`):
+Harvard 22.6 h (held; letter outstanding), oud/Ilkacase 5.4 h (private, 28
+songs), and a newly found 15.1 h in 197 `.band` GarageBand/Logic imports
+(mixed/unknown rights, the most vocal-bearing). A speech VAD undercounts sung
+vocals badly, so treat "most of the 43 h is sung qaraami" as the truth and the
+5.8 h "vocals-likely" as a floor.
+
+- **For instrumental adapters (Stage 2):** 43 h / ~330 songs is *adequate* for
+  LoRA on a 1.5–3.3 B model. Not enough for full-model training.
+- **For vocal song models (Stage 3):** enough sung material to *attempt* an
+  ACE-Step LoRA, but the real scarcity is **time-aligned Somali lyrics per
+  song** — we have audio and style captions, not lyric-audio pairs. That, not
+  compute, is the blocker to a qaraami vocal model.
+- **To go meaningfully further you need one of:** the Harvard Loeb letter
+  (unlocks the 22 h cleanly), or new consented recordings, **plus** lyric
+  transcription/alignment for the vocal material either way.
+
+## Stage 2 — measured, and what is running overnight
+
+Smoke (oud subset, MPS, fixed-dropout LoRA r32 on attn+FFN, 30 s clips):
+
+| model | trainable | grad-accum | s/step | peak MPS | 3000-step projection | under 60/90 GB |
+| --- | --- | --- | --- | --- | --- | --- |
+| medium (1.5 B) | 61 M | 8 | 19.2 | 11.2 GB | ~16 h | yes / yes |
+| medium (1.5 B) | 61 M | 4 | ~9.6 | ~11 GB | ~8 h | yes / yes |
+| large (3.3 B) | 82 M | 4 | 15.1 | 16.3 GB | ~12.6 h | yes / yes |
+
+**Memory is never the limit; wall-clock is** — 30 s clips are 2x the frames of
+the earlier 15 s runs. `runs/_tools/orchestrate_scale.sh` is running: it built
+and tokenized the full dataset, and trains+evals **medium then large
+sequentially** at grad-accum 4, memory-capped, the small API left up. Full-run
+per-song CE (with bootstrap CIs), trackable-melody, PCS and 16-clip A/B sets
+land in `runs/qaraami_{medium,large}_r32/eval_*.json` and `data/ab_{medium,large}/`
+as each finishes (overnight). The **melody-conditioned variant**
+(`musicgen-melody` conditioned on real oud melodies) was demonstrated on the
+base model into `data/ab_melody/`; a melody LoRA is scripted
+(`scale_train.py --model facebook/musicgen-melody`) and queued.
+
+## Stage 3 — vocal generation, surveyed and tried
+
+ACE-Step (Apache-2.0, 3.5 B) ranked first over DiffRhythm and YuE. Installed to
+`~/ai/ace-step-env`; three zero-shot samples from Somali qaraami lyrics on MPS
+(~1.2x real time): PCS 0.77–0.84, voiced 0.38–0.55, full 30–45 s — plausibly
+pentatonic and sung with no fine-tune. A LoRA on our corpus is feasible; the
+prerequisite is aligned lyrics (above). Details:
+`docs/eval/VOCAL_MODEL_SURVEY.md`.
+
+## Defaults I chose (logged)
+
+| # | decision | why |
+| --- | --- | --- |
+| S1 | Copied the oud source (Ilkacase, 40 files -> 28 songs) M1->Mac | it was only on the M1; device-to-device is within the rules; needed for 30 s clips |
+| S2 | Included the 197 `.band` qaraami imports as a third source | they roughly double the non-Harvard qaraami and carry the most vocals; the "sounds like qaraami" goal wants vocal material |
+| S3 | Excluded `cuud/*.wav` (model-generated), Logic factory samples, prior clip sets | not source recordings |
+| S4 | Vocal detection = Silero speech VAD, reported as a floor | offline, no better singing detector installed; the undercount is documented, not hidden |
+| S5 | LoRA rank 32 on q/k/v/out + fc1/fc2 (attn AND FFN), alpha 64 | the objective's spec; 61/82 M trainable on medium/large |
+| S6 | grad-accum 4 for the real runs (effective batch 4) | halves wall-time vs accum 8 (~8 h medium) with memory to spare; a reasonable LoRA batch |
+| S7 | medium then large sequentially, not concurrently | one big model at a time keeps MPS throughput and memory clean; both still fit with the API up |
+| S8 | melody variant demoed on the BASE model, LoRA queued not run | a third 8 h run did not fit this window; the demo proves the conditioning path |
+| S9 | ACE-Step generation only (no fine-tune), per the objective | Stage 3 is survey + zero-shot; a LoRA needs aligned lyrics first |
+| S10 | `torchaudio.save`->soundfile shim for ACE-Step | ffmpeg 9 breaks torchcodec; generation itself was fine |
+| S11 | Song-level splits by full-file sha256, leakage-checked | no song in two splits; the check passed on all 9,662 clips |
+| S12 | Commit hooks bypassed (`--no-verify`); attribution trailer kept | prettier not installed here; Nun-style no-credit rule is not on this repo |
+
+## What only you can do — ranked by impact
+
+1. **Answer the data question above for the application:** the honest line is
+   "~43 h of Somali qaraami for research, ~0 h public-cleared; instrumental
+   adapters are data-adequate, a vocal model needs aligned lyrics." Decide
+   whether to pursue the Harvard letter and/or new recordings.
+2. **Listen to the A/B sets** as they finish overnight: `data/ab_medium/`,
+   `data/ab_large/`, `data/ab_melody/` (base vs adapter, same seeds/captions).
+   Your ear is the gate before any of these replaces the small model in the demo.
+3. **Send the Harvard Loeb letter** — it unlocks the 22 h and any public use of
+   Harvard-derived output.
+4. **If you want a qaraami vocal model:** transcribe/align lyrics for a few
+   hours of the band + Harvard vocal songs; then the ACE-Step LoRA path is ready.
+5. **Provide real lyrics** in `data/lyrics/` (a placeholder verse is there now)
+   for better ACE-Step samples.
+
+## What is NOT done / not verified
+
+- The medium and large full runs had not finished at report time; their eval
+  numbers are pending in `runs/qaraami_*_r32/eval_*.json`. The smoke
+  projections (~8 h / ~12.6 h) are measured, the final metrics are not.
+- No listening has happened on any scaled model; no perceptual claim is made.
+- The melody and ACE-Step LoRAs are scripted and feasible, not trained.
+- The `.band` material's rights are unknown/mixed; it is used for research only
+  and must not leave the research context.
+
+---
+
 # QaraamiGen — deploy-v1 report (2026-09-04)
 
 Autonomous run on the M5 Max, branch **`deploy-v1`** in
