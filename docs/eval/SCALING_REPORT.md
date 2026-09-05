@@ -25,9 +25,11 @@ decoder), confirming the harness fix generalises.
 
 | model | best ckpt | per-song test CE base → adapter | 95% CI on improvement | trackable-melody base → adapter | PCS base → adapter | A/B set |
 | --- | --- | --- | --- | --- | --- | --- |
-| medium | _pending_ | _pending_ | _pending_ | _pending_ | _pending_ | `data/ab_medium/` |
+| medium | step 2750 | 4.1011 → **3.9996** | +0.102 [0.078, 0.123] **sig** | 0.409 → **0.515** | 0.821 → 0.805 | `data/ab_medium/` |
 | large | _pending_ | _pending_ | _pending_ | _pending_ | _pending_ | `data/ab_large/` |
 | melody | _see below_ | | | | | |
+
+**Medium (done 2026-09-05):** every checkpoint beat base (val 4.4584 → 4.3724); best held-out per-song CE at step 2750, improvement **0.102 nats with a 95% CI [0.078, 0.123] that clears zero** — the first *statistically supported* gain in the programme (small's margins were tiny and unclaimed). Trackable melody +26% (0.409 → 0.515), the familiar more-melody pattern. 10.3 s/step, peak 11.3 GB. Large is training next.
 
 ## Melody-conditioned variant (musicgen-melody)
 
