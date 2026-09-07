@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QaraamiGen — adapting a text-to-music model to Somali qaraami</title>
+<style>
+body{margin:0;background:#fff;color:#1b1b1b;font:16px/1.55 Charter,"Iowan Old Style","Palatino Linotype",Georgia,serif}
+main{max-width:940px;margin:0 auto;padding:44px 28px 80px}
+h1{font-size:34px;line-height:1.15;margin:0 0 4px;font-weight:600}
+.sub{font-size:20px;color:#333;margin:0 0 10px}
+.by{color:#555;font-size:14.5px;margin:0 0 18px}
+nav{font-size:14.5px;margin:0 0 30px;padding:10px 0;border-top:1px solid #ddd;border-bottom:1px solid #ddd}
+nav a{margin-right:18px}
+a{color:#1a5fb4;text-decoration:none} a:hover{text-decoration:underline}
+h2{font-size:23px;margin:46px 0 10px;padding-bottom:5px;border-bottom:2px solid #C89B5F;font-weight:600}
+h3{font-size:18px;margin:30px 0 8px;font-weight:600}
+h4{font-size:15px;margin:22px 0 6px;font-weight:600;color:#333}
+p{margin:0 0 12px}
+ul{margin:0 0 12px 22px;padding:0} li{margin-bottom:6px}
+.note{color:#555;font-size:14.5px}
+table{border-collapse:collapse;width:100%;margin:10px 0 18px;font:13.5px/1.4 -apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif}
+th,td{border-top:1px solid #e3e3e3;padding:7px 8px;text-align:left;vertical-align:top}
+thead th{border-top:0;border-bottom:1px solid #bbb;color:#444;font-weight:600}
+tbody tr:last-child td{border-bottom:1px solid #e3e3e3}
+td.cap{min-width:200px;max-width:300px;color:#222}
+td.clip{min-width:150px}
+audio{display:block;width:100%;height:30px}
+.score,.lab{color:#555;font-size:12px;margin-top:3px;white-space:nowrap}
+.lab{margin:0 0 3px;font-weight:600}
+.wrap{overflow-x:auto}
+figure{margin:16px 0 22px} figure img{max-width:100%;height:auto;display:block}
+figcaption{font:13.5px/1.45 -apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;color:#555;margin-top:6px}
+.rights{background:#faf7f1;border-left:3px solid #C89B5F;padding:10px 14px;margin:14px 0}
+footer{margin-top:56px;padding-top:12px;border-top:1px solid #ddd;color:#666;font-size:13px}
+code{font-size:14px}
+</style>
+</head>
+<body>
+<main>
+
+<h1>QaraamiGen</h1>
+<p class="sub">Adapting a text-to-music model to Somali qaraami from archival cassettes</p>
+<p class="by">Khalid Ibrahim · Minneapolis, MN · September 2026 · <a href="mailto:research@somalimusicarchive.com">research@somalimusicarchive.com</a></p>
+
+<nav><a href="#listen">Listen</a><a href="#results">Results</a><a href="#defect">The defect</a><a href="#method">Method</a><a href="#rights">Rights</a></nav>
+
+<p>Somali <i>qaraami</i> is a modally organised, largely pentatonic song tradition, transmitted with
+almost no notation and surviving mainly on aging cassette tape. This page asks whether a general
+text-to-music model can learn something of that tradition from the tapes without the tapes leaving
+their rights holders, and how one would know that it had. MusicGen, at three sizes, is adapted with
+low-rank adapters on 43 hours of held archival audio, evaluated on songs it never saw, and heard
+against its own base model on identical prompts and random seeds.</p>
+
+<ul>
+<li><b>Under a corrected training harness, every checkpoint of every run beats its base model on
+held-out songs.</b> The correction matters: the Hugging Face MusicGen decoder applies dropout through
+float attributes that module-level sweeps miss, and for two months that defect read as a negative
+result.</li>
+<li><b>The gain grows with scale.</b> Per-song test cross-entropy improves by 0.102 nats on
+MusicGen-medium and 0.128 on MusicGen-large, with bootstrap intervals over songs that clear zero.</li>
+<li><b>The adapters put more trackable melody into the output</b>, up to twice the base model's at
+the largest size, and learn the cassettes' tuning offset, at some cost in pentatonic conformity. Whether that trade sounds like qaraami is a
+listening question, which is why the clips come first.</li>
+</ul>
+
+<div class="rights note">Everything audible on this page is model output. No source recording is
+included, the training audio is not distributed, and the adapters are not released. Details under
+<a href="#rights">Rights</a>.</div>
+
+<h2 id="listen">Listen</h2>
+
+<p>Each row is one prompt. The base model and the adapter receive the same text and the same random
+seed; only the adapter weights differ. Under each clip: <b>PCS</b>, the duration-weighted fraction of
+pitched frames within ±50 cents of the best-fitting anhemitonic-pentatonic set after a per-clip
+tuning fit, and the <b>voiced fraction</b>, the share of frames with a trackable pitch. Read them
+together; conformity of very little melody is not a win. Prompts are held-out test captions. The
+catalogue-derived prompts carry performer credits from the Harvard finding aid; those are omitted
+from the captions shown here.</p>
+
+<h3>MusicGen-medium (1.5 B) and MusicGen-large (3.3 B), 15-second clips</h3>
+<p class="note">Eight of the sixteen A/B prompts: the four synthetic qaraami prompts and the first four
+catalogue prompts, fixed before listening. Both sizes were trained on the same 9,662
+clips and heard on the same prompts and seeds, so the columns are comparable across the row.</p>
+<div class="wrap"><table class="ab"><thead><tr><th>prompt (held-out test caption)</th><th>medium, base</th><th>medium, adapter</th><th>large, base</th><th>large, adapter</th></tr></thead><tbody><tr><td class="cap">qaraami, Somali traditional song, led by vocals, moderate at 110 BPM, pentatonic melody rooted on E, archival qaraami recording</td><td class="clip"><audio controls preload="none" src="audio/medium_000_base.mp3"></audio><div class="score">PCS 0.844 · voiced 0.146</div></td><td class="clip"><audio controls preload="none" src="audio/medium_000_adapter.mp3"></audio><div class="score">PCS 0.564 · voiced 0.426</div></td><td class="clip"><audio controls preload="none" src="audio/large_000_base.mp3"></audio><div class="score">PCS 0.878 · voiced 0.306</div></td><td class="clip"><audio controls preload="none" src="audio/large_000_adapter.mp3"></audio><div class="score">PCS 0.537 · voiced 0.650</div></td></tr><tr><td class="cap">Somali song, led by ensemble, lively at 139 BPM, pentatonic melody rooted on A, vintage archival cassette recording, 1955–1991</td><td class="clip"><audio controls preload="none" src="audio/medium_001_base.mp3"></audio><div class="score">PCS 0.819 · voiced 0.679</div></td><td class="clip"><audio controls preload="none" src="audio/medium_001_adapter.mp3"></audio><div class="score">PCS 0.594 · voiced 0.606</div></td><td class="clip"><audio controls preload="none" src="audio/large_001_base.mp3"></audio><div class="score">PCS 0.950 · voiced 0.794</div></td><td class="clip"><audio controls preload="none" src="audio/large_001_adapter.mp3"></audio><div class="score">PCS 0.624 · voiced 0.949</div></td></tr><tr><td class="cap">Somali song, led by ensemble, lively at 125 BPM, pentatonic melody rooted on D, vintage archival cassette recording, 1955–1991</td><td class="clip"><audio controls preload="none" src="audio/medium_002_base.mp3"></audio><div class="score">PCS 0.857 · voiced 0.680</div></td><td class="clip"><audio controls preload="none" src="audio/medium_002_adapter.mp3"></audio><div class="score">PCS 0.494 · voiced 0.822</div></td><td class="clip"><audio controls preload="none" src="audio/large_002_base.mp3"></audio><div class="score">PCS 0.996 · voiced 0.309</div></td><td class="clip"><audio controls preload="none" src="audio/large_002_adapter.mp3"></audio><div class="score">PCS 0.789 · voiced 0.710</div></td></tr><tr><td class="cap">Somali song, led by ensemble, moderate at 107 BPM, pentatonic melody rooted on C#, vintage archival cassette recording, 1955–1991</td><td class="clip"><audio controls preload="none" src="audio/medium_003_base.mp3"></audio><div class="score">PCS 0.994 · voiced 0.235</div></td><td class="clip"><audio controls preload="none" src="audio/medium_003_adapter.mp3"></audio><div class="score">PCS 0.948 · voiced 0.930</div></td><td class="clip"><audio controls preload="none" src="audio/large_003_base.mp3"></audio><div class="score">PCS 0.677 · voiced 0.612</div></td><td class="clip"><audio controls preload="none" src="audio/large_003_adapter.mp3"></audio><div class="score">PCS 0.625 · voiced 0.746</div></td></tr><tr><td class="cap">Somali song, led by ensemble, moderate at 104 BPM, pentatonic melody rooted on C#, vintage archival cassette recording, 1955–1991</td><td class="clip"><audio controls preload="none" src="audio/medium_004_base.mp3"></audio><div class="score">PCS 0.828 · voiced 0.257</div></td><td class="clip"><audio controls preload="none" src="audio/medium_004_adapter.mp3"></audio><div class="score">PCS 0.961 · voiced 0.102</div></td><td class="clip"><audio controls preload="none" src="audio/large_004_base.mp3"></audio><div class="score">PCS 0.980 · voiced 0.397</div></td><td class="clip"><audio controls preload="none" src="audio/large_004_adapter.mp3"></audio><div class="score">PCS 0.857 · voiced 0.777</div></td></tr><tr><td class="cap">qaraami, Somali traditional song, led by the oud (kaban), lively at 156 BPM, pentatonic melody rooted on D#, archival qaraami recording</td><td class="clip"><audio controls preload="none" src="audio/medium_008_base.mp3"></audio><div class="score">PCS 0.683 · voiced 0.110</div></td><td class="clip"><audio controls preload="none" src="audio/medium_008_adapter.mp3"></audio><div class="score">PCS 0.910 · voiced 0.504</div></td><td class="clip"><audio controls preload="none" src="audio/large_008_base.mp3"></audio><div class="score">PCS 0.734 · voiced 0.493</div></td><td class="clip"><audio controls preload="none" src="audio/large_008_adapter.mp3"></audio><div class="score">PCS 0.929 · voiced 0.640</div></td></tr><tr><td class="cap">qaraami, Somali traditional song, led by the oud (kaban), moderate at 114 BPM, pentatonic melody rooted on G#, archival qaraami recording</td><td class="clip"><audio controls preload="none" src="audio/medium_010_base.mp3"></audio><div class="score">PCS 0.863 · voiced 0.234</div></td><td class="clip"><audio controls preload="none" src="audio/medium_010_adapter.mp3"></audio><div class="score">PCS 0.842 · voiced 0.160</div></td><td class="clip"><audio controls preload="none" src="audio/large_010_base.mp3"></audio><div class="score">PCS 0.852 · voiced 0.480</div></td><td class="clip"><audio controls preload="none" src="audio/large_010_adapter.mp3"></audio><div class="score">PCS 0.988 · voiced 0.219</div></td></tr><tr><td class="cap">qaraami, Somali traditional song, led by hand drums, lively at 170 BPM, pentatonic melody rooted on A, archival qaraami recording</td><td class="clip"><audio controls preload="none" src="audio/medium_011_base.mp3"></audio><div class="score">PCS 0.711 · voiced 0.120</div></td><td class="clip"><audio controls preload="none" src="audio/medium_011_adapter.mp3"></audio><div class="score">PCS 0.992 · voiced 0.500</div></td><td class="clip"><audio controls preload="none" src="audio/large_011_base.mp3"></audio><div class="score">PCS 0.848 · voiced 0.273</div></td><td class="clip"><audio controls preload="none" src="audio/large_011_adapter.mp3"></audio><div class="score">PCS 0.933 · voiced 0.499</div></td></tr></tbody></table></div>
+
+<h3>MusicGen-small (0.6 B), one collection each, 10-second clips</h3>
+<p class="note">The first two adapters, each trained on a single collection with rank-16 LoRA on the
+decoder attention projections. First four pairs of each eight-pair listening set.</p>
+<h4>oud adapter — private oud (kaban) qaraami collection, 28 songs</h4><table class="ab"><thead><tr><th>prompt</th><th>base</th><th>adapter</th></tr></thead><tbody><tr><td class="cap">Somali qaraami led by the oud (kaban), lively at 121 BPM, pentatonic melody rooted on D, intimate home recording</td><td class="clip"><audio controls preload="none" src="audio/oud_000_base.mp3"></audio></td><td class="clip"><audio controls preload="none" src="audio/oud_000_adapter.mp3"></audio><div class="score">PCS 0.991 · voiced 0.430</div></td></tr><tr><td class="cap">Somali qaraami led by the oud (kaban), lively at 121 BPM, pentatonic melody rooted on B, intimate home recording</td><td class="clip"><audio controls preload="none" src="audio/oud_001_base.mp3"></audio><div class="score">PCS 0.981 · voiced 0.414</div></td><td class="clip"><audio controls preload="none" src="audio/oud_001_adapter.mp3"></audio><div class="score">PCS 0.909 · voiced 0.685</div></td></tr><tr><td class="cap">Somali qaraami led by the oud (kaban), moderate at 110 BPM, pentatonic melody rooted on B, intimate home recording</td><td class="clip"><audio controls preload="none" src="audio/oud_002_base.mp3"></audio><div class="score">PCS 0.990 · voiced 0.394</div></td><td class="clip"><audio controls preload="none" src="audio/oud_002_adapter.mp3"></audio><div class="score">PCS 0.837 · voiced 0.813</div></td></tr><tr><td class="cap">Somali qaraami led by the oud (kaban), lively at 144 BPM, pentatonic melody rooted on B, intimate home recording</td><td class="clip"><audio controls preload="none" src="audio/oud_003_base.mp3"></audio><div class="score">PCS 0.967 · voiced 0.243</div></td><td class="clip"><audio controls preload="none" src="audio/oud_003_adapter.mp3"></audio><div class="score">PCS 0.992 · voiced 0.504</div></td></tr></tbody></table><h4>harvard_raw adapter — Maryan “Aryette” Omar Ali Collection, Harvard AWM Spec Coll 103, 119 tracks</h4><table class="ab"><thead><tr><th>prompt</th><th>base</th><th>adapter</th></tr></thead><tbody><tr><td class="cap">Qaraami, traditional Somali music, moderate at 99 BPM, pentatonic melody rooted on D, vintage archival recording</td><td class="clip"><audio controls preload="none" src="audio/harvard_raw_000_base.mp3"></audio><div class="score">PCS 0.870 · voiced 0.309</div></td><td class="clip"><audio controls preload="none" src="audio/harvard_raw_000_adapter.mp3"></audio><div class="score">PCS 0.560 · voiced 0.488</div></td></tr><tr><td class="cap">Qaraami, traditional Somali music, lively at 144 BPM, pentatonic melody rooted on D, vintage archival recording</td><td class="clip"><audio controls preload="none" src="audio/harvard_raw_001_base.mp3"></audio><div class="score">PCS 0.977 · voiced 0.261</div></td><td class="clip"><audio controls preload="none" src="audio/harvard_raw_001_adapter.mp3"></audio><div class="score">PCS 0.723 · voiced 0.912</div></td></tr><tr><td class="cap">traditional Somali song, lively at 139 BPM, pentatonic melody rooted on C#, vintage archival recording</td><td class="clip"><audio controls preload="none" src="audio/harvard_raw_002_base.mp3"></audio><div class="score">PCS 0.733 · voiced 0.120</div></td><td class="clip"><audio controls preload="none" src="audio/harvard_raw_002_adapter.mp3"></audio><div class="score">PCS 0.856 · voiced 0.600</div></td></tr><tr><td class="cap">traditional Somali song, lively at 134 BPM, pentatonic melody rooted on C#, vintage archival recording</td><td class="clip"><audio controls preload="none" src="audio/harvard_raw_003_base.mp3"></audio><div class="score">PCS 0.898 · voiced 0.394</div></td><td class="clip"><audio controls preload="none" src="audio/harvard_raw_003_adapter.mp3"></audio><div class="score">PCS 0.686 · voiced 0.339</div></td></tr></tbody></table>
+
+<h3>Training progression, MusicGen-large</h3>
+<p class="note">One held-out prompt sampled from the same seed at successive checkpoints:
+<i>Somali song, led by ensemble, moderate at 114 BPM, pentatonic melody rooted on C, vintage archival cassette recording, 1955–1991</i>.</p>
+<div class="wrap"><table class="ab"><tbody><tr><td class="clip"><div class="lab">step 250</div><audio controls preload="none" src="audio/large_step0250.mp3"></audio></td><td class="clip"><div class="lab">step 1,000</div><audio controls preload="none" src="audio/large_step1000.mp3"></audio></td><td class="clip"><div class="lab">step 2,000</div><audio controls preload="none" src="audio/large_step2000.mp3"></audio></td><td class="clip"><div class="lab">step 2,750 (best)</div><audio controls preload="none" src="audio/large_step2750.mp3"></audio></td></tr></tbody></table></div>
+
+<h3>Melody conditioning, preliminary</h3>
+<p class="note">MusicGen-melody with no adapter, conditioned on the chroma of a held-out real qaraami
+clip in place of a text-only prompt. This is the conditioning path a melody adapter would use; the
+reference recordings are not included. The three clips with the most trackable melody of eight.</p>
+<div class="wrap"><table class="ab"><tbody><tr><td class="clip"><audio controls preload="none" src="audio/melody_005.mp3"></audio><div class="score">PCS 0.803 · voiced 0.631</div></td><td class="clip"><audio controls preload="none" src="audio/melody_001.mp3"></audio><div class="score">PCS 0.832 · voiced 0.564</div></td><td class="clip"><audio controls preload="none" src="audio/melody_000.mp3"></audio><div class="score">PCS 0.974 · voiced 0.365</div></td></tr></tbody></table></div>
+
+<h2 id="results">Results</h2>
+
+<h3>Scale runs</h3>
+<p>Held-out per-song cross-entropy on 27 unseen test songs (128 clips), base model
+against adapter, with a bootstrap 95% interval resampled over songs rather than clips, because same-song
+clips share a cassette and a channel and are not independent. PCS and voiced fraction are means over
+the 16-clip A/B set.</p>
+<div class="wrap"><table><thead><tr><th>model</th><th>params</th><th>LoRA params</th><th>best ckpt</th><th>per-song test CE, base → adapter</th><th>gain (nats), 95% CI</th><th>PCS, base → adapter</th><th>voiced fraction, base → adapter</th></tr></thead><tbody><tr><td>MusicGen-medium</td><td>1.5 B</td><td>61.3 M</td><td>step 2750</td><td>4.1011 → <b>3.9996</b></td><td>+0.102 [0.078, 0.123]</td><td>0.821 → 0.805 (-0.017)</td><td>0.409 → 0.515 (+0.106)</td></tr><tr><td>MusicGen-large</td><td>3.3 B</td><td>81.8 M</td><td>step 2750</td><td>4.0750 → <b>3.9469</b></td><td>+0.128 [0.104, 0.152]</td><td>0.872 → 0.785 (-0.087)</td><td>0.355 → 0.683 (+0.328)</td></tr></tbody></table></div>
+<p>The rigorous metric improves with size and the intervals do not overlap zero. The large adapter
+reaches the lowest held-out cross-entropy in the programme. On the generation side the larger model
+puts far more pitched, sung material into its output (0.355 →
+0.683 voiced), and lands off the pentatonic set more often
+while doing so (0.872 → 0.785 PCS). At
+sixteen prompts the PCS column is inside the scorer's noise; the voiced-fraction shift is not.</p>
+
+<figure>
+<img src="figures/ft7_scale_val_curves.png" alt="Validation cross-entropy per checkpoint for the medium and large runs">
+<figcaption>Validation token cross-entropy at every checkpoint of the medium and large runs
+(48 validation clips, song-level split). Both curves flatten by about step 2,500; the best held-out
+per-song test cross-entropy is at step 2,750 for both.</figcaption>
+</figure>
+
+<h3>Small runs</h3>
+<p>MusicGen-small, one collection per adapter, 15-second training clips. Validation and test are
+song-level splits; test songs are unseen. Cross-entropy is not comparable across corpora.</p>
+<div class="wrap"><table><thead><tr><th>adapter</th><th>corpus</th><th>best ckpt</th><th>val CE</th><th>test CE (unseen songs)</th><th>PCS, base → adapter</th><th>voiced fraction, base → adapter</th></tr></thead><tbody><tr><td>oud adapter</td><td>private oud (kaban) qaraami collection, 28 songs</td><td>step 500 of 1,000</td><td>4.5132 → <b>4.4785</b></td><td>2.6302 → <b>2.6092</b></td><td>0.932 → 0.900 (real clips 0.914)</td><td>0.329 → 0.538 (real clips 0.435)</td></tr><tr><td>harvard_raw adapter</td><td>Maryan “Aryette” Omar Ali Collection, Harvard AWM Spec Coll 103, 119 tracks</td><td>step 2,750 of 3,000</td><td>4.6262 → <b>4.5501</b></td><td>4.8363 → <b>4.7468</b></td><td>0.869 → 0.706 (real clips 0.847)</td><td>0.395 → 0.663 (real clips 0.530)</td></tr></tbody></table></div>
+<figure>
+<img src="figures/ft3_pcs_voiced.png" alt="PCS and voiced fraction for base, adapter and real clips on both corpora">
+<figcaption>Pentatonic conformity and voiced fraction for base model, adapter and real held-out clips,
+eight prompts per generated group. The adapters produce more melody than the base model and, on both
+corpora, more than the real clips; conformity is similar (oud) or lower (Harvard). They also learn the
+cassettes' tuning offset: base output sits near A440, adapter output about 25 cents off, as the tapes are.</figcaption>
+</figure>
+
+<h3>What is not claimed</h3>
+<ul>
+<li>No listening study yet. The A/B sets exist so that one can be run; the numbers above do not
+substitute for it.</li>
+<li>No long-form structure: 10 to 15 second clips.</li>
+<li>Not a model of Somali music at large. Each adapter is a model of the collections it saw.</li>
+<li>Small-model margins are small (0.5 to 3%), real and reproducible, and stated without significance
+tests; the scale runs are where the intervals are reported.</li>
+</ul>
+
+<h2 id="defect">The defect that looked like a negative result</h2>
+
+<p>The first two months of fine-tuning produced a clean negative: at two learning rates and on two
+corpora, held-out loss rose from 4.6 to about 6.7 nats within 250 steps and never recovered, while
+the generations lost half their melodic content. It was written up as such. It was the harness.</p>
+
+<figure>
+<img src="figures/ft2_dropout_probe.png" alt="Train-mode versus eval-mode loss on identical weights">
+<figcaption>A five-condition probe on identical zero-initialised LoRA weights. Eval-mode loss is 4.05
+nats; train-mode loss is 9.74, worse than uniform random over the 2,048-token codebook (7.62). Zeroing
+every <code>nn.Dropout</code> module (C), disabling checkpointing (D), or putting the encoders in eval
+mode (E) changes nothing.</figcaption>
+</figure>
+
+<p>The Hugging Face MusicGen decoder applies dropout <i>functionally</i>, through 37 float attributes
+consumed by <code>F.dropout(…, training=self.training)</code>, which a sweep over
+<code>nn.Dropout</code> modules never touches. Optimisation was fitting a forward path that evaluation
+never saw. Zeroing those attributes makes the train and eval paths identical; the first corrected run
+beat the base model at every checkpoint, and the Harvard corpus, which had been the "structural
+negative", did the same. On the medium and large decoders the same fix zeroes 61 attributes. The
+failure mode is generic to this model family, which is why it is reported here rather than
+buried.</p>
+
+<figure>
+<img src="figures/ft1_val_curves.png" alt="Validation curves under the broken and the fixed harness">
+<figcaption>Validation cross-entropy for every MusicGen-small run. Dashed: the broken harness, both
+corpora, all learning rates. Solid: the corrected harness. Dotted: the base model.</figcaption>
+</figure>
+
+<h2 id="method">Method</h2>
+
+<h3>Data</h3>
+<p>Three held collections of Somali qaraami, 43.1 hours in all, none cleared for public release:
+the Maryan "Aryette" Omar Ali Collection at Harvard's Archive of World Music (22.6 h, mid-century
+ensemble song on cassette), a privately shared oud-led collection (5.4 h, 28 songs, performers
+unlisted), and 15.1 h of qaraami recordings recovered from the project's own session archives. For the
+scale runs the audio was cut into 30-second clips at 32 kHz mono, split by song so that no song appears
+in two splits: 7,857 training clips from 252 songs,
+1,008 validation from 29, 797 test from
+30. Captions are measured rather than written: tempo from the audio, tonic from the
+pentatonic fit, instrumentation and era from the catalogue.</p>
+
+<h3>Models and training</h3>
+<div class="wrap"><table>
+<thead><tr><th></th><th>MusicGen-small</th><th>MusicGen-medium</th><th>MusicGen-large</th></tr></thead>
+<tbody>
+<tr><td>parameters</td><td>0.59 B</td><td>1.5 B</td><td>3.3 B</td></tr>
+<tr><td>LoRA</td><td>r 16, α 32, attention q/k/v/out</td><td>r 32, α 64, attention + FFN (q/k/v/out, fc1, fc2)</td><td>r 32, α 64, attention + FFN</td></tr>
+<tr><td>trainable</td><td>6.3 M</td><td>61.3 M</td><td>81.8 M</td></tr>
+<tr><td>clips</td><td>15 s, one collection</td><td>30 s, all three</td><td>30 s, all three</td></tr>
+<tr><td>schedule</td><td>lr 1e-4 cosine, 1,000 to 3,000 steps</td><td>lr 5e-05 cosine, 3,000 steps, 100 warm-up</td><td>lr 5e-05 cosine, 3,000 steps, 100 warm-up</td></tr>
+<tr><td>batch</td><td>1 × 4 accumulation</td><td>1 × 4</td><td>1 × 4</td></tr>
+<tr><td>compute</td><td>Apple M1 / M5 Max, fp32 on MPS</td><td>M5 Max, ~10 s/step, 11.3 GB peak</td><td>M5 Max, ~16 s/step, 16.3 GB peak</td></tr>
+<tr><td>dropout attributes zeroed</td><td>37</td><td>61</td><td>61</td></tr>
+</tbody></table></div>
+<p>Everything runs on a single laptop, fp32 on Apple silicon, with precomputed EnCodec tokens and
+delay-pattern labels. Base weights are unchanged; the adapters are hot-swapped at inference by a
+local service that labels every generation with the adapter's corpus and a non-distribution line.</p>
+
+<h3>Evaluation</h3>
+<p>Two families of measurement. <b>Likelihood</b>: token cross-entropy on unseen songs, averaged within
+song and then across songs, with the confidence interval bootstrapped over songs. The song is the
+independent unit on archival audio; an embedding audit on this corpus found that nearest neighbours
+retrieve same-cassette material at thirteen times chance, so clip-level splits leak the channel.
+<b>Output</b>: PCS and voiced fraction from a CREPE pitch track on generated audio, the same scorer the
+project uses to measure intonation in the real recordings, plus paired A/B sets for listening. PCS is
+reported only beside the voiced fraction, and treated as a direction rather than a statistic at these
+sample sizes.</p>
+
+<h2 id="rights">Rights and provenance</h2>
+<p>The Harvard collection is not rights-cleared for redistribution and written permission from the
+Loeb Music Library is outstanding; the oud collection's rights remain with its performers, who are not
+named; the third source is of mixed and partly unknown provenance. All three are used for training and
+measurement only. No recording from any of them is included on this page, in the repository, or in any
+public artifact, and the adapters, which are derived from them, are not distributed. The clips here are
+the outputs of models conditioned on text, generated for evaluation, and are labelled as such wherever
+they appear. Data provenance, per-collection status and the outstanding items are documented in the
+repository.</p>
+
+<footer>
+Generated from the run artifacts by <code>apps/ai-service/scripts/build_demo_page.py</code>
+at commit c01a17c on 2026-09-07. Code, model cards, evaluation report
+and the paper draft are available on request.
+</footer>
+
+</main>
+</body>
+</html>
