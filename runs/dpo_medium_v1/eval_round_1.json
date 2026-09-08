@@ -43,5 +43,11 @@
   },
   "ab_dir": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/ab_dpo_medium_v1",
   "eval_minutes": 23.1,
-  "round_minutes": 193.8
+  "round_minutes": 193.8,
+  "spread_pca": {
+    "before": 0.425,
+    "after": 0.222,
+    "real_oud_test": 0.667,
+    "note": "mean pairwise Euclidean distance between clips in the 32-d reference space; lower after than before means less diversity"
+  }
 }

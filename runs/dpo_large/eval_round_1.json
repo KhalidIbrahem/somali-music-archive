@@ -1,0 +1,54 @@
+{
+  "round": 1,
+  "prompts": 64,
+  "samples": 256,
+  "pairs": 62,
+  "stopped_early": null,
+  "gen_minutes": 65.1,
+  "train_minutes": 11.4,
+  "steps": 62,
+  "held_out_oud_token_ce": {
+    "before": 4.1418,
+    "after": 4.1797,
+    "clips": 64
+  },
+  "before": {
+    "reward": -0.5209,
+    "oud_dist": 5.098,
+    "oud_sim": 0.8989,
+    "band_snr_db": 19.8002,
+    "hiss_index": 0.0013,
+    "rolloff95_hz": 9692.5775,
+    "noise_floor_db": -33.2302,
+    "quiet_flatness": 0.0251,
+    "hf_ratio": 0.0102,
+    "pcs": 0.9244,
+    "voiced_fraction": 0.505
+  },
+  "after": {
+    "reward": 0.5209,
+    "oud_dist": 4.1399,
+    "oud_sim": 0.9266,
+    "band_snr_db": 19.8207,
+    "hiss_index": -0.0013,
+    "rolloff95_hz": 9873.0425,
+    "noise_floor_db": -30.291,
+    "quiet_flatness": 0.0164,
+    "hf_ratio": 0.0071,
+    "pcs": 0.9211,
+    "voiced_fraction": 0.5534
+  },
+  "fad_to_real_oud_test": {
+    "before": 0.4394231586361128,
+    "after": 0.49544702200563207
+  },
+  "ab_dir": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/ab_dpo_large",
+  "eval_minutes": 28.8,
+  "round_minutes": 138.5,
+  "spread_pca": {
+    "before": 0.453,
+    "after": 0.348,
+    "real_oud_test": 0.667,
+    "note": "mean pairwise Euclidean distance between clips in the 32-d reference space; lower after than before means less diversity"
+  }
+}
