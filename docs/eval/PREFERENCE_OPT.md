@@ -83,6 +83,7 @@ The listener's choices track the melody term and go against the hiss term (he ch
 | reward | -0.675 | 0.675 | composite, z-scored over the union of both sides |
 | oud_dist | 5.692 | 4.286 | Mahalanobis distance to the real oud clips (real train 4.20, test 4.13) |
 | oud_sim | 0.872 | 0.921 | cosine to the real-oud centroid |
+| band_snr_db | 13.089 | 15.868 | 3–10 kHz band SNR (real cassette 4.5, real oud 8.3) |
 | pcs | 0.921 | 0.957 | pentatonic conformity |
 | voiced_fraction | 0.621 | 0.510 | trackable melody |
 | noise_floor_db | -24.554 | -25.477 | 10th-percentile frame RMS |

@@ -19,7 +19,10 @@
     "quiet_flatness": 0.0095,
     "hf_ratio": 0.0034,
     "pcs": 0.9208,
-    "voiced_fraction": 0.6207
+    "voiced_fraction": 0.6207,
+    "band_snr_db": 13.0895,
+    "hiss_index": 0.1612,
+    "rolloff95_hz": 7939.64
   },
   "after": {
     "reward": 0.6751,
@@ -29,7 +32,10 @@
     "quiet_flatness": 0.0142,
     "hf_ratio": 0.0042,
     "pcs": 0.9566,
-    "voiced_fraction": 0.5104
+    "voiced_fraction": 0.5104,
+    "band_snr_db": 15.8682,
+    "hiss_index": -0.1612,
+    "rolloff95_hz": 9046.6875
   },
   "fad_to_real_oud_test": {
     "before": 0.5113262184995185,
