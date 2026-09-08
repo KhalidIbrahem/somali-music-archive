@@ -277,6 +277,88 @@ def listening_html(res: dict[str, dict]) -> str:
         f'<tbody>{"".join(rows)}</tbody></table></div>')
 
 
+DPO_STAGES = (("small_oud", "MusicGen-small, oud adapter"), ("medium", "MusicGen-medium"), ("large", "MusicGen-large"))
+N_DPO_PAIRS = 6
+
+
+def dpo_results() -> list[dict]:
+    """One entry per finished preference round: config, eval summary, A/B scores."""
+    out = []
+    for tag, label in DPO_STAGES:
+        run = RUNS / f"dpo_{tag}"
+        ev = run / "eval_round_1.json"
+        if not ev.exists():
+            continue
+        e = json.loads(ev.read_text())
+        cfg = json.loads((run / "config.json").read_text())
+        ab = DATA / f"ab_dpo_{tag}"
+        scores = json.loads((ab / "ab_scores.json").read_text()) if (ab / "ab_scores.json").exists() else {"pairs": []}
+        out.append({"tag": tag, "label": label, "eval": e, "cfg": cfg, "ab_dir": ab, "scores": scores})
+    return out
+
+
+def dpo_html(stages: list[dict], clips: dict[str, Clip], listening: dict[str, dict]) -> str:
+    if not stages:
+        return ""
+    rows = []
+    for s in stages:
+        e, b, a = s["eval"], s["eval"]["before"], s["eval"]["after"]
+        ce = e["held_out_oud_token_ce"]
+        snr = f'{f3(b.get("band_snr_db"))} → {f3(a.get("band_snr_db"))}' if b.get("band_snr_db") is not None else "–"
+        rows.append(f'<tr><td>{esc(s["label"])}</td><td>{e["pairs"]}</td><td>{e["steps"]}</td>'
+                    f'<td>{f3(b["oud_dist"])} → <b>{f3(a["oud_dist"])}</b></td><td>{snr}</td>'
+                    f'<td>{f3(b["pcs"])} → {f3(a["pcs"])}</td><td>{f3(b["voiced_fraction"])} → {f3(a["voiced_fraction"])}</td>'
+                    f'<td>{f4(ce["before"])} → {f4(ce["after"])}</td></tr>')
+    table = ('<table><thead><tr><th>model</th><th>pairs</th><th>steps</th><th>distance to real oud, before → after</th>'
+             '<th>band SNR dB, before → after</th><th>PCS</th><th>voiced fraction</th><th>held-out oud token CE</th></tr></thead>'
+             f'<tbody>{"".join(rows)}</tbody></table>')
+    top = stages[-1]
+    prow = []
+    for row in top["scores"]["pairs"][:N_DPO_PAIRS]:
+        i = row["pair"]
+        cb, ca = clips.get(f'dpo_{top["tag"]}_{i:03d}_base'), clips.get(f'dpo_{top["tag"]}_{i:03d}_adapter')
+        if cb and ca:
+            prow.append(f'<tr><td class="cap">{esc(row["caption"])}</td>{player(cb)}{player(ca)}</tr>')
+    pairs_table = ('<table class="ab"><thead><tr><th>prompt</th><th>before</th><th>after</th></tr></thead>'
+                   f'<tbody>{"".join(prow)}</tbody></table>') if prow else ""
+    blind = []
+    for s in stages:
+        r = listening.get(f'ab_dpo_{s["tag"]}')
+        if r:
+            lo, hi = wilson(r["adapter"], r["n"])
+            blind.append(f'{esc(s["label"])}: after preferred in {r["adapter"]} of {r["n"]} pairs, before in {r["base"]}, '
+                         f'neither in {r["none"]} (rate {r["adapter"] / r["n"]:.2f}, 95% interval {lo:.2f} to {hi:.2f})')
+    blind_html = ('<p>Blind paired comparison, same protocol as 2.3: ' + "; ".join(blind) + '.</p>') if blind else \
+        '<p>The before-versus-after blind test on these sets has not been run yet.</p>'
+    return f"""
+<h2 id="dpo">5. Preference optimisation</h2>
+
+<p>The supervised adapters learn the corpus as recorded, and the blind test said so: the large adapter was
+preferred and called noisy in the same breath. As a next step I optimised the adapters for what I want to
+hear rather than for the likelihood of the tapes, using direct preference optimisation on the adapter
+weights with a reward measured on the model's own samples. The reward has three terms: Mahalanobis
+distance to the real oud recordings in the embedding space of MERT-v1-95M (fitted on 1,512 real clips),
+a hiss measure from the spread of energy in the 3 to 10 kHz band (real cassettes 4.5 dB, real oud
+recordings 8.3, base MusicGen 10.4), and the pentatonic-melody score, combined as a z-scored sum with a
+penalty for near-silence. Each round draws four samples per prompt from the adapter on held prompts from
+the oud caption grammar, keeps the best and the worst as a preference pair, and trains the adapter
+against the round's starting weights as the reference, with length-normalised token log-probabilities
+and every dropout disabled so that policy and reference are the same function of the weights.</p>
+
+<div class="wrap">{table}</div>
+
+<p>The trade is explicit. Distance to the real recordings falls to the level of the real clips themselves
+(4.1 to 4.2 on this scale), while held-out token cross-entropy on unseen oud songs rises: the model becomes
+a better generator of oud-like audio and a worse density model of the tapes. Which of those matters is a
+listening question. The pairs below are the same prompt and seed before and after the optimisation of
+{esc(top["label"])}.</p>
+
+<div class="wrap">{pairs_table}</div>
+
+{blind_html}
+"""
+
+
 def build_html(ctx: dict) -> str:
     m, lg = ctx["scale"]["medium"], ctx["scale"]["large"]
     em, el = m["eval"], lg["eval"]
@@ -412,7 +494,7 @@ code{{font-size:14px}}
 <p class="sub">Adapting a text-to-music model to Somali qaraami from archival cassettes</p>
 <p class="by">Khalid Ibrahim · Minneapolis, MN · {today.strftime("%B %Y")} · <a href="mailto:{CONTACT}">{CONTACT}</a></p>
 
-<nav><a href="#audio">1. Audio examples</a><a href="#results">2. Results</a><a href="#harness">3. Training harness</a><a href="#method">4. Method</a><a href="#rights">5. Rights</a></nav>
+<nav><a href="#audio">1. Audio examples</a><a href="#results">2. Results</a><a href="#harness">3. Training harness</a><a href="#method">4. Method</a>{'<a href="#dpo">5. Preference optimisation</a><a href="#rights">6. Rights</a>' if ctx["dpo"] else '<a href="#rights">5. Rights</a>'}</nav>
 
 <p>Somali <i>qaraami</i> is a modally organised, mostly pentatonic song tradition that was transmitted
 without notation and now survives largely on cassette. I have been working on two questions: whether
@@ -433,7 +515,7 @@ to a pentatonic set. Whether the result sounds like qaraami is a matter for list
 comes first.</p>
 
 <p class="note">All audio on this page is model output. None of the training recordings is included,
-and the adapters are not distributed (Section 5).</p>
+and the adapters are not distributed (Section {6 if ctx["dpo"] else 5}).</p>
 
 <h2 id="audio">1. Audio examples</h2>
 
@@ -585,7 +667,9 @@ same scorer I use to measure intonation in the recordings themselves, together w
 for listening. I report PCS only alongside the voiced fraction and treat it as a direction rather
 than a statistic at these sample sizes.</p>
 
-<h2 id="rights">5. Rights and provenance</h2>
+{dpo_html(ctx["dpo"], ctx["clips"], listening)}
+
+<h2 id="rights">{6 if ctx["dpo"] else 5}. Rights and provenance</h2>
 <p>The Harvard collection is not rights-cleared for redistribution and my request for written
 permission from the Loeb Music Library is pending. The oud collection's rights remain with its
 performers, who are not named. The third source is of mixed and partly unknown provenance. All three
@@ -658,6 +742,17 @@ def main() -> None:
         clips[clip.name] = clip
         melody_clips.append(clip)
 
+    dpo = dpo_results()
+    if dpo:
+        top = dpo[-1]
+        for row in top["scores"]["pairs"][:N_DPO_PAIRS]:
+            i = row["pair"]
+            for side in ("base", "adapter"):
+                src = top["ab_dir"] / f"pair{i:03d}_{side}.wav"
+                if src.exists():
+                    sc = row.get(side) or {}
+                    clips[f'dpo_{top["tag"]}_{i:03d}_{side}'] = Clip(src, f'dpo_{top["tag"]}_{i:03d}_{side}', sc.get("pcs"), sc.get("voiced_fraction"))
+
     missing = [c.src for c in clips.values() if not c.src.exists()]
     if missing:
         sys.exit("missing source clips:\n  " + "\n  ".join(map(str, missing)))
@@ -673,7 +768,7 @@ def main() -> None:
         "scale": scale, "scale_captions": scale_captions, "clips": clips, "best_step": best_step,
         "prog_steps": prog_steps, "prog_caption": (RUNS / "qaraami_large_r32/sample_caption.txt").read_text().strip(),
         "melody_clips": melody_clips, "small_captions": small_captions, "small_summary": small_summary,
-        "splits": split_counts(), "listening": listening_results(),
+        "splits": split_counts(), "listening": listening_results(), "dpo": dpo,
     }
     page = build_html(ctx)
     (OUT / "index.html").write_text(page, encoding="utf-8")

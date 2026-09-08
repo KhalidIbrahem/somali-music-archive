@@ -80,7 +80,7 @@ def stage_block(tag: str) -> str:
              "pcs": "pentatonic conformity", "voiced_fraction": "trackable melody", "noise_floor_db": "10th-percentile frame RMS"}
     for k in keys:
         lines.append(f"| {k} | {f(b.get(k))} | {f(a.get(k))} | {notes.get(k, '')} |")
-    lines.append(f"| MERT-FAD to real oud test | {f(fad.get('before'))} | {f(fad.get('after'))} | {e.get('prompts', '')} eval prompts per side; indicative only at n = 40 in 32-d |")
+    lines.append(f"| MERT-FAD to real oud test | {f(fad.get('before'))} | {f(fad.get('after'))} | {cfg.get('eval_prompts', '')} eval prompts per side; indicative only at this n in 32-d |")
     lines.append(f"| held-out oud token CE | {f(ce['before'], 4)} | {f(ce['after'], 4)} | {ce['clips']} unseen-song clips; the collapse guard |")
     lines += ["", f"Training curve: final DPO loss {last.get('loss', '–')}, implicit-reward margin {last.get('margin', '–')} "
               f"(β × per-token log-ratio difference), pair accuracy over the last ten steps {acc:.2f}; "
@@ -108,10 +108,9 @@ def main() -> None:
            "and the margin 0, as it must be). Evaluation on 40 held-out prompts: reward terms, MERT-FAD to the 276 real oud test clips, "
            "held-out oud token cross-entropy as a collapse guard, and an A/B set for the blind listening test.", "",
            "### Reward", "",
-           "* **oud_dist**: Mahalanobis distance in a 32-d PCA space of MERT-v1-95M embeddings fitted on the "
-           f"{ref.get('n_train', 1512)} real oud training clips (PCA explains {ref.get('pca_explained', 0.964) * 100:.1f}% of variance)"
-           if isinstance(ref.get('pca_explained'), float) else
-           "* **oud_dist**: Mahalanobis distance in a 32-d PCA space of MERT-v1-95M embeddings fitted on the 1,512 real oud training clips",
+           f"* **oud_dist**: Mahalanobis distance in a {ref.get('pca_dim', 32)}-d PCA space of MERT-v1-95M embeddings fitted on the "
+           f"{ref.get('n_train', 1512):,} real oud training clips (the PCA keeps {ref.get('explained_variance', 0.964) * 100:.1f}% of the variance); "
+           f"FAD noise floor between the real test split halves {f(ref.get('fad_test_split_half'))}.",
            "* **band_snr_db**: median minus 10th-percentile energy of the 3–10 kHz band across frames; stationary hiss fills that band "
            "in quiet moments. Real cassette 4.5 dB, real oud 8.3, base MusicGen 10.4. On the 7 blind pairs annotated \"noisy\", "
            "the noisy clip reads 4.3 dB against 11.6 for the other.",
@@ -121,14 +120,29 @@ def main() -> None:
         out += ["### Calibration (`data/reward/calibration.json`)", "",
                 "| group | n | oud_dist | band_snr_db | pcs | voiced | composite | FAD→real oud |", "| --- | --- | --- | --- | --- | --- | --- | --- |"]
         for name, g in groups.items():
-            m = g.get("means") or g
-            out.append(f"| {name} | {g.get('n', '')} | {f(m.get('oud_dist'), 2)} | {f(m.get('band_snr_db'), 1)} | {f(m.get('pcs'))} | "
-                       f"{f(m.get('voiced_fraction'))} | {f(m.get('reward'), 2)} | {f(g.get('fad'), 3)} |")
+            out.append(f"| {name} | {g.get('n', '')} | {f(g.get('oud_dist'), 2)} | {f(g.get('band_snr_db'), 1)} | {f(g.get('pcs'))} | "
+                       f"{f(g.get('voiced_fraction'))} | {f(g.get('reward'), 2)} | {f(g.get('fad_to_real_oud_test'), 3)} |")
         out.append("")
     lc = cal.get("listener_check") or {}
     if lc:
+        agree = lc.get("agreement") or {}
         out += ["### Agreement with the blind test", "",
-                f"Over the decided pairs of the large-adapter blind test: {json.dumps(lc)[:600]}", ""]
+                f"Over the {lc.get('n_decided', '')} decided pairs of the large-adapter blind test ({lc.get('file', '')}), the fraction "
+                "of pairs in which each term favours the clip the listener chose:", "",
+                "| term | agreement |", "| --- | --- |"]
+        for k, v in agree.items():
+            if isinstance(v, dict):
+                out.append(f"| {k} | {v.get('agree')}/{v.get('n')} ({f(v.get('rate'), 2)}) |")
+            else:
+                out.append(f"| {k} | {f(v, 2) if isinstance(v, (int, float)) else v} |")
+        noisy = lc.get("noisy_pairs_hiss_terms")
+        if noisy:
+            out += ["", f"On the {lc.get('n_noted_noisy', '')} pairs annotated \"noisy\", the hiss terms of the clip the listener chose "
+                    "against the other clip of the pair:", "", "| term | chosen | other |", "| --- | --- | --- |"]
+            for k, v in noisy.items():
+                out.append(f"| {k} | {f(v.get('chosen_mean'), 2)} | {f(v.get('other_mean'), 2)} |")
+        out += ["", "The listener's choices track the melody term and go against the hiss term (he chose the hissy clip every time); "
+                "the reward is tuned to the stated goal, clean oud qaraami, not to those choices.", ""]
     out += ["## Blind listening tests on record", "",
             "| set | listener | date | pairs | adapter | base | neither | adapter rate [95% CI] |", "| --- | --- | --- | --- | --- | --- | --- | --- |"]
     out += listening_rows() or ["| – | | | | | | | |"]

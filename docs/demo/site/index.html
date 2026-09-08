@@ -42,7 +42,7 @@ code{font-size:14px}
 <p class="sub">Adapting a text-to-music model to Somali qaraami from archival cassettes</p>
 <p class="by">Khalid Ibrahim · Minneapolis, MN · September 2026 · <a href="mailto:research@somalimusicarchive.com">research@somalimusicarchive.com</a></p>
 
-<nav><a href="#audio">1. Audio examples</a><a href="#results">2. Results</a><a href="#harness">3. Training harness</a><a href="#method">4. Method</a><a href="#rights">5. Rights</a></nav>
+<nav><a href="#audio">1. Audio examples</a><a href="#results">2. Results</a><a href="#harness">3. Training harness</a><a href="#method">4. Method</a><a href="#dpo">5. Preference optimisation</a><a href="#rights">6. Rights</a></nav>
 
 <p>Somali <i>qaraami</i> is a modally organised, mostly pentatonic song tradition that was transmitted
 without notation and now survives largely on cassette. I have been working on two questions: whether
@@ -63,7 +63,7 @@ to a pentatonic set. Whether the result sounds like qaraami is a matter for list
 comes first.</p>
 
 <p class="note">All audio on this page is model output. None of the training recordings is included,
-and the adapters are not distributed (Section 5).</p>
+and the adapters are not distributed (Section 6).</p>
 
 <h2 id="audio">1. Audio examples</h2>
 
@@ -134,11 +134,11 @@ They also learn the cassettes' tuning offset: base output sits near A440, adapte
 cents away, as the tapes are.</figcaption>
 </figure>
 
-
+<h3>2.3 Blind paired comparison</h3><p>For each pair the two clips were presented as A and B in an order randomised per pair, without scores or file names, and I chose the one that sounded more like qaraami to me, or neither. I am the only listener so far and I know the project, but not which clip was which. The interval is a 95% Wilson interval on the adapter preference rate, counting every pair.</p><div class="wrap"><table><thead><tr><th>set</th><th>pairs</th><th>adapter preferred</th><th>base preferred</th><th>no preference</th><th>adapter rate [95% CI]</th><th>date</th></tr></thead><tbody><tr><td>MusicGen-large</td><td>16</td><td><b>11</b></td><td>2</td><td>3</td><td>0.69 [0.44, 0.86]</td><td>2026-09-08</td></tr></tbody></table></div>
 
 <h3>Limitations</h3>
 <ul>
-<li>I have not yet run a listening study. The paired A/B sets were generated for one, and the blind paired-comparison protocol is in the repository.</li>
+<li>The listening results in 2.3 come from one listener, me. A study with Somali musicians as listeners is the next step and has not been done.</li>
 <li>Clips are 10 to 15 seconds. Nothing here speaks to long-form structure.</li>
 <li>Each adapter models the collections it was trained on, not Somali music in general.</li>
 <li>The small-model margins are 0.5 to 3% and are reported without significance tests. Intervals
@@ -215,7 +215,35 @@ same scorer I use to measure intonation in the recordings themselves, together w
 for listening. I report PCS only alongside the voiced fraction and treat it as a direction rather
 than a statistic at these sample sizes.</p>
 
-<h2 id="rights">5. Rights and provenance</h2>
+
+<h2 id="dpo">5. Preference optimisation</h2>
+
+<p>The supervised adapters learn the corpus as recorded, and the blind test said so: the large adapter was
+preferred and called noisy in the same breath. As a next step I optimised the adapters for what I want to
+hear rather than for the likelihood of the tapes, using direct preference optimisation on the adapter
+weights with a reward measured on the model's own samples. The reward has three terms: Mahalanobis
+distance to the real oud recordings in the embedding space of MERT-v1-95M (fitted on 1,512 real clips),
+a hiss measure from the spread of energy in the 3 to 10 kHz band (real cassettes 4.5 dB, real oud
+recordings 8.3, base MusicGen 10.4), and the pentatonic-melody score, combined as a z-scored sum with a
+penalty for near-silence. Each round draws four samples per prompt from the adapter on held prompts from
+the oud caption grammar, keeps the best and the worst as a preference pair, and trains the adapter
+against the round's starting weights as the reference, with length-normalised token log-probabilities
+and every dropout disabled so that policy and reference are the same function of the weights.</p>
+
+<div class="wrap"><table><thead><tr><th>model</th><th>pairs</th><th>steps</th><th>distance to real oud, before → after</th><th>band SNR dB, before → after</th><th>PCS</th><th>voiced fraction</th><th>held-out oud token CE</th></tr></thead><tbody><tr><td>MusicGen-small, oud adapter</td><td>96</td><td>144</td><td>5.692 → <b>4.286</b></td><td>–</td><td>0.921 → 0.957</td><td>0.621 → 0.510</td><td>4.4071 → 4.6863</td></tr></tbody></table></div>
+
+<p>The trade is explicit. Distance to the real recordings falls to the level of the real clips themselves
+(4.1 to 4.2 on this scale), while held-out token cross-entropy on unseen oud songs rises: the model becomes
+a better generator of oud-like audio and a worse density model of the tapes. Which of those matters is a
+listening question. The pairs below are the same prompt and seed before and after the optimisation of
+MusicGen-small, oud adapter.</p>
+
+<div class="wrap"><table class="ab"><thead><tr><th>prompt</th><th>before</th><th>after</th></tr></thead><tbody><tr><td class="cap">qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 136 BPM, pentatonic melody rooted on F#, intimate oud recording</td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_000_base.mp3"></audio><div class="score">PCS 0.935 · voiced 0.737</div></td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_000_adapter.mp3"></audio><div class="score">PCS 0.914 · voiced 0.496</div></td></tr><tr><td class="cap">qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 136 BPM, pentatonic melody rooted on F, intimate oud recording</td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_001_base.mp3"></audio><div class="score">PCS 0.955 · voiced 0.626</div></td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_001_adapter.mp3"></audio><div class="score">PCS 0.946 · voiced 0.566</div></td></tr><tr><td class="cap">qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 136 BPM, pentatonic melody rooted on G, intimate oud recording</td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_002_base.mp3"></audio><div class="score">PCS 0.940 · voiced 0.850</div></td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_002_adapter.mp3"></audio><div class="score">PCS 0.977 · voiced 0.635</div></td></tr><tr><td class="cap">qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 144 BPM, pentatonic melody rooted on C, intimate oud recording</td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_003_base.mp3"></audio><div class="score">PCS 0.922 · voiced 0.655</div></td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_003_adapter.mp3"></audio><div class="score">PCS 0.916 · voiced 0.555</div></td></tr><tr><td class="cap">qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 150 BPM, pentatonic melody rooted on A, intimate oud recording</td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_004_base.mp3"></audio><div class="score">PCS 0.758 · voiced 0.690</div></td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_004_adapter.mp3"></audio><div class="score">PCS 0.995 · voiced 0.580</div></td></tr><tr><td class="cap">qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 150 BPM, pentatonic melody rooted on C#, intimate oud recording</td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_005_base.mp3"></audio><div class="score">PCS 0.750 · voiced 0.690</div></td><td class="clip"><audio controls preload="metadata" src="audio/dpo_small_oud_005_adapter.mp3"></audio><div class="score">PCS 0.879 · voiced 0.444</div></td></tr></tbody></table></div>
+
+<p>The before-versus-after blind test on these sets has not been run yet.</p>
+
+
+<h2 id="rights">6. Rights and provenance</h2>
 <p>The Harvard collection is not rights-cleared for redistribution and my request for written
 permission from the Loeb Music Library is pending. The oud collection's rights remain with its
 performers, who are not named. The third source is of mixed and partly unknown provenance. All three
@@ -226,7 +254,7 @@ and are labelled as such wherever they appear. Per-collection status and the out
 documented in the repository's provenance file.</p>
 
 <footer>
-Last updated 2026-09-07. Code, model cards, the evaluation report and the paper draft are
+Last updated 2026-09-08. Code, model cards, the evaluation report and the paper draft are
 available on request.
 </footer>
 
