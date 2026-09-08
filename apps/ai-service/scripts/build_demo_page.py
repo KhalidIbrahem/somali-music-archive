@@ -24,6 +24,10 @@ highest voiced fraction; the large run's per-checkpoint sample at steps 250,
 1000, 2000 and the best checkpoint. Catalogue prompts carry performer credits
 from the Harvard finding aid; those are omitted from the displayed captions.
 
+Blind listening results, if any exist in data/listening/ (written by
+ab_listen.py's paired-comparison test), are summarised in the Results section;
+until then the page says the study is pending.
+
 Usage (from the repo root, the musicgen env has matplotlib):
   ~/ai/musicgen-env/bin/python apps/ai-service/scripts/build_demo_page.py
 """
@@ -34,6 +38,7 @@ import csv
 import datetime as dt
 import html
 import json
+import math
 import re
 import shutil
 import subprocess
@@ -48,6 +53,7 @@ FIG = REPO / "docs/figures"
 OUT = REPO / "docs/demo/site"
 AUDIO = OUT / "audio"
 FIGOUT = OUT / "figures"
+LISTENING = DATA / "listening"
 
 SCALE_PAIRS = [0, 1, 2, 3, 4, 8, 10, 11]
 SMALL_PAIRS = [0, 1, 2, 3]
@@ -77,6 +83,8 @@ PARAMS = {"small": "0.59 B", "medium": "1.5 B", "large": "3.3 B"}
 TRAINABLE = {"medium": "61.3 M", "large": "81.8 M"}
 STEP_RATE = {"medium": "~10 s", "large": "~16 s"}
 PEAK_MEM = {"medium": "11.3 GB", "large": "16.3 GB"}
+SET_LABEL = {"ab_large": "MusicGen-large", "ab_medium": "MusicGen-medium",
+             "oud_ab_listening": "small, oud adapter", "harvard_ab_listening": "small, harvard_raw adapter"}
 
 
 @dataclass
@@ -138,7 +146,6 @@ def load_scale(tag: str) -> dict:
 def split_counts() -> dict:
     clips: dict[str, int] = {}
     songs: dict[str, set] = {}
-    hours = 0.0
     for line in (DATA / "scale_captions.jsonl").open():
         d = json.loads(line)
         clips[d["split"]] = clips.get(d["split"], 0) + 1
@@ -146,6 +153,30 @@ def split_counts() -> dict:
     all_songs = set().union(*songs.values())
     return {"clips": clips, "songs": {k: len(v) for k, v in songs.items()},
             "total_clips": sum(clips.values()), "total_songs": len(all_songs)}
+
+
+def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    if n == 0:
+        return (0.0, 0.0)
+    p = k / n
+    d = 1 + z * z / n
+    c = (p + z * z / (2 * n)) / d
+    h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    return (c - h, c + h)
+
+
+def listening_results() -> dict[str, dict]:
+    """Latest blind paired-comparison result per set, from data/listening/*.json."""
+    out: dict[str, dict] = {}
+    if not LISTENING.is_dir():
+        return out
+    for p in sorted(LISTENING.glob("*.json")):
+        r = json.loads(p.read_text())
+        s = r.get("summary") or {}
+        if r.get("set") and s.get("n"):
+            out[r["set"]] = {"file": p.name, "listener": r.get("listener", ""), "date": r.get("date", ""),
+                             "n": s["n"], "adapter": s["adapter"], "base": s["base"], "none": s["none"]}
+    return out
 
 
 # ---------------------------------------------------------------- transcode
@@ -211,27 +242,54 @@ def player(c: Clip | None, scored: bool = True) -> str:
     if c is None:
         return "<td>–</td>"
     s = ""
-    if scored and (c.pcs is not None or c.voiced is not None):
-        s = f'<div class="score">PCS {f3(c.pcs)} · voiced {f3(c.voiced)}</div>'
-    return f'<td class="clip"><audio controls preload="none" src="{esc(c.rel)}"></audio>{s}</td>'
+    if scored:
+        if c.pcs is not None or c.voiced is not None:
+            s = f'<div class="score">PCS {f3(c.pcs)} · voiced {f3(c.voiced)}</div>'
+        else:
+            s = '<div class="score">too little pitched content to score</div>'
+    return f'<td class="clip"><audio controls preload="metadata" src="{esc(c.rel)}"></audio>{s}</td>'
 
 
 def delta(a: float, b: float) -> str:
     return f"{b - a:+.3f}"
 
 
+def listening_html(res: dict[str, dict]) -> str:
+    if not res:
+        return ""
+    rows = []
+    for name in ("ab_large", "ab_medium", "oud_ab_listening", "harvard_ab_listening"):
+        r = res.get(name)
+        if not r:
+            continue
+        lo, hi = wilson(r["adapter"], r["n"])
+        rows.append(f'<tr><td>{esc(SET_LABEL.get(name, name))}</td><td>{r["n"]}</td>'
+                    f'<td><b>{r["adapter"]}</b></td><td>{r["base"]}</td><td>{r["none"]}</td>'
+                    f'<td>{r["adapter"] / r["n"]:.2f} [{lo:.2f}, {hi:.2f}]</td><td>{esc(r["date"][:10])}</td></tr>')
+    return (
+        '<h3>2.3 Blind paired comparison</h3>'
+        '<p>For each pair the two clips were presented as A and B in an order randomised per pair, without '
+        'scores or file names, and I chose the one that sounded more like qaraami to me, or neither. I am the '
+        'only listener so far and I know the project, but not which clip was which. The interval is a 95% '
+        'Wilson interval on the adapter preference rate, counting every pair.</p>'
+        '<div class="wrap"><table><thead><tr><th>set</th><th>pairs</th><th>adapter preferred</th>'
+        '<th>base preferred</th><th>no preference</th><th>adapter rate [95% CI]</th><th>date</th></tr></thead>'
+        f'<tbody>{"".join(rows)}</tbody></table></div>')
+
+
 def build_html(ctx: dict) -> str:
     m, lg = ctx["scale"]["medium"], ctx["scale"]["large"]
     em, el = m["eval"], lg["eval"]
     sc = ctx["splits"]
-    today = dt.date.today().strftime("%B %Y")
+    today = dt.date.today()
+    listening = ctx["listening"]
 
     def ce(e):
         c = e["per_song_ce"]
         i = c["improvement_base_minus_adapter"]
         return c["base"]["mean"], c["adapter"]["mean"], i["mean"], i["ci95"], c["n_songs"]
 
-    # ---- listen: scale table
+    # ---- audio: scale table
     rows = []
     for i in SCALE_PAIRS:
         cap = strip_credit(ctx["scale_captions"][i])
@@ -243,7 +301,7 @@ def build_html(ctx: dict) -> str:
         '<th>medium, base</th><th>medium, adapter</th><th>large, base</th><th>large, adapter</th></tr></thead>'
         f'<tbody>{"".join(rows)}</tbody></table>')
 
-    # ---- listen: small tables
+    # ---- audio: small tables
     small_tables = []
     for key, info in SMALL.items():
         caps = ctx["small_captions"][key]
@@ -252,18 +310,18 @@ def build_html(ctx: dict) -> str:
             rows.append(f'<tr><td class="cap">{esc(strip_credit(caps[i]))}</td>'
                         f'{player(ctx["clips"][f"{key}_{i:03d}_base"])}{player(ctx["clips"][f"{key}_{i:03d}_adapter"])}</tr>')
         small_tables.append(
-            f'<h4>{esc(info["title"])} — {esc(info["corpus"])}</h4>'
+            f'<h4>{esc(info["title"])}: {esc(info["corpus"])}</h4>'
             '<table class="ab"><thead><tr><th>prompt</th><th>base</th><th>adapter</th></tr></thead>'
             f'<tbody>{"".join(rows)}</tbody></table>')
 
-    # ---- listen: progression
+    # ---- audio: progression
     prog_cells = "".join(
         f'<td class="clip"><div class="lab">step {s:,}{" (best)" if s == ctx["best_step"] else ""}</div>'
-        f'<audio controls preload="none" src="{esc(ctx["clips"][f"large_step{s:04d}"].rel)}"></audio></td>'
+        f'<audio controls preload="metadata" src="{esc(ctx["clips"][f"large_step{s:04d}"].rel)}"></audio></td>'
         for s in ctx["prog_steps"])
     prog_table = f'<table class="ab"><tbody><tr>{prog_cells}</tr></tbody></table>'
 
-    # ---- listen: melody
+    # ---- audio: melody
     mel_cells = "".join(player(c) for c in ctx["melody_clips"])
     mel_table = f'<table class="ab"><tbody><tr>{mel_cells}</tr></tbody></table>'
 
@@ -300,24 +358,33 @@ def build_html(ctx: dict) -> str:
     mb, ma, mg, mci, mn = ce(em)
     lb, la, lgn, lci, ln = ce(el)
     cfg = lg["cfg"]
+    vb, va = el["ab"]["base"]["voiced_fraction_mean"], el["ab"]["adapter"]["voiced_fraction_mean"]
+    pb, pa = el["ab"]["base"]["pcs_mean"], el["ab"]["adapter"]["pcs_mean"]
+
+    if listening:
+        listening_limit = ("The listening results in 2.3 come from one listener, me. A study with Somali "
+                           "musicians as listeners is the next step and has not been done.")
+    else:
+        listening_limit = ("I have not yet run a listening study. The paired A/B sets were generated for one, "
+                           "and the blind paired-comparison protocol is in the repository.")
 
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>QaraamiGen — adapting a text-to-music model to Somali qaraami</title>
+<title>QaraamiGen: adapting a text-to-music model to Somali qaraami</title>
 <style>
 body{{margin:0;background:#fff;color:#1b1b1b;font:16px/1.55 Charter,"Iowan Old Style","Palatino Linotype",Georgia,serif}}
 main{{max-width:940px;margin:0 auto;padding:44px 28px 80px}}
-h1{{font-size:34px;line-height:1.15;margin:0 0 4px;font-weight:600}}
-.sub{{font-size:20px;color:#333;margin:0 0 10px}}
+h1{{font-size:32px;line-height:1.15;margin:0 0 4px;font-weight:600}}
+.sub{{font-size:19px;color:#333;margin:0 0 10px}}
 .by{{color:#555;font-size:14.5px;margin:0 0 18px}}
 nav{{font-size:14.5px;margin:0 0 30px;padding:10px 0;border-top:1px solid #ddd;border-bottom:1px solid #ddd}}
 nav a{{margin-right:18px}}
 a{{color:#1a5fb4;text-decoration:none}} a:hover{{text-decoration:underline}}
-h2{{font-size:23px;margin:46px 0 10px;padding-bottom:5px;border-bottom:2px solid #C89B5F;font-weight:600}}
-h3{{font-size:18px;margin:30px 0 8px;font-weight:600}}
+h2{{font-size:22px;margin:46px 0 10px;padding-bottom:5px;border-bottom:1px solid #bbb;font-weight:600}}
+h3{{font-size:17.5px;margin:30px 0 8px;font-weight:600}}
 h4{{font-size:15px;margin:22px 0 6px;font-weight:600;color:#333}}
 p{{margin:0 0 12px}}
 ul{{margin:0 0 12px 22px;padding:0}} li{{margin-bottom:6px}}
@@ -334,7 +401,6 @@ audio{{display:block;width:100%;height:30px}}
 .wrap{{overflow-x:auto}}
 figure{{margin:16px 0 22px}} figure img{{max-width:100%;height:auto;display:block}}
 figcaption{{font:13.5px/1.45 -apple-system,"Helvetica Neue",Helvetica,Arial,sans-serif;color:#555;margin-top:6px}}
-.rights{{background:#faf7f1;border-left:3px solid #C89B5F;padding:10px 14px;margin:14px 0}}
 footer{{margin-top:56px;padding-top:12px;border-top:1px solid #ddd;color:#666;font-size:13px}}
 code{{font-size:14px}}
 </style>
@@ -344,157 +410,160 @@ code{{font-size:14px}}
 
 <h1>QaraamiGen</h1>
 <p class="sub">Adapting a text-to-music model to Somali qaraami from archival cassettes</p>
-<p class="by">Khalid Ibrahim · Minneapolis, MN · {today} · <a href="mailto:{CONTACT}">{CONTACT}</a></p>
+<p class="by">Khalid Ibrahim · Minneapolis, MN · {today.strftime("%B %Y")} · <a href="mailto:{CONTACT}">{CONTACT}</a></p>
 
-<nav><a href="#listen">Listen</a><a href="#results">Results</a><a href="#defect">The defect</a><a href="#method">Method</a><a href="#rights">Rights</a></nav>
+<nav><a href="#audio">1. Audio examples</a><a href="#results">2. Results</a><a href="#harness">3. Training harness</a><a href="#method">4. Method</a><a href="#rights">5. Rights</a></nav>
 
-<p>Somali <i>qaraami</i> is a modally organised, largely pentatonic song tradition, transmitted with
-almost no notation and surviving mainly on aging cassette tape. This page asks whether a general
-text-to-music model can learn something of that tradition from the tapes without the tapes leaving
-their rights holders, and how one would know that it had. MusicGen, at three sizes, is adapted with
-low-rank adapters on 43 hours of held archival audio, evaluated on songs it never saw, and heard
-against its own base model on identical prompts and random seeds.</p>
+<p>Somali <i>qaraami</i> is a modally organised, mostly pentatonic song tradition that was transmitted
+without notation and now survives largely on cassette. I have been working on two questions: whether
+a general text-to-music model can be adapted to this material without the recordings leaving the
+people who hold them, and what evidence would show that the adaptation learned the music rather than
+the tape. This page collects the current state of that work. I fine-tuned MusicGen at three sizes
+with low-rank adapters on 43 hours of held archival audio, evaluated the adapters on songs they had
+not seen, and generated paired examples in which the base model and the adapter receive the same
+prompt and the same random seed.</p>
 
-<ul>
-<li><b>Under a corrected training harness, every checkpoint of every run beats its base model on
-held-out songs.</b> The correction matters: the Hugging Face MusicGen decoder applies dropout through
-float attributes that module-level sweeps miss, and for two months that defect read as a negative
-result.</li>
-<li><b>The gain grows with scale.</b> Per-song test cross-entropy improves by {mg:.3f} nats on
-MusicGen-medium and {lgn:.3f} on MusicGen-large, with bootstrap intervals over songs that clear zero.</li>
-<li><b>The adapters put more trackable melody into the output</b>, up to twice the base model's at
-the largest size, and learn the cassettes' tuning offset, at some cost in pentatonic conformity. Whether that trade sounds like qaraami is a
-listening question, which is why the clips come first.</li>
-</ul>
+<p>In summary: with the training harness corrected (Section 3), every checkpoint of every run improves
+on its base model on held-out songs. The improvement is larger for larger models, {mg:.3f} nats of
+per-song test cross-entropy for MusicGen-medium and {lgn:.3f} for MusicGen-large, with bootstrap
+intervals over songs that exclude zero. The adapters also change what the models generate: their
+output contains more pitched, trackable melody than the base models' (about twice as much for the
+large model) and carries the tuning offset of the cassettes, while conforming somewhat less closely
+to a pentatonic set. Whether the result sounds like qaraami is a matter for listening, so the audio
+comes first.</p>
 
-<div class="rights note">Everything audible on this page is model output. No source recording is
-included, the training audio is not distributed, and the adapters are not released. Details under
-<a href="#rights">Rights</a>.</div>
+<p class="note">All audio on this page is model output. None of the training recordings is included,
+and the adapters are not distributed (Section 5).</p>
 
-<h2 id="listen">Listen</h2>
+<h2 id="audio">1. Audio examples</h2>
 
 <p>Each row is one prompt. The base model and the adapter receive the same text and the same random
-seed; only the adapter weights differ. Under each clip: <b>PCS</b>, the duration-weighted fraction of
-pitched frames within ±50 cents of the best-fitting anhemitonic-pentatonic set after a per-clip
-tuning fit, and the <b>voiced fraction</b>, the share of frames with a trackable pitch. Read them
-together; conformity of very little melody is not a win. Prompts are held-out test captions. The
-catalogue-derived prompts carry performer credits from the Harvard finding aid; those are omitted
-from the captions shown here.</p>
+seed; the only difference is the adapter weights. Below each clip are two measurements from its pitch
+track. <b>PCS</b> is the duration-weighted fraction of pitched frames within 50 cents of the
+best-fitting anhemitonic pentatonic set after a per-clip tuning fit. The <b>voiced fraction</b> is the
+share of frames with a trackable pitch. The two are meant to be read together, since a model that
+produces little melody can score high conformity on what remains. Prompts are captions from the
+held-out test split. The catalogue-derived prompts include performer credits from the Harvard finding
+aid, which I have removed from the captions shown here.</p>
 
-<h3>MusicGen-medium (1.5 B) and MusicGen-large (3.3 B), 15-second clips</h3>
-<p class="note">Eight of the sixteen A/B prompts: the four synthetic qaraami prompts and the first four
-catalogue prompts, fixed before listening. Both sizes were trained on the same {sc["total_clips"]:,}
-clips and heard on the same prompts and seeds, so the columns are comparable across the row.</p>
+<h3>1.1 MusicGen-medium (1.5 B) and MusicGen-large (3.3 B), 15-second clips</h3>
+<p class="note">Eight of the sixteen prompts in the A/B set: the four synthetic qaraami prompts and the
+first four catalogue prompts. The selection was fixed before any listening. Both sizes were trained on
+the same {sc["total_clips"]:,} clips and generated from the same prompts and seeds, so the four columns
+of a row are directly comparable.</p>
 <div class="wrap">{scale_table}</div>
 
-<h3>MusicGen-small (0.6 B), one collection each, 10-second clips</h3>
-<p class="note">The first two adapters, each trained on a single collection with rank-16 LoRA on the
-decoder attention projections. First four pairs of each eight-pair listening set.</p>
+<h3>1.2 MusicGen-small (0.6 B), one collection per adapter, 10-second clips</h3>
+<p class="note">The first two adapters, rank-16 LoRA on the decoder attention projections, each trained
+on a single collection. First four pairs of each eight-pair listening set.</p>
 {"".join(small_tables)}
 
-<h3>Training progression, MusicGen-large</h3>
-<p class="note">One held-out prompt sampled from the same seed at successive checkpoints:
+<h3>1.3 Checkpoints during training, MusicGen-large</h3>
+<p class="note">The same held-out prompt and seed generated at successive checkpoints:
 <i>{esc(strip_credit(ctx["prog_caption"]))}</i>.</p>
 <div class="wrap">{prog_table}</div>
 
-<h3>Melody conditioning, preliminary</h3>
-<p class="note">MusicGen-melody with no adapter, conditioned on the chroma of a held-out real qaraami
-clip in place of a text-only prompt. This is the conditioning path a melody adapter would use; the
-reference recordings are not included. The three clips with the most trackable melody of eight.</p>
+<h3>1.4 Melody conditioning, preliminary</h3>
+<p class="note">MusicGen-melody without an adapter, conditioned on the chroma of a held-out recording
+rather than on text alone. This is the conditioning path a melody adapter would use; the reference
+recordings are not included. Three of eight clips, those with the highest voiced fraction.</p>
 <div class="wrap">{mel_table}</div>
 
-<h2 id="results">Results</h2>
+<h2 id="results">2. Results</h2>
 
-<h3>Scale runs</h3>
-<p>Held-out per-song cross-entropy on {ln} unseen test songs ({el["test_clips"]} clips), base model
-against adapter, with a bootstrap 95% interval resampled over songs rather than clips, because same-song
-clips share a cassette and a channel and are not independent. PCS and voiced fraction are means over
-the 16-clip A/B set.</p>
+<h3>2.1 Scale runs</h3>
+<p>Table 1 gives held-out per-song cross-entropy for the scale runs: {ln} unseen test songs
+({el["test_clips"]} clips), base model against adapter, with a 95% bootstrap interval resampled over
+songs. Clips from the same song share a cassette and a channel, so the song is the unit of
+independence. PCS and voiced fraction are means over the 16-clip A/B set.</p>
 <div class="wrap">{scale_results}</div>
-<p>The rigorous metric improves with size and the intervals do not overlap zero. The large adapter
-reaches the lowest held-out cross-entropy in the programme. On the generation side the larger model
-puts far more pitched, sung material into its output ({f3(el["ab"]["base"]["voiced_fraction_mean"])} →
-{f3(el["ab"]["adapter"]["voiced_fraction_mean"])} voiced), and lands off the pentatonic set more often
-while doing so ({f3(el["ab"]["base"]["pcs_mean"])} → {f3(el["ab"]["adapter"]["pcs_mean"])} PCS). At
-sixteen prompts the PCS column is inside the scorer's noise; the voiced-fraction shift is not.</p>
+<p>Cross-entropy improves at both sizes and the interval excludes zero in both cases. The gain is
+larger for the large model, whose adapter reaches the lowest held-out cross-entropy measured so far.
+On the generation side the large adapter roughly doubles the voiced fraction ({f3(vb)} to {f3(va)})
+and lowers PCS ({f3(pb)} to {f3(pa)}). With sixteen prompts, PCS differences of this size are within
+the scorer's run-to-run variation; the change in voiced fraction is well outside it.</p>
 
 <figure>
 <img src="figures/ft7_scale_val_curves.png" alt="Validation cross-entropy per checkpoint for the medium and large runs">
-<figcaption>Validation token cross-entropy at every checkpoint of the medium and large runs
+<figcaption>Figure 1. Validation token cross-entropy at every checkpoint of the medium and large runs
 (48 validation clips, song-level split). Both curves flatten by about step 2,500; the best held-out
 per-song test cross-entropy is at step 2,750 for both.</figcaption>
 </figure>
 
-<h3>Small runs</h3>
-<p>MusicGen-small, one collection per adapter, 15-second training clips. Validation and test are
-song-level splits; test songs are unseen. Cross-entropy is not comparable across corpora.</p>
+<h3>2.2 Small runs</h3>
+<p>Table 2 gives the MusicGen-small adapters, one collection each, trained on 15-second clips.
+Validation and test are song-level splits and the test songs are unseen. Cross-entropy is not
+comparable across corpora.</p>
 <div class="wrap">{small_results}</div>
 <figure>
 <img src="figures/ft3_pcs_voiced.png" alt="PCS and voiced fraction for base, adapter and real clips on both corpora">
-<figcaption>Pentatonic conformity and voiced fraction for base model, adapter and real held-out clips,
-eight prompts per generated group. The adapters produce more melody than the base model and, on both
-corpora, more than the real clips; conformity is similar (oud) or lower (Harvard). They also learn the
-cassettes' tuning offset: base output sits near A440, adapter output about 25 cents off, as the tapes are.</figcaption>
+<figcaption>Figure 2. Pentatonic conformity and voiced fraction for base model, adapter and real
+held-out clips, eight prompts per generated group. The adapters produce more melody than the base
+model and, on both corpora, more than the real clips; conformity is similar (oud) or lower (Harvard).
+They also learn the cassettes' tuning offset: base output sits near A440, adapter output about 25
+cents away, as the tapes are.</figcaption>
 </figure>
 
-<h3>What is not claimed</h3>
+{listening_html(listening)}
+
+<h3>Limitations</h3>
 <ul>
-<li>No listening study yet. The A/B sets exist so that one can be run; the numbers above do not
-substitute for it.</li>
-<li>No long-form structure: 10 to 15 second clips.</li>
-<li>Not a model of Somali music at large. Each adapter is a model of the collections it saw.</li>
-<li>Small-model margins are small (0.5 to 3%), real and reproducible, and stated without significance
-tests; the scale runs are where the intervals are reported.</li>
+<li>{listening_limit}</li>
+<li>Clips are 10 to 15 seconds. Nothing here speaks to long-form structure.</li>
+<li>Each adapter models the collections it was trained on, not Somali music in general.</li>
+<li>The small-model margins are 0.5 to 3% and are reported without significance tests. Intervals
+are given for the scale runs only.</li>
 </ul>
 
-<h2 id="defect">The defect that looked like a negative result</h2>
+<h2 id="harness">3. The training harness</h2>
 
-<p>The first two months of fine-tuning produced a clean negative: at two learning rates and on two
-corpora, held-out loss rose from 4.6 to about 6.7 nats within 250 steps and never recovered, while
-the generations lost half their melodic content. It was written up as such. It was the harness.</p>
+<p>The first two months of fine-tuning gave a consistent negative result. At two learning rates and
+on two corpora, held-out loss rose from 4.6 to about 6.7 nats within 250 steps and did not recover,
+and the generations lost about half their melodic content. I had drafted that as a finding about
+archival audio. It was a defect in the training harness.</p>
 
 <figure>
 <img src="figures/ft2_dropout_probe.png" alt="Train-mode versus eval-mode loss on identical weights">
-<figcaption>A five-condition probe on identical zero-initialised LoRA weights. Eval-mode loss is 4.05
-nats; train-mode loss is 9.74, worse than uniform random over the 2,048-token codebook (7.62). Zeroing
-every <code>nn.Dropout</code> module (C), disabling checkpointing (D), or putting the encoders in eval
-mode (E) changes nothing.</figcaption>
+<figcaption>Figure 3. A five-condition probe on identical zero-initialised LoRA weights. Eval-mode loss
+is 4.05 nats; train-mode loss is 9.74, worse than uniform random over the 2,048-token codebook (7.62).
+Setting every <code>nn.Dropout</code> module to zero (C), disabling gradient checkpointing (D), or
+putting the encoders in eval mode (E) changes nothing.</figcaption>
 </figure>
 
-<p>The Hugging Face MusicGen decoder applies dropout <i>functionally</i>, through 37 float attributes
-consumed by <code>F.dropout(…, training=self.training)</code>, which a sweep over
-<code>nn.Dropout</code> modules never touches. Optimisation was fitting a forward path that evaluation
-never saw. Zeroing those attributes makes the train and eval paths identical; the first corrected run
-beat the base model at every checkpoint, and the Harvard corpus, which had been the "structural
-negative", did the same. On the medium and large decoders the same fix zeroes 61 attributes. The
-failure mode is generic to this model family, which is why it is reported here rather than
-buried.</p>
+<p>The Hugging Face implementation of the MusicGen decoder applies dropout functionally, through 37
+floating-point attributes passed to <code>F.dropout</code> with <code>training=self.training</code>.
+A sweep that sets the rate of every <code>nn.Dropout</code> module to zero does not reach them. In
+training mode, therefore, the model was being optimised on a forward path that evaluation never used.
+Setting those attributes to zero makes the two paths identical. The first corrected run improved on
+the base model at every checkpoint, and the Harvard corpus, which had produced the clearest negative,
+did the same. The medium and large decoders have 61 such attributes. I report the defect here because
+it is a property of the model family rather than of this project.</p>
 
 <figure>
 <img src="figures/ft1_val_curves.png" alt="Validation curves under the broken and the fixed harness">
-<figcaption>Validation cross-entropy for every MusicGen-small run. Dashed: the broken harness, both
-corpora, all learning rates. Solid: the corrected harness. Dotted: the base model.</figcaption>
+<figcaption>Figure 4. Validation cross-entropy for every MusicGen-small run. Dashed: the original
+harness, both corpora, all learning rates. Solid: the corrected harness. Dotted: the base model.</figcaption>
 </figure>
 
-<h2 id="method">Method</h2>
+<h2 id="method">4. Method</h2>
 
-<h3>Data</h3>
-<p>Three held collections of Somali qaraami, 43.1 hours in all, none cleared for public release:
-the Maryan "Aryette" Omar Ali Collection at Harvard's Archive of World Music (22.6 h, mid-century
-ensemble song on cassette), a privately shared oud-led collection (5.4 h, 28 songs, performers
-unlisted), and 15.1 h of qaraami recordings recovered from the project's own session archives. For the
-scale runs the audio was cut into 30-second clips at 32 kHz mono, split by song so that no song appears
-in two splits: {sc["clips"]["train"]:,} training clips from {sc["songs"]["train"]} songs,
-{sc["clips"]["val"]:,} validation from {sc["songs"]["val"]}, {sc["clips"]["test"]:,} test from
+<h3>4.1 Data</h3>
+<p>Three held collections of Somali qaraami, 43.1 hours in all, none cleared for public release: the
+Maryan "Aryette" Omar Ali Collection at Harvard's Archive of World Music (22.6 h, mid-century ensemble
+song on cassette), a privately shared oud-led collection (5.4 h, 28 songs, performers unlisted), and
+15.1 h of qaraami recordings recovered from my own session archives. For the scale runs I cut the
+audio into 30-second clips at 32 kHz mono and split it by song, so that no song appears in two splits:
+{sc["clips"]["train"]:,} training clips from {sc["songs"]["train"]} songs, {sc["clips"]["val"]:,}
+validation clips from {sc["songs"]["val"]}, and {sc["clips"]["test"]:,} test clips from
 {sc["songs"]["test"]}. Captions are measured rather than written: tempo from the audio, tonic from the
 pentatonic fit, instrumentation and era from the catalogue.</p>
 
-<h3>Models and training</h3>
+<h3>4.2 Models and training</h3>
 <div class="wrap"><table>
 <thead><tr><th></th><th>MusicGen-small</th><th>MusicGen-medium</th><th>MusicGen-large</th></tr></thead>
 <tbody>
 <tr><td>parameters</td><td>{PARAMS["small"]}</td><td>{PARAMS["medium"]}</td><td>{PARAMS["large"]}</td></tr>
-<tr><td>LoRA</td><td>r 16, α 32, attention q/k/v/out</td><td>r {m["cfg"]["rank"]}, α {m["cfg"]["alpha"]}, attention + FFN (q/k/v/out, fc1, fc2)</td><td>r {cfg["rank"]}, α {cfg["alpha"]}, attention + FFN</td></tr>
+<tr><td>LoRA</td><td>r 16, α 32, attention q/k/v/out</td><td>r {m["cfg"]["rank"]}, α {m["cfg"]["alpha"]}, attention and FFN (q/k/v/out, fc1, fc2)</td><td>r {cfg["rank"]}, α {cfg["alpha"]}, attention and FFN</td></tr>
 <tr><td>trainable</td><td>6.3 M</td><td>{TRAINABLE["medium"]}</td><td>{TRAINABLE["large"]}</td></tr>
 <tr><td>clips</td><td>15 s, one collection</td><td>30 s, all three</td><td>30 s, all three</td></tr>
 <tr><td>schedule</td><td>lr 1e-4 cosine, 1,000 to 3,000 steps</td><td>lr {m["cfg"]["lr"]:g} cosine, {m["cfg"]["total_steps"]:,} steps, {m["cfg"]["warmup"]} warm-up</td><td>lr {cfg["lr"]:g} cosine, {cfg["total_steps"]:,} steps, {cfg["warmup"]} warm-up</td></tr>
@@ -502,34 +571,33 @@ pentatonic fit, instrumentation and era from the catalogue.</p>
 <tr><td>compute</td><td>Apple M1 / M5 Max, fp32 on MPS</td><td>M5 Max, {STEP_RATE["medium"]}/step, {PEAK_MEM["medium"]} peak</td><td>M5 Max, {STEP_RATE["large"]}/step, {PEAK_MEM["large"]} peak</td></tr>
 <tr><td>dropout attributes zeroed</td><td>37</td><td>61</td><td>61</td></tr>
 </tbody></table></div>
-<p>Everything runs on a single laptop, fp32 on Apple silicon, with precomputed EnCodec tokens and
-delay-pattern labels. Base weights are unchanged; the adapters are hot-swapped at inference by a
-local service that labels every generation with the adapter's corpus and a non-distribution line.</p>
+<p>All training ran on one laptop in fp32 on Apple silicon, from precomputed EnCodec tokens with
+delay-pattern labels. Base weights are unchanged. A local inference service hot-swaps the adapters
+and labels every generation with the adapter's training corpus and a non-distribution notice.</p>
 
-<h3>Evaluation</h3>
-<p>Two families of measurement. <b>Likelihood</b>: token cross-entropy on unseen songs, averaged within
-song and then across songs, with the confidence interval bootstrapped over songs. The song is the
-independent unit on archival audio; an embedding audit on this corpus found that nearest neighbours
-retrieve same-cassette material at thirteen times chance, so clip-level splits leak the channel.
-<b>Output</b>: PCS and voiced fraction from a CREPE pitch track on generated audio, the same scorer the
-project uses to measure intonation in the real recordings, plus paired A/B sets for listening. PCS is
-reported only beside the voiced fraction, and treated as a direction rather than a statistic at these
-sample sizes.</p>
+<h3>4.3 Evaluation</h3>
+<p>Two kinds of measurement. <b>Likelihood:</b> token cross-entropy on unseen songs, averaged within
+each song and then across songs, with the confidence interval bootstrapped over songs. The song is
+the right unit on archival audio; in an embedding audit of this corpus, nearest neighbours retrieved
+same-cassette material at thirteen times chance, so clip-level splits leak the channel.
+<b>Output:</b> PCS and voiced fraction from a CREPE pitch track over the generated audio, using the
+same scorer I use to measure intonation in the recordings themselves, together with paired A/B sets
+for listening. I report PCS only alongside the voiced fraction and treat it as a direction rather
+than a statistic at these sample sizes.</p>
 
-<h2 id="rights">Rights and provenance</h2>
-<p>The Harvard collection is not rights-cleared for redistribution and written permission from the
-Loeb Music Library is outstanding; the oud collection's rights remain with its performers, who are not
-named; the third source is of mixed and partly unknown provenance. All three are used for training and
-measurement only. No recording from any of them is included on this page, in the repository, or in any
-public artifact, and the adapters, which are derived from them, are not distributed. The clips here are
-the outputs of models conditioned on text, generated for evaluation, and are labelled as such wherever
-they appear. Data provenance, per-collection status and the outstanding items are documented in the
-repository.</p>
+<h2 id="rights">5. Rights and provenance</h2>
+<p>The Harvard collection is not rights-cleared for redistribution and my request for written
+permission from the Loeb Music Library is pending. The oud collection's rights remain with its
+performers, who are not named. The third source is of mixed and partly unknown provenance. All three
+are used for training and measurement only. No recording from any of them appears on this page, in
+the repository, or in any public artifact, and the adapters, which are derived from them, are not
+distributed. The clips here are the outputs of models conditioned on text, generated for evaluation,
+and are labelled as such wherever they appear. Per-collection status and the outstanding items are
+documented in the repository's provenance file.</p>
 
 <footer>
-Generated from the run artifacts by <code>apps/ai-service/scripts/build_demo_page.py</code>
-at commit {esc(ctx["commit"])} on {dt.date.today().isoformat()}. Code, model cards, evaluation report
-and the paper draft are available on request.
+Last updated {today.isoformat()}. Code, model cards, the evaluation report and the paper draft are
+available on request.
 </footer>
 
 </main>
@@ -601,21 +669,23 @@ def main() -> None:
     for name in ("ft1_val_curves", "ft2_dropout_probe", "ft3_pcs_voiced", "ft7_scale_val_curves"):
         shutil.copy2(FIG / f"{name}.png", FIGOUT / f"{name}.png")
 
-    commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO, capture_output=True, text=True).stdout.strip() or "unknown"
     ctx = {
         "scale": scale, "scale_captions": scale_captions, "clips": clips, "best_step": best_step,
         "prog_steps": prog_steps, "prog_caption": (RUNS / "qaraami_large_r32/sample_caption.txt").read_text().strip(),
         "melody_clips": melody_clips, "small_captions": small_captions, "small_summary": small_summary,
-        "splits": split_counts(), "commit": commit,
+        "splits": split_counts(), "listening": listening_results(),
     }
     page = build_html(ctx)
     (OUT / "index.html").write_text(page, encoding="utf-8")
     bundle = OUT / "QaraamiGen-demo.html"
     bundle.write_text(inline_assets(page), encoding="utf-8")
 
-    n_audio = len(clips)
     mb = sum((AUDIO / f"{c.name}.mp3").stat().st_size for c in clips.values()) / 1e6
-    print(f"{n_audio} clips, {mb:.1f} MB of audio -> {OUT.relative_to(REPO)}/index.html")
+    print(f"{len(clips)} clips, {mb:.1f} MB of audio -> {OUT.relative_to(REPO)}/index.html")
+    if ctx["listening"]:
+        print("listening results:", ", ".join(f"{k}: {v['adapter']}/{v['n']}" for k, v in ctx["listening"].items()))
+    else:
+        print("no listening results in data/listening/ yet; page says the study is pending")
     print(f"single file: {bundle.relative_to(REPO)} ({bundle.stat().st_size / 1e6:.1f} MB)")
 
 

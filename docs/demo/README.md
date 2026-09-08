@@ -21,5 +21,15 @@ Clip selection is by rule, listed in the script docstring, not by ear. The
 page contains model output only; no source recording, and no adapter weights.
 Rights status per collection: `docs/DATA_PROVENANCE.md`.
 
+## Listening study
+
+`ab_listen.py` (port 8777) also runs a blind paired comparison per set at
+`/test/<set>`: each pair is shown as A and B in an order drawn at random per
+pair, with no scores or file names; the listener picks the one that sounds
+more like qaraami, or neither. The result, with the reveal and a 95% Wilson
+interval on the adapter preference rate, is written to
+`data/listening/<set>_<listener>_<timestamp>.json` (tracked). Rebuilding the
+demo page then replaces the "study pending" line with a results table.
+
 `DEMO_SCRIPT.md` is the separate screen-recording script for the live
 base-vs-adapter service (`services/musicgen-api`, `/demo`).
