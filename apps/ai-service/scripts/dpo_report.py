@@ -19,8 +19,9 @@ REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "data"
 RUNS = REPO / "runs"
 OUT = REPO / "docs/eval/PREFERENCE_OPT.md"
-STAGES = ("small_oud", "medium", "large")
-LABEL = {"small_oud": "small, oud adapter", "medium": "medium", "large": "large"}
+STAGES = ("small_oud", "medium_v1", "large", "medium")
+LABEL = {"small_oud": "small, oud adapter (reward v1)", "medium_v1": "medium, first recipe (reward v1, failed the guards)",
+         "medium": "medium", "large": "large"}
 
 
 def f(x, nd=3):
@@ -71,7 +72,10 @@ def stage_block(tag: str) -> str:
              f"{e['prompts']} prompts × {cfg['samples_per_prompt']} samples of {cfg['seconds']} s → {e['pairs']} pairs "
              f"(margin {cfg['margin']} z); DPO β {cfg['beta']} on {cfg['logp_norm']} token log-probs, lr {cfg['lr']:g}, "
              f"{cfg['epochs']} epochs, {e['steps']} steps"
-             + (f", likelihood anchor {cfg['sft_weight']}" if cfg.get('sft_weight') else "") + ". "
+             + (f", likelihood anchor {cfg['sft_weight']}" if cfg.get('sft_weight') else "")
+             + (f", KL budget {cfg['max_drift']} nats/token" if cfg.get('max_drift') else "")
+             + f"; reward v{cfg.get('reward_version') or 1}"
+             + (f". **Stopped early:** {e['stopped_early']}" if e.get('stopped_early') else "") + ". "
              f"Sampling {e['gen_minutes']} min, training {e['train_minutes']} min, eval {e['eval_minutes']} min.", "",
              "| measure | before | after | note |", "| --- | --- | --- | --- |"]
     notes = {"reward": "composite, z-scored over the union of both sides",

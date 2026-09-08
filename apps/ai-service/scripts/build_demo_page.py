@@ -277,8 +277,15 @@ def listening_html(res: dict[str, dict]) -> str:
         f'<tbody>{"".join(rows)}</tbody></table></div>')
 
 
-DPO_STAGES = (("small_oud", "MusicGen-small, oud adapter"), ("medium", "MusicGen-medium"), ("large", "MusicGen-large"))
+DPO_STAGES = (("small_oud", "MusicGen-small, oud adapter"), ("medium_v1", "MusicGen-medium, first recipe"),
+              ("large", "MusicGen-large"), ("medium", "MusicGen-medium"))
 N_DPO_PAIRS = 6
+
+
+def dpo_ok(e: dict) -> bool:
+    """A round passes the guards when it moved toward the real oud clips and the held-out CE rose by less than 0.5 nats."""
+    ce = e["held_out_oud_token_ce"]
+    return e["after"]["oud_dist"] < e["before"]["oud_dist"] and (ce["after"] - ce["before"]) < 0.5
 
 
 def dpo_results() -> list[dict]:
@@ -305,14 +312,15 @@ def dpo_html(stages: list[dict], clips: dict[str, Clip], listening: dict[str, di
         e, b, a = s["eval"], s["eval"]["before"], s["eval"]["after"]
         ce = e["held_out_oud_token_ce"]
         snr = f'{f3(b.get("band_snr_db"))} → {f3(a.get("band_snr_db"))}' if b.get("band_snr_db") is not None else "–"
-        rows.append(f'<tr><td>{esc(s["label"])}</td><td>{e["pairs"]}</td><td>{e["steps"]}</td>'
+        rows.append(f'<tr><td>{esc(s["label"])}{"" if dpo_ok(e) else " (failed the guards)"}</td><td>{e["pairs"]}</td><td>{e["steps"]}</td>'
                     f'<td>{f3(b["oud_dist"])} → <b>{f3(a["oud_dist"])}</b></td><td>{snr}</td>'
                     f'<td>{f3(b["pcs"])} → {f3(a["pcs"])}</td><td>{f3(b["voiced_fraction"])} → {f3(a["voiced_fraction"])}</td>'
                     f'<td>{f4(ce["before"])} → {f4(ce["after"])}</td></tr>')
     table = ('<table><thead><tr><th>model</th><th>pairs</th><th>steps</th><th>distance to real oud, before → after</th>'
              '<th>band SNR dB, before → after</th><th>PCS</th><th>voiced fraction</th><th>held-out oud token CE</th></tr></thead>'
              f'<tbody>{"".join(rows)}</tbody></table>')
-    top = stages[-1]
+    passing = [s for s in stages if dpo_ok(s["eval"])]
+    top = (passing or stages)[-1]
     prow = []
     for row in top["scores"]["pairs"][:N_DPO_PAIRS]:
         i = row["pair"]
@@ -744,7 +752,8 @@ def main() -> None:
 
     dpo = dpo_results()
     if dpo:
-        top = dpo[-1]
+        passing = [s for s in dpo if dpo_ok(s["eval"])]
+        top = (passing or dpo)[-1]
         for row in top["scores"]["pairs"][:N_DPO_PAIRS]:
             i = row["pair"]
             for side in ("base", "adapter"):
