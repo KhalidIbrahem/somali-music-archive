@@ -73,8 +73,12 @@ DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
 
 # ------------------------------------------------------------------ audio
 
-REWARD_VERSION = 2   # v2: every feature is computed on level-normalised audio. In v1 loudness
-                     # leaked into the MERT distance and the first medium DPO round drifted loud.
+REWARD_VERSION = 2   # v2: every feature is computed on level-normalised audio, with raw loudness,
+                     # gain and clip fraction kept as diagnostics. Recalibration showed v1 and v2
+                     # agree to three decimals on every group: MERT's processor already standardises
+                     # the waveform and band SNR is a ratio, so loudness was never a reward channel.
+                     # The first medium DPO round drifted loud for optimisation reasons (step size),
+                     # not because the reward paid for it; the KL budget in dpo_train is the fix.
 TARGET_RMS_DB = -20.0
 MAX_GAIN_DB = 30.0
 
