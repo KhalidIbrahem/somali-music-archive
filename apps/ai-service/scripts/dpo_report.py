@@ -86,6 +86,10 @@ def stage_block(tag: str) -> str:
         lines.append(f"| {k} | {f(b.get(k))} | {f(a.get(k))} | {notes.get(k, '')} |")
     lines.append(f"| MERT-FAD to real oud test | {f(fad.get('before'))} | {f(fad.get('after'))} | {cfg.get('eval_prompts', '')} eval prompts per side; indicative only at this n in 32-d |")
     lines.append(f"| held-out oud token CE | {f(ce['before'], 4)} | {f(ce['after'], 4)} | {ce['clips']} unseen-song clips; the collapse guard |")
+    sp = e.get("spread_pca")
+    if sp:
+        lines.append(f"| spread (mean pairwise distance, reference space) | {f(sp['before'])} | {f(sp['after'])} | "
+                     f"real oud test clips {f(sp['real_oud_test'])}; a fall is lost diversity |")
     lines += ["", f"Training curve: final DPO loss {last.get('loss', '–')}, implicit-reward margin {last.get('margin', '–')} "
               f"(β × per-token log-ratio difference), pair accuracy over the last ten steps {acc:.2f}; "
               f"chosen log-ratio {last.get('chosen_logratio', '–')}, rejected {last.get('rejected_logratio', '–')} nats per token.",

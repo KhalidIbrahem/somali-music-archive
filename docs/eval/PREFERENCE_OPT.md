@@ -89,6 +89,7 @@ The listener's choices track the melody term and go against the hiss term (he ch
 | noise_floor_db | -24.554 | -25.477 | 10th-percentile frame RMS |
 | MERT-FAD to real oud test | 0.511 | 0.498 | 40 eval prompts per side; indicative only at this n in 32-d |
 | held-out oud token CE | 4.4071 | 4.6863 | 64 unseen-song clips; the collapse guard |
+| spread (mean pairwise distance, reference space) | 0.466 | 0.254 | real oud test clips 0.667; a fall is lost diversity |
 
 Training curve: final DPO loss 0.0219, implicit-reward margin 3.8428 (β × per-token log-ratio difference), pair accuracy over the last ten steps 0.90; chosen log-ratio -0.475, rejected -1.244 nats per token.
 
@@ -109,6 +110,7 @@ Blind test set: `data/ab_dpo_small_oud/` (pairNNN_base = before, pairNNN_adapter
 | noise_floor_db | -32.730 | -18.086 | 10th-percentile frame RMS |
 | MERT-FAD to real oud test | 0.449 | 0.568 | 40 eval prompts per side; indicative only at this n in 32-d |
 | held-out oud token CE | 4.2033 | 5.7031 | 64 unseen-song clips; the collapse guard |
+| spread (mean pairwise distance, reference space) | 0.425 | 0.222 | real oud test clips 0.667; a fall is lost diversity |
 
 Training curve: final DPO loss 0.0002, implicit-reward margin 12.2609 (β × per-token log-ratio difference), pair accuracy over the last ten steps 0.80; chosen log-ratio -1.675, rejected -4.128 nats per token.
 
@@ -129,6 +131,7 @@ Blind test set: `data/ab_dpo_medium_v1/` (pairNNN_base = before, pairNNN_adapter
 | noise_floor_db | -33.230 | -30.291 | 10th-percentile frame RMS |
 | MERT-FAD to real oud test | 0.439 | 0.495 | 40 eval prompts per side; indicative only at this n in 32-d |
 | held-out oud token CE | 4.1418 | 4.1797 | 64 unseen-song clips; the collapse guard |
+| spread (mean pairwise distance, reference space) | 0.453 | 0.348 | real oud test clips 0.667; a fall is lost diversity |
 
 Training curve: final DPO loss 2.0898, implicit-reward margin 0.8302 (β × per-token log-ratio difference), pair accuracy over the last ten steps 1.00; chosen log-ratio 0.026, rejected -0.057 nats per token.
 

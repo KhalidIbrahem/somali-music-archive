@@ -312,12 +312,16 @@ def dpo_html(stages: list[dict], clips: dict[str, Clip], listening: dict[str, di
         e, b, a = s["eval"], s["eval"]["before"], s["eval"]["after"]
         ce = e["held_out_oud_token_ce"]
         snr = f'{f3(b.get("band_snr_db"))} → {f3(a.get("band_snr_db"))}' if b.get("band_snr_db") is not None else "–"
+        sp = e.get("spread_pca") or {}
+        spread = f'{f3(sp.get("before"))} → {f3(sp.get("after"))}' if sp else "–"
         rows.append(f'<tr><td>{esc(s["label"])}{"" if dpo_ok(e) else " (failed the guards)"}</td><td>{e["pairs"]}</td><td>{e["steps"]}</td>'
                     f'<td>{f3(b["oud_dist"])} → <b>{f3(a["oud_dist"])}</b></td><td>{snr}</td>'
                     f'<td>{f3(b["pcs"])} → {f3(a["pcs"])}</td><td>{f3(b["voiced_fraction"])} → {f3(a["voiced_fraction"])}</td>'
-                    f'<td>{f4(ce["before"])} → {f4(ce["after"])}</td></tr>')
+                    f'<td>{f4(ce["before"])} → {f4(ce["after"])}</td><td>{spread}</td></tr>')
+    real_spread = next((s["eval"]["spread_pca"]["real_oud_test"] for s in stages if s["eval"].get("spread_pca")), None)
     table = ('<table><thead><tr><th>model</th><th>pairs</th><th>steps</th><th>distance to real oud, before → after</th>'
-             '<th>band SNR dB, before → after</th><th>PCS</th><th>voiced fraction</th><th>held-out oud token CE</th></tr></thead>'
+             '<th>band SNR dB, before → after</th><th>PCS</th><th>voiced fraction</th><th>held-out oud token CE</th>'
+             f'<th>spread{" (real clips " + f3(real_spread) + ")" if real_spread else ""}</th></tr></thead>'
              f'<tbody>{"".join(rows)}</tbody></table>')
     passing = [s for s in stages if dpo_ok(s["eval"])]
     top = (passing or stages)[-1]
@@ -356,10 +360,13 @@ and every dropout disabled so that policy and reference are the same function of
 <div class="wrap">{table}</div>
 
 <p>The trade is explicit. Distance to the real recordings falls to the level of the real clips themselves
-(4.1 to 4.2 on this scale), while held-out token cross-entropy on unseen oud songs rises: the model becomes
-a better generator of oud-like audio and a worse density model of the tapes. Which of those matters is a
-listening question. The pairs below are the same prompt and seed before and after the optimisation of
-{esc(top["label"])}.</p>
+(4.1 to 4.2 on this scale), and held-out token cross-entropy on unseen oud songs rises by an amount that
+depends on how far the policy is allowed to move; the first medium round, without a likelihood anchor or
+a KL budget, drifted into louder, band-limited output and is kept in the table as a failure. The spread
+column is the mean pairwise distance between the generated clips in the same space: every round narrows
+the output distribution, the large round least, and all of them sit below the spread of the real
+recordings. Whether the narrower, closer output sounds better is a listening question. The pairs below
+are the same prompt and seed before and after the optimisation of {esc(top["label"])}.</p>
 
 <div class="wrap">{pairs_table}</div>
 
