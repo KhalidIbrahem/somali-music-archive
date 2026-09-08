@@ -200,6 +200,9 @@ def main() -> None:
     ap.add_argument("--pairs-per-step", type=int, default=4)
     ap.add_argument("--warmup", type=int, default=10)
     ap.add_argument("--logp-norm", choices=["sum", "mean"], default="sum")
+    ap.add_argument("--max-drift", type=float, default=0.3,
+                    help="stop the round when the policy's mean log-ratio on its own chosen clips, averaged over the last five "
+                         "steps, falls below minus this many nats per token (the KL budget; the first medium round drifted to -1.7)")
     ap.add_argument("--sft-weight", type=float, default=0.0,
                     help="add this times the token CE of one random real oud training clip to every DPO step "
                          "(likelihood anchor: keeps the policy a model of the corpus while it moves toward the reward)")
@@ -226,8 +229,12 @@ def main() -> None:
     if not adapter.is_absolute():
         adapter = (Path.cwd() / adapter).resolve()
     train_prompts, eval_prompts = split_prompts(args.eval_prompts)
+    try:
+        from scripts.reward_model import REWARD_VERSION
+    except ImportError:
+        REWARD_VERSION = None
     (run_dir / "config.json").write_text(json.dumps(vars(args) | {
-        "adapter": str(adapter), "git_commit": git_commit(), "device": DEVICE,
+        "adapter": str(adapter), "git_commit": git_commit(), "device": DEVICE, "reward_version": REWARD_VERSION,
         "prompt_bank": len(prompt_bank()), "train_prompts": len(train_prompts), "eval_prompts": len(eval_prompts)}, indent=2))
     (run_dir / "prompts.json").write_text(json.dumps({"train": train_prompts, "eval": eval_prompts}, indent=2))
 
@@ -329,10 +336,16 @@ def main() -> None:
         wr.writerow(["step", "epoch", "loss", "margin", "acc", "chosen_logratio", "rejected_logratio", "lr", "sec", "mps_driver_gb"])
         step = 0
         t0 = time.time()
+        recent_drift: list[float] = []
+        stopped_early = None
         for ep in range(1, args.epochs + 1):
+            if stopped_early:
+                break
             order = list(range(len(pairs)))
             random.Random(args.seed + rnd * 10 + ep).shuffle(order)
             for b in range(0, len(order), args.pairs_per_step):
+                if stopped_early:
+                    break
                 ts = time.time()
                 batch = [pairs[i] for i in order[b:b + args.pairs_per_step]]
                 opt.zero_grad(set_to_none=True)
@@ -376,9 +389,14 @@ def main() -> None:
                     sys.exit(3)
                 if DEVICE == "mps":
                     torch.mps.empty_cache()
+                recent_drift = (recent_drift + [float(np.mean(crs))])[-5:]
+                if len(recent_drift) == 5 and float(np.mean(recent_drift)) < -args.max_drift:
+                    stopped_early = f"step {step}: chosen log-ratio {np.mean(recent_drift):+.3f}/token over the last five steps is below -{args.max_drift}"
+                    print(f"[round {rnd}] KL budget exhausted at {stopped_early}; stopping the round", flush=True)
         log.close()
         train_s = time.time() - t0
         model.save_pretrained(rdir / "adapter")
+        n_steps = step
         print(f"[round {rnd}] DPO {n_steps} steps in {train_s/60:.1f} min; adapter saved", flush=True)
 
         # -- 4. eval: after-side of the A/B, terms on both sides, FAD, CE guard
@@ -403,6 +421,7 @@ def main() -> None:
                             "quiet_flatness", "hf_ratio", "pcs", "voiced_fraction") if any(k in t for t in pterms)]
         summary = {
             "round": rnd, "prompts": len(prompts), "samples": len(samples), "pairs": len(pairs),
+            "stopped_early": stopped_early,
             "gen_minutes": round(gen_s / 60, 1), "train_minutes": round(train_s / 60, 1), "steps": n_steps,
             "held_out_oud_token_ce": {"before": round(ce_before, 4), "after": round(ce_after, 4), "clips": len(ce_rows)},
             "before": {k: mean_of(bt, k) for k in keys}, "after": {k: mean_of(at, k) for k in keys},

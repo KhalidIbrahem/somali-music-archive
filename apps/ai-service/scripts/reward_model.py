@@ -73,16 +73,35 @@ DEVICE = "mps" if torch.backends.mps.is_available() else "cpu"
 
 # ------------------------------------------------------------------ audio
 
-def load_mono(path: Path) -> tuple[np.ndarray, int]:
+REWARD_VERSION = 2   # v2: every feature is computed on level-normalised audio. In v1 loudness
+                     # leaked into the MERT distance and the first medium DPO round drifted loud.
+TARGET_RMS_DB = -20.0
+MAX_GAIN_DB = 30.0
+
+
+def normalise(audio: np.ndarray) -> tuple[np.ndarray, float, float]:
+    """Scale to TARGET_RMS_DB, never above 0.99 peak, never more than MAX_GAIN_DB up.
+    Returns (audio, raw rms dBFS, gain applied in dB)."""
+    rms = float(np.sqrt(np.mean(audio ** 2)))
+    raw_db = 20.0 * np.log10(rms + 3e-5)
+    gain = 10.0 ** (min(TARGET_RMS_DB - raw_db, MAX_GAIN_DB) / 20.0)
+    peak = float(np.abs(audio).max()) + 1e-9
+    gain = min(gain, 0.99 / peak)
+    return (audio * gain).astype(np.float32), round(raw_db, 2), round(20.0 * np.log10(gain), 2)
+
+
+def load_mono(path: Path, normalised: bool = True) -> tuple[np.ndarray, int]:
     audio, sr = sf.read(path, dtype="float32")
     if audio.ndim > 1:
         audio = audio.mean(axis=1)
+    if normalised:
+        audio = normalise(audio)[0]
     return audio, sr
 
 
 def _key(path: Path) -> str:
     p = Path(path).resolve()
-    return hashlib.sha1(f"{p}|{p.stat().st_mtime_ns}".encode()).hexdigest()
+    return hashlib.sha1(f"{p}|{p.stat().st_mtime_ns}|v{REWARD_VERSION}".encode()).hexdigest()
 
 
 # ------------------------------------------------------------------- MERT
@@ -186,8 +205,10 @@ def waveform_terms(path: Path, device: str = DEVICE) -> dict:
     cached = json.loads(c.read_text()) if c.exists() else None
     if cached and "band_snr_db" in cached:
         return cached
-    audio, sr = load_mono(path)
-    t = {"seconds": round(len(audio) / sr, 2)}
+    raw, sr = load_mono(path, normalised=False)
+    audio, raw_db, gain_db = normalise(raw)
+    t = {"seconds": round(len(audio) / sr, 2), "raw_loudness_dbfs": raw_db, "gain_db": gain_db,
+         "clip_fraction": round(float((np.abs(raw) > 0.98).mean()), 5)}
     t0 = time.time()
     t.update(hiss_terms(audio, sr))
     t1 = time.time()
@@ -416,7 +437,7 @@ def calibrate(device: str = DEVICE) -> dict:
     composite(terms)
     by_path = {t["path"]: t for t in terms}
     idx = {str(p): i for i, p in enumerate(allp)}
-    out = {"groups": {}, "weights": DEFAULT_WEIGHTS, "n_clips": len(allp)}
+    out = {"reward_version": REWARD_VERSION, "groups": {}, "weights": DEFAULT_WEIGHTS, "n_clips": len(allp)}
     for name, ps in groups.items():
         ts = [by_path[str(p)] for p in ps]
         e = embs[[idx[str(p)] for p in ps]]
