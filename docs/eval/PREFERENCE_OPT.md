@@ -116,7 +116,23 @@ Blind test set: `data/ab_dpo_medium_v1/` (pairNNN_base = before, pairNNN_adapter
 
 ### large
 
-Not run yet.
+`facebook/musicgen-large` from `qaraami_large_r32/ckpt_step_2750`; 64 prompts × 4 samples of 15 s → 62 pairs (margin 0.5 z); DPO β 10.0 on mean token log-probs, lr 2e-05, 2 epochs, 62 steps, likelihood anchor 0.5, KL budget 0.3 nats/token; reward v2. Sampling 65.1 min, training 11.4 min, eval 28.8 min.
+
+| measure | before | after | note |
+| --- | --- | --- | --- |
+| reward | -0.521 | 0.521 | composite, z-scored over the union of both sides |
+| oud_dist | 5.098 | 4.140 | Mahalanobis distance to the real oud clips (real train 4.20, test 4.13) |
+| oud_sim | 0.899 | 0.927 | cosine to the real-oud centroid |
+| band_snr_db | 19.800 | 19.821 | 3–10 kHz band SNR (real cassette 4.5, real oud 8.3) |
+| pcs | 0.924 | 0.921 | pentatonic conformity |
+| voiced_fraction | 0.505 | 0.553 | trackable melody |
+| noise_floor_db | -33.230 | -30.291 | 10th-percentile frame RMS |
+| MERT-FAD to real oud test | 0.439 | 0.495 | 40 eval prompts per side; indicative only at this n in 32-d |
+| held-out oud token CE | 4.1418 | 4.1797 | 64 unseen-song clips; the collapse guard |
+
+Training curve: final DPO loss 2.0898, implicit-reward margin 0.8302 (β × per-token log-ratio difference), pair accuracy over the last ten steps 1.00; chosen log-ratio 0.026, rejected -0.057 nats per token.
+
+Blind test set: `data/ab_dpo_large/` (pairNNN_base = before, pairNNN_adapter = after, same prompt and seed).
 
 ### medium
 
