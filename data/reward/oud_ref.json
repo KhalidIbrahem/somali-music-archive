@@ -1,0 +1,43 @@
+{
+  "mert": "m-a-p/MERT-v1-95M",
+  "pca_dim": 32,
+  "cov_reg": 0.001,
+  "explained_variance": 0.964,
+  "n_train": 1512,
+  "n_test": 276,
+  "train_dir": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/oud_clips/train",
+  "test_dir": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/oud_clips/test",
+  "oud_dist_train": {
+    "mean": 4.202,
+    "p90": 5.704
+  },
+  "oud_dist_test": {
+    "mean": 4.127,
+    "p90": 5.44
+  },
+  "fad_test_split_half": 0.2648,
+  "fad_train_vs_test": 0.2609,
+  "hiss_mean": {
+    "band_snr_db": 14.3223,
+    "noise_floor_db": -29.7251,
+    "quiet_flatness": 0.0996,
+    "hf_ratio": 0.0095,
+    "rolloff95_hz": 8710.6792,
+    "loudness_dbfs": -19.5994
+  },
+  "hiss_std": {
+    "band_snr_db": 7.957,
+    "noise_floor_db": 18.814,
+    "quiet_flatness": 0.2618,
+    "hf_ratio": 0.0111,
+    "rolloff95_hz": 3579.4361,
+    "loudness_dbfs": 20.09
+  },
+  "seconds": {
+    "mert_total": 0.2,
+    "mert_per_clip": 0.0,
+    "hiss_total": 19.9,
+    "hiss_per_clip": 0.013
+  },
+  "fitted": "2026-09-08T00:47:50"
+}

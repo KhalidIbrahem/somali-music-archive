@@ -211,3 +211,14 @@ data/ace_step_zeroshot/
 docs/demo/site/audio/
 docs/demo/site/figures/
 docs/demo/site/QaraamiGen-demo.html
+
+# ── Stage 5 preference optimisation (dpo_train.py): sampled audio/tokens and
+# adapter weights stay out; configs, prompts, pairs.json, logs and eval JSON are tracked.
+runs/dpo_*/round_*/samples/
+runs/dpo_*/round_*/adapter/
+data/ab_dpo_*/*.wav
+data/ab_dpo_*/*.npy
+
+# reward-model embedding/term cache (regenerable)
+data/reward/cache/
+data/reward/oud_ref.npz

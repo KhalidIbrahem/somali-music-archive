@@ -3,7 +3,7 @@
 # 1 = normal, 2 = warn (yellow), 4 = critical (red). On >= 2, SIGSTOP every training /
 # preprocessing process and report; jobs stay paused until resumed by hand:
 #   kill -CONT $(pgrep -f 'train_run.py|denoise_clips.py|phase1_tokens|eval_test_ce.py'); rm runs/_tools/PAUSED
-PAT='train_run.py|denoise_clips.py|phase1_tokens|eval_test_ce.py|eval_run_ce.py|harvard_ab_gen.py|phase3_pcs_run'
+PAT='dpo_train.py|train_run.py|denoise_clips.py|phase1_tokens|eval_test_ce.py|eval_run_ce.py|harvard_ab_gen.py|phase3_pcs_run'
 TOOLS=$HOME/Projects/somali-music-archive/runs/_tools
 FLAG=$TOOLS/PAUSED
 state=0   # 0 running, 1 paused (pressure high), 2 paused (pressure back to normal, awaiting resume)
