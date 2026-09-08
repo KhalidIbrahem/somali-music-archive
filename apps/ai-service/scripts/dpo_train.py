@@ -200,6 +200,9 @@ def main() -> None:
     ap.add_argument("--pairs-per-step", type=int, default=4)
     ap.add_argument("--warmup", type=int, default=10)
     ap.add_argument("--logp-norm", choices=["sum", "mean"], default="sum")
+    ap.add_argument("--sft-weight", type=float, default=0.0,
+                    help="add this times the token CE of one random real oud training clip to every DPO step "
+                         "(likelihood anchor: keeps the policy a model of the corpus while it moves toward the reward)")
     ap.add_argument("--eval-prompts", type=int, default=32)
     ap.add_argument("--ce-clips", type=int, default=64, help="held-out oud clips for the token-CE guard")
     ap.add_argument("--captions", default=str(DATA / "scale_captions.jsonl"))
@@ -237,6 +240,8 @@ def main() -> None:
     test_rows = [r for r in load_split(Path(args.captions), "test") if r.get("source") == "oud_ilkacase"]
     stride = max(1, len(test_rows) // args.ce_clips)
     ce_rows = sorted(test_rows, key=lambda r: r["clip_path"])[::stride][: args.ce_clips]
+    anchor_rows = [r for r in load_split(Path(args.captions), "train") if r.get("source") == "oud_ilkacase"] if args.sft_weight > 0 else []
+    anchor_rng = random.Random(args.seed + 99)
 
     ab_dir = DATA / f"ab_dpo_{args.tag}"
     ab_dir.mkdir(parents=True, exist_ok=True)
@@ -347,6 +352,13 @@ def main() -> None:
                     acc_loss += loss.item()
                     margins.append(margin.item()); accs.append(float(margin.item() > 0))
                     crs.append(cr.item()); rrs.append(rr.item())
+                if anchor_rows:
+                    r = anchor_rng.choice(anchor_rows)
+                    labels = delayed_labels(token_path(tokens_dir, r))[None].to(DEVICE)
+                    text = tok(r["caption"], return_tensors="pt").to(DEVICE)
+                    sft = model(input_ids=text["input_ids"], attention_mask=text["attention_mask"], labels=labels).loss
+                    (args.sft_weight * sft).backward()
+                    acc_loss += args.sft_weight * sft.item()
                 torch.nn.utils.clip_grad_norm_(params, 1.0)
                 opt.step()
                 sched.step()
@@ -387,7 +399,8 @@ def main() -> None:
         def mean_of(ts, key):
             v = [t[key] for t in ts if t.get(key) is not None]
             return round(float(np.mean(v)), 4) if v else None
-        keys = [k for k in ("reward", "oud_dist", "oud_sim", "noise_floor_db", "quiet_flatness", "hf_ratio", "pcs", "voiced_fraction") if any(k in t for t in pterms)]
+        keys = [k for k in ("reward", "oud_dist", "oud_sim", "band_snr_db", "hiss_index", "rolloff95_hz", "noise_floor_db",
+                            "quiet_flatness", "hf_ratio", "pcs", "voiced_fraction") if any(k in t for t in pterms)]
         summary = {
             "round": rnd, "prompts": len(prompts), "samples": len(samples), "pairs": len(pairs),
             "gen_minutes": round(gen_s / 60, 1), "train_minutes": round(train_s / 60, 1), "steps": n_steps,
