@@ -1,0 +1,27 @@
+{
+  "model": "facebook/musicgen-large",
+  "lr": 5e-05,
+  "total_steps": 3000,
+  "warmup": 100,
+  "batch_size": 1,
+  "grad_accum": 4,
+  "rank": 32,
+  "alpha": 64,
+  "targets": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "out_proj",
+    "fc1",
+    "fc2"
+  ],
+  "captions": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/scale_captions.jsonl",
+  "tokens_dir": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/scale_tokens",
+  "train_clips": 7857,
+  "val_clips_used": 48,
+  "sample_seconds": 15,
+  "seed": 42,
+  "git_commit": "c21a5ca161ae97a9aa81e33375b192a9179993ea",
+  "device": "mps",
+  "smoke": false
+}

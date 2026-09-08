@@ -1,0 +1,149 @@
+{
+  "set": "ab_large",
+  "title": "MusicGen-large",
+  "listener": "khalid",
+  "date": "2026-09-08T00:21:43",
+  "seed": 2765925254,
+  "protocol": "paired comparison, A/B order randomised per pair, scores and file names hidden, question: which sounds more like Somali qaraami; 'neither' allowed",
+  "pairs": [
+    {
+      "pair": 0,
+      "caption": "qaraami, Somali traditional song, led by vocals, moderate at 110 BPM, pentatonic melody rooted on E, archival qaraami recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 1,
+      "caption": "Somali song, led by ensemble, lively at 139 BPM, pentatonic melody rooted on A, vintage archival cassette recording, 1955–1991, performed by Sahro Axmed",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 2,
+      "caption": "Somali song, led by ensemble, lively at 125 BPM, pentatonic melody rooted on D, vintage archival cassette recording, 1955–1991, performed by Nabi Ammaan [Songs Praising the Prophet]",
+      "A": "adapter",
+      "chosen": "A",
+      "preferred": "adapter",
+      "note": "A but noisy"
+    },
+    {
+      "pair": 3,
+      "caption": "Somali song, led by ensemble, moderate at 107 BPM, pentatonic melody rooted on C#, vintage archival cassette recording, 1955–1991, performed by Maxamed Axmed Kuluc and others",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 4,
+      "caption": "Somali song, led by ensemble, moderate at 104 BPM, pentatonic melody rooted on C#, vintage archival cassette recording, 1955–1991, performed by Hibo Maxamed and Faysal Cumar Mushteeg",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": "B but a little some noisy in the audio."
+    },
+    {
+      "pair": 5,
+      "caption": "Somali song, led by ensemble, moderate at 101 BPM, pentatonic melody rooted on C#, vintage archival cassette recording, 1955–1991, performed by Hibo Maxamed and Faysal Cumar Mushteeg",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 6,
+      "caption": "Somali song, led by ensemble, lively at 139 BPM, pentatonic melody rooted on F#, vintage archival cassette recording, 1955–1991, performed by Qalinle, Xarago, Kinsi",
+      "A": "adapter",
+      "chosen": "B",
+      "preferred": "base",
+      "note": ""
+    },
+    {
+      "pair": 7,
+      "caption": "Somali song, led by ensemble, lively at 134 BPM, pentatonic melody rooted on G, vintage archival cassette recording, 1955–1991, performed by Qalinle, Xarago, Kinsi",
+      "A": "adapter",
+      "chosen": "A",
+      "preferred": "adapter",
+      "note": "A but a little bit noisy"
+    },
+    {
+      "pair": 8,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), lively at 156 BPM, pentatonic melody rooted on D#, archival qaraami recording",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": "B more accurate at the begining but not good at the end of the clip"
+    },
+    {
+      "pair": 9,
+      "caption": "Somali song, led by ensemble, lively at 134 BPM, pentatonic melody rooted on F#, vintage archival cassette recording, 1955–1991, performed by Qalinle, Xarago, Kinsi",
+      "A": "adapter",
+      "chosen": "B",
+      "preferred": "base",
+      "note": ""
+    },
+    {
+      "pair": 10,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 114 BPM, pentatonic melody rooted on G#, archival qaraami recording",
+      "A": "adapter",
+      "chosen": "A",
+      "preferred": "adapter",
+      "note": "Both are good but A is more somali music related."
+    },
+    {
+      "pair": 11,
+      "caption": "qaraami, Somali traditional song, led by hand drums, lively at 170 BPM, pentatonic melody rooted on A, archival qaraami recording",
+      "A": "adapter",
+      "chosen": "A",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 12,
+      "caption": "Somali song, led by ensemble, lively at 125 BPM, pentatonic melody rooted on E, vintage archival cassette recording, 1955–1991, performed by Sahro Axmed",
+      "A": "adapter",
+      "chosen": "A",
+      "preferred": "adapter",
+      "note": "A but noisy"
+    },
+    {
+      "pair": 13,
+      "caption": "Somali song, led by ensemble, lively at 125 BPM, pentatonic melody rooted on E, vintage archival cassette recording, 1955–1991, performed by Qalinle, Sado Ali, and Marwo Mohamed",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": "B but noisy"
+    },
+    {
+      "pair": 14,
+      "caption": "Somali song, led by ensemble, lively at 134 BPM, pentatonic melody rooted on F, vintage archival cassette recording, 1955–1991, performed by Qalinle, Xarago, Kinsi",
+      "A": "adapter",
+      "chosen": "A",
+      "preferred": "adapter",
+      "note": "A but noisy"
+    },
+    {
+      "pair": 15,
+      "caption": "Somali song, led by ensemble, lively at 150 BPM, pentatonic melody rooted on E, vintage archival cassette recording, 1955–1991, performed by Sahro Axmed",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": "B but noisy"
+    }
+  ],
+  "summary": {
+    "n": 16,
+    "adapter": 11,
+    "base": 2,
+    "none": 3,
+    "adapter_rate": 0.6875,
+    "wilson95": [
+      0.444,
+      0.8584
+    ]
+  }
+}

@@ -227,12 +227,46 @@ def melody_set() -> ListeningSet | None:
     return s
 
 
+def scored_set(d: Path) -> ListeningSet | None:
+    """Any other data/ab_<name>/ with pairNNN_{base,adapter}.wav and an optional
+    ab_scores.json (written by dpo_train.py: note + per-pair base/adapter terms)."""
+    pairs = scan_pairs(d)
+    if not pairs:
+        return None
+    s = ListeningSet(d.name, d.name.replace("_", " "), d)
+    j = d / "ab_scores.json"
+    if j.exists():
+        e = json.loads(j.read_text())
+        s.note = e.get("note", "")
+        for row in e.get("pairs", []):
+            pair = pairs.get(row["pair"])
+            if pair is None:
+                continue
+            if not pair.caption:
+                pair.caption = row.get("caption", "")
+            for side in ("base", "adapter"):
+                clip, sc = getattr(pair, side), row.get(side) or {}
+                if clip and sc.get("pcs") is not None:
+                    clip.pcs, clip.voiced = sc.get("pcs"), sc.get("voiced_fraction")
+    readme = d / "README.txt"
+    if readme.exists():
+        s.note = (s.note + " " + readme.read_text().strip()).strip()
+    s.pairs = [pairs[i] for i in sorted(pairs)]
+    return s
+
+
 def load_sets() -> list[ListeningSet]:
     sets: list[ListeningSet] = []
     for tag in ("medium", "large"):
         s = scale_set(tag)
         if s:
             sets.append(s)
+    known = {"ab_medium", "ab_large", "ab_melody"}
+    for d in sorted(DATA.glob("ab_*")):
+        if d.is_dir() and d.name not in known:
+            s = scored_set(d)
+            if s:
+                sets.append(s)
     s = legacy_set("oud_ab_listening", "MusicGen-small, oud adapter (step 500)", "oud_base", "oud_lora500",
                    "8 seeded oud captions, base vs the oud adapter; 10 s clips.")
     if s:
