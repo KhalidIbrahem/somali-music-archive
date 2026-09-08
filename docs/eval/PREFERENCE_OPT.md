@@ -21,17 +21,17 @@ Direct preference optimisation on the LoRA adapter (`scripts/dpo_train.py`). Per
 
 | group | n | oud_dist | band_snr_db | pcs | voiced | composite | FAD→real oud |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| real_oud_test | 64 | 4.13 | 8.3 | 0.910 | 0.262 | 0.18 | 0.001 |
-| real_harvard_test | 64 | 7.22 | 4.5 | 0.864 | 0.527 | -0.38 | 0.587 |
-| ab_large_base | 16 | 6.87 | 10.4 | 0.872 | 0.355 | -0.37 | 0.512 |
-| ab_large_adapter | 16 | 7.11 | 8.7 | 0.783 | 0.683 | -0.05 | 0.518 |
-| ab_medium_base | 16 | 7.03 | 8.1 | 0.822 | 0.409 | -0.77 | 0.505 |
-| ab_medium_adapter | 16 | 7.56 | 7.9 | 0.808 | 0.515 | -0.87 | 0.501 |
-| oud_ab_listening_base | 8 | 8.08 | 10.9 | 0.933 | 0.293 | -1.20 | 0.541 |
-| oud_ab_listening_adapter | 8 | 6.57 | 8.9 | 0.926 | 0.538 | 0.18 | 0.262 |
-| harvard_ab_listening_base | 8 | 6.91 | 11.1 | 0.875 | 0.395 | -0.42 | 0.505 |
-| harvard_ab_listening_adapter | 8 | 8.32 | 4.7 | 0.724 | 0.663 | -1.10 | 0.575 |
-| ab_melody_base | 8 | 7.50 | 18.7 | 0.908 | 0.304 | -1.00 | 0.477 |
+| real_oud_test | 64 | 4.13 | 8.2 | 0.909 | 0.262 | 0.18 | 0.001 |
+| real_harvard_test | 64 | 7.22 | 4.5 | 0.861 | 0.527 | -0.38 | 0.587 |
+| ab_large_base | 16 | 6.87 | 10.4 | 0.877 | 0.355 | -0.36 | 0.512 |
+| ab_large_adapter | 16 | 7.11 | 8.7 | 0.784 | 0.683 | -0.05 | 0.518 |
+| ab_medium_base | 16 | 7.03 | 8.1 | 0.821 | 0.409 | -0.77 | 0.505 |
+| ab_medium_adapter | 16 | 7.56 | 7.9 | 0.802 | 0.515 | -0.87 | 0.501 |
+| oud_ab_listening_base | 8 | 8.08 | 10.9 | 0.928 | 0.293 | -1.19 | 0.541 |
+| oud_ab_listening_adapter | 8 | 6.59 | 8.9 | 0.929 | 0.538 | 0.17 | 0.264 |
+| harvard_ab_listening_base | 8 | 6.91 | 11.1 | 0.867 | 0.395 | -0.43 | 0.505 |
+| harvard_ab_listening_adapter | 8 | 8.32 | 4.7 | 0.716 | 0.663 | -1.12 | 0.575 |
+| ab_melody_base | 8 | 7.50 | 18.7 | 0.908 | 0.304 | -0.98 | 0.477 |
 
 ### Agreement with the blind test
 
@@ -58,11 +58,11 @@ On the 7 pairs annotated "noisy", the hiss terms of the clip the listener chose 
 | term | chosen | other |
 | --- | --- | --- |
 | band_snr_db | 4.25 | 11.60 |
-| noise_floor_db | -21.98 | -26.64 |
+| noise_floor_db | -28.05 | -29.35 |
 | quiet_flatness | 0.00 | 0.01 |
 | hf_ratio | 0.00 | 0.00 |
 | rolloff95_hz | 4689.73 | 7931.90 |
-| hiss_index | 0.38 | -0.40 |
+| hiss_index | 0.38 | -0.41 |
 
 The listener's choices track the melody term and go against the hiss term (he chose the hissy clip every time); the reward is tuned to the stated goal, clean oud qaraami, not to those choices.
 
@@ -74,9 +74,9 @@ The listener's choices track the melody term and go against the hiss term (he ch
 
 ## Rounds
 
-### small, oud adapter
+### small, oud adapter (reward v1)
 
-`facebook/musicgen-small` from `oud_lora_r16_nodrop_20260809/ckpt_step_0500`; 96 prompts × 4 samples of 15 s → 96 pairs (margin 0.5 z); DPO β 5.0 on mean token log-probs, lr 5e-05, 3 epochs, 144 steps. Sampling 31.0 min, training 35.5 min, eval 78.4 min.
+`facebook/musicgen-small` from `oud_lora_r16_nodrop_20260809/ckpt_step_0500`; 96 prompts × 4 samples of 15 s → 96 pairs (margin 0.5 z); DPO β 5.0 on mean token log-probs, lr 5e-05, 3 epochs, 144 steps; reward v1. Sampling 31.0 min, training 35.5 min, eval 78.4 min.
 
 | measure | before | after | note |
 | --- | --- | --- | --- |
@@ -94,11 +94,31 @@ Training curve: final DPO loss 0.0219, implicit-reward margin 3.8428 (β × per-
 
 Blind test set: `data/ab_dpo_small_oud/` (pairNNN_base = before, pairNNN_adapter = after, same prompt and seed).
 
-### medium
+### medium, first recipe (reward v1, failed the guards)
+
+`facebook/musicgen-medium` from `qaraami_medium_r32/ckpt_step_2750`; 96 prompts × 4 samples of 15 s → 94 pairs (margin 0.5 z); DPO β 5.0 on mean token log-probs, lr 5e-05, 3 epochs, 141 steps; reward v1. Sampling 76.3 min, training 10.5 min, eval 23.1 min.
+
+| measure | before | after | note |
+| --- | --- | --- | --- |
+| reward | 0.982 | -1.032 | composite, z-scored over the union of both sides |
+| oud_dist | 4.973 | 7.331 | Mahalanobis distance to the real oud clips (real train 4.20, test 4.13) |
+| oud_sim | 0.901 | 0.771 | cosine to the real-oud centroid |
+| band_snr_db | 18.208 | 7.225 | 3–10 kHz band SNR (real cassette 4.5, real oud 8.3) |
+| pcs | 0.933 | 0.692 | pentatonic conformity |
+| voiced_fraction | 0.438 | 0.890 | trackable melody |
+| noise_floor_db | -32.730 | -18.086 | 10th-percentile frame RMS |
+| MERT-FAD to real oud test | 0.449 | 0.568 | 40 eval prompts per side; indicative only at this n in 32-d |
+| held-out oud token CE | 4.2033 | 5.7031 | 64 unseen-song clips; the collapse guard |
+
+Training curve: final DPO loss 0.0002, implicit-reward margin 12.2609 (β × per-token log-ratio difference), pair accuracy over the last ten steps 0.80; chosen log-ratio -1.675, rejected -4.128 nats per token.
+
+Blind test set: `data/ab_dpo_medium_v1/` (pairNNN_base = before, pairNNN_adapter = after, same prompt and seed).
+
+### large
 
 Not run yet.
 
-### large
+### medium
 
 Not run yet.
 
