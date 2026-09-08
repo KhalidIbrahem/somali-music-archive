@@ -139,7 +139,24 @@ Blind test set: `data/ab_dpo_large/` (pairNNN_base = before, pairNNN_adapter = a
 
 ### medium
 
-Not run yet.
+`facebook/musicgen-medium` from `qaraami_medium_r32/ckpt_step_2750`; 96 prompts × 4 samples of 15 s → 94 pairs (margin 0.5 z); DPO β 10.0 on mean token log-probs, lr 2e-05, 2 epochs, 94 steps, likelihood anchor 0.5, KL budget 0.3 nats/token; reward v2. Sampling 77.8 min, training 211.9 min, eval 23.9 min.
+
+| measure | before | after | note |
+| --- | --- | --- | --- |
+| reward | -0.835 | 0.785 | composite, z-scored over the union of both sides |
+| oud_dist | 4.973 | 3.536 | Mahalanobis distance to the real oud clips (real train 4.20, test 4.13) |
+| oud_sim | 0.901 | 0.944 | cosine to the real-oud centroid |
+| band_snr_db | 18.208 | 16.927 | 3–10 kHz band SNR (real cassette 4.5, real oud 8.3) |
+| pcs | 0.933 | 0.873 | pentatonic conformity |
+| voiced_fraction | 0.438 | 0.623 | trackable melody |
+| noise_floor_db | -33.798 | -27.854 | 10th-percentile frame RMS |
+| MERT-FAD to real oud test | 0.449 | 0.528 | 40 eval prompts per side; indicative only at this n in 32-d |
+| held-out oud token CE | 4.2033 | 4.2686 | 64 unseen-song clips; the collapse guard |
+| spread (mean pairwise distance, reference space) | 0.425 | 0.256 | real oud test clips 0.667; a fall is lost diversity |
+
+Training curve: final DPO loss 1.1118, implicit-reward margin 2.2653 (β × per-token log-ratio difference), pair accuracy over the last ten steps 1.00; chosen log-ratio -0.033, rejected -0.259 nats per token.
+
+Blind test set: `data/ab_dpo_medium/` (pairNNN_base = before, pairNNN_adapter = after, same prompt and seed).
 
 ## Reading the numbers
 
