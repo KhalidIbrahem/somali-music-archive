@@ -18,26 +18,26 @@
   "fad_test_split_half": 0.2648,
   "fad_train_vs_test": 0.2609,
   "hiss_mean": {
-    "band_snr_db": 14.3223,
-    "noise_floor_db": -29.7251,
+    "band_snr_db": 14.3186,
+    "noise_floor_db": -35.3347,
     "quiet_flatness": 0.0996,
     "hf_ratio": 0.0095,
-    "rolloff95_hz": 8710.6792,
-    "loudness_dbfs": -19.5994
+    "rolloff95_hz": 8710.6688,
+    "loudness_dbfs": -25.2213
   },
   "hiss_std": {
-    "band_snr_db": 7.957,
-    "noise_floor_db": 18.814,
+    "band_snr_db": 7.9109,
+    "noise_floor_db": 17.1341,
     "quiet_flatness": 0.2618,
     "hf_ratio": 0.0111,
-    "rolloff95_hz": 3579.4361,
-    "loudness_dbfs": 20.09
+    "rolloff95_hz": 3579.4263,
+    "loudness_dbfs": 18.4523
   },
   "seconds": {
-    "mert_total": 0.2,
-    "mert_per_clip": 0.0,
-    "hiss_total": 19.9,
+    "mert_total": 72.6,
+    "mert_per_clip": 0.041,
+    "hiss_total": 19.8,
     "hiss_per_clip": 0.013
   },
-  "fitted": "2026-09-08T00:47:50"
+  "fitted": "2026-09-08T06:58:07"
 }
