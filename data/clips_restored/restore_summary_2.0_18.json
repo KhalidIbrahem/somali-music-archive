@@ -1,0 +1,64 @@
+{
+  "energy_removed_db": {
+    "median": 1.24,
+    "p10": 0.588,
+    "p90": 2.037
+  },
+  "band_1_3k_share_raw": {
+    "median": 0.0973,
+    "p10": 0.0205,
+    "p90": 0.3992
+  },
+  "band_1_3k_share_out": {
+    "median": 0.0948,
+    "p10": 0.0187,
+    "p90": 0.4248
+  },
+  "corr_raw_vs_out": {
+    "median": 0.983,
+    "p10": 0.9709,
+    "p90": 0.9928
+  },
+  "band_snr_db_raw": {
+    "median": 4.665,
+    "p10": 0.646,
+    "p90": 7.151
+  },
+  "band_snr_db_out": {
+    "median": 11.365,
+    "p10": 1.929,
+    "p90": 16.049
+  },
+  "rolloff95_hz_raw": {
+    "median": 3164.05,
+    "p10": 2567.18,
+    "p90": 8107.06
+  },
+  "rolloff95_hz_out": {
+    "median": 2218.75,
+    "p10": 1668.74,
+    "p90": 3111.71
+  },
+  "noise_floor_db_raw": {
+    "median": -21.5,
+    "p10": -25.796,
+    "p90": -16.665
+  },
+  "noise_floor_db_out": {
+    "median": -24.96,
+    "p10": -28.586,
+    "p90": -20.078
+  },
+  "mert_cosine_raw_vs_out": {
+    "median": 0.9747,
+    "p10": 0.9582,
+    "p90": 0.9836
+  },
+  "n": 64,
+  "settings": {
+    "alpha": 2.0,
+    "max_atten_db": 18.0,
+    "n_fft": 2048,
+    "hop": 512
+  }
+}
