@@ -1,0 +1,197 @@
+{
+ "note": "MusicGen-small on the 8 Harvard A/B captions, same seed both sides, 10 s: pairNNN_base = adapter trained on RAW Harvard clips (harvard_raw step 1500), pairNNN_adapter = adapter trained on the spectral-subtraction RESTORED clips (harvard_restored step 1500).",
+ "summary": {
+  "base": {
+   "band_snr_db": 4.662,
+   "rolloff95_hz": 3143.55,
+   "noise_floor_db": -28.663,
+   "pcs": 0.717,
+   "voiced_fraction": 0.663
+  },
+  "adapter": {
+   "band_snr_db": 11.29,
+   "rolloff95_hz": 1533.2,
+   "noise_floor_db": -28.83,
+   "pcs": 0.762,
+   "voiced_fraction": 0.607
+  }
+ },
+ "pairs": [
+  {
+   "pair": 0,
+   "caption": "Qaraami, traditional Somali music, moderate at 99 BPM, pentatonic melody rooted on D, vintage archival recording",
+   "base": {
+    "scored": true,
+    "pcs": 0.5844,
+    "voiced_fraction": 0.488,
+    "band_snr_db": 4.15,
+    "rolloff95_hz": 1757.8,
+    "noise_floor_db": -24.44,
+    "oud_dist": 7.3681
+   },
+   "adapter": {
+    "scored": true,
+    "pcs": 0.9496,
+    "voiced_fraction": 0.956,
+    "band_snr_db": 4.82,
+    "rolloff95_hz": 1218.8,
+    "noise_floor_db": -23.26,
+    "oud_dist": 9.1518
+   }
+  },
+  {
+   "pair": 1,
+   "caption": "Qaraami, traditional Somali music, lively at 144 BPM, pentatonic melody rooted on D, vintage archival recording",
+   "base": {
+    "scored": true,
+    "pcs": 0.707,
+    "voiced_fraction": 0.912,
+    "band_snr_db": 4.08,
+    "rolloff95_hz": 4039.1,
+    "noise_floor_db": -25.88,
+    "oud_dist": 7.6495
+   },
+   "adapter": {
+    "scored": true,
+    "pcs": 0.5789,
+    "voiced_fraction": 0.61,
+    "band_snr_db": 8.23,
+    "rolloff95_hz": 843.8,
+    "noise_floor_db": -29.89,
+    "oud_dist": 8.1899
+   }
+  },
+  {
+   "pair": 2,
+   "caption": "traditional Somali song, lively at 139 BPM, pentatonic melody rooted on C#, vintage archival recording",
+   "base": {
+    "scored": true,
+    "pcs": 0.8662,
+    "voiced_fraction": 0.6,
+    "band_snr_db": 4.73,
+    "rolloff95_hz": 3453.1,
+    "noise_floor_db": -23.69,
+    "oud_dist": 10.0841
+   },
+   "adapter": {
+    "scored": true,
+    "pcs": 0.9112,
+    "voiced_fraction": 0.43,
+    "band_snr_db": 14.65,
+    "rolloff95_hz": 1953.1,
+    "noise_floor_db": -26.9,
+    "oud_dist": 6.6245
+   }
+  },
+  {
+   "pair": 3,
+   "caption": "traditional Somali song, lively at 134 BPM, pentatonic melody rooted on C#, vintage archival recording",
+   "base": {
+    "scored": true,
+    "pcs": 0.6746,
+    "voiced_fraction": 0.339,
+    "band_snr_db": 4.18,
+    "rolloff95_hz": 3593.8,
+    "noise_floor_db": -41.64,
+    "oud_dist": 6.9256
+   },
+   "adapter": {
+    "scored": true,
+    "pcs": 0.7248,
+    "voiced_fraction": 0.299,
+    "band_snr_db": 16.09,
+    "rolloff95_hz": 1281.2,
+    "noise_floor_db": -31.77,
+    "oud_dist": 8.6883
+   }
+  },
+  {
+   "pair": 4,
+   "caption": "traditional Somali song, lively at 129 BPM, pentatonic melody rooted on E, vintage archival recording",
+   "base": {
+    "scored": true,
+    "pcs": 0.7032,
+    "voiced_fraction": 0.311,
+    "band_snr_db": 8.32,
+    "rolloff95_hz": 3296.9,
+    "noise_floor_db": -31.51,
+    "oud_dist": 8.0299
+   },
+   "adapter": {
+    "scored": true,
+    "pcs": 0.9393,
+    "voiced_fraction": 0.827,
+    "band_snr_db": 8.12,
+    "rolloff95_hz": 2187.5,
+    "noise_floor_db": -29.1,
+    "oud_dist": 9.5317
+   }
+  },
+  {
+   "pair": 5,
+   "caption": "traditional Somali song, lively at 121 BPM, pentatonic melody rooted on E, vintage archival recording",
+   "base": {
+    "scored": true,
+    "pcs": 0.9659,
+    "voiced_fraction": 0.884,
+    "band_snr_db": 6.67,
+    "rolloff95_hz": 3906.2,
+    "noise_floor_db": -26.02,
+    "oud_dist": 9.0011
+   },
+   "adapter": {
+    "scored": true,
+    "pcs": 0.6817,
+    "voiced_fraction": 0.624,
+    "band_snr_db": 9.3,
+    "rolloff95_hz": 1156.2,
+    "noise_floor_db": -24.2,
+    "oud_dist": 9.5033
+   }
+  },
+  {
+   "pair": 6,
+   "caption": "Qaraami, traditional Somali music, moderate at 96 BPM, pentatonic melody rooted on D, vintage archival recording",
+   "base": {
+    "scored": true,
+    "pcs": 0.5558,
+    "voiced_fraction": 0.773,
+    "band_snr_db": 2.22,
+    "rolloff95_hz": 3695.3,
+    "noise_floor_db": -32.45,
+    "oud_dist": 7.8834
+   },
+   "adapter": {
+    "scored": true,
+    "pcs": 0.6908,
+    "voiced_fraction": 0.416,
+    "band_snr_db": 14.52,
+    "rolloff95_hz": 2109.4,
+    "noise_floor_db": -32.96,
+    "oud_dist": 6.9119
+   }
+  },
+  {
+   "pair": 7,
+   "caption": "Qaraami, traditional Somali music, moderate at 117 BPM, pentatonic melody rooted on D, vintage archival recording",
+   "base": {
+    "scored": true,
+    "pcs": 0.6761,
+    "voiced_fraction": 0.998,
+    "band_snr_db": 2.95,
+    "rolloff95_hz": 1406.2,
+    "noise_floor_db": -23.67,
+    "oud_dist": 9.6307
+   },
+   "adapter": {
+    "scored": true,
+    "pcs": 0.6232,
+    "voiced_fraction": 0.693,
+    "band_snr_db": 14.59,
+    "rolloff95_hz": 1515.6,
+    "noise_floor_db": -32.56,
+    "oud_dist": 7.5472
+   }
+  }
+ ]
+}
