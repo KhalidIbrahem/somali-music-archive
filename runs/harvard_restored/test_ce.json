@@ -1,0 +1,23 @@
+{
+  "n_test_clips": 128,
+  "restored_tokens": {
+    "base": 4.6151,
+    "step_250": 4.5559,
+    "step_500": 4.5449,
+    "step_750": 4.5381,
+    "step_1000": 4.5336,
+    "step_1250": 4.5312,
+    "step_1500": 4.5305,
+    "raw_adapter_step_1500": 4.5574
+  },
+  "best_restored_ckpt": "step_1500",
+  "raw_tokens": {
+    "base": 4.8363,
+    "restored_adapter_step_1500": 4.7756,
+    "reference_from_2026-09-03": {
+      "raw_adapter_on_raw_1500": 4.7585,
+      "denoised_adapter_on_raw": null
+    }
+  },
+  "verdict": "restoration transfers: the restored-trained adapter beats base on raw audio"
+}
