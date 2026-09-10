@@ -1,3 +1,10 @@
+> **Superseded planning document, kept for the record.** This was written during the
+> project's commercial phase and treats the dataset as an asset to be built up and
+> monetised. The project is now open-source, nonprofit academic research: the corpus
+> is not sold, licensed, or distributed. How the recordings are actually held and used
+> is set out in `docs/DATA_PROVENANCE.md` and `docs/data/CORPUS_INVENTORY.md`. The
+> revenue and partnership sections below no longer apply.
+
 # Somali Music AI — Complete Dataset Strategy
 ## From Zero to Million-Dollar Dataset
 ### Author: Khalid Ibrahim | 2024
