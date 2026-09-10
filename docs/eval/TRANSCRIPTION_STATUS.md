@@ -30,15 +30,15 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 - Two-staff scores were padded with empty bars to twice the music, and the voice staff sat a bar late: the second part was appended after the first in time, and each staff computed its own pickup shift. Fixed: parts inserted at offset 0; one pickup shift shared by all staves.
 - Residual run-to-run drift from CREPE on MPS (one marginal note, 0.2 cents): accepted, documented, `--pitch-device cpu` available.
 
-## Demo results (2026-09-10)
+## Demo results (2026-09-10, run at commit c59d545)
 
 | recording | length | staves | tonic | scale (cents above tonic) | PCS | notes (marked) | tempo | time |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| oud: 02 aha aha qaraami mul | 242 s | oud | A (+1.0 c tape, +1.9 c refined) | 0 / 301 / 498 / 693 / 1002 | 0.932 | 461 (23) | 83 BPM, halved from 167 | 42 s |
-| oud: 04 Qaraami kaban wadada cod | 372 s | oud | A (−3.2 c, −6.8 c) | 0 / 311 / 504 / 706 / 1015 | 0.947 | 892 (52) | 117 BPM | 63 s |
-| band_qaraami e0e0a1425885 seg000 | 30 s | voice + oud | D (+10.5 c, +0.4 c); runner-up F | 0 / 301 / 495 / 698 / 995 | voice 0.977, oud 0.985 | 84 (2) | 112 BPM | 15 s (separation 2 s) |
+| oud: 02 aha aha qaraami mul | 242 s | oud | A (+1.1 c tape, +2.2 c refined) | 0 / 300 / 499 / 693 / 1002 | 0.932 | 461 (23) | 83 BPM, halved from 167 | 48 s |
+| oud: 04 Qaraami kaban wadada cod | 372 s | oud | A (−3.0 c, −6.0 c) | 0 / 311 / 503 / 706 / 1014 | 0.948 | 892 (50) | 117 BPM | 66 s |
+| band_qaraami e0e0a1425885 seg000 | 30 s | voice + oud | D (+9.7 c, +0.2 c); runner-up F | 0 / 300 / 497 / 698 / 997 | voice 0.977, oud 0.985 | 84 (2) | 112 BPM | 15 s (separation 2 s) |
 
-Both oud songs sit in the minor-pentatonic mode; the second places its third
+Numbers move by a cent or two between runs on MPS (decision 23). Both oud songs sit in the minor-pentatonic mode; the second places its third
 and sixth degrees 11 to 15 cents sharp of 12-TET, which the score caption and
 the JSON carry. No song took anywhere near 15 minutes, so no excerpt versions
 were needed.
