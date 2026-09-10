@@ -3,11 +3,11 @@
  * P5-02 database cutover).
  *
  *   npm run doctor              # everything
- *   npm run doctor -- --local   # skip external paid services (R2, Stripe, AI)
+ *   npm run doctor -- --local   # skip external services (R2, AI)
  *
  * Probes every external dependency the API needs in PERSISTENCE=database mode
  * and prints a ✓/△/✗ report: env completeness, Postgres (schema + pgvector),
- * Mongo (+ feed index), Redis, R2, the AI service, and Stripe. Exit code 1 when
+ * Mongo (+ feed index), Redis, R2, and the AI service. Exit code 1 when
  * anything FAILS (warnings pass — they are boot-time self-healing or pending
  * one-time setup, each explained in its detail line).
  *
@@ -24,7 +24,6 @@ import {
   checkPostgres,
   checkR2,
   checkRedis,
-  checkStripe,
   formatReport,
   type CheckResult,
 } from '@/shared/preflight/checks';
@@ -55,7 +54,7 @@ async function main(): Promise<void> {
   );
 
   if (localOnly) {
-    results.push(skip('r2', '--local'), skip('ai-service', '--local'), skip('stripe', '--local'));
+    results.push(skip('r2', '--local'), skip('ai-service', '--local'));
   } else {
     results.push(
       env['R2_ACCOUNT_ID'] &&
@@ -74,11 +73,6 @@ async function main(): Promise<void> {
       env['AI_SERVICE_URL']
         ? await checkHttpHealth('ai-service', env['AI_SERVICE_URL'])
         : skip('ai-service', 'AI_SERVICE_URL not set'),
-    );
-    results.push(
-      env['STRIPE_SECRET_KEY']
-        ? await checkStripe(env['STRIPE_SECRET_KEY'])
-        : skip('stripe', 'STRIPE_SECRET_KEY not set'),
     );
   }
 
