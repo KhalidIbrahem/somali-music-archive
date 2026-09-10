@@ -27,6 +27,7 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 - MIDI export failed on two-staff scores: one `Key` object inserted into two parts. Fixed with one object per part.
 - Spurious naturals on every note: music21 marks a MIDI-built note with an explicit natural. Fixed by clearing it.
 - The band clip's tonic flipped between D and F across runs: Demucs' random time shift. Fixed with `--shifts 0`; the degree refinement moved from histogram peak to weighted median for the same reason.
+- Two-staff scores were padded with empty bars to twice the music, and the voice staff sat a bar late: the second part was appended after the first in time, and each staff computed its own pickup shift. Fixed: parts inserted at offset 0; one pickup shift shared by all staves.
 - Residual run-to-run drift from CREPE on MPS (one marginal note, 0.2 cents): accepted, documented, `--pitch-device cpu` available.
 
 ## Demo results (2026-09-10)
