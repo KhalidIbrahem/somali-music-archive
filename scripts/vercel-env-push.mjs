@@ -57,7 +57,6 @@ for (const rawLine of envText.split(/\r?\n/)) {
 const REQUIRED = [
   'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET', 'MONGODB_URI', 'REDIS_URL',
   'R2_ACCOUNT_ID', 'R2_ACCESS_KEY_ID', 'R2_SECRET_ACCESS_KEY', 'R2_BUCKET_NAME', 'R2_PUBLIC_DOMAIN',
-  'STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'STRIPE_PREMIUM_PRICE_ID', 'STRIPE_INSTITUTIONAL_PRICE_ID',
   'RESEND_API_KEY', 'EMAIL_FROM', 'AI_SERVICE_URL', 'AI_SERVICE_API_KEY',
 ];
 /** Pushed only when present+non-empty in .env (envSchema defaults cover the rest). */

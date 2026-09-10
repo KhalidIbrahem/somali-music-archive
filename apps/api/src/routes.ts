@@ -2,7 +2,7 @@
  * The versioned API router (ARCHITECTURE.md §12 — everything under /api/v1).
  *
  * Each feature module owns its own router; this file only composes them. New
- * modules (lessons, subscriptions, search, research) mount here as they are built
+ * modules (lessons, search, research) mount here as they are built
  * (§8 modular monolith).
  */
 
@@ -16,7 +16,6 @@ import { educationRouter } from '@/modules/education/education.routes';
 import { coursesRouter } from '@/modules/courses/courses.routes';
 import { studioRouter } from '@/modules/studio/studio.routes';
 import { searchRouter } from '@/modules/search/search.routes';
-import { subscriptionsRouter } from '@/modules/subscriptions/subscriptions.routes';
 import { notificationsRouter } from '@/modules/notifications/notifications.routes';
 import { organizationsRouter } from '@/modules/organizations/organizations.routes';
 import { commentsRouter } from '@/modules/comments/comments.routes';
@@ -41,7 +40,6 @@ apiV1Router.use('/courses', coursesRouter);
 // DAW project sync (Stage 5) — compositions follow the member across devices.
 apiV1Router.use('/studio', studioRouter);
 apiV1Router.use('/search', searchRouter);
-apiV1Router.use('/subscriptions', subscriptionsRouter);
 apiV1Router.use('/notifications', notificationsRouter);
 apiV1Router.use('/organizations', organizationsRouter);
 apiV1Router.use('/comments', commentsRouter);

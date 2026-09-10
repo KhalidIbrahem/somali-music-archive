@@ -28,8 +28,6 @@ declare global {
         /** Requests allowed per hour, enforced by apiKeyRateLimit. */
         rateLimit: number;
       };
-      /** Raw request body bytes, captured for Stripe webhook signature verification. */
-      rawBody?: Buffer;
     }
   }
 }
