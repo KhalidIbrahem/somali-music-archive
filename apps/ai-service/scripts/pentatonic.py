@@ -146,7 +146,10 @@ def refine_scale_cents(cents, weights, det: dict, tuning_offset_cents: float = 0
         peaks.append(tc + off)
         refined.append(True)
     tonic_shift = peaks[0]
-    scale = [(p - tonic_shift) % 1200.0 for p in peaks]
+    # Refined degrees are re-expressed against the refined tonic; a degree that
+    # was not refined keeps its template INTERVAL from the tonic exactly.
+    scale = [(p - tonic_shift) % 1200.0 if ok_ else tc
+             for p, tc, ok_ in zip(peaks, template, refined)]
     scale[0] = 0.0
     return {
         "scale_cents_template": template,
