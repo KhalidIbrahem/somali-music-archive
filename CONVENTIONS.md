@@ -17,7 +17,6 @@ traditional music. Built by Khalid Ibrahim, Minneapolis MN.
 - Storage: Cloudflare R2 — audio never uploads through Node.js
 - Cache: Redis (Upstash)
 - AI: Python 3.11, FastAPI, Whisper large-v3, CREPE, MERT-v1-95M
-- Payments: Stripe
 
 ## Commands
 

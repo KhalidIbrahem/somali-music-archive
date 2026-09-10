@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software or its results, please cite it as below."
+type: software
+title: "QaraamiGen: computational ethnomusicology tools for Somali qaraami music"
+authors:
+  - family-names: Ibrahim
+    given-names: Khalid
+    email: hrgysa123@gmail.com
+    city: Minneapolis
+    country: US
+version: 0.1.0
+date-released: "2026-09-09"
+license: Apache-2.0
+repository-code: "https://github.com/khalid-ibrahim/somali-music-archive"
+keywords:
+  - Somali music
+  - qaraami
+  - computational ethnomusicology
+  - music generation
+  - MusicGen
+  - LoRA fine-tuning
+  - pentatonic conformity
+  - music transcription
+abstract: >-
+  Open-source research code for preserving and studying Somali qaraami music:
+  corpus inventory and clip preparation, LoRA fine-tuning of MusicGen on
+  archival recordings under a corrected training harness, a pentatonic
+  conformity metric, held-out per-song evaluation, preference optimisation,
+  cassette restoration experiments, and a local inference service. The
+  source recordings and the trained weights are not distributed.

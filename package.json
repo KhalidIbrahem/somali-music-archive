@@ -4,7 +4,7 @@
   "private": true,
   "description": "Somali Music AI Preservation Platform \u2014 a permanent, research-grade archive of Somali traditional music. Monorepo root.",
   "author": "Khalid Ibrahim <hrgysa123@gmail.com>",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "homepage": "https://somalimusicarchive.com",
   "repository": {
     "type": "git",
