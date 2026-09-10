@@ -12,7 +12,7 @@ traditional music. Built by Khalid Ibrahim, Minneapolis MN.
 ## Stack
 
 - Mobile: React Native, Expo SDK 57, TypeScript strict, Expo Router (SDK-versioned)
-- Backend: Node.js 20, Express, TypeScript strict
+- Backend: Node.js 22, Express, TypeScript strict
 - Databases: MongoDB (metadata), PostgreSQL + pgvector (users/embeddings)
 - Storage: Cloudflare R2 — audio never uploads through Node.js
 - Cache: Redis (Upstash)

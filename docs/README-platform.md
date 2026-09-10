@@ -32,7 +32,7 @@ Built by **Khalid Ibrahim** — Somali-American AI engineer, Minneapolis MN.
 ```
 apps/mobile      React Native (Expo SDK 57) — recording, archive, lessons, offline
 apps/web         Next.js 15 — marketing site + admin dashboard (moderation, orgs)
-apps/api         Node 20 + Express — auth (JWT+RBAC), recordings, search,
+apps/api         Node 22 + Express — auth (JWT+RBAC), recordings, search,
                  collections/comments, research API. TypeScript strict, Zod on
                  every input.
 apps/ai-service  Python 3.11 + FastAPI — Whisper large-v3, CREPE, MERT embeddings
