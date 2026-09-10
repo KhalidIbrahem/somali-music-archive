@@ -26,18 +26,6 @@ enum UserRole {
   admin
 }
 
-enum SubscriptionPlan {
-  free
-  premium
-  institutional
-}
-
-enum SubscriptionStatus {
-  active
-  past_due
-  canceled
-}
-
 enum VerificationPurpose {
   email_verify
   password_reset
@@ -75,7 +63,6 @@ model User {
 
   refreshTokens      RefreshToken[]
   verificationTokens VerificationToken[]
-  subscriptions      Subscription[]
   lessonProgress     LessonProgress[]
   savedRecordings    SavedRecording[]
   playHistory        PlayHistory[]
@@ -159,25 +146,6 @@ model RefreshToken {
   @@map("refresh_tokens")
 }
 
-model Subscription {
-  id                   String             @id @default(uuid()) @db.Uuid
-  userId               String             @map("user_id") @db.Uuid
-  stripeCustomerId     String?            @unique @map("stripe_customer_id")
-  stripeSubscriptionId String?            @unique @map("stripe_subscription_id")
-  plan                 SubscriptionPlan   @default(free)
-  status               SubscriptionStatus @default(active)
-  currentPeriodStart   DateTime?          @map("current_period_start") @db.Timestamptz
-  currentPeriodEnd     DateTime?          @map("current_period_end") @db.Timestamptz
-  cancelAtPeriodEnd    Boolean            @default(false) @map("cancel_at_period_end")
-  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt            DateTime           @updatedAt @map("updated_at") @db.Timestamptz
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-  @@map("subscriptions")
-}
-
 model LessonProgress {
   id              String    @id @default(uuid()) @db.Uuid
   userId          String    @map("user_id") @db.Uuid
@@ -238,8 +206,8 @@ model ApiKey {
   @@map("api_keys")
 }
 
-// Institutional license: a seat-limited org whose members get institutional-tier
-// entitlement (ARCHITECTURE.md §16 Phase 4, SESSION P4-02).
+// Institutional access: a seat-limited organisation (university, cultural school)
+// whose members get access by agreement, not payment (SESSION P4-02).
 model Organization {
   id         String             @id @default(uuid()) @db.Uuid
   name       String

@@ -1,10 +1,10 @@
 /**
  * Institutional license contracts (ARCHITECTURE.md §16 Phase 4, SESSION P4-02).
  *
- * An organisation holds an institutional license with a fixed number of seats. A
- * platform admin issues the license (creating the org + a shareable license key);
- * users join with that key, each consuming a seat and gaining institutional-tier
- * entitlement for as long as their membership and the license are active.
+ * An organisation holds an institutional license with a fixed number of seats,
+ * granted by agreement rather than payment. A platform admin issues the license
+ * (creating the org + a shareable license key); users join with that key, each
+ * consuming a seat for as long as their membership and the license are active.
  */
 
 import type { IsoDateTimeString, Uuid } from './common';
