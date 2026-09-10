@@ -1,5 +1,5 @@
 /**
- * Generation Studio (pushed route, like /subscription).
+ * Generation Studio (pushed route).
  *
  * Describe → pick a model → generate → poll → play. Talks to the Node API's
  * provider-agnostic endpoint via useGeneration; playback stages data: URIs to

@@ -1,7 +1,7 @@
 /**
  * Profile tab (SESSION P2-04, ARCHITECTURE.md §7 "Profile").
  *
- * Avatar + name/email, a subscription badge, stats (saved recordings, lessons
+ * Avatar + name/email, stats (saved recordings, lessons
  * completed), settings (UI language — server-synced; playback quality, offline
  * downloads, notifications — device prefs), and sign out.
  */
@@ -15,7 +15,6 @@ import { useAuthStore } from '@/stores/authStore';
 import { useSettingsStore, type PlaybackQuality } from '@/stores/settingsStore';
 import { getSaved, updateProfile } from '@/services/api/users';
 import { getMyProgress } from '@/services/api/lessons';
-import { getSubscriptionStatus } from '@/services/api/subscriptions';
 import { sendTestNotification } from '@/services/api/notifications';
 import { audioCache } from '@/services/audio/cache';
 import { formatFileSize } from '@/utils/formatters';
@@ -41,10 +40,6 @@ export default function Profile(): React.JSX.Element {
 
   const savedQuery = useQuery({ queryKey: ['saved'], queryFn: getSaved });
   const progressQuery = useQuery({ queryKey: ['lesson-progress'], queryFn: getMyProgress });
-  const subscriptionQuery = useQuery({
-    queryKey: ['subscription-status'],
-    queryFn: getSubscriptionStatus,
-  });
 
   const languageMutation = useMutation({
     mutationFn: (language: UiLanguage) => updateProfile({ language }),
@@ -93,13 +88,6 @@ export default function Profile(): React.JSX.Element {
             <Text variant="bodySmall" color="secondary" numberOfLines={1}>
               {user?.email ?? ''}
             </Text>
-            <Link href="/subscription" asChild>
-              <Pressable style={styles.badge}>
-                <Text variant="labelSmall" color="inverse">
-                  {(subscriptionQuery.data?.plan ?? 'free').toUpperCase()}
-                </Text>
-              </Pressable>
-            </Link>
           </View>
         </Card>
 
@@ -113,7 +101,7 @@ export default function Profile(): React.JSX.Element {
           <Stat value={lessonsCompleted} label={t('profile.lessonsDone')} />
         </View>
 
-        {/* AI generation studio (pushed route, like /subscription) */}
+        {/* AI generation studio (pushed route) */}
         <Button
           label="Generation Studio"
           variant="secondary"
@@ -291,14 +279,6 @@ const styles = StyleSheet.create({
   identityText: {
     flex: 1,
     gap: spacing.xs,
-  },
-  badge: {
-    alignSelf: 'flex-start',
-    borderRadius: radius.sm,
-    backgroundColor: colors.amber.primary,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    marginTop: spacing.xs,
   },
   stats: {
     flexDirection: 'row',
