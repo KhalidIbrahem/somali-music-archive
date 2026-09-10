@@ -10,7 +10,7 @@ import { GENRES, REGIONS, INSTRUMENTS, CONTENT_LANGUAGES, UI_LANGUAGES } from '@
 
 // ── Identifiers ───────────────────────────────────────────────────────────────
 
-/** PostgreSQL UUID (users, subscriptions, …). */
+/** PostgreSQL UUID (users, organizations, …). */
 export const uuidSchema = z.string().uuid();
 
 /** MongoDB ObjectId serialised as 24 hex chars (recordings, artists). */

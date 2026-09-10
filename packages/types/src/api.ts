@@ -35,9 +35,6 @@ export const API_ERROR_CODES = [
   'USER_NOT_FOUND',
   // Rate limiting / abuse
   'RATE_LIMITED',
-  // Billing
-  'SUBSCRIPTION_REQUIRED',
-  'PAYMENT_FAILED',
   // AI generation
   'GENERATION_PROVIDER_UNAVAILABLE',
   'GENERATION_FAILED',
