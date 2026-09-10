@@ -226,3 +226,6 @@ data/reward/oud_ref.npz
 # ── Local assistant/editor tool files (not part of the project) ─────────────
 AGENTS.md
 .codex/
+
+# Transcription demo outputs (derived from rights-held recordings; not tracked)
+data/transcription_demo/
