@@ -65,3 +65,46 @@ def median_bpm(beat_times: np.ndarray | list[float]) -> float:
     d = np.diff(np.asarray(beat_times, dtype=float))
     d = d[d > 1e-6]
     return float(60.0 / np.median(d)) if len(d) else 100.0
+
+
+def snap_notes_monophonic(
+    starts: np.ndarray | list[float],
+    ends: np.ndarray | list[float],
+    beat_times: np.ndarray | list[float],
+    sub: int = 2,
+    beats_per_bar: int = 4,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Grid snap for ONE notation voice: pickups keep their place, overlaps are
+    resolved, so the result can be engraved as a single line.
+
+    Unlike snap_notes_to_beats, times before the first tracked beat are not
+    clamped to zero (which piles every pickup note onto one offset); instead
+    the whole grid is shifted right by whole bars so the earliest note lands at
+    or after offset 0 and the tracked beats stay on bar lines. Then, in onset
+    order, a note that overruns the next onset is shortened to it, and a note
+    that starts on the same grid cell as the previous one is dropped (the
+    earlier one stands). Returns (offsets_ql, durations_ql, keep) where `keep`
+    marks the notes that survived; offsets and durations are given for every
+    input note, kept or not.
+    """
+    step = 1.0 / sub
+    sb = times_to_beats(starts, beat_times)
+    eb = times_to_beats(ends, beat_times)
+    offsets = np.round(sb / step) * step
+    durations = np.maximum(step, np.round((eb - sb) / step) * step)
+    if len(offsets) and offsets.min() < 0:
+        shift = np.ceil(-offsets.min() / beats_per_bar) * beats_per_bar
+        offsets = offsets + shift
+    keep = np.ones(len(offsets), dtype=bool)
+    order = np.argsort(offsets, kind="stable")
+    last = -1
+    for i in order:
+        if last >= 0:
+            if offsets[i] <= offsets[last]:
+                keep[i] = False  # same cell as the note already standing there
+                continue
+            overrun = offsets[last] + durations[last] - offsets[i]
+            if overrun > 0:
+                durations[last] = max(step, offsets[i] - offsets[last])
+        last = i
+    return offsets, durations, keep

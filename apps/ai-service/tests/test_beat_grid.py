@@ -59,3 +59,20 @@ def test_too_few_beats_raises() -> None:
     with pytest.raises(ValueError):
         times_to_beats([1.0], np.array([2.0]))
     assert MIN_BEATS_FOR_GRID >= 2
+
+
+def test_monophonic_snap_keeps_pickups_and_resolves_overlaps():
+    from scripts.beat_grid import snap_notes_monophonic
+
+    beats = np.arange(1.0, 9.0, 0.5)  # 120 BPM, first tracked beat at 1.0 s
+    # two pickup notes before the first beat, then a note that overruns the next
+    # onset, then two notes landing on the same grid cell
+    starts = [0.30, 0.55, 1.00, 1.40, 2.00, 2.05]
+    ends = [0.50, 0.95, 1.90, 1.70, 2.40, 2.30]
+    off, dur, keep = snap_notes_monophonic(starts, ends, beats, sub=2)
+    assert keep.tolist() == [True, True, True, True, True, False]
+    assert off.min() >= 0 and off[2] == 4.0  # first tracked beat sits on a bar line
+    assert off[0] < off[1] < off[2]  # pickups keep their order and spacing
+    kept = [(o, d) for o, d, k in zip(off, dur, keep) if k]
+    for (o1, d1), (o2, _d2) in zip(kept, kept[1:]):
+        assert o1 + d1 <= o2 + 1e-9  # no overlaps remain
