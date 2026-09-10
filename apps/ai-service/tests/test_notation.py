@@ -31,21 +31,22 @@ def fake_transcribe_ok(cmd, **kwargs):
             stderr = "fake subprocess: only transcribe is stubbed"
         return F()
 
-    # Positional args follow the module name; flags (--melody, --beat-audio …)
-    # may trail them, so anchor on the module instead of the list tail.
+    # scripts.transcribe <audio> --out <dir> [--instrumental]
     i = cmd.index("scripts.transcribe")
-    audio, out_dir = cmd[i + 1], cmd[i + 2]
+    audio, out_dir = cmd[i + 1], cmd[cmd.index("--out") + 1]
     from pathlib import Path
 
     stem = Path(audio).stem
     out = Path(out_dir)
-    for ext in (".musicxml", ".svg", ".mid"):
+    for ext in (".musicxml", ".svg", ".mid", ".pdf"):
         (out / f"{stem}{ext}").write_text("fake")
     (out / f"{stem}.json").write_text(json.dumps(
-        {"file": f"{stem}.wav", "n_notes": 42, "tonic": "C", "mode": 0,
-         "degrees": [0, 2, 4, 7, 9], "tuning_offset_cents": 12.0, "bpm": 100,
-         "snapped": 40, "marked_outliers": 2, "mean_confidence": 0.9,
-         "outputs": [f"{stem}.musicxml", f"{stem}.svg", f"{stem}.mid"], "notes": []}))
+        {"file": f"{stem}.wav", "instrumental": "--instrumental" in cmd,
+         "summary": {"n_notes": 42, "tonic": "C", "mode": 0, "degrees": [0, 2, 4, 7, 9],
+                     "scale_cents": [0, 200, 400, 700, 900], "tuning_offset_cents": 12.0,
+                     "bpm": 100, "snapped": 40, "marked_outliers": 2, "mean_confidence": 0.9,
+                     "pcs": 0.95, "staves": ["Oud (kaban)"]},
+         "notes": []}))
 
     class P:
         returncode = 0
@@ -117,13 +118,14 @@ def test_instrument_routing_and_validation(monkeypatch):
         return fake_transcribe_ok(cmd, **kwargs)
 
     monkeypatch.setattr(svc.subprocess, "run", counting_fake)
-    # kaban (no separation): register prior + staff name flow into the pipeline
+    # kaban without separation: the whole mix is transcribed as the oud, and
+    # the instrument is recorded on the job
     r = client.post("/notation", data={"instrument": "kaban"},
                     files={"file": ("k.wav", b"RIFFkaban", "audio/wav")})
     assert r.status_code == 202
     cmd = calls[-1]
-    assert "--part-name" in cmd and cmd[cmd.index("--part-name") + 1] == "Kaban"
-    assert "--fmin" in cmd and cmd[cmd.index("--fmin") + 1] == "70.0"
+    assert "--instrumental" in cmd and "--out" in cmd
+    assert client.get(f"/notation/jobs/{r.json()['job_id']}").json()["instrument"] == "kaban"
     # same bytes, different instrument → its OWN job (dedupe keys on instrument)
     r2 = client.post("/notation", data={"instrument": "violin"},
                      files={"file": ("k.wav", b"RIFFkaban", "audio/wav")})

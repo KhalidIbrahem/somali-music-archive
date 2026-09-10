@@ -19,6 +19,8 @@ _MEDIA_TYPES = {
     "musicxml": "application/vnd.recordare.musicxml+xml",
     "svg": "image/svg+xml",
     "midi": "audio/midi",
+    "pdf": "application/pdf",
+    "json": "application/json",
 }
 # The original upload's type follows its suffix (kind == "original").
 _AUDIO_TYPES = {
@@ -34,9 +36,11 @@ async def create(
     separate: bool = Form(default=False),
     instrument: str = Form(default="full"),
 ) -> dict:
-    """`separate=true` runs Demucs source separation before transcription —
-    slower, but markedly more accurate on band recordings. `instrument`
-    chooses what to transcribe: full | voice | kaban | violin | flute."""
+    """`separate=true` runs Demucs source separation and writes a voice staff
+    and an oud staff; `separate=false` treats the whole mix as the oud (one
+    staff), right for solo oud recordings. `instrument` is kept for the
+    existing clients (full | voice | kaban | violin | flute) and recorded on
+    the job."""
     payload = await file.read()
     try:
         job_id = svc.create_job(file.filename or "upload.wav", payload,
