@@ -95,3 +95,63 @@ def hist_from_events(midi_pitches: np.ndarray, durations: np.ndarray) -> np.ndar
 
 def detect_from_events(midi_pitches: np.ndarray, durations: np.ndarray) -> dict:
     return detect_tonic(hist_from_events(midi_pitches, durations))
+
+
+def scale_cents_template(det: dict) -> list[float]:
+    """The detected degrees as cents relative to the tonic, ascending, on the
+    12-TET template (so a major pentatonic reads [0, 200, 400, 700, 900])."""
+    tonic = int(det["tonic_pc"])
+    return sorted(((int(d) - tonic) % 12) * 100.0 for d in det["degrees"])
+
+
+def refine_scale_cents(cents, weights, det: dict, tuning_offset_cents: float = 0.0, *,
+                       window_cents: float = 60.0, bin_cents: float = 5.0,
+                       min_mass: float = 0.02) -> dict:
+    """Data-driven scale: where each pentatonic degree actually sits in THIS
+    recording, in cents relative to the tonic.
+
+    `cents` are absolute pitches (100 * midi) of frames or notes and `weights`
+    their durations (or duration * confidence). Each template degree is moved
+    to the weighted-histogram peak of the recording's own tuning-corrected,
+    tonic-relative, octave-folded pitches within +-window_cents of it. A degree
+    carrying less than `min_mass` of the total weight keeps its template value
+    and is flagged as not refined, so a degree the performer never sang is not
+    invented from noise. The result is expressed relative to the REFINED tonic
+    (scale_cents[0] == 0); the tonic's own shift is reported separately.
+    """
+    cents = np.asarray(cents, dtype=float)
+    w = np.asarray(weights, dtype=float)
+    ok = np.isfinite(cents) & (w > 0)
+    cents, w = cents[ok], w[ok]
+    template = scale_cents_template(det)
+    rel = (cents - tuning_offset_cents - int(det["tonic_pc"]) * 100.0) % 1200.0
+    total = float(w.sum()) if len(w) else 0.0
+    peaks, mass, refined = [], [], []
+    for tc in template:
+        d = ((rel - tc) + 600.0) % 1200.0 - 600.0  # signed offset from the template degree
+        m = np.abs(d) <= window_cents
+        mw = float(w[m].sum())
+        mass.append(mw / total if total > 0 else 0.0)
+        if total <= 0 or mw < min_mass * total:
+            peaks.append(tc)
+            refined.append(False)
+            continue
+        edges = np.arange(-window_cents, window_cents + bin_cents, bin_cents)
+        h, _ = np.histogram(d[m], bins=edges, weights=w[m])
+        h = np.convolve(h, np.ones(3) / 3.0, mode="same")
+        k = int(np.argmax(h))
+        centre = 0.5 * (edges[k] + edges[k + 1])
+        near = m & (np.abs(d - centre) <= bin_cents)
+        off = float((d[near] * w[near]).sum() / w[near].sum()) if w[near].sum() > 0 else centre
+        peaks.append(tc + off)
+        refined.append(True)
+    tonic_shift = peaks[0]
+    scale = [(p - tonic_shift) % 1200.0 for p in peaks]
+    scale[0] = 0.0
+    return {
+        "scale_cents_template": template,
+        "scale_cents": [round(s, 1) for s in scale],
+        "scale_degree_mass": [round(x, 3) for x in mass],
+        "scale_degree_refined": refined,
+        "tonic_refined_offset_cents": round(tonic_shift, 1),
+    }

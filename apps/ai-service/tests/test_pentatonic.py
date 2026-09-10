@@ -67,3 +67,36 @@ def test_empty_histogram_raises():
 def test_hist_from_events_duration_weighting():
     h = hist_from_events(np.array([60, 62]), np.array([3.0, 1.0]))
     assert h[0] == 3.0 and h[2] == 1.0 and h.sum() == 4.0
+
+
+def test_refine_scale_cents_finds_a_just_third_and_keeps_unsung_degrees():
+    from scripts.pentatonic import refine_scale_cents, scale_cents_template
+
+    det = {"tonic_pc": 0, "degrees": [0, 2, 4, 7, 9]}
+    assert scale_cents_template(det) == [0, 200, 400, 700, 900]
+    rng = np.random.default_rng(0)
+    # tonic on C, a third sung at 386 cents (just intonation), a fifth at 700;
+    # the second and sixth degrees never occur
+    cents = np.concatenate([6000 + rng.normal(0, 4, 200),
+                            6386 + rng.normal(0, 4, 150),
+                            6700 + rng.normal(0, 4, 100)])
+    r = refine_scale_cents(cents, np.ones_like(cents), det)
+    assert r["scale_cents"][0] == 0.0
+    assert abs(r["scale_cents"][2] - 386) < 6
+    assert abs(r["scale_cents"][3] - 700) < 6
+    assert r["scale_degree_refined"] == [True, False, True, True, False]
+    assert r["scale_cents"][1] == 200.0 and r["scale_cents"][4] == 900.0
+    assert abs(r["tonic_refined_offset_cents"]) < 3
+
+
+def test_refine_scale_cents_is_relative_to_the_refined_tonic():
+    from scripts.pentatonic import refine_scale_cents
+
+    det = {"tonic_pc": 9, "degrees": [9, 11, 1, 4, 6]}  # A major pentatonic
+    rng = np.random.default_rng(1)
+    # everything sits 12 cents sharp of 12-TET: the tonic absorbs the shift
+    cents = np.concatenate([5712 + rng.normal(0, 3, 100), 5912 + rng.normal(0, 3, 80),
+                            6412 + rng.normal(0, 3, 60)])
+    r = refine_scale_cents(cents, np.ones_like(cents), det)
+    assert abs(r["tonic_refined_offset_cents"] - 12) < 3
+    assert abs(r["scale_cents"][1] - 200) < 4 and abs(r["scale_cents"][3] - 700) < 4
