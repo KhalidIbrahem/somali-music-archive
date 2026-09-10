@@ -44,7 +44,7 @@ describe('LyriaProvider.submit', () => {
     expect(url).toBe('https://lyria.test/v1beta/interactions');
     expect((init.headers as Record<string, string>)['x-goog-api-key']).toBe('test-key');
     const body = JSON.parse(init.body as string) as { model: string; input: string };
-    expect(body.model).toBe('lyria-3-clip-preview');
+    expect(body.model).toBe('local');
     expect(body.input).toContain('dhaanto');
     expect(body.input).toContain('Instrumental only');
     expect(body.input).toContain('30 seconds');
