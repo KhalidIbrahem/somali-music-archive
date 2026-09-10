@@ -28,7 +28,8 @@ SAMPLE_RATE = 16_000  # CREPE's native rate
 HOP = 160  # 10 ms
 
 
-def extract_notes(audio_path: str | Path, voicing_threshold: float = 0.5) -> dict:
+def extract_notes(audio_path: str | Path, voicing_threshold: float = 0.5,
+                  return_frames: bool = False, device: str | None = None) -> dict:
     import librosa
     import torch
     import torchcrepe
@@ -46,7 +47,9 @@ def extract_notes(audio_path: str | Path, voicing_threshold: float = 0.5) -> dic
 
     # MPS when available (M-series), CPU fallback — torchcrepe's MPS support
     # has rough edges across versions.
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    # `device` forces one (cpu gives bit-for-bit repeatable output; mps is
+    # several times faster but not exactly repeatable).
+    device = device or ("mps" if torch.backends.mps.is_available() else "cpu")
     try:
         pitch, periodicity = run(device)
     except Exception:  # noqa: BLE001 — any MPS failure → CPU retry
@@ -67,7 +70,7 @@ def extract_notes(audio_path: str | Path, voicing_threshold: float = 0.5) -> dic
     conf = median_smooth(conf, width=3)
     notes = segment_notes(times, cents, conf, amp, voicing_threshold=voicing_threshold)
 
-    return {
+    result = {
         "engine": "torchcrepe-full",
         "device": device,
         "n_frames": int(n),
@@ -84,6 +87,15 @@ def extract_notes(audio_path: str | Path, voicing_threshold: float = 0.5) -> dic
             for nt in notes
         ],
     }
+    if return_frames:
+        # The raw 10 ms pitch track, so nothing upstream of the notes is lost.
+        result["frames"] = {
+            "hop_sec": HOP / SAMPLE_RATE,
+            "f0_hz": [round(float(v), 1) for v in f0],
+            "confidence": [round(float(v), 3) for v in conf],
+            "amp": [round(float(v), 3) for v in amp],
+        }
+    return result
 
 
 if __name__ == "__main__":
