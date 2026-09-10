@@ -100,3 +100,13 @@ def test_refine_scale_cents_is_relative_to_the_refined_tonic():
     r = refine_scale_cents(cents, np.ones_like(cents), det)
     assert abs(r["tonic_refined_offset_cents"] - 12) < 3
     assert abs(r["scale_cents"][1] - 200) < 4 and abs(r["scale_cents"][3] - 700) < 4
+
+
+def test_detect_tonic_lists_the_runner_up_readings():
+    hist = np.zeros(12)
+    for pc, wgt in ((0, 3.0), (2, 1.0), (4, 1.0), (7, 1.5), (9, 1.0)):  # C major pentatonic, C emphasised
+        hist[pc] = wgt
+    det = detect_tonic(hist)
+    alts = det["alternatives"]
+    assert alts[0]["tonic_name"] == det["tonic_name"] == "C" and len(alts) == 3
+    assert alts[0]["score"] >= alts[1]["score"] >= alts[2]["score"]

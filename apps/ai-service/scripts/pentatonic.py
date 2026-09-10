@@ -47,20 +47,25 @@ def detect_tonic(hist: np.ndarray) -> dict:
     if hist.sum() <= 0:
         raise ValueError("empty pitch-class histogram")
     hist = hist / hist.sum()
-    best = {"score": -np.inf}
+    cands = []
     for tonic in range(12):
         rolled = np.roll(hist, -tonic)  # tonic -> bin 0
         for mode_idx, tmpl in enumerate(_TEMPLATES):
-            r = np.corrcoef(rolled, tmpl)[0, 1]
-            if r > best["score"]:
-                degrees = sorted((tonic + d) % 12 for d in MODES[mode_idx])
-                best = {
-                    "tonic_pc": tonic,
-                    "tonic_name": PC_NAMES[tonic],
-                    "mode": mode_idx,
-                    "score": float(r),
-                    "degrees": degrees,
-                }
+            r = float(np.corrcoef(rolled, tmpl)[0, 1])
+            cands.append((r, tonic, mode_idx))
+    cands.sort(key=lambda c: -c[0])
+    r, tonic, mode_idx = cands[0]
+    best = {
+        "tonic_pc": tonic,
+        "tonic_name": PC_NAMES[tonic],
+        "mode": mode_idx,
+        "score": r,
+        "degrees": sorted((tonic + d) % 12 for d in MODES[mode_idx]),
+        # The next-best readings, so a relative-mode ambiguity (the same five
+        # pitch classes heard from a different root) is visible, not hidden.
+        "alternatives": [{"tonic_name": PC_NAMES[t], "mode": m, "score": round(sc, 4)}
+                         for sc, t, m in cands[:3]],
+    }
     return best
 
 
@@ -105,15 +110,16 @@ def scale_cents_template(det: dict) -> list[float]:
 
 
 def refine_scale_cents(cents, weights, det: dict, tuning_offset_cents: float = 0.0, *,
-                       window_cents: float = 60.0, bin_cents: float = 5.0,
-                       min_mass: float = 0.02) -> dict:
+                       window_cents: float = 60.0, min_mass: float = 0.02) -> dict:
     """Data-driven scale: where each pentatonic degree actually sits in THIS
     recording, in cents relative to the tonic.
 
     `cents` are absolute pitches (100 * midi) of frames or notes and `weights`
     their durations (or duration * confidence). Each template degree is moved
-    to the weighted-histogram peak of the recording's own tuning-corrected,
-    tonic-relative, octave-folded pitches within +-window_cents of it. A degree
+    to the weighted median of the recording's own tuning-corrected,
+    tonic-relative, octave-folded pitches within +-window_cents of it (a
+    median, not a histogram peak: stable from run to run on a sparse degree,
+    where a peak jumps between neighbouring bins). A degree
     carrying less than `min_mass` of the total weight keeps its template value
     and is flagged as not refined, so a degree the performer never sang is not
     invented from noise. The result is expressed relative to the REFINED tonic
@@ -136,13 +142,10 @@ def refine_scale_cents(cents, weights, det: dict, tuning_offset_cents: float = 0
             peaks.append(tc)
             refined.append(False)
             continue
-        edges = np.arange(-window_cents, window_cents + bin_cents, bin_cents)
-        h, _ = np.histogram(d[m], bins=edges, weights=w[m])
-        h = np.convolve(h, np.ones(3) / 3.0, mode="same")
-        k = int(np.argmax(h))
-        centre = 0.5 * (edges[k] + edges[k + 1])
-        near = m & (np.abs(d - centre) <= bin_cents)
-        off = float((d[near] * w[near]).sum() / w[near].sum()) if w[near].sum() > 0 else centre
+        sel, sw = d[m], w[m]
+        order = np.argsort(sel)
+        cum = np.cumsum(sw[order])
+        off = float(sel[order][min(int(np.searchsorted(cum, 0.5 * cum[-1])), len(sel) - 1)])
         peaks.append(tc + off)
         refined.append(True)
     tonic_shift = peaks[0]
