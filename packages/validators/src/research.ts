@@ -8,8 +8,8 @@
 import { z } from 'zod';
 import { genreSchema, paginationQuerySchema } from './common';
 
-/** Access tiers a key can be issued under. */
-export const API_KEY_PLANS = ['academic', 'commercial'] as const;
+/** Access tiers a key can be issued under. Academic only; there is no commercial tier. */
+export const API_KEY_PLANS = ['academic'] as const;
 
 /** POST /research/keys — create a research API key for the signed-in user. */
 export const createApiKeySchema = z.object({
