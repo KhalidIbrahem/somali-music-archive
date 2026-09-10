@@ -59,8 +59,27 @@ $P -m scripts.transcribe ../../data/scale_clips/test/band_qaraami_e0e0a1425885_s
 $P -m scripts.transcription_metrics --ref <corrected.musicxml> --est <pipeline.json> --ref-scale <meta.json>
 ```
 
+## Run the upload demo locally
+
+Two processes, no databases needed:
+
+```
+# 1. the AI service (serves POST /notation, job polling, artifacts)
+cd apps/ai-service && ~/ai/musicgen-env/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8000
+# 2. the web app (transcribe page at /transcribe); .env.local holds
+#    NEXT_PUBLIC_AI_URL=http://localhost:8000 and NEXT_PUBLIC_GATE_BYPASS=1
+cd apps/web && PATH=~/ai/node-v22/bin:$PATH npx next dev -p 3000
+```
+
+Then open http://localhost:3000/transcribe, drop a recording, tick
+"separate" for a band recording. The Swagger form at
+http://127.0.0.1:8000/docs#/notation does the same without the web app.
+Verified 2026-09-10 with the band clip through `curl`: job done in 17 s,
+PDF, SVG, MusicXML, MIDI, JSON and the original served; jobs live in
+`apps/ai-service/data/notation_jobs/<id>/`.
+
 ## Open
 
 - Annotation of the benchmark set has not started; the format and metrics are ready.
-- `services/notation_service.py` still calls the old CLI shape; not updated in this phase.
+- Uploaded jobs are titled "input" after the service's artifact naming (decision 28).
 - The score assumes 4/4; the corrected file is the authority on metre.
