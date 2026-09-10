@@ -13,7 +13,6 @@
     "./artist": "./src/artist.ts",
     "./user": "./src/user.ts",
     "./lesson": "./src/lesson.ts",
-    "./subscription": "./src/subscription.ts",
     "./api": "./src/api.ts",
     "./common": "./src/common.ts"
   },

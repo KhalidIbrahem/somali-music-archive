@@ -3,7 +3,7 @@
  *
  * WHY brand a handful of string IDs instead of using bare `string`: the platform
  * juggles two very different identifier spaces — PostgreSQL UUIDs (users,
- * subscriptions) and MongoDB ObjectIds-as-strings (recordings, artists). They are
+ * organizations) and MongoDB ObjectIds-as-strings (recordings, artists). They are
  * both `string` at runtime, so nothing stops you passing a user id where a
  * recording id is expected. A structural brand makes that a compile error without
  * any runtime cost, which matters in a codebase meant to be maintained for
@@ -15,7 +15,7 @@ declare const __brand: unique symbol;
 /** A nominal wrapper around a base type. Zero runtime cost — erased at compile. */
 export type Brand<T, B extends string> = T & { readonly [__brand]: B };
 
-/** PostgreSQL v4 UUID (users, subscriptions, tokens, api keys, progress rows). */
+/** PostgreSQL v4 UUID (users, tokens, api keys, progress rows). */
 export type Uuid = Brand<string, 'Uuid'>;
 
 /** MongoDB ObjectId serialised as a 24-char hex string (recordings, artists). */
