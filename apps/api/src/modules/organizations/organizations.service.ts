@@ -1,10 +1,10 @@
 /**
  * Organisations service (SESSION P4-02, ARCHITECTURE.md §16 Phase 4).
  *
- * The institutional-license flow: an admin issues a license (an org + a shareable
- * key), users claim seats with the key, and the owner manages membership. Exposes
- * `hasActiveSeat` so the subscriptions service can grant institutional-tier
- * entitlement to seat holders without this module knowing about billing.
+ * The institutional-access flow: an admin issues a license (an org + a shareable
+ * key) under an agreement with the institution, users claim seats with the key,
+ * and the owner manages membership. Exposes `hasActiveSeat` as the access-control
+ * primitive for seat holders. No payment is involved.
  *
  * Injected repository (ADR-0005) so every branch is unit-testable in-memory.
  */
@@ -136,7 +136,7 @@ export function createOrganizationsService(deps: { repo: OrganizationRepository 
     return { organization: toPublicOrganization(membership.org, seatsUsed), role: membership.role };
   }
 
-  /** True when the user occupies a seat in an active license (entitlement source). */
+  /** True when the user occupies a seat in an active institutional license. */
   async function hasActiveSeat(userId: string): Promise<boolean> {
     const membership = await repo.findMembershipForUser(userId);
     return membership !== null && isActive(membership.org);

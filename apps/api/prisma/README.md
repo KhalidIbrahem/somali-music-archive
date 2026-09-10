@@ -38,7 +38,7 @@ migration from `schema.prisma`:
 npx prisma migrate dev --name init
 ```
 
-Tables created: `users`, `verification_tokens`, `refresh_tokens`, `subscriptions`,
+Tables created: `users`, `verification_tokens`, `refresh_tokens`,
 `lesson_progress`, `saved_recordings`, `play_history`, `api_keys`, `organizations`,
 `organization_members`.
 
