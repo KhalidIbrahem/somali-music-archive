@@ -1,3 +1,10 @@
+> **Superseded planning document, kept for the record.** This was written during the
+> project's commercial phase (2024 to mid-2026) and describes a platform that was to
+> fund itself through subscriptions and licences. The project is now open-source,
+> nonprofit academic research. Nothing below is a statement of current plans; the
+> system as it stands is described in `docs/ARCHITECTURE.md`. Code comments that cite
+> "ARCHITECTURE.md §N" refer to the section numbers in this file.
+
 # Somali Music AI Preservation Platform
 ## Complete Project Architecture — Zero to Production
 ### Prepared for: Khalid Ibrahim | React Native Mobile-First | 2024–2026
