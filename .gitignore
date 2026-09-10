@@ -222,3 +222,7 @@ data/ab_dpo_*/*.npy
 # reward-model embedding/term cache (regenerable)
 data/reward/cache/
 data/reward/oud_ref.npz
+
+# ── Local assistant/editor tool files (not part of the project) ─────────────
+AGENTS.md
+.codex/
