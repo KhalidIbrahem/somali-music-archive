@@ -37,7 +37,6 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /** Default hourly request budget per plan. */
 const PLAN_RATE_LIMIT: Record<ApiKeyPlan, number> = {
   academic: 1000,
-  commercial: 10000,
 };
 
 /** A `sma_`-prefixed key and the prefix persisted alongside its hash. */

@@ -57,11 +57,6 @@ describe('createApiKey', () => {
     expect(stored?.keyHash).toBeDefined();
     expect(stored?.keyHash).not.toBe(created.key); // never plaintext at rest
   });
-
-  it('applies the commercial rate limit', async () => {
-    const created = await service.createApiKey(USER, { name: 'Corp', plan: 'commercial' });
-    expect(created.rateLimit).toBe(10000);
-  });
 });
 
 describe('verifyApiKey', () => {

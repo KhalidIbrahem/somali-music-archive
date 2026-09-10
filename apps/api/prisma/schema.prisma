@@ -193,7 +193,7 @@ model ApiKey {
   keyHash    String    @map("key_hash") // bcrypt hash
   keyPrefix  String    @map("key_prefix") // first 8 chars for display
   name       String
-  plan       String    @default("academic") // 'academic' | 'commercial'
+  plan       String    @default("academic") // 'academic' (research access by agreement)
   rateLimit  Int       @default(1000) @map("rate_limit")
   lastUsedAt DateTime? @map("last_used_at") @db.Timestamptz
   expiresAt  DateTime? @map("expires_at") @db.Timestamptz

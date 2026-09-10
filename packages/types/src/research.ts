@@ -11,8 +11,8 @@ import type { ContentLanguage, Genre, Instrument, Region } from '@sma/constants'
 import type { IsoDateTimeString, Uuid } from './common';
 import type { PitchPoint, RecordingTitle } from './recording';
 
-/** Access tier of a research key — sets the default rate limit and terms. */
-export type ApiKeyPlan = 'academic' | 'commercial';
+/** Access tier of a research key. Keys are academic; access is granted by agreement. */
+export type ApiKeyPlan = 'academic';
 
 /** A research API key as shown to its owner (never includes the secret or hash). */
 export interface PublicApiKey {
