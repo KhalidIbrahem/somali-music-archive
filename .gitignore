@@ -2,7 +2,7 @@
 # Somali Music AI Preservation Platform — root .gitignore
 # Covers: Node, Python, Expo/React Native, macOS.
 # WHY committed carefully: this is a permanent archive project. A single leaked
-# .env would expose R2 storage keys, Stripe secrets, and database URIs for
+# .env would expose R2 storage keys and database URIs for
 # irreplaceable cultural material. When in doubt, ignore it.
 # ─────────────────────────────────────────────────────────────────────────────
 

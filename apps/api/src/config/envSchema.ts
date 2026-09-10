@@ -69,12 +69,6 @@ export const envSchema = z.object({
   R2_BUCKET_NAME: z.string().min(1),
   R2_PUBLIC_DOMAIN: z.string().url(),
 
-  // Stripe
-  STRIPE_SECRET_KEY: z.string().min(1),
-  STRIPE_WEBHOOK_SECRET: z.string().min(1),
-  STRIPE_PREMIUM_PRICE_ID: z.string().min(1),
-  STRIPE_INSTITUTIONAL_PRICE_ID: z.string().min(1),
-
   // Email
   RESEND_API_KEY: z.string().min(1),
   EMAIL_FROM: z.string().email(),
