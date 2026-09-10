@@ -158,6 +158,7 @@ def scale_summary(det: dict) -> dict:
         "scale_cents_template": det.get("scale_cents_template"),
         "scale_degree_mass": det.get("scale_degree_mass"),
         "scale_degree_refined": det.get("scale_degree_refined"),
+        "degrees_pc": [int(d) for d in det["degrees"]],
         "degrees_pc_names": [PC_NAMES[d] for d in det["degrees"]],
         "tonic_alternatives": det.get("alternatives"),
     }
@@ -238,8 +239,11 @@ def build_score(parts: list[tuple[str, list[QNote], tuple[np.ndarray, np.ndarray
 
 
 def render_pdf(xml: Path, pdf: Path) -> dict:
-    """MuseScore 4 CLI first (it may abort at shutdown after writing the file,
-    so success is judged by the PDF), Verovio SVG as the fallback."""
+    """MuseScore 4 CLI for the PDF (it may abort at shutdown after writing the
+    file, so success is judged by the PDF). A Verovio SVG of the first page is
+    written as well every time: the web page inlines it, and it is the
+    fallback when MuseScore is absent or fails."""
+    out: dict = {"renderer": "none"}
     if MSCORE.exists():
         try:
             subprocess.run([str(MSCORE), "-o", str(pdf), str(xml)], capture_output=True,
@@ -247,7 +251,7 @@ def render_pdf(xml: Path, pdf: Path) -> dict:
         except subprocess.TimeoutExpired:
             pass
         if pdf.exists() and pdf.stat().st_size > 0:
-            return {"renderer": "musescore-4", "path": str(pdf)}
+            out = {"renderer": "musescore-4", "path": str(pdf)}
     try:
         import verovio
 
@@ -255,10 +259,13 @@ def render_pdf(xml: Path, pdf: Path) -> dict:
         tk.loadFile(str(xml))
         svg = xml.with_suffix(".svg")
         svg.write_text(tk.renderToSVG(1))
-        return {"renderer": "verovio-svg (fallback: MuseScore render failed)",
-                "path": str(svg), "pages": tk.getPageCount()}
+        out["svg"] = str(svg)
+        out["svg_pages"] = tk.getPageCount()
+        if out["renderer"] == "none":
+            out.update({"renderer": "verovio-svg (fallback: MuseScore render failed)", "path": str(svg)})
     except Exception as e:  # noqa: BLE001
-        return {"renderer": "none", "error": str(e)[:200]}
+        out["svg_error"] = str(e)[:200]
+    return out
 
 
 # ----------------------------------------------------------------------------- pipeline
@@ -357,6 +364,8 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
     pcs["overall"] = round(pcs_of_notes(all_notes, det, tol=tol_cents), 3)
     n_marked = sum(1 for qs in q.values() for x in qs if x.marked)
     n_total = sum(len(qs) for qs in q.values())
+    n_snapped = sum(1 for qs in q.values() for x in qs if x.snapped)
+    mean_fit = float(np.mean([x.confidence for qs in q.values() for x in qs])) if n_total else 0.0
     timings["total"] = round(time.time() - t_all, 1)
 
     def note_rows(label: str) -> list[dict]:
@@ -392,7 +401,14 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
                          "n_marked_off_scale": n_marked},
         "pcs_of_kept_notes": pcs,
         "outputs": {"musicxml": xml.name, "midi": f"{stem}.mid", "json": f"{stem}.json",
-                    "render": render},
+                    "pdf": f"{stem}.pdf" if render.get("renderer") == "musescore-4" else None,
+                    "svg": f"{stem}.svg" if render.get("svg") else None, "render": render},
+        # The short form the notation service and the web page read.
+        "summary": {"tonic": scale["tonic_name"], "mode": scale["mode"], "degrees": scale["degrees_pc"],
+                    "scale_cents": sc, "tuning_offset_cents": scale["tuning_offset_cents"],
+                    "bpm": round(bpm), "n_notes": n_total, "snapped": n_snapped,
+                    "marked_outliers": n_marked, "mean_confidence": round(mean_fit, 3),
+                    "pcs": pcs["overall"], "staves": [label for label in order if label in q]},
         "timings_sec": timings,
         "notes": [row for label in order if label in q for row in note_rows(label)],
     }

@@ -41,7 +41,7 @@ class Settings(BaseSettings):
 
     # Track B notation pipeline: basic-pitch requires Python <=3.11, so
     # transcription runs as a subprocess under this interpreter.
-    transcribe_python: str = Field(default="/opt/anaconda3/envs/somali311/bin/python")
+    transcribe_python: str = Field(default="")  # empty = this service's own interpreter
     # Demucs vocal separation (notation opt-in). Empty = this service's own
     # interpreter (sys.executable) — demucs+torch live in the base env here.
     demucs_python: str = Field(default="")
