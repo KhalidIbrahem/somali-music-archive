@@ -47,3 +47,19 @@ def test_build_score_two_staves_single_voice_and_signed_lyrics(tmp_path):
     lyrics = [ly.text for n in score.parts[0].recurse().notes for ly in n.lyrics]
     assert lyrics and all(t[0] in "+−" and t.endswith("c") for t in lyrics)
     assert all(len(m.voices) == 0 for p in score.parts for m in p.getElementsByClass("Measure"))
+
+
+def test_build_score_parts_start_together_and_score_is_not_padded(tmp_path):
+    from music21 import converter
+    from scripts.beat_grid import snap_notes_monophonic
+
+    det = detect_scale(_notes([6900, 6900, 7100, 7300, 7600, 7800, 8100]))
+    voice = pentatonic_quantize(_notes([6900, 7100, 7300]), det)
+    oud = pentatonic_quantize(_notes([5700, 5900, 6100]), det)
+    beats = np.arange(0.0, 8.0, 0.5)
+    g = lambda qs: snap_notes_monophonic([q.start for q in qs], [q.end for q in qs], beats, sub=2)
+    xml = tmp_path / "t.musicxml"
+    build_score([(VOICE, voice, g(voice)), (OUD, oud, g(oud))], det, 120.0, xml, title="t", scale_text="s")
+    score = converter.parse(str(xml))
+    lengths = {p.partName: len(p.getElementsByClass("Measure")) for p in score.parts}
+    assert lengths[VOICE] == lengths[OUD] <= 2  # three half-beat notes: one bar, not padded to twice the music

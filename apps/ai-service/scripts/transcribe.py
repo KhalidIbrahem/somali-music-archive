@@ -43,7 +43,9 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.beat_grid import MIN_BEATS_FOR_GRID, median_bpm, snap_notes_monophonic  # noqa: E402
+from scripts.beat_grid import (  # noqa: E402
+    MIN_BEATS_FOR_GRID, median_bpm, pickup_shift_beats, snap_notes_monophonic,
+)
 from scripts.melody import melody_skyline  # noqa: E402
 from scripts.pentatonic import PC_NAMES  # noqa: E402
 from scripts.quantize import Note, QNote, detect_scale, pcs_of_notes, pentatonic_quantize  # noqa: E402
@@ -230,7 +232,7 @@ def build_score(parts: list[tuple[str, list[QNote], tuple[np.ndarray, np.ndarray
                 dev = q.deviation_cents
                 n.addLyric(f"{'+' if dev >= 0 else chr(0x2212)}{abs(dev):.0f}c")
             part.insert(off, n)
-        score.append(part)
+        score.insert(0, part)  # not append: append would place this part AFTER the previous one in time
     score.write("musicxml", fp=str(out_xml))
     return score
 
@@ -319,9 +321,12 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
         beat_times, sub, tempo_halved = beat_times[::2], sub * 2, True  # same grid resolution
     if len(beat_times) >= MIN_BEATS_FOR_GRID:
         grid_kind, bpm = "beat-tracked", median_bpm(beat_times)
+        # one pickup shift for the whole score, so the staves stay aligned
+        shift = pickup_shift_beats([x.start for x in all_notes], beat_times, sub=sub)
 
         def snap(qs):
-            return snap_notes_monophonic([x.start for x in qs], [x.end for x in qs], beat_times, sub=sub)
+            return snap_notes_monophonic([x.start for x in qs], [x.end for x in qs], beat_times,
+                                         sub=sub, bar_shift=shift)
     else:
         grid_kind, bpm = "fixed", estimate_bpm(wav)
 

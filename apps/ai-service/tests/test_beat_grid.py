@@ -76,3 +76,18 @@ def test_monophonic_snap_keeps_pickups_and_resolves_overlaps():
     kept = [(o, d) for o, d, k in zip(off, dur, keep) if k]
     for (o1, d1), (o2, _d2) in zip(kept, kept[1:]):
         assert o1 + d1 <= o2 + 1e-9  # no overlaps remain
+
+
+def test_shared_pickup_shift_keeps_two_staves_aligned():
+    from scripts.beat_grid import pickup_shift_beats, snap_notes_monophonic
+
+    beats = np.arange(1.0, 9.0, 0.5)
+    voice_starts, voice_ends = [0.30, 1.00, 2.00], [0.50, 1.40, 2.40]  # has a pickup before the first beat
+    oud_starts, oud_ends = [1.00, 1.50, 2.00], [1.40, 1.90, 2.40]      # starts on the beat
+    shift = pickup_shift_beats(voice_starts + oud_starts, beats, sub=2)
+    assert shift == 4.0
+    v_off, _, _ = snap_notes_monophonic(voice_starts, voice_ends, beats, sub=2, bar_shift=shift)
+    o_off, _, _ = snap_notes_monophonic(oud_starts, oud_ends, beats, sub=2, bar_shift=shift)
+    assert v_off[1] == o_off[0] == 4.0  # the notes at 1.00 s land on the same offset in both staves
+    o_alone, _, _ = snap_notes_monophonic(oud_starts, oud_ends, beats, sub=2)
+    assert o_alone[0] == 0.0  # computed alone, the oud would not have shifted: the bug this guards against

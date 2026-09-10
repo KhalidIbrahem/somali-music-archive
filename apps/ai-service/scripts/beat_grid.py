@@ -67,12 +67,25 @@ def median_bpm(beat_times: np.ndarray | list[float]) -> float:
     return float(60.0 / np.median(d)) if len(d) else 100.0
 
 
+def pickup_shift_beats(starts, beat_times, sub: int = 2, beats_per_bar: int = 4) -> float:
+    """Whole bars (in beats) the grid must move right so the earliest of these
+    onsets lands at or after offset 0. Compute it once over every staff of a
+    score so the staves stay aligned."""
+    starts = np.atleast_1d(np.asarray(starts, dtype=float))
+    if len(starts) == 0:
+        return 0.0
+    step = 1.0 / sub
+    first = float(np.min(np.round(times_to_beats(starts, beat_times) / step) * step))
+    return float(np.ceil(-first / beats_per_bar) * beats_per_bar) if first < 0 else 0.0
+
+
 def snap_notes_monophonic(
     starts: np.ndarray | list[float],
     ends: np.ndarray | list[float],
     beat_times: np.ndarray | list[float],
     sub: int = 2,
     beats_per_bar: int = 4,
+    bar_shift: float | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Grid snap for ONE notation voice: pickups keep their place, overlaps are
     resolved, so the result can be engraved as a single line.
@@ -85,16 +98,17 @@ def snap_notes_monophonic(
     that starts on the same grid cell as the previous one is dropped (the
     earlier one stands). Returns (offsets_ql, durations_ql, keep) where `keep`
     marks the notes that survived; offsets and durations are given for every
-    input note, kept or not.
+    input note, kept or not. `bar_shift` fixes the shift in beats (a multiple
+    of beats_per_bar) so several staves of one score share it; None computes
+    it from these notes alone. pickup_shift_beats() gives the shared value.
     """
     step = 1.0 / sub
     sb = times_to_beats(starts, beat_times)
     eb = times_to_beats(ends, beat_times)
     offsets = np.round(sb / step) * step
     durations = np.maximum(step, np.round((eb - sb) / step) * step)
-    if len(offsets) and offsets.min() < 0:
-        shift = np.ceil(-offsets.min() / beats_per_bar) * beats_per_bar
-        offsets = offsets + shift
+    shift = pickup_shift_beats(starts, beat_times, sub, beats_per_bar) if bar_shift is None else bar_shift
+    offsets = offsets + shift
     keep = np.ones(len(offsets), dtype=bool)
     order = np.argsort(offsets, kind="stable")
     last = -1
