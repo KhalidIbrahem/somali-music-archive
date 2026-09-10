@@ -18,7 +18,9 @@ from dataclasses import dataclass, replace
 
 import numpy as np
 
-from scripts.pentatonic import PC_NAMES, detect_tonic, tuning_offset
+from scripts.pentatonic import (
+    PC_NAMES, detect_tonic, refine_scale_cents, scale_cents_template, tuning_offset,
+)
 
 TOL_CENTS_DEFAULT = 50.0
 
@@ -48,6 +50,9 @@ class QNote(Note):
     marked: bool = False  # outlier left unsnapped — ornament/microtonal information
     confidence: float = 1.0
     cents_dist: float = 0.0  # distance to nearest scale degree (pre-snap)
+    deviation_cents: float = 0.0  # SIGNED offset from the nearest degree (pre-snap); never erased
+    degree: int | None = None  # nearest scale degree, 0 = tonic, ascending
+    rel_cents: float = 0.0  # pitch relative to the tonic, octave-folded (pre-snap)
 
 
 def _circ_dist_cents(cents: np.ndarray, degree_cents: np.ndarray) -> np.ndarray:
@@ -57,8 +62,14 @@ def _circ_dist_cents(cents: np.ndarray, degree_cents: np.ndarray) -> np.ndarray:
     return d.min(axis=1)
 
 
-def detect_scale(notes: list[Note]) -> dict:
-    """Tuning offset + tonic/mode/degrees from the notes themselves."""
+def detect_scale(notes: list[Note], refine: bool = False) -> dict:
+    """Tuning offset + tonic/mode/degrees from the notes themselves.
+
+    With `refine=True` the result also carries the data-driven scale: each
+    degree's position in cents relative to the tonic as measured from these
+    notes (scripts.pentatonic.refine_scale_cents), which the quantizer then
+    snaps to instead of the 12-TET template. Off by default so the earlier
+    experiments keep their reference frame."""
     if not notes:
         raise ValueError("no notes")
     cents = np.array([n.cents for n in notes])
@@ -69,7 +80,16 @@ def detect_scale(notes: list[Note]) -> dict:
     np.add.at(hist, pc, durs)
     det = detect_tonic(hist)
     det["tuning_offset_cents"] = off
+    if refine:
+        det.update(refine_scale_cents(cents, durs, det, off))
     return det
+
+
+def degree_cents_abs(det: dict) -> np.ndarray:
+    """Absolute pitch-class cents of the scale degrees, ordered from the tonic
+    upward: the refined scale when `det` carries one, else the 12-TET template."""
+    rel = det.get("scale_cents") or scale_cents_template(det)
+    return (int(det["tonic_pc"]) * 100.0 + np.asarray(rel, dtype=float)) % 1200.0
 
 
 def pcs_of_notes(notes: list[Note], det: dict, tol: float = TOL_CENTS_DEFAULT) -> float:
@@ -80,27 +100,37 @@ def pcs_of_notes(notes: list[Note], det: dict, tol: float = TOL_CENTS_DEFAULT) -
     """
     cents = np.array([n.cents for n in notes]) - det["tuning_offset_cents"]
     durs = np.array([n.dur for n in notes])
-    dist = _circ_dist_cents(cents, np.array(det["degrees"]) * 100.0)
+    dist = _circ_dist_cents(cents, degree_cents_abs(det))
     return float((durs * (dist <= tol)).sum() / durs.sum())
 
 
 def pentatonic_quantize(notes: list[Note], det: dict,
                         tol: float = TOL_CENTS_DEFAULT) -> list[QNote]:
     """Condition (iii): snap within-tolerance notes to the detected pentatonic
-    degree; leave outliers unsnapped and marked. confidence = 1 - dist/100c."""
-    degree_cents = np.array(det["degrees"]) * 100.0
+    degree; leave outliers unsnapped and marked. confidence = 1 - dist/100c.
+
+    The degrees come from degree_cents_abs(det): the recording's own refined
+    scale when present, so snapping lands on the measured degree (which may sit
+    off 12-TET), otherwise the template. Every note keeps its signed
+    deviation_cents from the nearest degree and that degree's index, snapped
+    or not, so nothing is corrected away silently."""
+    degree_cents = degree_cents_abs(det)
     off = det["tuning_offset_cents"]
+    tonic_abs = int(det["tonic_pc"]) * 100.0
     out: list[QNote] = []
     for n in notes:
         rel = n.cents - off
-        d = float(_circ_dist_cents(np.array([rel]), degree_cents)[0])
+        folded = rel % 1200.0
+        signed = ((folded - degree_cents) + 600.0) % 1200.0 - 600.0
+        j = int(np.argmin(np.abs(signed)))
+        dev = float(signed[j])
+        d = abs(dev)
         conf = float(np.clip(1.0 - d / 100.0, 0.0, 1.0))
-        q = QNote(**n.__dict__, cents_dist=d, confidence=conf)
+        q = QNote(**n.__dict__, cents_dist=d, confidence=conf,
+                  deviation_cents=round(dev, 1), degree=j,
+                  rel_cents=round((folded - tonic_abs) % 1200.0, 1))
         if d <= tol:
-            folded = rel % 1200.0
-            deg = degree_cents[np.argmin(np.abs(
-                ((folded - degree_cents) + 600.0) % 1200.0 - 600.0))]
-            snapped_cents = rel - ((folded - deg + 600.0) % 1200.0 - 600.0)
+            snapped_cents = rel - dev
             q.cents = snapped_cents + off
             q.midi = int(round(snapped_cents / 100.0))
             q.snapped = True
