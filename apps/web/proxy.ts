@@ -15,8 +15,17 @@ const GATE_COOKIE = 'sma_session';
 /** The only pages a signed-out visitor may see. */
 const PUBLIC_PATHS = new Set(['/', '/login', '/register', '/admin/login']);
 
+/**
+ * Local demo switch: with NEXT_PUBLIC_GATE_BYPASS=1 in a development build the
+ * gate stands open, so the transcribe page can be shown without the API and
+ * its databases running. Ignored in production builds.
+ */
+const GATE_BYPASS =
+  process.env.NODE_ENV === 'development' && process.env['NEXT_PUBLIC_GATE_BYPASS'] === '1';
+
 export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
+  if (GATE_BYPASS) return NextResponse.next();
   if (PUBLIC_PATHS.has(pathname)) return NextResponse.next();
   if (request.cookies.has(GATE_COOKIE)) return NextResponse.next();
 
