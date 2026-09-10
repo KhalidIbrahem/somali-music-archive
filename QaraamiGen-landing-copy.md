@@ -245,32 +245,7 @@ A note on voice: every line below is written to feel like a documentary, a museu
 
 ---
 
-## 9. Premium CTAs (20)
-
-1. Hear what we've saved
-2. Listen to the archive
-3. Step inside the memory
-4. Explore the recovered songs
-5. Help us find the last tapes
-6. Join the preservation
-7. Follow the research
-8. Add a recording
-9. Open the archive
-10. Become part of the memory
-11. Support the work
-12. Read the research
-13. Contribute a cassette
-14. Walk through the exhibit
-15. Learn how it works
-16. Meet the artists we're saving
-17. Play the first transcription
-18. Stand with the archive
-19. Preserve a song
-20. Begin listening
-
----
-
-## 10. Animation & Interaction Ideas (20)
+## 9. Animation & Interaction Ideas (20)
 
 1. **Living waveform hero** — the entire hero is a slow, breathing audio waveform; hovering scrubs a real recording.
 2. **Tape-to-sheet morph** — a cassette graphic dissolves note-by-note into sheet music as the user scrolls.
@@ -295,7 +270,7 @@ A note on voice: every line below is written to feel like a documentary, a museu
 
 ---
 
-## 11. Visual Storytelling Ideas (20) — show, don't tell
+## 10. Visual Storytelling Ideas (20) — show, don't tell
 
 1. A single cassette lit like a museum artifact, on black.
 2. A close-up of oxide flaking off aging tape — decay made visible.
@@ -320,7 +295,7 @@ A note on voice: every line below is written to feel like a documentary, a museu
 
 ---
 
-## 12. Scroll-Stoppers (20) — ideas that make people freeze
+## 11. Scroll-Stoppers (20) — ideas that make people freeze
 
 1. Open on silence and a black screen — the absence of sound is the hook.
 2. A number that's shrinking, not growing: *Recordings still at risk: [X].*
