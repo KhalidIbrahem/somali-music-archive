@@ -1,6 +1,5 @@
 /**
- * The provider-agnostic music-generation interface (ADR-0005 interface-first,
- * mirroring stripeGateway).
+ * The provider-agnostic music-generation interface (ADR-0005 interface-first).
  *
  * Everything above this interface — job store, service, routes, both apps —
  * is provider-blind. Suno (async task+poll), Lyria (synchronous single call),

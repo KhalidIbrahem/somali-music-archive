@@ -1,6 +1,6 @@
 /**
- * Fake provider — dev/test stand-in when a real provider's key is absent
- * (mirrors FakeStripeGateway). Lets the whole generate→poll→play loop run
+ * Fake provider — dev/test stand-in when a real provider's key is absent.
+ * Lets the whole generate→poll→play loop run
  * end-to-end with zero keys and zero network: submit() returns a pending task,
  * poll() succeeds once ~3 seconds have elapsed.
  *

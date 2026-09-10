@@ -1,8 +1,8 @@
 /**
  * Provider registry — per-provider real/fake/unavailable selection.
  *
- * Selection rule (user decision, diverging deliberately from stripeGateway's
- * single prod/dev switch):
+ * Selection rule (user decision; a three-way choice rather than a single
+ * prod/dev switch):
  *   • key configured        → real client (any environment)
  *   • no key, NOT production → FakeMusicProvider (keyless E2E demo works)
  *   • no key, production     → UnavailableProvider (503 at POST, no job made)

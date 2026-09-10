@@ -24,10 +24,6 @@ const VALID_ENV: Record<string, string> = {
   R2_SECRET_ACCESS_KEY: 'c',
   R2_BUCKET_NAME: 'd',
   R2_PUBLIC_DOMAIN: 'https://cdn.example.com',
-  STRIPE_SECRET_KEY: 'sk_test_x',
-  STRIPE_WEBHOOK_SECRET: 'whsec_x',
-  STRIPE_PREMIUM_PRICE_ID: 'price_1',
-  STRIPE_INSTITUTIONAL_PRICE_ID: 'price_2',
   RESEND_API_KEY: 're_x',
   EMAIL_FROM: 'noreply@example.com',
   AI_SERVICE_URL: 'http://localhost:8000',
@@ -140,12 +136,12 @@ describe('formatReport', () => {
     const { text, failures } = formatReport([
       { name: 'env', status: 'ok', detail: 'fine' },
       { name: 'postgres', status: 'warn', detail: 'pgvector missing' },
-      { name: 'stripe', status: 'fail', detail: 'bad key' },
+      { name: 'r2', status: 'fail', detail: 'bad key' },
     ]);
     expect(failures).toBe(1);
     expect(text).toContain('✓ env');
     expect(text).toContain('△ postgres');
-    expect(text).toContain('✗ stripe');
+    expect(text).toContain('✗ r2');
     expect(text).toContain('1 check FAILED, 1 warning.');
   });
 });

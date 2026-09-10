@@ -69,7 +69,6 @@ const MODEL_PROBES: ReadonlyArray<[string, (p: PrismaClient) => Promise<number>]
   ['users', (p) => p.user.count()],
   ['refresh_tokens', (p) => p.refreshToken.count()],
   ['verification_tokens', (p) => p.verificationToken.count()],
-  ['subscriptions', (p) => p.subscription.count()],
   ['lesson_progress', (p) => p.lessonProgress.count()],
   ['saved_recordings', (p) => p.savedRecording.count()],
   ['organizations', (p) => p.organization.count()],
@@ -276,28 +275,6 @@ export async function checkR2(config: {
     return { name: 'r2', status: 'ok', detail: `bucket "${config.bucket}" reachable` };
   } catch (error) {
     return { name: 'r2', status: 'fail', detail: message(error) };
-  }
-}
-
-// ── Stripe ───────────────────────────────────────────────────────────────────
-
-export async function checkStripe(secretKey: string): Promise<CheckResult> {
-  const looksLikeKey = /^sk_(test|live)_/.test(secretKey);
-  if (!looksLikeKey) {
-    return {
-      name: 'stripe',
-      status: 'fail',
-      detail: 'STRIPE_SECRET_KEY is not an sk_test_/sk_live_ key',
-    };
-  }
-  try {
-    const { default: Stripe } = await import('stripe');
-    const stripe = new Stripe(secretKey);
-    await withTimeout(stripe.balance.retrieve(), 'stripe auth');
-    const mode = secretKey.startsWith('sk_live_') ? 'LIVE mode' : 'test mode';
-    return { name: 'stripe', status: 'ok', detail: `key valid (${mode})` };
-  } catch (error) {
-    return { name: 'stripe', status: 'fail', detail: message(error) };
   }
 }
 
