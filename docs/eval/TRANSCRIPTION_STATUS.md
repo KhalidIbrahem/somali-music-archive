@@ -15,6 +15,7 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 - Tools: Demucs 4.1.0, music21 10.5.0, Verovio, pytest in `musicgen-env`; MuseScore Studio 4.7.5 in `/Applications`.
 - Three demo recordings transcribed end to end (table below). Nothing from the Harvard collection was used.
 - Benchmark scaffold: `docs/eval/TRANSCRIPTION_BENCHMARK.md`, `scripts/transcription_metrics.py`, synthetic test.
+- Overnight queue item 3: `scripts/make_annotation_pack.py <slug>` builds `data/annotation/<slug>/` (machine and corrected MusicXML, PDF, pipeline JSON, source audio, stems, meta.json, source.json, ANNOTATION_GUIDE.md); tested.
 - Overnight queue item 2 (runner): `scripts/transcribe_pool.py`, resumable, one subprocess per recording, INDEX.md rewritten after every item.
 - Overnight queue item 1: `--tonic`/`--mode` overrides (reported as pinned), "tonic ambiguous: D (F)" at 5 percent, `--min-conf` documented (default 0.6).
 
