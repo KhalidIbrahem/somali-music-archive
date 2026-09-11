@@ -118,6 +118,15 @@ integration suites assert what in-memory doubles cannot — unique constraints,
 foreign keys, soft-delete retention at the SQL layer, index materialisation.
 CI (GitHub Actions) runs the full matrix on every push.
 
+**Local stack, supervised.** `bash scripts/dev-up.sh` starts the API (port
+3001, in-memory persistence seeded from `apps/api/.data/dev-store.json`), the
+AI service (8000) and the web app (3000) under pm2 with health checks and
+restarts, and checks the MusicGen inference service (8765, a launchd user
+agent). `scripts/dev-status.sh` reports, `scripts/dev-down.sh` stops; logs go
+to `logs/`. The API is given `PERSISTENCE=memory` and a CORS list covering
+`localhost` and `127.0.0.1` on port 3000, so signing in locally never depends
+on the cloud databases in `apps/api/.env`.
+
 `npm run doctor` probes env completeness, Postgres schema + pgvector, Mongo +
 indexes, Redis, R2, and the AI service — a ✓/△/✗ readiness report whose
 database verdicts are themselves integration-tested.

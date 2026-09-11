@@ -85,10 +85,16 @@ $P -m scripts.transcription_metrics --ref <corrected.musicxml> --est <pipeline.j
 ## The interview demo: one command
 
 ```
-bash apps/ai-service/run_demo.sh
+bash scripts/dev-up.sh
 ```
 
-Then open http://127.0.0.1:8000/demo. Left panel: upload a recording, watch
+This brings up the whole local stack under pm2 with health checks (API on
+3001, AI service on 8000, web on 3000) and makes sure the MusicGen service on
+8765 is running; `bash scripts/dev-status.sh` and `bash scripts/dev-down.sh`
+report and stop it, and `bash scripts/dev-up.sh --install-login-agent` makes
+it come back at login. `apps/ai-service/run_demo.sh` now does the same.
+Then open http://127.0.0.1:8000/demo (the plain demo page) or
+http://localhost:3000/generate (the web app's Generate page, same service). Left panel: upload a recording, watch
 the stage, get the tonic (with "tonic ambiguous: D (F)" when it is), the
 scale in cents above the tonic against the 12-TET template, PCS, note counts,
 tempo, the score inline, the original and the separated stems to play, and
