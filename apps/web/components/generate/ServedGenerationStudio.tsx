@@ -24,7 +24,11 @@ import {
 import { Reveal } from '@/components/Reveal';
 
 const STARTERS: ReadonlyArray<{ label: string; prompt: string }> = [
-  { label: 'Qaraami', prompt: 'Somali qaraami led by the oud (kaban), moderate tempo, pentatonic melody, intimate recording' },
+  {
+    label: 'Qaraami',
+    prompt:
+      'Somali qaraami led by the oud (kaban), moderate tempo, pentatonic melody, intimate recording',
+  },
   { label: 'Dhaanto', prompt: 'A dhaanto rhythm with hand drums and a pentatonic oud line' },
   { label: 'Heello', prompt: 'A heello with oud and light percussion, slow and lyrical' },
 ];
@@ -62,7 +66,11 @@ export function ServedGenerationStudio(): React.JSX.Element {
         setAdapter(cards.some((c) => c.id === 'oud') ? 'oud' : (cards[0]?.id ?? ''));
       })
       .catch((err: unknown) => {
-        if (!cancelled) setStatus({ kind: 'down', message: `Could not reach the AI service at ${AI_URL}: ${err instanceof Error ? err.message : String(err)}` });
+        if (!cancelled)
+          setStatus({
+            kind: 'down',
+            message: `Could not reach the AI service at ${AI_URL}: ${err instanceof Error ? err.message : String(err)}`,
+          });
       });
     return () => {
       cancelled = true;
@@ -105,10 +113,10 @@ export function ServedGenerationStudio(): React.JSX.Element {
           </Reveal>
           <Reveal delay={180}>
             <p className="max-w-2xl font-body text-lg leading-relaxed text-ink-secondary">
-              Generate with the MusicGen adapters fine-tuned on the qaraami corpus and served on this
-              machine. Only the models running right now are listed. Every piece is labelled with the
-              adapter and the corpus it was trained on; the source recordings are never distributed,
-              and generated pieces stay separate from the archive.
+              Generate with the MusicGen adapters fine-tuned on the qaraami corpus and served on
+              this machine. Only the models running right now are listed. Every piece is labelled
+              with the adapter and the corpus it was trained on; the source recordings are never
+              distributed, and generated pieces stay separate from the archive.
             </p>
           </Reveal>
         </div>
@@ -118,7 +126,10 @@ export function ServedGenerationStudio(): React.JSX.Element {
         <div className="flex flex-col gap-8">
           <Reveal>
             <div className="rounded-2xl border border-line-secondary bg-bg-secondary p-8">
-              <label htmlFor="gen-prompt" className="font-body text-sm font-semibold text-ink-primary">
+              <label
+                htmlFor="gen-prompt"
+                className="font-body text-sm font-semibold text-ink-primary"
+              >
                 Describe the music
               </label>
               <textarea
@@ -146,17 +157,20 @@ export function ServedGenerationStudio(): React.JSX.Element {
               <fieldset className="mt-6">
                 <legend className="font-body text-sm font-semibold text-ink-primary">Model</legend>
                 {status.kind === 'loading' ? (
-                  <p className="mt-2 font-body text-sm text-ink-secondary">Asking the generation service what it is serving…</p>
+                  <p className="mt-2 font-body text-sm text-ink-secondary">
+                    Asking the generation service what it is serving…
+                  </p>
                 ) : null}
                 {status.kind === 'down' ? (
-                  <p className="mt-2 font-body text-sm text-[#e07070]" role="alert">
+                  <p className="mt-2 font-body text-sm text-danger" role="alert">
                     {status.message}
                   </p>
                 ) : null}
                 {status.kind === 'ready' ? (
                   <>
                     <p className="mt-1 font-body text-xs text-ink-tertiary">
-                      served on {status.service.device} at {status.service.url}; one card per loaded adapter, timed on its last generations
+                      served on {status.service.device} at {status.service.url}; one card per loaded
+                      adapter, timed on its last generations
                     </p>
                     <div className="mt-2 grid gap-3 sm:grid-cols-3">
                       {status.cards.map((c) => (
@@ -171,10 +185,18 @@ export function ServedGenerationStudio(): React.JSX.Element {
                               : 'border-line-primary bg-bg-tertiary hover:border-amber/50'
                           }`}
                         >
-                          <span className="block font-body font-semibold text-ink-primary">{c.title}</span>
-                          <span className="mt-1 block font-body text-sm text-amber">{c.subtitle}</span>
-                          <span className="mt-1 block font-body text-xs text-ink-secondary">{c.note}</span>
-                          <span className="mt-1 block font-body text-xs text-ink-tertiary">{c.timing}</span>
+                          <span className="block font-body font-semibold text-ink-primary">
+                            {c.title}
+                          </span>
+                          <span className="mt-1 block font-body text-sm text-amber">
+                            {c.subtitle}
+                          </span>
+                          <span className="mt-1 block font-body text-xs text-ink-secondary">
+                            {c.note}
+                          </span>
+                          <span className="mt-1 block font-body text-xs text-ink-tertiary">
+                            {c.timing}
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -212,7 +234,9 @@ export function ServedGenerationStudio(): React.JSX.Element {
                 <button
                   type="button"
                   onClick={() => void submit()}
-                  disabled={working || status.kind !== 'ready' || !adapter || prompt.trim().length < 3}
+                  disabled={
+                    working || status.kind !== 'ready' || !adapter || prompt.trim().length < 3
+                  }
                   className="rounded-xl bg-amber px-7 py-3 font-body font-semibold text-bg-primary transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {working ? 'Generating…' : 'Generate'}
@@ -220,11 +244,12 @@ export function ServedGenerationStudio(): React.JSX.Element {
               </div>
               {working ? (
                 <p className="mt-4 font-body text-sm text-ink-secondary">
-                  Generating about a second of audio per second on this machine; PCS is scored on the result.
+                  Generating about a second of audio per second on this machine; PCS is scored on
+                  the result.
                 </p>
               ) : null}
               {error ? (
-                <p className="mt-4 font-body text-sm text-[#e07070]" role="alert">
+                <p className="mt-4 font-body text-sm text-danger" role="alert">
                   {error}
                 </p>
               ) : null}
@@ -249,7 +274,9 @@ export function ServedGenerationStudio(): React.JSX.Element {
                       <dt className="text-ink-tertiary">Pentatonic conformity (PCS)</dt>
                       <dd className="text-ink-primary">
                         {result.pcs?.pcs !== undefined ? result.pcs.pcs.toFixed(3) : 'not scored'}
-                        {result.pcs?.voiced_fraction !== undefined ? ` · voiced ${result.pcs.voiced_fraction.toFixed(2)}` : ''}
+                        {result.pcs?.voiced_fraction !== undefined
+                          ? ` · voiced ${result.pcs.voiced_fraction.toFixed(2)}`
+                          : ''}
                         {result.pcs?.tonic ? ` · tonic ${result.pcs.tonic}` : ''}
                       </dd>
                     </div>
@@ -260,7 +287,9 @@ export function ServedGenerationStudio(): React.JSX.Element {
                     <div>
                       <dt className="text-ink-tertiary">Time to generate</dt>
                       <dd className="text-ink-primary">
-                        {result.total_seconds !== undefined ? `${result.total_seconds.toFixed(1)} s` : '–'}
+                        {result.total_seconds !== undefined
+                          ? `${result.total_seconds.toFixed(1)} s`
+                          : '–'}
                       </dd>
                     </div>
                   </dl>

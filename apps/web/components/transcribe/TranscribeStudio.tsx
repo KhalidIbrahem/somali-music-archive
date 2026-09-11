@@ -124,8 +124,8 @@ export function TranscribeStudio(): React.JSX.Element {
       <h1 className="mt-2 font-display text-4xl text-ink-primary">Audio → sheet music</h1>
       <p className="mt-3 max-w-2xl font-body text-ink-secondary">
         Upload a recording and get notation that detects the pentatonic scale from the audio itself.
-        Notes outside the scale are <span className="text-[#e07070]">kept and marked</span> —
-        ornaments and microtonal inflections are music, not errors.
+        Notes outside the scale are <span className="text-danger">kept and marked</span> — ornaments
+        and microtonal inflections are music, not errors.
       </p>
 
       {phase.kind === 'idle' || phase.kind === 'error' ? (
@@ -178,7 +178,7 @@ export function TranscribeStudio(): React.JSX.Element {
       ) : null}
 
       {phase.kind === 'error' && (
-        <p className="mt-4 rounded-lg border border-[#B03030]/40 bg-[#B03030]/10 px-4 py-3 font-body text-sm text-[#e07070]">
+        <p className="mt-4 rounded-lg border border-danger/40 bg-danger/10 px-4 py-3 font-body text-sm text-danger">
           {phase.message}
         </p>
       )}
@@ -214,7 +214,7 @@ export function TranscribeStudio(): React.JSX.Element {
           </div>
           <p className="mt-3 font-body text-sm text-ink-secondary">
             {phase.result.n_notes} notes · {phase.result.snapped} snapped to scale ·{' '}
-            <span className="text-[#e07070]">
+            <span className="text-danger">
               {phase.result.marked_outliers} inflections preserved
             </span>{' '}
             · confidence {Math.round(phase.result.mean_confidence * 100)}%
