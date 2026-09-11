@@ -127,6 +127,19 @@ to `logs/`. The API is given `PERSISTENCE=memory` and a CORS list covering
 `localhost` and `127.0.0.1` on port 3000, so signing in locally never depends
 on the cloud databases in `apps/api/.env`.
 
+**Listening review** (`http://127.0.0.1:8000/demo/review`). For the musicians
+who check the transcription benchmark by ear rather than from the page: each
+annotation pack in `data/annotation/` is cut into phrases of about four bars
+along the beat grid the score was snapped to, and every phrase can be heard
+as the recording and as the machine's notes played back on the same
+timeline. Verdicts (correct, wrong notes, wrong rhythm), a note and the
+listener's own recorded version save at once to
+`data/annotation/<slug>/review_<name>.json`; `…/export.md` lists the phrases
+marked wrong with bar numbers and timestamps for the fix in MuseScore.
+`bash scripts/dev-up.sh --lan` opens the service to the local network for an
+iPad; recording needs an https address (`Tailscale serve`, printed by the
+script). The source audio is served only inside this service.
+
 `npm run doctor` probes env completeness, Postgres schema + pgvector, Mongo +
 indexes, Redis, R2, and the AI service — a ✓/△/✗ readiness report whose
 database verdicts are themselves integration-tested.
