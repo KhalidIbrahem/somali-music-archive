@@ -6,13 +6,51 @@ The first five benchmark items, chosen by `scripts/pick_benchmark_items.py` (no 
 
 | # | item | source | tonic | PCS | notes/min | voice voiced | length |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | `band_79d59991_output` | band | G | 0.985 | 235 | 0.32 | first 90 s of 426 s |
-| 2 | `band_84fd9606_layla_cod_ilko_2025` | band | F | 0.962 | 219 | 0.52 | first 90 s of 388 s |
-| 3 | `oud_83286a4e_riftoondakharkii_qaraami_hoos` | oud | C | 0.995 | 49 |  | 1392 s |
-| 4 | `oud_06b352d0_balkaalay_qaraami_best_beat` | oud | A | 0.994 | 86 |  | 956 s |
-| 5 | `oud_990f3e79_heeri_maahee_qaraami` | oud | C# | 0.993 | 77 |  | 277 s |
+| 1 | `band_79d59991_output` | band | G | 0.976 | 257 | 0.32 | first 90 s of 426 s |
+| 2 | `band_84fd9606_layla_cod_ilko_2025` | band | F | 0.968 | 252 | 0.52 | first 90 s of 388 s |
+| 3 | `oud_83286a4e_riftoondakharkii_qaraami_hoos` | oud | C | 0.994 | 53 |  | 1392 s |
+| 4 | `oud_06b352d0_balkaalay_qaraami_best_beat` | oud | A | 0.997 | 96 |  | 956 s |
+| 5 | `oud_990f3e79_heeri_maahee_qaraami` | oud | C# | 0.995 | 106 |  | 277 s |
 
 Rebuild a pack: `cd apps/ai-service && ~/ai/musicgen-env/bin/python -m scripts.make_annotation_pack <slug>`.
+
+## Legato (2026-09-11)
+
+The first annotation pass on balkaalay found the oud score fragmented: CREPE's
+confidence drops during the decay, so almost every note was cut short and
+followed by a rest. `scripts/f0_notes.py` now sustains a plucked note through
+low-confidence frames while the pitch holds within 50 cents and the envelope
+stays above 15 percent of the attack, treats a re-pluck as a new onset, merges
+same-pitch notes across gaps of 20 to 120 ms, and writes a rest only for a gap
+longer than an eighth (decisions 42 to 45). `--legato` is on by default for the
+oud staff and off for the voice. Packs with edited corrected copies are kept.
+Note and rest counts (rests counted in the MusicXML up to the last note):
+
+| item | notes before | notes after | rests before | rests after | bars |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `band_e0e0a1425885_seg000` | 74 | 78 | 46 | 31 | 30 |
+| `oud_02_aha_aha` | 460 | 574 | 380 | 41 | 85 |
+| `oud_04_kaban_wadada` | 834 | 925 | 338 | 45 | 180 |
+| `band_79d59991_output` | 268 | 281 | 97 | 67 | 68 |
+| `band_84fd9606_layla_cod_ilko_2025` | 293 | 335 | 163 | 99 | 88 |
+| `oud_06b352d0_balkaalay_qaraami_best_beat` | 1259 | 1366 | 1006 | 312 | 354 |
+| `oud_83286a4e_riftoondakharkii_qaraami_hoos` | 1115 | 1178 | 461 | 39 | 242 |
+| `oud_990f3e79_heeri_maahee_qaraami` | 346 | 475 | 300 | 74 | 127 |
+
+Notes rise where repeated plucks of one pitch were previously one fragment
+each; rests fall because the decay is no longer written as silence. Outputs
+before this change are kept beside the new ones as `_v0/` under
+`data/transcription_demo/`, `data/transcription_pool/` and `data/annotation/`.
+The pool report (`TRANSCRIPTION_POOL_REPORT.md`) still describes the run before
+legato; only the five benchmark items were rerun.
+
+Listening review for annotators who do not read notation:
+`http://127.0.0.1:8000/demo/review` (per pack, four-bar phrases from the beat
+grid, Original against the machine's notes synthesized on the same timeline,
+verdicts and a recorded version saved to `data/annotation/<slug>/review_<name>.json`,
+export of the phrases marked wrong). `bash scripts/dev-up.sh --lan` opens the
+service to the local network for an iPad; recording needs the https address the
+launcher prints.
 
 Kept current after every commit. Outputs live under `data/transcription_demo/`
 (ignored by git). Environment: `~/ai/musicgen-env`; render: `/Applications/MuseScore 4.app`.
