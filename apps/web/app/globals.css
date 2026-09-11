@@ -231,12 +231,41 @@
   }
 }
 
+/* Light values for the platform palette above, so the pages built on it
+   (transcribe, generate, library, the shared header) follow the theme toggle
+   like the studio pages. Same hues as the studio tokens in tokens.css; the
+   paper surface (bg-inverse) stays paper, since a score is always dark ink
+   on a light page. Tailwind v4 utilities read these variables at runtime, so
+   the switch is the attribute change alone. */
+:root[data-theme='light'] {
+  --color-bg-primary: #e4e1da;
+  --color-bg-secondary: #edeae3;
+  --color-bg-tertiary: #f7f5f0;
+  --color-bg-inverse: #ffffff;
+
+  --color-amber: #876128;
+  --color-amber-light: #a67a3a;
+  --color-amber-dim: #b89a6e;
+  --color-amber-subtle: #f1e7d3;
+
+  --color-blueflag: #2c6bb0;
+  --color-blueflag-light: #4a86c9;
+  --color-blueflag-dim: #9dbbe0;
+
+  --color-ink-primary: #1a1822;
+  --color-ink-secondary: #5a5666;
+  --color-ink-tertiary: #767286;
+
+  --color-line-primary: #cfcbc2;
+  --color-line-secondary: #dcd8cf;
+}
+
 /* color-scheme is owned by tokens.css (dark default, light under data-theme
-   or print). Legacy pages keep their explicit dark surfaces below. */
+   or print). The body surface follows the same variables. */
 
 body {
-  background-color: #0c0b14; /* bg.primary */
-  color: #ede9dc; /* ink.primary */
+  background-color: var(--color-bg-primary);
+  color: var(--color-ink-primary);
 }
 
 /* Printing always happens on a light page (§1): tokens.css already flips the
@@ -248,4 +277,3 @@ body {
     color: #1a1822;
   }
 }
-

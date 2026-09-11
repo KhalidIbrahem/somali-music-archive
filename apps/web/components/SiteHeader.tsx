@@ -1,11 +1,15 @@
 /**
- * SiteHeader — the shared top navigation for the public pages (home, listen,
- * library). Sticky, translucent over the near-black surface, amber accents.
+ * SiteHeader — the shared top navigation for the public pages (listen, scores,
+ * library, transcribe, generate). Sticky, translucent, amber accents. The
+ * theme toggle sits at the right on every page; the choice is stored in
+ * localStorage and applied before first paint by the root layout's bootstrap
+ * script (lib/theme.ts), with the system preference as the default.
  */
 
 import Link from 'next/link';
 import { QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
 import { AuthMenu } from '@/components/AuthMenu';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 import { flags } from '@/lib/flags';
 
 const NAV = [
@@ -52,7 +56,10 @@ export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
             </Link>
           ))}
         </div>
-        {flags.requireAuth ? <AuthMenu variant="site" /> : null}
+        <div className="flex items-center gap-3">
+          {flags.requireAuth ? <AuthMenu variant="site" /> : null}
+          <ThemeToggle />
+        </div>
       </nav>
     </header>
   );
