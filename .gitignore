@@ -229,3 +229,5 @@ AGENTS.md
 
 # Transcription demo outputs (derived from rights-held recordings; not tracked)
 data/transcription_demo/
+data/transcription_pool/
+data/annotation/

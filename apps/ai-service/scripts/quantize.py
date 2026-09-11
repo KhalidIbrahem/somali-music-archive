@@ -62,14 +62,16 @@ def _circ_dist_cents(cents: np.ndarray, degree_cents: np.ndarray) -> np.ndarray:
     return d.min(axis=1)
 
 
-def detect_scale(notes: list[Note], refine: bool = False) -> dict:
+def detect_scale(notes: list[Note], refine: bool = False, tonic_pc: int | None = None,
+                 mode: int | None = None) -> dict:
     """Tuning offset + tonic/mode/degrees from the notes themselves.
 
     With `refine=True` the result also carries the data-driven scale: each
     degree's position in cents relative to the tonic as measured from these
     notes (scripts.pentatonic.refine_scale_cents), which the quantizer then
     snaps to instead of the 12-TET template. Off by default so the earlier
-    experiments keep their reference frame."""
+    experiments keep their reference frame. `tonic_pc` / `mode` pin the root
+    and/or mode (see pentatonic.detect_tonic)."""
     if not notes:
         raise ValueError("no notes")
     cents = np.array([n.cents for n in notes])
@@ -78,7 +80,7 @@ def detect_scale(notes: list[Note], refine: bool = False) -> dict:
     pc = np.round((cents - off) / 100.0).astype(int) % 12
     hist = np.zeros(12)
     np.add.at(hist, pc, durs)
-    det = detect_tonic(hist)
+    det = detect_tonic(hist, tonic_pc=tonic_pc, mode=mode)
     det["tuning_offset_cents"] = off
     if refine:
         det.update(refine_scale_cents(cents, durs, det, off))

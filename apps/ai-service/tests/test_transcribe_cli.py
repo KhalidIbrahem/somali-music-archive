@@ -63,3 +63,18 @@ def test_build_score_parts_start_together_and_score_is_not_padded(tmp_path):
     score = converter.parse(str(xml))
     lengths = {p.partName: len(p.getElementsByClass("Measure")) for p in score.parts}
     assert lengths[VOICE] == lengths[OUD] <= 2  # three half-beat notes: one bar, not padded to twice the music
+
+
+def test_tonic_override_and_ambiguity_rule():
+    from scripts.transcribe import parse_tonic, tonic_ambiguity
+
+    assert parse_tonic("D") == 2 and parse_tonic("f#") == 6 and parse_tonic("Bb") == 10
+    det = {"tonic_name": "D", "score": 0.90, "runner_up_other_tonic": {"tonic_name": "F", "mode": 0, "score": 0.87}}
+    amb = tonic_ambiguity(det)
+    assert amb["ambiguous"] and amb["label"] == "D (F)"
+    det["runner_up_other_tonic"]["score"] = 0.80
+    assert not tonic_ambiguity(det)["ambiguous"] and tonic_ambiguity(det)["label"] == "D"
+    pinned = detect_scale(_notes([6200, 6500, 6700, 6900, 7200, 6200]), tonic_pc=5)
+    assert pinned["tonic_name"] == "F" and pinned["unconstrained"]["tonic_name"] == "D"
+    s = scale_summary(pinned)
+    assert s["override"] == {"tonic_pc": 5, "mode": None}
