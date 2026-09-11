@@ -54,6 +54,11 @@ class Settings(BaseSettings):
     # CREPE vocal engine (scripts/vocal_f0.py) — needs torch+torchcrepe.
     # Empty = sys.executable, same rationale as demucs_python.
     vocal_python: str = Field(default="")
+    # The https address of this machine for the listening review page
+    # (/demo/review): a browser only opens the microphone on a secure origin,
+    # so the page names this address when it is opened over plain http.
+    # `bash scripts/dev-up.sh --lan` fills it from Tailscale when available.
+    review_https_url: str = Field(default="")
 
     # Track A generation gate: stays False until the Phase 0 license_status
     # table (data/manifest.csv — currently all 'unknown') permits exposure.

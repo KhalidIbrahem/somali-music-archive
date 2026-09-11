@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listening review</title>
+<style>
+  :root { color-scheme: light; }
+  body { font: 22px/1.5 -apple-system, "Helvetica Neue", Arial, sans-serif; color: #1a1a1a; background: #fafaf7; margin: 0; padding: 0 0 120px; }
+  header { padding: 22px 26px 12px; border-bottom: 1px solid #ddd8cf; background: #fff; position: sticky; top: 0; z-index: 2; }
+  h1 { font-size: 28px; margin: 0; font-weight: 600; }
+  .sub { margin: 4px 0 0; color: #555; font-size: 18px; }
+  .rights { margin: 10px 0 0; font-size: 16px; color: #7a4a00; }
+  .bar { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; margin-top: 12px; font-size: 19px; }
+  .bar label { display: flex; align-items: center; gap: 10px; }
+  input[type=text] { font: inherit; padding: 10px 12px; border: 1px solid #c9c4ba; border-radius: 8px; min-width: 14em; }
+  input[type=checkbox] { width: 28px; height: 28px; }
+  button { font: inherit; border: 0; border-radius: 12px; cursor: pointer; }
+  .go { padding: 12px 20px; background: #24507a; color: #fff; font-weight: 600; }
+  a { color: #24507a; }
+  main { padding: 18px 26px; max-width: 980px; margin: 0 auto; }
+  .phrase { background: #fff; border: 1px solid #ddd8cf; border-radius: 14px; padding: 18px 20px; margin: 18px 0; }
+  .phrase.playing { border-color: #24507a; box-shadow: 0 0 0 3px #24507a33; }
+  .phrase h2 { font-size: 24px; margin: 0 0 4px; font-weight: 600; }
+  .when { color: #666; font-size: 18px; margin: 0 0 14px; }
+  .play { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .play button { min-height: 72px; font-size: 24px; font-weight: 600; background: #eef2f6; color: #1a1a1a; border: 2px solid #c9d3dd; }
+  .play button.on { background: #24507a; color: #fff; border-color: #24507a; }
+  .verdicts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 16px; }
+  .verdicts button { min-height: 64px; font-size: 21px; background: #f4f2ee; border: 2px solid #d8d2c6; color: #1a1a1a; }
+  .verdicts button.on { border-color: #1a1a1a; background: #1a1a1a; color: #fff; }
+  .verdicts button.on.correct { background: #2f7a3a; border-color: #2f7a3a; }
+  .verdicts button.on.wrong_notes, .verdicts button.on.wrong_rhythm { background: #a03030; border-color: #a03030; }
+  .more { margin-top: 14px; display: grid; gap: 12px; }
+  .rec { min-height: 64px; font-size: 21px; background: #fff3e6; border: 2px solid #e0b380; color: #1a1a1a; }
+  .rec.on { background: #c9401e; color: #fff; border-color: #c9401e; }
+  textarea { font: inherit; font-size: 20px; padding: 10px 12px; border: 1px solid #c9c4ba; border-radius: 8px; width: 100%; box-sizing: border-box; min-height: 64px; }
+  .mine { font-size: 18px; color: #444; }
+  .mine audio { width: 100%; margin-top: 6px; }
+  .saved { font-size: 16px; color: #2f7a3a; min-height: 1.3em; }
+  .err { color: #a02020; font-size: 18px; }
+  .hint { font-size: 17px; color: #666; }
+  footer { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid #ddd8cf; padding: 12px 26px; font-size: 19px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">Listening review</h1>
+  <p class="sub" id="sub">Loading the recording…</p>
+  <p class="rights">The recording plays here only, on this machine and its local network. Rights stay with the performers; nothing is copied anywhere else.</p>
+  <div class="bar">
+    <label>Your name <input type="text" id="name" placeholder="first name" autocapitalize="off" autocomplete="off"></label>
+    <button class="go" id="start">Start</button>
+    <label><input type="checkbox" id="loop"> Repeat the phrase until I stop it</label>
+  </div>
+  <p class="hint" id="how" hidden>For each phrase, listen to the recording, then to what the machine wrote. Say whether the machine is right, has wrong notes, or has the rhythm wrong. You can also sing or play the phrase the way you know it, and write a note. Everything saves by itself.</p>
+</header>
+<main id="main" hidden></main>
+<footer id="foot" hidden>
+  <span id="progress"></span>
+  <a id="export" href="#" download>Download the list of wrong phrases</a>
+  <button class="go" id="stop">Stop the sound</button>
+</footer>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const slug = decodeURIComponent(location.pathname.split('/').filter(Boolean).pop());
+  const base = '/demo/review/' + encodeURIComponent(slug);
+  const audio = new Audio();
+  audio.preload = 'auto';
+  let who = '';
+  let phrases = [];
+  let state = { phrases: {} };
+  let playingKey = null;
+  let recorder = null, recChunks = [], recIndex = null;
+
+  const mmss = (t) => { const m = Math.floor(t / 60), s = (t - m * 60); return m + ':' + (s < 10 ? '0' : '') + s.toFixed(1); };
+  const clean = (s) => s.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '').slice(0, 40);
+
+  async function getJSON(url, opts) {
+    const r = await fetch(url, opts);
+    if (!r.ok) { let d = ''; try { d = (await r.json()).detail; } catch (e) {} throw new Error(d || (r.status + ' ' + r.statusText)); }
+    return r.json();
+  }
+
+  // ---------------- start ----------------
+  try { $('name').value = localStorage.getItem('review_name') || ''; $('loop').checked = localStorage.getItem('review_loop') === '1'; } catch (e) {}
+  $('loop').addEventListener('change', () => { audio.loop = $('loop').checked; try { localStorage.setItem('review_loop', audio.loop ? '1' : '0'); } catch (e) {} });
+  audio.loop = $('loop').checked;
+  $('start').addEventListener('click', start);
+  $('name').addEventListener('keydown', (e) => { if (e.key === 'Enter') start(); });
+  $('stop').addEventListener('click', stopSound);
+  if ($('name').value) start();
+
+  async function start() {
+    who = clean($('name').value);
+    if (!who) { $('sub').textContent = 'Type your name first.'; return; }
+    try { localStorage.setItem('review_name', $('name').value.trim()); } catch (e) {}
+    $('start').disabled = true;
+    try {
+      const info = await getJSON(base + '/phrases');
+      phrases = info.phrases;
+      state = await getJSON(base + '/' + who + '/state');
+      $('title').textContent = info.title;
+      $('sub').textContent = phrases.length + ' phrases of about four bars, ' + info.bars + ' bars in all, ' + info.bpm + ' beats per minute.';
+      if (!navigator.mediaDevices && info.https_url) {
+        $('sub').textContent += ' To record your own version, open this page at ' + info.https_url + base + ' instead (the microphone only works on an https address).';
+      } else if (!navigator.mediaDevices) {
+        $('sub').textContent += ' Recording needs the https address of this Mac; ask Khalid for it.';
+      }
+      $('how').hidden = false;
+      $('export').href = base + '/' + who + '/export.md';
+      render();
+      $('main').hidden = false; $('foot').hidden = false;
+    } catch (e) {
+      $('sub').textContent = 'Could not load: ' + e.message;
+      $('start').disabled = false;
+    }
+  }
+
+  // ---------------- the phrases ----------------
+  function render() {
+    const main = $('main');
+    main.innerHTML = '';
+    phrases.forEach((p) => {
+      const saved = state.phrases[String(p.index)] || {};
+      const card = document.createElement('section');
+      card.className = 'phrase'; card.id = 'p' + p.index;
+      const bars = p.bar_from === p.bar_to ? 'bar ' + p.bar_from : 'bars ' + p.bar_from + ' to ' + p.bar_to;
+      card.innerHTML =
+        '<h2>Phrase ' + (p.index + 1) + ' of ' + phrases.length + '</h2>' +
+        '<p class="when">' + bars + ' · ' + mmss(p.start) + ' to ' + mmss(p.end) + '</p>' +
+        '<div class="play">' +
+          '<button data-kind="original">Original</button>' +
+          '<button data-kind="machine">Machine</button>' +
+        '</div>' +
+        '<div class="verdicts">' +
+          '<button data-verdict="correct" class="correct">Correct</button>' +
+          '<button data-verdict="wrong_notes" class="wrong_notes">Wrong notes</button>' +
+          '<button data-verdict="wrong_rhythm" class="wrong_rhythm">Wrong rhythm</button>' +
+        '</div>' +
+        '<div class="more">' +
+          '<button class="rec">Record my version</button>' +
+          '<div class="mine" hidden><span>Your version</span><audio controls></audio></div>' +
+          '<textarea placeholder="A note, if you want (which note, which beat, what it should be)"></textarea>' +
+          '<div class="saved"></div>' +
+        '</div>';
+      card.querySelectorAll('.play button').forEach((b) => b.addEventListener('click', () => play(p, b.dataset.kind, card)));
+      card.querySelectorAll('.verdicts button').forEach((b) => b.addEventListener('click', () => verdict(p, b.dataset.verdict, card)));
+      const ta = card.querySelector('textarea');
+      ta.value = saved.note || '';
+      let timer = null;
+      ta.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => note(p, ta.value, card), 900); });
+      ta.addEventListener('blur', () => { clearTimeout(timer); note(p, ta.value, card); });
+      card.querySelector('.rec').addEventListener('click', () => record(p, card));
+      main.appendChild(card);
+      paint(p, card, saved);
+    });
+    progress();
+  }
+
+  function paint(p, card, saved) {
+    card.querySelectorAll('.verdicts button').forEach((b) => b.classList.toggle('on', saved.verdict === b.dataset.verdict));
+    const mine = card.querySelector('.mine');
+    if (saved.recording) {
+      mine.hidden = false;
+      mine.querySelector('audio').src = base + '/' + who + '/recording/' + saved.recording;
+    } else {
+      mine.hidden = true;
+    }
+  }
+
+  function progress() {
+    const n = phrases.filter((p) => (state.phrases[String(p.index)] || {}).verdict).length;
+    const wrong = phrases.filter((p) => /^wrong/.test((state.phrases[String(p.index)] || {}).verdict || '')).length;
+    $('progress').textContent = n + ' of ' + phrases.length + ' phrases judged' + (wrong ? ', ' + wrong + ' marked wrong' : '') + '.';
+  }
+
+  // ---------------- sound ----------------
+  function play(p, kind, card) {
+    const key = p.index + ':' + kind;
+    if (playingKey === key && !audio.paused) { stopSound(); return; }
+    stopSound();
+    audio.src = base + '/phrase/' + p.index + '/' + kind + '.wav';
+    audio.loop = $('loop').checked;
+    playingKey = key;
+    card.classList.add('playing');
+    card.querySelector('.play button[data-kind=' + kind + ']').classList.add('on');
+    audio.play().catch((e) => { card.querySelector('.saved').innerHTML = '<span class="err">Could not play: ' + e.message + '</span>'; });
+    audio.onended = () => { if (!audio.loop) stopSound(); };
+  }
+
+  function stopSound() {
+    audio.pause();
+    document.querySelectorAll('.phrase.playing').forEach((c) => c.classList.remove('playing'));
+    document.querySelectorAll('.play button.on').forEach((b) => b.classList.remove('on'));
+    playingKey = null;
+  }
+
+  // ---------------- saving ----------------
+  async function post(p, body, card) {
+    const out = card.querySelector('.saved');
+    try {
+      const r = await getJSON(base + '/' + who + '/phrase/' + p.index, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      state.phrases[String(p.index)] = r.saved;
+      out.textContent = 'Saved.';
+      setTimeout(() => { if (out.textContent === 'Saved.') out.textContent = ''; }, 1500);
+      paint(p, card, r.saved);
+      progress();
+    } catch (e) {
+      out.innerHTML = '<span class="err">Not saved: ' + e.message + '</span>';
+    }
+  }
+  function verdict(p, v, card) {
+    const cur = (state.phrases[String(p.index)] || {}).verdict;
+    post(p, { verdict: cur === v ? '' : v }, card);
+  }
+  function note(p, text, card) {
+    const cur = (state.phrases[String(p.index)] || {}).note || '';
+    if (text.trim() === cur.trim()) return;
+    post(p, { note: text }, card);
+  }
+
+  // ---------------- recording ----------------
+  async function record(p, card) {
+    const btn = card.querySelector('.rec');
+    const out = card.querySelector('.saved');
+    if (recorder && recorder.state === 'recording') {
+      if (recIndex !== p.index) { out.innerHTML = '<span class="err">Stop the other recording first.</span>'; return; }
+      recorder.stop();
+      return;
+    }
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      out.innerHTML = '<span class="err">Recording needs the https address of this Mac (see the top of the page).</span>';
+      return;
+    }
+    let stream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      out.innerHTML = '<span class="err">The microphone was not allowed: ' + e.message + '</span>';
+      return;
+    }
+    stopSound();
+    const type = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg'].find((t) => MediaRecorder.isTypeSupported(t)) || '';
+    recorder = type ? new MediaRecorder(stream, { mimeType: type }) : new MediaRecorder(stream);
+    recChunks = []; recIndex = p.index;
+    recorder.ondataavailable = (e) => { if (e.data && e.data.size) recChunks.push(e.data); };
+    recorder.onstop = async () => {
+      stream.getTracks().forEach((t) => t.stop());
+      btn.classList.remove('on'); btn.textContent = 'Record my version';
+      const blob = new Blob(recChunks, { type: recorder.mimeType || type || 'application/octet-stream' });
+      recorder = null; recIndex = null;
+      if (!blob.size) { out.innerHTML = '<span class="err">Nothing was recorded.</span>'; return; }
+      out.textContent = 'Saving your version…';
+      const form = new FormData();
+      form.append('file', blob, 'version');
+      try {
+        const r = await getJSON(base + '/' + who + '/phrase/' + p.index + '/recording', { method: 'POST', body: form });
+        state.phrases[String(p.index)] = Object.assign(state.phrases[String(p.index)] || {}, { recording: r.recording });
+        paint(p, card, state.phrases[String(p.index)]);
+        out.textContent = 'Saved.';
+      } catch (e) {
+        out.innerHTML = '<span class="err">Not saved: ' + e.message + '</span>';
+      }
+    };
+    recorder.start();
+    btn.classList.add('on'); btn.textContent = 'Stop recording';
+    out.textContent = 'Recording… tap again to stop.';
+  }
+})();
+</script>
+</body>
+</html>
