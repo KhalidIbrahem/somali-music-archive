@@ -81,6 +81,22 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
+def find_source_path(slug: str, row: dict) -> Path | None:
+    """The recording's source file: from the pool row when it carries one,
+    else looked up by slug in the corpus inventories."""
+    if row.get("path"):
+        return Path(row["path"])
+    try:
+        from scripts.transcribe_pool import load_items
+
+        for it in load_items(["oud", "band"]):
+            if it["slug"] == slug:
+                return Path(it["path"])
+    except Exception:  # noqa: BLE001 - inventories may be absent on another machine
+        return None
+    return None
+
+
 def build_pack(slug: str, pool_dir: Path, out_dir: Path) -> Path:
     src = pool_dir / slug
     row_path = src / "pool_row.json"
@@ -129,11 +145,11 @@ def build_pack(slug: str, pool_dir: Path, out_dir: Path) -> Path:
         "notes": "",
     }
     (pack / "meta.json").write_text(json.dumps(meta, indent=1))
-    source_path = Path(result.get("source_path") or row.get("path") or "")
+    source_path = find_source_path(slug, row)
     source_info = {
         "slug": slug, "source_name": row["name"], "source": row["source"],
         "source_path": str(source_path) if source_path else None,
-        "source_sha256": sha256_file(source_path) if source_path and source_path.exists() else None,
+        "source_sha256": sha256_file(source_path) if source_path and source_path.is_file() else None,
         "duration_s": row["duration_s"], "excerpt_sec": result.get("excerpt_sec"),
         "instrumental": result.get("instrumental"),
         "separated": bool(result.get("separation", {}).get("used")),

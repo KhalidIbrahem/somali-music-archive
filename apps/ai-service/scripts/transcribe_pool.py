@@ -53,7 +53,7 @@ def load_items(sources: list[str]) -> list[dict]:
 
 
 def row_from_result(item: dict, out: Path, runtime: float, error: str | None) -> dict:
-    row = {"slug": item["slug"], "source": item["source"], "name": item["name"],
+    row = {"slug": item["slug"], "source": item["source"], "name": item["name"], "path": item["path"],
            "duration_s": round(item["duration_s"], 1), "runtime_s": round(runtime, 1), "error": error}
     js = sorted(out.glob("*.json"))
     js = [p for p in js if not p.name.endswith("pool_row.json")]
