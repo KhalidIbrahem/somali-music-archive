@@ -110,3 +110,19 @@ def test_detect_tonic_lists_the_runner_up_readings():
     alts = det["alternatives"]
     assert alts[0]["tonic_name"] == det["tonic_name"] == "C" and len(alts) == 3
     assert alts[0]["score"] >= alts[1]["score"] >= alts[2]["score"]
+
+
+def test_detect_tonic_can_be_pinned_and_reports_the_other_tonic():
+    hist = np.zeros(12)
+    for pc, wgt in ((2, 2.0), (5, 2.0), (7, 1.0), (9, 1.5), (0, 1.5)):  # D F G A C: D minor / F major pentatonic
+        hist[pc] = wgt
+    free = detect_tonic(hist)
+    other = free["runner_up_other_tonic"]
+    assert other is not None and other["tonic_name"] != free["tonic_name"]
+    assert {free["tonic_name"], other["tonic_name"]} <= {"D", "F", "A", "C", "G"}
+    pinned = detect_tonic(hist, tonic_pc=5)  # F
+    assert pinned["tonic_name"] == "F" and pinned["constrained"] == {"tonic_pc": 5, "mode": None}
+    assert pinned["unconstrained"]["tonic_name"] == free["tonic_name"]
+    assert sorted(pinned["degrees"]) == sorted(free["degrees"])  # same pitch set, different root
+    pinned_mode = detect_tonic(hist, tonic_pc=2, mode=4)
+    assert pinned_mode["mode"] == 4 and pinned_mode["tonic_name"] == "D"

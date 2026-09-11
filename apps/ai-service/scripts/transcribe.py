@@ -51,6 +51,28 @@ from scripts.pentatonic import PC_NAMES  # noqa: E402
 from scripts.quantize import Note, QNote, detect_scale, pcs_of_notes, pentatonic_quantize  # noqa: E402
 
 MSCORE = Path("/Applications/MuseScore 4.app/Contents/MacOS/mscore")
+AMBIGUITY_RATIO = 0.95  # runner-up with another tonic within 5 percent of the winner
+_FLATS = {"DB": "C#", "EB": "D#", "GB": "F#", "AB": "G#", "BB": "A#"}
+
+
+def parse_tonic(name: str) -> int:
+    """'D', 'f#', 'Bb' -> pitch class 0..11."""
+    key = name.strip().upper().replace("♭", "B").replace("♯", "#")
+    key = _FLATS.get(key, key)
+    if key not in PC_NAMES:
+        raise ValueError(f"unknown tonic {name!r}; use one of {PC_NAMES} or a flat spelling")
+    return PC_NAMES.index(key)
+
+
+def tonic_ambiguity(det: dict, ratio: float = AMBIGUITY_RATIO) -> dict:
+    """Is the best reading with another tonic within `ratio` of the winner?
+    Returns {"ambiguous": bool, "label": "D (F)" or "D", "runner_up": ...}."""
+    other = det.get("runner_up_other_tonic")
+    best = float(det.get("score", 0.0))
+    amb = bool(other and best > 0 and float(other["score"]) >= ratio * best)
+    label = f"{det['tonic_name']} ({other['tonic_name']})" if amb else str(det["tonic_name"])
+    return {"ambiguous": amb, "label": label, "runner_up": other,
+            "ratio_to_winner": round(float(other["score"]) / best, 3) if other and best > 0 else None}
 DECODE_SR = 44_100
 VOICE, OUD = "Voice", "Oud (kaban)"
 MAX_BPM = 140.0  # above this the tracker has found the eighth-note pulse; halve it
@@ -148,7 +170,11 @@ def scale_summary(det: dict) -> dict:
     off = float(det["tuning_offset_cents"])
     ref = float(det.get("tonic_refined_offset_cents", 0.0))
     c4 = 261.6256
+    amb = tonic_ambiguity(det)
     return {
+        "tonic_label": amb["label"], "tonic_ambiguous": amb["ambiguous"],
+        "tonic_runner_up": amb["runner_up"], "tonic_ratio_to_winner": amb["ratio_to_winner"],
+        "override": det.get("constrained"), "unconstrained_best": det.get("unconstrained"),
         "tonic_name": det["tonic_name"], "tonic_pc": int(det["tonic_pc"]),
         "mode": int(det["mode"]), "template_fit_r": round(float(det["score"]), 3),
         "tuning_offset_cents": round(off, 1),
@@ -272,7 +298,8 @@ def render_pdf(xml: Path, pdf: Path) -> dict:
 def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = False,
                     tol_cents: float = 50.0, sub: int = 2, min_conf: float = 0.6,
                     min_note_ms: float = 100.0, excerpt_sec: float | None = None,
-                    device: str = "auto", pitch_device: str | None = None, pdf: bool = True) -> dict:
+                    device: str = "auto", pitch_device: str | None = None, pdf: bool = True,
+                    tonic: str | None = None, mode: int | None = None) -> dict:
     audio, out = Path(audio), Path(out)
     out.mkdir(parents=True, exist_ok=True)
     timings: dict[str, float] = {}
@@ -313,7 +340,8 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
         return result
 
     # c. scale from the recording itself
-    det = detect_scale(all_notes, refine=True)
+    det = detect_scale(all_notes, refine=True,
+                       tonic_pc=parse_tonic(tonic) if tonic else None, mode=mode)
     scale = scale_summary(det)
 
     # d(2). quantize to the estimated scale
@@ -345,8 +373,9 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
     order = [VOICE, OUD] if VOICE in q else [OUD]
     parts = [(label, q[label], snap(q[label])) for label in order if label in q]
     sc = scale["scale_cents"] or scale["scale_cents_template"]
-    scale_text = (f"Tonic {scale['tonic_name']} "
-                  f"({scale['tuning_offset_cents'] + scale['tonic_refined_offset_cents']:+.0f}c); "
+    scale_text = ((f"tonic ambiguous: {scale['tonic_label']}" if scale["tonic_ambiguous"] else f"Tonic {scale['tonic_name']}")
+                  + (" (pinned)" if scale["override"] else "")
+                  + f" ({scale['tuning_offset_cents'] + scale['tonic_refined_offset_cents']:+.0f}c); "
                   f"scale {'/'.join(f'{c:.0f}' for c in sc)}c above tonic; "
                   f"red = off-scale, deviation shown")
     t0 = time.time()
@@ -416,8 +445,11 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
     per_staff = ", ".join(f"{label}: {len(q[label])}" for label in order if label in q)
     report = "\n".join([
         f"file: {audio.name} ({duration:.0f} s{', excerpt' if excerpt_sec else ''})",
-        f"tonic: {scale['tonic_name']} (tape offset {scale['tuning_offset_cents']:+.1f} c, "
+        f"tonic: {scale['tonic_name']}{' (pinned by --tonic/--mode)' if scale['override'] else ''} "
+        f"(tape offset {scale['tuning_offset_cents']:+.1f} c, "
         f"refined {scale['tonic_refined_offset_cents']:+.1f} c; {scale['tonic_hz_c4_octave']} Hz in the C4 octave)"
+        + (f"; tonic ambiguous: {scale['tonic_label']} (r {det['score']:.3f} vs "
+           f"{scale['tonic_runner_up']['score']:.3f})" if scale["tonic_ambiguous"] else "")
         + (f"; runner-up {scale['tonic_alternatives'][1]['tonic_name']} mode {scale['tonic_alternatives'][1]['mode']} "
            f"(r {scale['tonic_alternatives'][0]['score']:.3f} vs {scale['tonic_alternatives'][1]['score']:.3f})"
            if scale.get("tonic_alternatives") and len(scale["tonic_alternatives"]) > 1 else ""),
@@ -446,7 +478,13 @@ def main(argv=None) -> int:
                     help="no separation; the whole mix is the oud stem (one staff)")
     ap.add_argument("--tol", type=float, default=50.0, help="snap tolerance in cents")
     ap.add_argument("--sub", type=int, default=2, help="grid subdivisions per beat (2 = eighths)")
-    ap.add_argument("--min-conf", type=float, default=0.6)
+    ap.add_argument("--min-conf", type=float, default=0.6,
+                    help="CREPE confidence a note needs to be kept (default 0.6; lower keeps "
+                         "more, fainter notes; higher keeps fewer, surer ones)")
+    ap.add_argument("--tonic", default=None,
+                    help="pin the tonic (e.g. D, F#, Bb) when the histogram is ambiguous")
+    ap.add_argument("--mode", type=int, default=None, choices=range(5),
+                    help="pin the pentatonic mode 0-4 (rotation of the anhemitonic set)")
     ap.add_argument("--min-note-ms", type=float, default=100.0)
     ap.add_argument("--excerpt-sec", type=float, default=None)
     ap.add_argument("--device", default="auto", help="demucs device: auto|mps|cpu")
@@ -459,7 +497,8 @@ def main(argv=None) -> int:
         ap.error("--out <dir> is required")
     transcribe_file(a.audio, out, instrumental=a.instrumental, tol_cents=a.tol, sub=a.sub,
                     min_conf=a.min_conf, min_note_ms=a.min_note_ms, excerpt_sec=a.excerpt_sec,
-                    device=a.device, pitch_device=a.pitch_device, pdf=not a.no_pdf)
+                    device=a.device, pitch_device=a.pitch_device, pdf=not a.no_pdf,
+                    tonic=a.tonic, mode=a.mode)
     return 0
 
 

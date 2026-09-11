@@ -37,11 +37,16 @@ def mode_template(mode: tuple[int, ...]) -> np.ndarray:
 _TEMPLATES = [mode_template(m) for m in MODES]
 
 
-def detect_tonic(hist: np.ndarray) -> dict:
+def detect_tonic(hist: np.ndarray, tonic_pc: int | None = None,
+                 mode: int | None = None) -> dict:
     """Best (tonic, mode) for a 12-bin pitch-class histogram.
 
     Returns dict with tonic_pc, tonic_name, mode (0..4), score (Pearson r),
-    degrees (absolute pitch classes of the detected scale).
+    degrees (absolute pitch classes of the detected scale), the top three
+    readings, and the best reading with a DIFFERENT tonic, which is what a
+    relative-mode ambiguity looks like. `tonic_pc` and `mode` pin the search
+    to that root and/or mode (an override from the person who knows the
+    song); the unconstrained best is then reported as `unconstrained`.
     """
     hist = np.asarray(hist, dtype=np.float64)
     if hist.sum() <= 0:
@@ -54,7 +59,14 @@ def detect_tonic(hist: np.ndarray) -> dict:
             r = float(np.corrcoef(rolled, tmpl)[0, 1])
             cands.append((r, tonic, mode_idx))
     cands.sort(key=lambda c: -c[0])
-    r, tonic, mode_idx = cands[0]
+    allowed = [c for c in cands if (tonic_pc is None or c[1] == tonic_pc)
+               and (mode is None or c[2] == mode)]
+    r, tonic, mode_idx = allowed[0]
+    other = next((c for c in cands if c[1] != tonic), None)
+
+    def reading(c):
+        return {"tonic_pc": c[1], "tonic_name": PC_NAMES[c[1]], "mode": c[2], "score": round(c[0], 4)}
+
     best = {
         "tonic_pc": tonic,
         "tonic_name": PC_NAMES[tonic],
@@ -63,9 +75,12 @@ def detect_tonic(hist: np.ndarray) -> dict:
         "degrees": sorted((tonic + d) % 12 for d in MODES[mode_idx]),
         # The next-best readings, so a relative-mode ambiguity (the same five
         # pitch classes heard from a different root) is visible, not hidden.
-        "alternatives": [{"tonic_name": PC_NAMES[t], "mode": m, "score": round(sc, 4)}
-                         for sc, t, m in cands[:3]],
+        "alternatives": [reading(c) for c in allowed[:3]],
+        "runner_up_other_tonic": reading(other) if other else None,
     }
+    if tonic_pc is not None or mode is not None:
+        best["constrained"] = {"tonic_pc": tonic_pc, "mode": mode}
+        best["unconstrained"] = reading(cands[0])
     return best
 
 
