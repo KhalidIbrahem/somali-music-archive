@@ -162,3 +162,28 @@ def test_merge_notes_joins_same_pitch_across_short_gaps_only():
     out = merge_notes([a, b, c, d], max_gap_sec=0.12)
     assert [(n.start, n.end) for n in out] == [(0.0, 0.9), (1.1, 1.4), (1.45, 1.7)]
     assert 6200 < out[0].cents < 6205 and out[0].amp == 0.8
+
+
+def test_merge_notes_keeps_abutting_re_plucks_apart():
+    from scripts.f0_notes import F0Note, merge_notes
+
+    # Two plucks of the same note, cut at the second attack: no gap between them.
+    a = F0Note(0.0, 0.40, 6200.0, 0.9, 0.8)
+    b = F0Note(0.40, 0.80, 6200.0, 0.9, 0.8)
+    c = F0Note(0.85, 1.20, 6200.0, 0.9, 0.6)   # 50 ms gap -> a fragment, joined to b
+    out = merge_notes([a, b, c], max_gap_sec=0.12)
+    assert [(n.start, n.end) for n in out] == [(0.0, 0.4), (0.4, 1.2)]
+
+
+def test_legato_note_confidence_is_judged_on_its_pitched_frames():
+    # 20 confident frames, then a 40-frame ring-out the tracker is unsure of.
+    from scripts.f0_notes import segment_notes
+
+    n = 60
+    times = np.arange(n) * 0.01
+    cents = np.full(n, 6200.0)
+    conf = np.where(np.arange(n) < 20, 0.9, 0.2)
+    amp = np.where(np.arange(n) < 20, 0.8, 0.4)
+    (note,) = segment_notes(times, cents, conf, amp, voicing_threshold=0.5, legato=True)
+    assert note.end > 0.55          # the ring-out was sustained
+    assert note.confidence > 0.85   # and did not vote on the confidence

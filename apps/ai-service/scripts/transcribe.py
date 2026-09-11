@@ -359,6 +359,7 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
     t0 = time.time()
     beat_times = track_beats(wav)
     tempo_halved = False
+    shift = 0
     if len(beat_times) >= 2 * MIN_BEATS_FOR_GRID and median_bpm(beat_times) > MAX_BPM:
         beat_times, sub, tempo_halved = beat_times[::2], sub * 2, True  # same grid resolution
     if len(beat_times) >= MIN_BEATS_FOR_GRID:
@@ -432,7 +433,10 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
         "raw_pitch": {k: v["frames"] for k, v in stem_info.items()},
         "scale": scale,
         "tempo": {"bpm": round(bpm), "grid": grid_kind, "n_beats": int(len(beat_times)),
-                  "subdivision_per_beat": sub, "tempo_halved_from_tracker": tempo_halved},
+                  "subdivision_per_beat": sub, "tempo_halved_from_tracker": tempo_halved,
+                  "beats_per_bar": 4, "pickup_shift_beats": int(shift),
+                  # the beat grid the score was snapped to, in seconds of the input
+                  "beat_times": [round(float(t), 3) for t in beat_times]},
         "quantization": {"tolerance_cents": tol_cents, "min_confidence": min_conf,
                          "min_note_ms": min_note_ms, "n_notes": n_total,
                          "n_marked_off_scale": n_marked, "legato": legato_for},
