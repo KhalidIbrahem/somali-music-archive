@@ -129,7 +129,7 @@ on the cloud databases in `apps/api/.env`.
 
 **Listening review** (`http://127.0.0.1:8000/demo/review`). For the musicians
 who check the transcription benchmark by ear rather than from the page: each
-annotation pack in `data/annotation/` is cut into phrases of about four bars
+transcribed recording (the annotation packs in `data/annotation/`, every pool folder in `data/transcription_pool/`, the demos) is cut into phrases of about four bars
 along the beat grid the score was snapped to, and every phrase can be heard
 as the recording and as the machine's notes played back on the same
 timeline. Verdicts (correct, wrong notes, wrong rhythm), a note and the

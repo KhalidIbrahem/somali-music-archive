@@ -55,6 +55,32 @@ def pack(tmp_path, monkeypatch):
     t = np.arange(n) / SR
     sf.write(d / f"{slug}_source.wav", (0.3 * np.sin(2 * np.pi * 220 * t)).astype(np.float32), SR, subtype="PCM_16")
     monkeypatch.setattr(rs, "ANNOTATION_ROOT", tmp_path)
+    monkeypatch.setattr(rs, "POOL_ROOT", tmp_path / "pool")
+    monkeypatch.setattr(rs, "DEMO_ROOT", tmp_path / "demo")
+    return slug, d, pipeline
+
+
+@pytest.fixture
+def pool_item(tmp_path, monkeypatch):
+    """A transcribe.py output folder in the pool layout, with no pack."""
+    slug = "oud_0123abcd_a_pool_take"
+    d = tmp_path / "pool" / slug
+    d.mkdir(parents=True)
+    pipeline = make_pipeline(beat_times=False)
+    pipeline["file"] = "/somewhere/A pool take.m4a"
+    (d / "A pool take.json").write_text(json.dumps(pipeline))
+    (d / "pool_row.json").write_text(json.dumps({"slug": slug, "source": "oud", "name": "A pool take.m4a",
+                                                 "duration_s": pipeline["duration_sec"], "error": None}))
+    n = int(pipeline["duration_sec"] * SR) + SR
+    t = np.arange(n) / SR
+    sf.write(d / "A pool take.input.wav", (0.3 * np.sin(2 * np.pi * 220 * t)).astype(np.float32), SR, subtype="PCM_16")
+    dup = tmp_path / "pool" / "oud_0123abcd_a_pool_take_2"   # same content hash: folded away
+    dup.mkdir()
+    for f in d.iterdir():
+        (dup / f.name).write_bytes(f.read_bytes())
+    monkeypatch.setattr(rs, "ANNOTATION_ROOT", tmp_path / "annotation")
+    monkeypatch.setattr(rs, "POOL_ROOT", tmp_path / "pool")
+    monkeypatch.setattr(rs, "DEMO_ROOT", tmp_path / "demo")
     return slug, d, pipeline
 
 
@@ -156,3 +182,24 @@ def test_index_lists_reviewers(pack):
     packs = rs.list_packs()
     assert packs[0]["slug"] == slug and packs[0]["reviews"] == ["hodan"]
     assert "reviewed by hodan" in client.get("/demo/review").text
+
+
+def test_pool_folders_are_offered_and_reviewed_under_annotation(pool_item):
+    slug, d, pipeline = pool_item
+    items = rs.list_items()
+    assert [i["slug"] for i in items] == [slug]
+    assert items[0]["kind"] == "pool" and items[0]["legato"] is False and items[0]["title"] == "A pool take"
+    page = client.get("/demo/review")
+    assert "A pool take" in page.text and "before the legato fix" in page.text
+    info = client.get(f"/demo/review/{slug}/phrases").json()
+    assert info["kind"] == "pool" and info["legato"] is False and info["grid"] == "fitted" and info["phrases"]
+    wav = client.get(f"/demo/review/{slug}/phrase/0/original.wav")
+    assert wav.status_code == 200 and wav.headers["content-type"] == "audio/wav"
+    r = client.post(f"/demo/review/{slug}/hodan/phrase/0", json={"verdict": "wrong_notes", "note": "second note"})
+    assert r.status_code == 200
+    saved = rs.ANNOTATION_ROOT / slug / "review_hodan.json"
+    assert saved.is_file() and json.loads(saved.read_text())["phrases"]["0"]["verdict"] == "wrong_notes"
+    md = client.get(f"/demo/review/{slug}/hodan/export.md").text
+    assert "A pool take.musicxml" in md and "wrong notes" in md
+    assert rs.list_items()[0]["reviews"] == ["hodan"]
+    assert client.get("/demo/review/demo_nothing_here").status_code == 404

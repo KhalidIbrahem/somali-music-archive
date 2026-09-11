@@ -104,6 +104,7 @@
       state = await getJSON(base + '/' + who + '/state');
       $('title').textContent = info.title;
       $('sub').textContent = phrases.length + ' phrases of about four bars, ' + info.bars + ' bars in all, ' + info.bpm + ' beats per minute.';
+      if (info.legato === false) { $('sub').textContent += ' This recording was transcribed before the legato fix, so the machine version can sound choppy; judge the notes, not the gaps.'; }
       if (!navigator.mediaDevices && info.https_url) {
         $('sub').textContent += ' To record your own version, open this page at ' + info.https_url + base + ' instead (the microphone only works on an https address).';
       } else if (!navigator.mediaDevices) {

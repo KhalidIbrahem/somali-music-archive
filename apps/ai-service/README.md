@@ -27,7 +27,7 @@ pytest
 - `/demo`: upload a recording, get the score; generate with the fine-tuned
   model through the MusicGen service (`run_demo.sh`, or `scripts/dev-up.sh`
   from the repo root).
-- `/demo/review`: the listening review of the annotation packs in
+- `/demo/review`: the listening review of every transcribed recording: the annotation packs in
   `data/annotation/`, phrase by phrase, for annotators who do not read
   notation (`services/review_service.py`, `routers/review.py`,
   `static/review.html`). Verdicts and recordings go to
