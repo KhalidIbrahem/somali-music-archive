@@ -44,7 +44,7 @@ const API_URL = process.env['NEXT_PUBLIC_API_URL'] ?? 'http://localhost:3001/api
 /** Server codes plus the one failure only the client can observe: no response at all. */
 type ClientErrorCode = ApiErrorCode | 'NETWORK_ERROR';
 
-const NETWORK_ERROR_MESSAGE = 'Could not reach the server. Check your connection and try again.';
+const NETWORK_ERROR_MESSAGE = `Could not reach the server at ${API_URL}. If this is a local session, start the stack with scripts/dev-up.sh; otherwise check your connection and try again.`;
 
 export class ApiError extends Error {
   readonly code: ClientErrorCode;
