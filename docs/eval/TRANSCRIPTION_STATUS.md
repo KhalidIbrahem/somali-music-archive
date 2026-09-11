@@ -1,5 +1,19 @@
 # Transcription pipeline: status
 
+## Ready to annotate
+
+The first five benchmark items, chosen by `scripts/pick_benchmark_items.py` (no warning signs, one per tonic, two with vocals), each packed under `data/annotation/<slug>/` with a copy to correct, the audio, stems, PDF, meta.json and the guide.
+
+| # | item | source | tonic | PCS | notes/min | voice voiced | length |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | `band_79d59991_output` | band | G | 0.985 | 235 | 0.32 | first 90 s of 426 s |
+| 2 | `band_84fd9606_layla_cod_ilko_2025` | band | F | 0.962 | 219 | 0.52 | first 90 s of 388 s |
+| 3 | `oud_83286a4e_riftoondakharkii_qaraami_hoos` | oud | C | 0.995 | 49 |  | 1392 s |
+| 4 | `oud_06b352d0_balkaalay_qaraami_best_beat` | oud | A | 0.994 | 86 |  | 956 s |
+| 5 | `oud_990f3e79_heeri_maahee_qaraami` | oud | C# | 0.993 | 77 |  | 277 s |
+
+Rebuild a pack: `cd apps/ai-service && ~/ai/musicgen-env/bin/python -m scripts.make_annotation_pack <slug>`.
+
 Kept current after every commit. Outputs live under `data/transcription_demo/`
 (ignored by git). Environment: `~/ai/musicgen-env`; render: `/Applications/MuseScore 4.app`.
 Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
@@ -15,6 +29,9 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 - Tools: Demucs 4.1.0, music21 10.5.0, Verovio, pytest in `musicgen-env`; MuseScore Studio 4.7.5 in `/Applications`.
 - Three demo recordings transcribed end to end (table below). Nothing from the Harvard collection was used.
 - Benchmark scaffold: `docs/eval/TRANSCRIPTION_BENCHMARK.md`, `scripts/transcription_metrics.py`, synthetic test.
+- Overnight queue item 2 (done 2026-09-11 03:51): 103 files in 5.1 h CPU, 0 failures; 91 recordings by content (28 oud in full, 63 band as 90 s excerpts); `data/transcription_pool/INDEX.md`.
+- Overnight queue item 5 (done): `docs/eval/TRANSCRIPTION_POOL_REPORT.md` over the 91 recordings: tonic ambiguous in 10; the 400-cent degree about 6 cents flat and the 1000-cent degree several cents sharp of 12-TET across both sources, with 17 to 21 cent spreads; oud PCS median 0.964, band 0.717; 69 recordings carry a warning sign, mostly band excerpts.
+- Overnight queue item 6 (done): five items ready to annotate (top of this page), packs built under `data/annotation/`.
 - Overnight queue item 5 (generator): `scripts/pool_report.py` writes `docs/eval/TRANSCRIPTION_POOL_REPORT.md` from the pool index; tested on synthetic rows. The report is written when the pool finishes.
 - Overnight queue item 6 (selector): `scripts/pick_benchmark_items.py` ranks eligible pool items (no warning signs, one per tonic, at least two vocal items); tested.
 - Overnight queue item 4: `/demo` page (static HTML, no build), `/demo/config`, `/demo/generate`, `/demo/audio/{id}` proxies, stem artifacts, `run_demo.sh`; tested with the generation service faked and checked live.
@@ -24,7 +41,7 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 
 ## Running
 
-- Overnight queue item 2: `scripts/transcribe_pool.py` over 103 recordings (40 oud in full, 63 band with vocals as 90 s excerpts), CPU CREPE, started 2026-09-10 morning, about six hours. Progress: `data/transcription_pool/INDEX.md` and `pool.log`; done marker `POOL_DONE`.
+- Nothing at the moment.
 
 ## Failed, and what was done
 
