@@ -119,11 +119,16 @@ def segment_notes(
         if end - start < min_note_sec:
             return
         seg_cents = cents[idx]
+        # Confidence is judged on the frames that carried a pitch. A legato
+        # note also holds its ring-out, where the tracker is unsure by
+        # construction; letting those frames vote would fail the note later
+        # at the keep threshold for the very reason it was sustained.
+        pitched = [k for k in idx if voiced[k]] or idx
         notes.append(F0Note(
             start=float(start),
             end=float(end),
             cents=float(np.median(seg_cents)),
-            confidence=float(np.mean(confidence[idx])),
+            confidence=float(np.mean(confidence[pitched])),
             amp=float(np.clip(np.mean(amp[idx]), 0.0, 1.0)),
         ))
 
@@ -177,16 +182,20 @@ def segment_notes(
     return notes
 
 
-def merge_notes(notes: list[F0Note], max_gap_sec: float = 0.12, cents_tol: float = 50.0) -> list[F0Note]:
+def merge_notes(notes: list[F0Note], max_gap_sec: float = 0.12, cents_tol: float = 50.0,
+                min_gap_sec: float = 0.02) -> list[F0Note]:
     """Join consecutive notes of the same pitch (within `cents_tol`) separated
     by a gap under `max_gap_sec`: one note from the first onset to the last
-    end, pitch and confidence duration-weighted, amplitude the louder."""
+    end, pitch and confidence duration-weighted, amplitude the louder.
+
+    Only a real gap is bridged. Two notes that abut (gap under `min_gap_sec`,
+    two frames) were cut apart on purpose, at a re-pluck, and are two onsets."""
     out: list[F0Note] = []
     for n in sorted(notes, key=lambda x: x.start):
         if out:
             cur = out[-1]
             gap = n.start - cur.end
-            if gap < max_gap_sec and abs(n.cents - cur.cents) < cents_tol:
+            if min_gap_sec <= gap < max_gap_sec and abs(n.cents - cur.cents) < cents_tol:
                 d1, d2 = max(cur.end - cur.start, 1e-6), max(n.end - n.start, 1e-6)
                 out[-1] = F0Note(
                     start=cur.start, end=max(cur.end, n.end),
