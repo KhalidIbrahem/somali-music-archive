@@ -18,6 +18,7 @@ import {
   type ArchiveTrack,
 } from '@/lib/tracks';
 import { usePlayer, type PlayerTrack } from '@/components/player/PlayerProvider';
+import { flags } from '@/lib/flags';
 import { ListenScore } from './ListenScore';
 import { formatDuration } from '@/components/studio/format';
 
@@ -35,8 +36,12 @@ const SHELF: readonly ShelfTrack[] = [
     hasScore: true,
     detected: { root: 'A', bpm: 106, grid: 'beat-tracked' },
   },
-  // Kaban (oud) sessions — performers deliberately unlisted on the site.
-  ...OUD_SESSION_TRACKS.map((t) => ({ ...t, rightsLine: OUD_RIGHTS_LINE, hasScore: false })),
+  // Kaban (oud) sessions: a private collection held for research, none of it
+  // cleared for public use. Listed only in the invite-only configuration;
+  // the public site never offers these files.
+  ...(flags.requireAuth
+    ? OUD_SESSION_TRACKS.map((t) => ({ ...t, rightsLine: OUD_RIGHTS_LINE, hasScore: false }))
+    : []),
   ...ARCHIVE_TRACKS.map((t) => ({ ...t, rightsLine: HARVARD_RIGHTS_LINE, hasScore: false })),
 ];
 

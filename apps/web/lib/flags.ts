@@ -42,7 +42,19 @@ export const flags = {
   generateServedOnly: read(process.env['NEXT_PUBLIC_GENERATE_SERVED_ONLY'], true),
   /** See AiServiceMode above. */
   aiServiceMode: readMode(process.env['NEXT_PUBLIC_AI_SERVICE_MODE']),
+  /**
+   * The page gate. 'true' is the invite-only configuration: every page except
+   * the landing page and the auth doors needs a session, and the header shows
+   * Sign in and the account menu. 'false' (the default, the public site) opens
+   * every page without an account; Sign in, Create account, the account menu
+   * and the member-only pages are hidden, and Listen and Library list only
+   * cleared demo material. The auth code stays in place either way.
+   */
+  requireAuth: read(process.env['NEXT_PUBLIC_REQUIRE_AUTH'], false),
 } as const;
+
+/** Pages that only make sense with a member session. */
+const MEMBER_ROUTES = ['/login', '/register', '/account', '/dashboard', '/teach'];
 
 /** Route prefixes switched off by the flags; the page gate redirects them home. */
 export function disabledRoutePrefixes(): string[] {
@@ -50,5 +62,6 @@ export function disabledRoutePrefixes(): string[] {
   if (!flags.courses) out.push('/courses');
   if (!flags.learn) out.push('/learn');
   if (!flags.daw) out.push('/daw');
+  if (!flags.requireAuth) out.push(...MEMBER_ROUTES);
   return out;
 }

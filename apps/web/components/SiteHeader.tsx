@@ -52,7 +52,7 @@ export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
             </Link>
           ))}
         </div>
-        <AuthMenu variant="site" />
+        {flags.requireAuth ? <AuthMenu variant="site" /> : null}
       </nav>
     </header>
   );

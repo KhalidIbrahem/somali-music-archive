@@ -28,6 +28,7 @@ import { RESEARCH_DEMOS } from '@/lib/demos';
 import { Reveal } from '@/components/Reveal';
 import { landingCopy as copy } from '@/lib/landingCopy';
 import { flags } from '@/lib/flags';
+import { ARCHIVE_TRACKS, OUD_SESSION_TRACKS } from '@/lib/tracks';
 
 export const metadata: Metadata = {
   title: 'QaraamiGenAI — before the last tape fades',
@@ -39,6 +40,12 @@ const sampleDir = join(process.cwd(), 'public/sample');
 const heroDesktop = readFileSync(join(sampleDir, 'hero-desktop.svg'), 'utf8');
 const heroMobile = readFileSync(join(sampleDir, 'hero-mobile.svg'), 'utf8');
 const heroNotes = JSON.parse(readFileSync(join(sampleDir, 'hero-notes.json'), 'utf8')) as HeroNotes;
+
+// What the listening room lists: the synthesised sample, the Harvard catalogue
+// entries (audio withheld), and the held oud sessions only when the site is
+// invite-only (components/listen/ListenShelf.tsx applies the same rule).
+const LISTEN_COUNT =
+  1 + ARCHIVE_TRACKS.length + (flags.requireAuth ? OUD_SESSION_TRACKS.length : 0);
 
 export default function Home(): React.JSX.Element {
   return (
@@ -68,7 +75,7 @@ export default function Home(): React.JSX.Element {
             >
               Listening room
             </Link>
-            <AuthMenu variant="landing" />
+            {flags.requireAuth ? <AuthMenu variant="landing" /> : null}
             <ThemeToggle />
           </nav>
         </div>
@@ -216,7 +223,7 @@ export default function Home(): React.JSX.Element {
                     >
                       <span className="text-sm text-hi">The listening room</span>
                       <span className="numeric text-xs text-low group-hover:text-accent-state">
-                        18 recordings · sources stated
+                        {LISTEN_COUNT} recordings · sources stated
                       </span>
                     </Link>
                     <Link
