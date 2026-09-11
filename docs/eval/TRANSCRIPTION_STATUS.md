@@ -15,6 +15,8 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 - Tools: Demucs 4.1.0, music21 10.5.0, Verovio, pytest in `musicgen-env`; MuseScore Studio 4.7.5 in `/Applications`.
 - Three demo recordings transcribed end to end (table below). Nothing from the Harvard collection was used.
 - Benchmark scaffold: `docs/eval/TRANSCRIPTION_BENCHMARK.md`, `scripts/transcription_metrics.py`, synthetic test.
+- Overnight queue item 5 (generator): `scripts/pool_report.py` writes `docs/eval/TRANSCRIPTION_POOL_REPORT.md` from the pool index; tested on synthetic rows. The report is written when the pool finishes.
+- Overnight queue item 6 (selector): `scripts/pick_benchmark_items.py` ranks eligible pool items (no warning signs, one per tonic, at least two vocal items); tested.
 - Overnight queue item 4: `/demo` page (static HTML, no build), `/demo/config`, `/demo/generate`, `/demo/audio/{id}` proxies, stem artifacts, `run_demo.sh`; tested with the generation service faked and checked live.
 - Overnight queue item 3: `scripts/make_annotation_pack.py <slug>` builds `data/annotation/<slug>/` (machine and corrected MusicXML, PDF, pipeline JSON, source audio, stems, meta.json, source.json, ANNOTATION_GUIDE.md); tested.
 - Overnight queue item 2 (runner): `scripts/transcribe_pool.py`, resumable, one subprocess per recording, INDEX.md rewritten after every item.
