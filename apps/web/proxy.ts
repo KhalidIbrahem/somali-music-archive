@@ -9,6 +9,7 @@
  */
 
 import { NextResponse, type NextRequest } from 'next/server';
+import { disabledRoutePrefixes } from '@/lib/flags';
 
 const GATE_COOKIE = 'sma_session';
 
@@ -25,6 +26,13 @@ const GATE_BYPASS =
 
 export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
+  // Sections switched off by feature flags go home, whatever the session.
+  if (disabledRoutePrefixes().some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+    const home = request.nextUrl.clone();
+    home.pathname = '/';
+    home.search = '';
+    return NextResponse.redirect(home);
+  }
   if (GATE_BYPASS) return NextResponse.next();
   if (PUBLIC_PATHS.has(pathname)) return NextResponse.next();
   if (request.cookies.has(GATE_COOKIE)) return NextResponse.next();

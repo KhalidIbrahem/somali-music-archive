@@ -27,6 +27,7 @@ import { DemoPlayer } from '@/components/home/DemoPlayer';
 import { RESEARCH_DEMOS } from '@/lib/demos';
 import { Reveal } from '@/components/Reveal';
 import { landingCopy as copy } from '@/lib/landingCopy';
+import { flags } from '@/lib/flags';
 
 export const metadata: Metadata = {
   title: 'QaraamiGenAI — before the last tape fades',
@@ -53,12 +54,14 @@ export default function Home(): React.JSX.Element {
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
           <QaraamiGenLockup markSize={28} />
           <nav className="flex items-center gap-5">
-            <Link
-              href="/daw"
-              className="rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
-            >
-              Studio
-            </Link>
+            {flags.daw ? (
+              <Link
+                href="/daw"
+                className="rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
+              >
+                Studio
+              </Link>
+            ) : null}
             <Link
               href="/listen"
               className="hidden rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none sm:block"
@@ -256,7 +259,7 @@ export default function Home(): React.JSX.Element {
             <Reveal delay={150}>
               <div className="flex flex-wrap items-center justify-center gap-4">
                 <Link
-                  href="/daw"
+                  href={flags.daw ? '/daw' : '/studio'}
                   className="flex h-12 w-fit items-center rounded-[4px] bg-accent-state px-6 text-lg font-bold text-page transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none motion-reduce:transition-none"
                 >
                   {copy.closing.primaryCta}
