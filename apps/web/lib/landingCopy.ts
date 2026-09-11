@@ -92,7 +92,7 @@ export const landingCopy = {
     film: {
       title: 'The studio, filmed',
       body: 'A screen recording of the QaraamiGenAI studio — composing with the oud and durbaan instruments — will sit here.',
-      badge: 'Coming with the studio release',
+      badge: 'Not yet recorded',
     },
   },
 

@@ -6,6 +6,7 @@
 import Link from 'next/link';
 import { QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
 import { AuthMenu } from '@/components/AuthMenu';
+import { flags } from '@/lib/flags';
 
 const NAV = [
   { label: 'Home', href: '/' },
@@ -20,6 +21,14 @@ const NAV = [
   { label: 'Research', href: '/#research' },
 ] as const;
 
+/** Nav items switched off by feature flags (lib/flags.ts). */
+const HIDDEN = new Set<string>([
+  ...(flags.daw ? [] : ['Studio']),
+  ...(flags.learn ? [] : ['Learn']),
+  ...(flags.courses ? [] : ['Courses']),
+]);
+const VISIBLE_NAV = NAV.filter((item) => !HIDDEN.has(item.label));
+
 export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
   return (
     <header className="sticky top-0 z-20 border-b border-line-secondary bg-bg-primary/85 backdrop-blur">
@@ -31,7 +40,7 @@ export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
           </span>
         </Link>
         <div className="hidden items-center gap-5 lg:flex">
-          {NAV.map((item) => (
+          {VISIBLE_NAV.map((item) => (
             <Link
               key={item.label}
               href={item.href}
