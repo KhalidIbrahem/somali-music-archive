@@ -17,8 +17,8 @@ export const flags = {
   courses: read(process.env['NEXT_PUBLIC_ENABLE_COURSES'], false),
   /** Lesson pages, the Learn nav item and links to them. Hidden for now. */
   learn: read(process.env['NEXT_PUBLIC_ENABLE_LEARN'], false),
-  /** The composition studio (DAW) at /daw: the "Studio" nav item and the home page links to it. */
-  daw: read(process.env['NEXT_PUBLIC_ENABLE_DAW'], true),
+  /** The composition studio (DAW) at /daw, the "Studio" nav item and the home page links to it. Hidden: not part of the research demo. */
+  daw: read(process.env['NEXT_PUBLIC_ENABLE_DAW'], false),
   /**
    * Generate page: list only the adapters the local generation service is
    * serving right now and call that service directly. 'false' restores the

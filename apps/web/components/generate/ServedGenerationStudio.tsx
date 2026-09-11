@@ -156,7 +156,7 @@ export function ServedGenerationStudio(): React.JSX.Element {
                 {status.kind === 'ready' ? (
                   <>
                     <p className="mt-1 font-body text-xs text-ink-tertiary">
-                      {status.service.base_model} on {status.service.device} at {status.service.url}
+                      served on {status.service.device} at {status.service.url}; one card per loaded adapter, timed on its last generations
                     </p>
                     <div className="mt-2 grid gap-3 sm:grid-cols-3">
                       {status.cards.map((c) => (
@@ -174,6 +174,7 @@ export function ServedGenerationStudio(): React.JSX.Element {
                           <span className="block font-body font-semibold text-ink-primary">{c.title}</span>
                           <span className="mt-1 block font-body text-sm text-amber">{c.subtitle}</span>
                           <span className="mt-1 block font-body text-xs text-ink-secondary">{c.note}</span>
+                          <span className="mt-1 block font-body text-xs text-ink-tertiary">{c.timing}</span>
                         </button>
                       ))}
                     </div>
