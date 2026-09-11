@@ -37,6 +37,29 @@ FLAGS = {
 }
 
 
+def content_key(r: dict) -> str:
+    """source + content-hash prefix: the slug is <source>_<sha8>_<name>."""
+    parts = r["slug"].split("_", 2)
+    if len(parts) < 3:
+        return r["slug"]  # not a pool slug: its own recording
+    return f"{parts[0]}_{parts[1]}"
+
+
+def fold_duplicates(rows: list[dict]) -> tuple[list[dict], int]:
+    """One row per recording by content: files with identical audio but
+    different names entered the pool under different slugs. Keeps the first
+    row per (source, hash) in slug order; returns (rows, number folded)."""
+    seen: set[str] = set()
+    out = []
+    for r in sorted(rows, key=lambda r: r["slug"]):
+        k = content_key(r)
+        if k in seen:
+            continue
+        seen.add(k)
+        out.append(r)
+    return out, len(rows) - len(out)
+
+
 def _minutes(r: dict) -> float:
     d = r.get("excerpt_sec") or r.get("duration_s") or 0.0
     return float(d) / 60.0
@@ -58,7 +81,8 @@ def _fmt(s: dict, d: int = 1) -> str:
             f"IQR {s['q1']:+.{d}f} to {s['q3']:+.{d}f}, range {s['min']:+.{d}f} to {s['max']:+.{d}f}")
 
 
-def build_report(rows: list[dict], title_date: str) -> str:
+def build_report(rows: list[dict], title_date: str, note: str | None = None) -> str:
+    rows, folded = fold_duplicates(rows)
     ok = [r for r in rows if not r.get("error")]
     failed = [r for r in rows if r.get("error")]
     by_src = defaultdict(list)
@@ -76,6 +100,11 @@ def build_report(rows: list[dict], title_date: str) -> str:
                           + (f" ({sum(r.get('excerpt_sec') or r['duration_s'] for r in rs) / 60:.0f} min transcribed as excerpts)" if any(r.get('excerpt_sec') for r in rs) else "")
                           for src, rs in sorted(by_src.items())) + ".",
          f"- Pipeline time {sum(r['runtime_s'] for r in rows) / 3600:.1f} h on the CPU (CREPE on the CPU, Demucs on the GPU)."]
+    if folded:
+        L.append(f"- {folded} pool rows were files with the same audio as another file under a different name; "
+                 f"each such recording is counted once here.")
+    if note:
+        L.append(f"- {note}")
     if failed:
         L += ["", "Failed:", ""] + [f"- `{r['slug']}`: {r['error']}" for r in failed]
 
@@ -181,11 +210,12 @@ def main(argv=None) -> int:
     ap.add_argument("--pool-dir", default=str(REPO / "data" / "transcription_pool"))
     ap.add_argument("--out", default=str(REPO / "docs" / "eval" / "TRANSCRIPTION_POOL_REPORT.md"))
     ap.add_argument("--date", default=None)
+    ap.add_argument("--note", default=None, help="one extra sentence for the coverage section")
     a = ap.parse_args(argv)
     import time
 
     rows = json.loads((Path(a.pool_dir) / "pool_index.json").read_text())
-    text = build_report(rows, a.date or time.strftime("%Y-%m-%d"))
+    text = build_report(rows, a.date or time.strftime("%Y-%m-%d"), a.note)
     Path(a.out).write_text(text + "\n")
     print(f"wrote {a.out}: {len(rows)} rows")
     return 0

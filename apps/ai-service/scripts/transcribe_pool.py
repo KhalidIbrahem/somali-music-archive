@@ -47,9 +47,21 @@ def load_items(sources: list[str]) -> list[dict]:
             if key == "band" and r.get("vocals") != "likely":
                 continue
             items.append({"source": key, "name": r["name"], "path": r["path"],
-                          "duration_s": float(r["duration_s"]),
+                          "duration_s": float(r["duration_s"]), "sha": r["sha256_16"],
                           "slug": f"{key}_{r['sha256_16'][:8]}_{slugify(r['name'])}"})
-    return items
+    # Two files with identical audio (the oud collection has such pairs) are
+    # one recording whatever they are called: keep the first by content hash,
+    # and say how many were folded.
+    seen: set[str] = set()
+    unique = []
+    for it in items:
+        if it["sha"] in seen:
+            continue
+        seen.add(it["sha"])
+        unique.append(it)
+    if len(unique) < len(items):
+        print(f"{len(items) - len(unique)} files share content with another file and were folded", file=sys.stderr)
+    return unique
 
 
 def row_from_result(item: dict, out: Path, runtime: float, error: str | None) -> dict:

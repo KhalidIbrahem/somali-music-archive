@@ -17,7 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.pool_report import FLAGS, _minutes  # noqa: E402
+from scripts.pool_report import FLAGS, _minutes, fold_duplicates  # noqa: E402
 
 REPO = Path(__file__).resolve().parents[3]
 MIN_VOICED = 0.25
@@ -37,6 +37,7 @@ def rank_key(r: dict) -> tuple:
 
 
 def pick(rows: list[dict], n: int = 5, min_vocal: int = 2) -> list[dict]:
+    rows, _ = fold_duplicates(rows)
     good = sorted((r for r in rows if eligible(r)[0]), key=rank_key)
     chosen: list[dict] = []
     tonics: set[str] = set()
