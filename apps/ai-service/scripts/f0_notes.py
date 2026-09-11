@@ -79,8 +79,25 @@ def segment_notes(
     settle_frames: int = 12,
     min_note_sec: float = 0.08,
     max_gap_sec: float = 0.06,
+    legato: bool = False,
+    sustain_cents: float = 50.0,
+    sustain_amp_fraction: float = 0.15,
+    attack_ratio: float = 1.8,
+    attack_lookback: int = 8,
 ) -> list[F0Note]:
-    """Segment a smoothed f0 ribbon into note events (see module docstring)."""
+    """Segment a smoothed f0 ribbon into note events (see module docstring).
+
+    With `legato` (plucked instruments) a note is not cut at a confidence dip:
+    a frame under the voicing threshold still belongs to the sounding note
+    while its pitch stays within `sustain_cents` of the note's running median
+    and the envelope is still at or above `sustain_amp_fraction` of the note's
+    attack (the peak of its first five frames). The note then ends only at a
+    real pitch change, at silence (envelope under that fraction), or at the
+    next onset: a re-pluck on the same pitch, read as the envelope rising by
+    `attack_ratio` over its minimum in the previous `attack_lookback` frames
+    back to at least half the note's attack. Without `legato` the earlier
+    behaviour is unchanged.
+    """
     times = np.asarray(times, dtype=float)
     cents = np.asarray(cents, dtype=float)
     confidence = np.asarray(confidence, dtype=float)
@@ -88,6 +105,9 @@ def segment_notes(
 
     voiced = np.isfinite(cents) & (confidence >= voicing_threshold)
     notes: list[F0Note] = []
+
+    def attack_of(idx: list[int]) -> float:
+        return float(np.max(amp[idx[:5]])) if idx else 0.0
 
     def flush(idx: list[int]) -> None:
         if not idx:
@@ -111,6 +131,15 @@ def segment_notes(
     pending: list[int] = []  # frames that moved away but haven't settled yet
     for i in range(len(times)):
         if not voiced[i]:
+            if legato and current and np.isfinite(cents[i]):
+                # The ring-out: same pitch, envelope still up -> still this note.
+                ref = float(np.median(cents[current]))
+                if abs(cents[i] - ref) < sustain_cents and amp[i] >= sustain_amp_fraction * attack_of(current):
+                    if pending:  # an unsettled excursion that came back is an ornament
+                        current.extend(pending)
+                        pending = []
+                    current.append(i)
+                    continue
             last = (pending or current)[-1] if (pending or current) else None
             # allow micro-gaps (consonants) inside one note
             if last is not None and times[i] - times[last] <= max_gap_sec:
@@ -122,6 +151,16 @@ def segment_notes(
             current = [i]
             continue
         ref = float(np.median(cents[current]))
+        if legato and len(current) >= 3 and abs(cents[i] - ref) < split_cents:
+            # A re-pluck on the same pitch: the envelope jumps back up after
+            # decaying. That is the next onset, so the note ends here.
+            window = amp[max(0, i - attack_lookback):i]
+            if (window.size and amp[i] >= attack_ratio * float(window.min())
+                    and amp[i] >= 0.5 * attack_of(current)
+                    and times[i] - times[current[0]] >= min_note_sec):
+                flush(current + pending)
+                current, pending = [i], []
+                continue
         if abs(cents[i] - ref) >= split_cents:
             pending.append(i)
             if len(pending) >= settle_frames:
@@ -136,3 +175,25 @@ def segment_notes(
             current.append(i)
     flush(current + pending)
     return notes
+
+
+def merge_notes(notes: list[F0Note], max_gap_sec: float = 0.12, cents_tol: float = 50.0) -> list[F0Note]:
+    """Join consecutive notes of the same pitch (within `cents_tol`) separated
+    by a gap under `max_gap_sec`: one note from the first onset to the last
+    end, pitch and confidence duration-weighted, amplitude the louder."""
+    out: list[F0Note] = []
+    for n in sorted(notes, key=lambda x: x.start):
+        if out:
+            cur = out[-1]
+            gap = n.start - cur.end
+            if gap < max_gap_sec and abs(n.cents - cur.cents) < cents_tol:
+                d1, d2 = max(cur.end - cur.start, 1e-6), max(n.end - n.start, 1e-6)
+                out[-1] = F0Note(
+                    start=cur.start, end=max(cur.end, n.end),
+                    cents=(cur.cents * d1 + n.cents * d2) / (d1 + d2),
+                    confidence=(cur.confidence * d1 + n.confidence * d2) / (d1 + d2),
+                    amp=max(cur.amp, n.amp),
+                )
+                continue
+        out.append(n)
+    return out

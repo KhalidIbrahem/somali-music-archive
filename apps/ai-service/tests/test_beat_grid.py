@@ -91,3 +91,17 @@ def test_shared_pickup_shift_keeps_two_staves_aligned():
     assert v_off[1] == o_off[0] == 4.0  # the notes at 1.00 s land on the same offset in both staves
     o_alone, _, _ = snap_notes_monophonic(oud_starts, oud_ends, beats, sub=2)
     assert o_alone[0] == 0.0  # computed alone, the oud would not have shifted: the bug this guards against
+
+
+def test_short_gaps_extend_the_note_instead_of_a_rest():
+    from scripts.beat_grid import snap_notes_monophonic
+
+    beats = np.arange(0.0, 8.0, 0.5)  # 120 BPM: one beat is 0.5 s
+    # A: 0.0-0.25 s (half a beat), B starts at 0.5 s: the gap is exactly an eighth;
+    # C starts at 2.0 s: the gap after B is far longer than an eighth.
+    starts, ends = [0.0, 0.5, 2.0], [0.25, 0.75, 2.25]
+    off, dur, keep = snap_notes_monophonic(starts, ends, beats, sub=2)
+    assert dur[0] == 0.5 and dur[1] == 0.5  # without the rule both gaps become rests
+    off2, dur2, _ = snap_notes_monophonic(starts, ends, beats, sub=2, min_rest_ql=0.5)
+    assert dur2[0] == off2[1] - off2[0] == 1.0  # an eighth of a gap: A is sustained to B's onset
+    assert dur2[1] == 0.5 and off2[2] - (off2[1] + dur2[1]) > 0.5  # the long gap after B stays a rest

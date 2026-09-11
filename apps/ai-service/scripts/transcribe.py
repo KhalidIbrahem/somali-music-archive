@@ -134,14 +134,15 @@ def separate(wav: Path, out_dir: Path, device: str = "auto") -> dict:
 
 # ----------------------------------------------------------------------------- notes
 def stem_notes(path: Path, *, min_conf: float, min_note_ms: float,
-               skyline: bool, pitch_device: str | None = None) -> tuple[list[Note], list[float], dict]:
+               skyline: bool, pitch_device: str | None = None,
+               legato: bool = False) -> tuple[list[Note], list[float], dict]:
     """CREPE notes for one stem, filtered conservatively, optionally reduced
     to a single line. Returns (notes, CREPE confidence per note, info with the
     raw frames). The CREPE confidence is kept apart from the quantizer's own
     scale-fit confidence; both end up in the JSON."""
     from scripts.vocal_f0 import extract_notes
 
-    raw = extract_notes(path, return_frames=True, device=pitch_device)
+    raw = extract_notes(path, return_frames=True, device=pitch_device, legato=legato)
     notes = [Note(start=n["start"], end=n["end"], midi=int(n["midi"]),
                   amp=float(n["amp"]), cents=float(n["cents"])) for n in raw["notes"]]
     confs = {(n["start"], n["end"]): float(n["confidence"]) for n in raw["notes"]}
@@ -155,6 +156,7 @@ def stem_notes(path: Path, *, min_conf: float, min_note_ms: float,
         "n_notes_raw": len(notes), "n_notes_kept": len(kept),
         "dropped_low_confidence_or_short": len(notes) - len(kept) if not skyline else None,
         "reduced_to_single_line": bool(skyline),
+        "legato": bool(legato),
         "frames": raw["frames"],
     }
     if skyline:
@@ -299,7 +301,8 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
                     tol_cents: float = 50.0, sub: int = 2, min_conf: float = 0.6,
                     min_note_ms: float = 100.0, excerpt_sec: float | None = None,
                     device: str = "auto", pitch_device: str | None = None, pdf: bool = True,
-                    tonic: str | None = None, mode: int | None = None) -> dict:
+                    tonic: str | None = None, mode: int | None = None,
+                    legato: bool | None = None) -> dict:
     audio, out = Path(audio), Path(out)
     out.mkdir(parents=True, exist_ok=True)
     timings: dict[str, float] = {}
@@ -325,9 +328,13 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
     crepe_conf: dict[str, list[float]] = {}
     stem_info: dict[str, dict] = {}
     t0 = time.time()
+    # Legato (sustain through the ring-out, merge re-attacks under 120 ms, no
+    # rests shorter than an eighth) is on for oud stems unless told otherwise.
+    legato_for = {label: (legato if legato is not None else label == OUD) for label in stems}
     for label, path in stems.items():
         kept, cc, info = stem_notes(path, min_conf=min_conf, min_note_ms=min_note_ms,
-                                    skyline=(label == OUD), pitch_device=pitch_device)
+                                    skyline=(label == OUD), pitch_device=pitch_device,
+                                    legato=legato_for[label])
         notes[label], crepe_conf[label], stem_info[label] = kept, cc, info
     timings["pitch_tracking"] = round(time.time() - t0, 1)
 
@@ -359,19 +366,20 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
         # one pickup shift for the whole score, so the staves stay aligned
         shift = pickup_shift_beats([x.start for x in all_notes], beat_times, sub=sub)
 
-        def snap(qs):
+        def snap(qs, label=None):
             return snap_notes_monophonic([x.start for x in qs], [x.end for x in qs], beat_times,
-                                         sub=sub, bar_shift=shift)
+                                         sub=sub, bar_shift=shift,
+                                         min_rest_ql=0.5 if legato_for.get(label) else 0.0)
     else:
         grid_kind, bpm = "fixed", estimate_bpm(wav)
 
-        def snap(qs):
+        def snap(qs, label=None):
             return None
     timings["rhythm"] = round(time.time() - t0, 1)
 
     # f. outputs
     order = [VOICE, OUD] if VOICE in q else [OUD]
-    parts = [(label, q[label], snap(q[label])) for label in order if label in q]
+    parts = [(label, q[label], snap(q[label], label)) for label in order if label in q]
     sc = scale["scale_cents"] or scale["scale_cents_template"]
     scale_text = ((f"tonic ambiguous: {scale['tonic_label']}" if scale["tonic_ambiguous"] else f"Tonic {scale['tonic_name']}")
                   + (" (pinned)" if scale["override"] else "")
@@ -399,7 +407,7 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
 
     def note_rows(label: str) -> list[dict]:
         qs = q[label]
-        g = snap(qs)
+        g = snap(qs, label)
         rows = []
         for i, x in enumerate(qs):
             rows.append({
@@ -427,7 +435,7 @@ def transcribe_file(audio: str | Path, out: str | Path, *, instrumental: bool = 
                   "subdivision_per_beat": sub, "tempo_halved_from_tracker": tempo_halved},
         "quantization": {"tolerance_cents": tol_cents, "min_confidence": min_conf,
                          "min_note_ms": min_note_ms, "n_notes": n_total,
-                         "n_marked_off_scale": n_marked},
+                         "n_marked_off_scale": n_marked, "legato": legato_for},
         "pcs_of_kept_notes": pcs,
         "outputs": {"musicxml": xml.name, "midi": f"{stem}.mid", "json": f"{stem}.json",
                     "pdf": f"{stem}.pdf" if render.get("renderer") == "musescore-4" else None,
@@ -490,6 +498,10 @@ def main(argv=None) -> int:
     ap.add_argument("--device", default="auto", help="demucs device: auto|mps|cpu")
     ap.add_argument("--pitch-device", default=None,
                     help="CREPE device: cpu for exactly repeatable output, mps (default) for speed")
+    ap.add_argument("--legato", action=argparse.BooleanOptionalAction, default=None,
+                    help="sustain plucked notes through the ring-out, merge re-attacks under 120 ms, "
+                         "and write no rest shorter than an eighth (default: on for oud stems, "
+                         "off for the voice; --no-legato restores the earlier behaviour)")
     ap.add_argument("--no-pdf", action="store_true")
     a = ap.parse_args(argv)
     out = a.out or a.out_dir
@@ -498,7 +510,7 @@ def main(argv=None) -> int:
     transcribe_file(a.audio, out, instrumental=a.instrumental, tol_cents=a.tol, sub=a.sub,
                     min_conf=a.min_conf, min_note_ms=a.min_note_ms, excerpt_sec=a.excerpt_sec,
                     device=a.device, pitch_device=a.pitch_device, pdf=not a.no_pdf,
-                    tonic=a.tonic, mode=a.mode)
+                    tonic=a.tonic, mode=a.mode, legato=a.legato)
     return 0
 
 
