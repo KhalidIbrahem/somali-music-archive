@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QaraamiGen local demo</title>
+<style>
+  body { font: 15px/1.45 -apple-system, "Helvetica Neue", Arial, sans-serif; color: #1a1a1a; background: #fafaf7; margin: 0; }
+  header { padding: 18px 28px 6px; }
+  h1 { font-size: 21px; margin: 0 0 2px; font-weight: 600; }
+  header p { margin: 0; color: #555; }
+  main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 14px 28px 40px; }
+  @media (max-width: 1100px) { main { grid-template-columns: 1fr; } }
+  section { background: #fff; border: 1px solid #ddd8cf; border-radius: 6px; padding: 18px 20px; }
+  h2 { font-size: 17px; margin: 0 0 10px; font-weight: 600; }
+  label { display: block; margin: 8px 0 4px; font-size: 13px; color: #444; }
+  input[type=text], textarea, select { width: 100%; box-sizing: border-box; padding: 7px 8px; border: 1px solid #c9c4ba; border-radius: 4px; font: inherit; }
+  textarea { min-height: 70px; }
+  button { margin-top: 12px; padding: 8px 16px; border: 0; border-radius: 4px; background: #24507a; color: #fff; font: inherit; cursor: pointer; }
+  button:disabled { background: #9aa8b5; cursor: default; }
+  .row { display: flex; gap: 14px; align-items: end; flex-wrap: wrap; }
+  .row > div { flex: 1 1 120px; }
+  .status { margin-top: 10px; font-size: 13px; color: #555; min-height: 1.4em; }
+  .err { color: #a02020; }
+  table { border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+  td, th { border-bottom: 1px solid #e6e2da; padding: 4px 10px 4px 0; text-align: left; vertical-align: top; }
+  th { font-weight: 600; color: #333; }
+  .amb { color: #a05a00; font-weight: 600; }
+  .score { margin-top: 14px; border: 1px solid #e6e2da; background: #fff; overflow: auto; max-height: 560px; }
+  .score svg { width: 100%; height: auto; }
+  audio { width: 100%; margin-top: 4px; }
+  .links a { margin-right: 14px; }
+  .small { font-size: 12.5px; color: #666; }
+  .stems { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>QaraamiGen: transcription and generation, running on this machine</h1>
+  <p>Left: a recording in, sheet music out, scale estimated from the recording itself. Right: the fine-tuned generation model. Nothing here leaves this computer.</p>
+</header>
+<main>
+
+<section id="transcribe">
+  <h2>Transcribe a recording</h2>
+  <form id="upload-form">
+    <label for="file">Audio file (wav, mp3, m4a, flac, ogg)</label>
+    <input type="file" id="file" name="file" accept=".wav,.mp3,.m4a,.flac,.ogg,audio/*" required>
+    <label><input type="checkbox" id="separate" checked> Separate voice and oud (untick for a solo oud recording)</label>
+    <button type="submit" id="upload-btn">Transcribe</button>
+  </form>
+  <div class="status" id="t-status"></div>
+  <div id="t-result" hidden>
+    <table>
+      <tr><th>Tonic</th><td id="r-tonic"></td></tr>
+      <tr><th>Scale, cents above the tonic</th><td id="r-scale"></td></tr>
+      <tr><th>12-TET template</th><td id="r-template"></td></tr>
+      <tr><th>Pentatonic conformity (PCS)</th><td id="r-pcs"></td></tr>
+      <tr><th>Notes</th><td id="r-notes"></td></tr>
+      <tr><th>Tempo</th><td id="r-tempo"></td></tr>
+      <tr><th>Separation</th><td id="r-sep"></td></tr>
+    </table>
+    <p class="small">Red notes in the score were kept off the estimated scale; their deviation in cents is written under them. Nothing is corrected away silently.</p>
+    <div class="score" id="r-score"></div>
+    <p class="links" id="r-links"></p>
+    <div id="r-audio">
+      <label>Original</label><audio controls id="a-original"></audio>
+      <div class="stems" id="r-stems" hidden>
+        <div><label>Voice stem</label><audio controls id="a-vocals"></audio></div>
+        <div><label>Oud stem</label><audio controls id="a-other"></audio></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="generate">
+  <h2>Generate with the fine-tuned model</h2>
+  <div class="small" id="g-config">Checking the generation service…</div>
+  <form id="gen-form">
+    <label for="prompt">Prompt</label>
+    <textarea id="prompt">Somali qaraami led by the oud (kaban), moderate tempo, pentatonic melody, intimate recording</textarea>
+    <div class="row">
+      <div><label for="adapter">Adapter</label><select id="adapter"></select></div>
+      <div><label for="duration">Seconds</label><input type="text" id="duration" value="10"></div>
+      <div><label for="seed">Seed</label><input type="text" id="seed" value="42"></div>
+    </div>
+    <button type="submit" id="gen-btn">Generate</button>
+  </form>
+  <div class="status" id="g-status"></div>
+  <div id="g-result" hidden>
+    <audio controls id="a-gen"></audio>
+    <table>
+      <tr><th>Adapter</th><td id="g-adapter"></td></tr>
+      <tr><th>PCS of the output</th><td id="g-pcs"></td></tr>
+      <tr><th>Time</th><td id="g-time"></td></tr>
+    </table>
+    <p class="small" id="g-prov"></p>
+  </div>
+</section>
+
+</main>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const fmt = (x, d = 0) => (x === null || x === undefined) ? '–' : Number(x).toFixed(d);
+  const cents = (arr) => arr.map((c) => fmt(c)).join(' / ');
+
+  // ---------------- transcription ----------------
+  $('upload-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const file = $('file').files[0];
+    if (!file) return;
+    $('upload-btn').disabled = true;
+    $('t-result').hidden = true;
+    $('t-status').className = 'status';
+    $('t-status').textContent = 'Uploading…';
+    const form = new FormData();
+    form.append('file', file);
+    form.append('separate', $('separate').checked ? 'true' : 'false');
+    try {
+      const res = await fetch('/notation', { method: 'POST', body: form });
+      if (!res.ok) throw new Error((await res.json()).detail || ('upload failed ' + res.status));
+      const { job_id } = await res.json();
+      const t0 = Date.now();
+      let state;
+      for (;;) {
+        await new Promise((r) => setTimeout(r, 2000));
+        state = await (await fetch('/notation/jobs/' + job_id)).json();
+        const secs = Math.round((Date.now() - t0) / 1000);
+        $('t-status').textContent = (state.stage || state.status) + ' (' + secs + ' s)';
+        if (state.status === 'done' || state.status === 'error') break;
+      }
+      if (state.status === 'error') throw new Error(state.error || 'transcription failed');
+      const full = await (await fetch('/notation/jobs/' + job_id + '/artifacts/json')).json();
+      show(job_id, full, state);
+      $('t-status').textContent = 'Done in ' + fmt(full.timings_sec.total) + ' s.';
+    } catch (e) {
+      $('t-status').className = 'status err';
+      $('t-status').textContent = e.message;
+    } finally {
+      $('upload-btn').disabled = false;
+    }
+  });
+
+  function show(jobId, d, state) {
+    const s = d.scale, q = d.quantization, p = d.pcs_of_kept_notes, t = d.tempo;
+    const offset = (s.tuning_offset_cents + s.tonic_refined_offset_cents);
+    $('r-tonic').innerHTML = (s.tonic_ambiguous ? '<span class="amb">tonic ambiguous: ' + s.tonic_label + '</span>' : s.tonic_name)
+      + ' (' + (offset >= 0 ? '+' : '') + fmt(offset, 1) + ' cents from A440; mode ' + s.mode + ')';
+    $('r-scale').textContent = cents(s.scale_cents) + '  (refined from the recording: ' + s.scale_degree_refined.map((b) => b ? 'yes' : 'no').join(' / ') + ')';
+    $('r-template').textContent = cents(s.scale_cents_template);
+    $('r-pcs').textContent = Object.entries(p).map(([k, v]) => k + ' ' + fmt(v, 3)).join(', ');
+    $('r-notes').textContent = q.n_notes + ' kept, ' + q.n_marked_off_scale + ' kept off-scale and marked'
+      + (d.stems['Voice'] ? '; voice voiced fraction ' + fmt(d.stems['Voice'].voiced_fraction, 2) : '');
+    $('r-tempo').textContent = t.bpm + ' BPM, ' + t.grid + ' grid' + (t.tempo_halved_from_tracker ? ' (tracker pulse halved)' : '');
+    $('r-sep').textContent = d.separation.used ? ('Demucs on ' + d.separation.device + ', ' + fmt(d.separation.seconds, 1) + ' s; oud reduced to one line')
+                                               : 'none: the whole mix as the oud, one staff';
+    const base = '/notation/jobs/' + jobId + '/artifacts/';
+    fetch(base + 'svg').then((r) => r.ok ? r.text() : Promise.reject()).then((svg) => { $('r-score').innerHTML = svg; })
+      .catch(() => { $('r-score').innerHTML = '<p class="small">No SVG render; open the PDF.</p>'; });
+    const links = [['pdf', 'PDF'], ['musicxml', 'MusicXML'], ['midi', 'MIDI'], ['json', 'JSON (raw pitch tracks, every note)']];
+    $('r-links').innerHTML = links.map(([k, label]) => '<a href="' + base + k + '" download>' + label + '</a>').join('');
+    $('a-original').src = base + 'original';
+    if (d.separation.used) {
+      $('r-stems').hidden = false;
+      $('a-vocals').src = base + 'stem_vocals';
+      $('a-other').src = base + 'stem_other';
+    } else {
+      $('r-stems').hidden = true;
+    }
+    $('t-result').hidden = false;
+  }
+
+  // ---------------- generation ----------------
+  async function loadConfig() {
+    try {
+      const { generation } = await (await fetch('/demo/config')).json();
+      if (!generation.available) {
+        $('g-config').textContent = 'Generation service not reachable at ' + generation.url + ' (' + (generation.detail || '') + ').';
+        $('gen-btn').disabled = true;
+        return;
+      }
+      $('g-config').textContent = generation.base_model + ' on ' + generation.device + ' at ' + generation.url + '; adapters: ' + generation.adapters.join(', ');
+      $('adapter').innerHTML = generation.adapters.map((a) => '<option value="' + a + '"' + (a === 'oud' ? ' selected' : '') + '>' + a + '</option>').join('');
+    } catch (e) {
+      $('g-config').textContent = 'Could not read /demo/config: ' + e.message;
+      $('gen-btn').disabled = true;
+    }
+  }
+  loadConfig();
+
+  $('gen-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    $('gen-btn').disabled = true;
+    $('g-result').hidden = true;
+    $('g-status').className = 'status';
+    $('g-status').textContent = 'Generating… (about a second of audio per second)';
+    try {
+      const body = { prompt: $('prompt').value, adapter: $('adapter').value,
+                     duration: parseInt($('duration').value, 10) || 10, seed: parseInt($('seed').value, 10) || 0 };
+      const res = await fetch('/demo/generate', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      if (!res.ok) throw new Error((await res.json()).detail || ('generation failed ' + res.status));
+      const m = await res.json();
+      $('a-gen').src = m.audio;
+      $('g-adapter').textContent = m.adapter;
+      $('g-pcs').textContent = m.pcs ? (fmt(m.pcs.pcs, 3) + ' (voiced ' + fmt(m.pcs.voiced_fraction, 2) + ', tonic ' + (m.pcs.tonic_name || m.pcs.tonic || '–') + ')') : 'not scored';
+      $('g-time').textContent = fmt(m.total_seconds, 1) + ' s for ' + m.duration + ' s of audio';
+      $('g-prov').textContent = m.provenance || '';
+      $('g-result').hidden = false;
+      $('g-status').textContent = 'Done.';
+    } catch (e) {
+      $('g-status').className = 'status err';
+      $('g-status').textContent = e.message;
+    } finally {
+      $('gen-btn').disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>

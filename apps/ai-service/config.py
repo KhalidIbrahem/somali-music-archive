@@ -42,6 +42,12 @@ class Settings(BaseSettings):
     # Track B notation pipeline: basic-pitch requires Python <=3.11, so
     # transcription runs as a subprocess under this interpreter.
     transcribe_python: str = Field(default="")  # empty = this service's own interpreter
+    # The local MusicGen inference service (services/musicgen-api) the /demo
+    # page generates with. Its bearer token is read from its own env file when
+    # musicgen_api_token is empty, so the token never leaves the server side.
+    musicgen_api_url: str = Field(default="http://127.0.0.1:8765")
+    musicgen_api_env_file: str = Field(default="~/ai/musicgen-api/musicgen-api.env")
+    musicgen_api_token: str = Field(default="")
     # Demucs vocal separation (notation opt-in). Empty = this service's own
     # interpreter (sys.executable) — demucs+torch live in the base env here.
     demucs_python: str = Field(default="")

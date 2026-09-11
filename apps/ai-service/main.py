@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import get_settings
-from routers import embed, generation, health, notation, pitch, transcribe
+from routers import demo, embed, generation, health, notation, pitch, transcribe
 
 settings = get_settings()
 
@@ -38,6 +38,7 @@ app.include_router(pitch.router)
 app.include_router(embed.router)
 app.include_router(notation.router)
 app.include_router(generation.router)
+app.include_router(demo.router)
 
 
 @app.get("/")

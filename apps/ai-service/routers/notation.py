@@ -21,6 +21,8 @@ _MEDIA_TYPES = {
     "midi": "audio/midi",
     "pdf": "application/pdf",
     "json": "application/json",
+    "stem_vocals": "audio/wav",
+    "stem_other": "audio/wav",
 }
 # The original upload's type follows its suffix (kind == "original").
 _AUDIO_TYPES = {

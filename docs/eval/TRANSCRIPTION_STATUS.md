@@ -15,6 +15,7 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 - Tools: Demucs 4.1.0, music21 10.5.0, Verovio, pytest in `musicgen-env`; MuseScore Studio 4.7.5 in `/Applications`.
 - Three demo recordings transcribed end to end (table below). Nothing from the Harvard collection was used.
 - Benchmark scaffold: `docs/eval/TRANSCRIPTION_BENCHMARK.md`, `scripts/transcription_metrics.py`, synthetic test.
+- Overnight queue item 4: `/demo` page (static HTML, no build), `/demo/config`, `/demo/generate`, `/demo/audio/{id}` proxies, stem artifacts, `run_demo.sh`; tested with the generation service faked and checked live.
 - Overnight queue item 3: `scripts/make_annotation_pack.py <slug>` builds `data/annotation/<slug>/` (machine and corrected MusicXML, PDF, pipeline JSON, source audio, stems, meta.json, source.json, ANNOTATION_GUIDE.md); tested.
 - Overnight queue item 2 (runner): `scripts/transcribe_pool.py`, resumable, one subprocess per recording, INDEX.md rewritten after every item.
 - Overnight queue item 1: `--tonic`/`--mode` overrides (reported as pinned), "tonic ambiguous: D (F)" at 5 percent, `--min-conf` documented (default 0.6).
@@ -61,6 +62,23 @@ $P -m scripts.transcribe "../../data/raw_incoming/oud_ilkacase/04 Qaraami kaban 
 $P -m scripts.transcribe ../../data/scale_clips/test/band_qaraami_e0e0a1425885_seg000.wav --out ../../data/transcription_demo/band_e0e0a1425885_seg000
 $P -m scripts.transcription_metrics --ref <corrected.musicxml> --est <pipeline.json> --ref-scale <meta.json>
 ```
+
+## The interview demo: one command
+
+```
+bash apps/ai-service/run_demo.sh
+```
+
+Then open http://127.0.0.1:8000/demo. Left panel: upload a recording, watch
+the stage, get the tonic (with "tonic ambiguous: D (F)" when it is), the
+scale in cents above the tonic against the 12-TET template, PCS, note counts,
+tempo, the score inline, the original and the separated stems to play, and
+MusicXML, MIDI, PDF and JSON downloads. Right panel: a text prompt to the
+fine-tuned generation model (whichever adapters the MusicGen service on port
+8765 is serving), played back with its PCS and provenance line. If the
+generation service is down the panel says so and the rest still works.
+Verified 2026-09-10: upload, poll and artifacts through the page's endpoints;
+a 5-second generation through the proxy in 9 s with PCS scored.
 
 ## Run the upload demo locally
 
