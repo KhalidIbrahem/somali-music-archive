@@ -22,6 +22,18 @@ pip install pytest        # or requirements-dev.txt for the full stack
 pytest
 ```
 
+## Local pages
+
+- `/demo`: upload a recording, get the score; generate with the fine-tuned
+  model through the MusicGen service (`run_demo.sh`, or `scripts/dev-up.sh`
+  from the repo root).
+- `/demo/review`: the listening review of the annotation packs in
+  `data/annotation/`, phrase by phrase, for annotators who do not read
+  notation (`services/review_service.py`, `routers/review.py`,
+  `static/review.html`). Verdicts and recordings go to
+  `review_<name>.json` beside the pack; `export.md` lists what to fix.
+  Start with `bash scripts/dev-up.sh --lan` for an iPad on the same network.
+
 ## Design notes
 
 - **Lazy models.** Whisper/MERT load on first use (`models/registry.py`), so the
