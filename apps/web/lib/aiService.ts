@@ -7,9 +7,26 @@
 
 export const AI_URL = process.env['NEXT_PUBLIC_AI_URL'] ?? 'http://localhost:8000';
 
+export interface AdapterTiming {
+  readonly seconds_per_audio_second: number;
+  readonly seconds_for_30s_clip: number;
+  readonly n: number;
+}
+
+export interface AdapterDetail {
+  readonly id: string;
+  readonly base_model: string;
+  /** The service's own size label for the adapter's base model, e.g. "Small 300M". */
+  readonly size: string;
+  readonly loaded: boolean;
+  readonly timing?: AdapterTiming | null;
+}
+
 export interface GenerationServiceStatus {
   readonly available: boolean;
   readonly adapters: readonly string[];
+  /** One entry per adapter the service reports as loaded. */
+  readonly adapter_details?: readonly AdapterDetail[];
   readonly base_model?: string;
   readonly device?: string;
   readonly url?: string;
@@ -95,22 +112,43 @@ const ADAPTER_NOTES: Readonly<Record<string, string>> = {
   harvard_raw: 'Adapter fine-tuned on the Harvard cassette corpus, as recorded',
   harvard_denoised: 'Adapter fine-tuned on the denoised Harvard cassette corpus',
   harvard_restored: 'Adapter fine-tuned on the restored Harvard cassette corpus',
+  large: 'Adapter fine-tuned on the held qaraami corpus: oud, band and cassette recordings',
 };
 
 export interface AdapterCard {
   readonly id: string;
+  /** The base model's size, e.g. "Small 300M" or "Large 3.3B". */
   readonly title: string;
   readonly subtitle: string;
   readonly note: string;
+  /** Measured by the service on its last generations; absent until the adapter has run. */
+  readonly timing: string;
 }
 
-/** One card per adapter the service is serving right now. */
+export function timingText(t: AdapterTiming | null | undefined): string {
+  if (!t) return 'generation time not measured yet';
+  return `about ${t.seconds_per_audio_second.toFixed(1)} s per second of audio (${Math.round(t.seconds_for_30s_clip)} s for a 30 s clip)`;
+}
+
+/** One card per adapter the service reports as loaded right now. */
 export function adapterCards(status: GenerationServiceStatus): AdapterCard[] {
+  const details = status.adapter_details?.filter((d) => d.loaded);
+  if (details && details.length > 0) {
+    return details.map((d) => ({
+      id: d.id,
+      title: d.size,
+      subtitle: d.id === 'base' ? 'base model, no adapter' : `${d.id} adapter`,
+      note: ADAPTER_NOTES[d.id] ?? `Adapter "${d.id}"`,
+      timing: timingText(d.timing),
+    }));
+  }
+  // An older service without adapter_details: size from the base model id.
   const size = modelSizeLabel(status.base_model);
   return status.adapters.map((id) => ({
     id,
-    title: `${size} — served`,
-    subtitle: id === 'base' ? 'base model' : `${id} adapter`,
+    title: size,
+    subtitle: id === 'base' ? 'base model, no adapter' : `${id} adapter`,
     note: ADAPTER_NOTES[id] ?? `Adapter "${id}"`,
+    timing: 'generation time not measured yet',
   }));
 }
