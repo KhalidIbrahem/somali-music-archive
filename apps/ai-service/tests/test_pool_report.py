@@ -27,3 +27,33 @@ def test_report_counts_and_deviations_are_right():
     assert "| 700 | n = 2, mean +1.0" in text and "| 1 |" in text
     assert "`c`" in text and "PCS below 0.85" in text and "voice stem voiced under 15 percent" in text
     assert "`d`" in text and "failed: timeout" in text
+
+
+def test_pool_items_with_identical_content_are_folded(monkeypatch, tmp_path):
+    import json
+    from scripts import transcribe_pool as tp
+
+    inv = tmp_path / "data" / "inventory"
+    inv.mkdir(parents=True)
+    rows = [{"name": "a.m4a", "path": "/x/a.m4a", "duration_s": 10, "sha256_16": "abcdef0123456789"},
+            {"name": "a copy.m4a", "path": "/x/a copy.m4a", "duration_s": 10, "sha256_16": "abcdef0123456789"},
+            {"name": "b.m4a", "path": "/x/b.m4a", "duration_s": 12, "sha256_16": "0123456789abcdef"}]
+    (inv / "oud_ilkacase.jsonl").write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+    monkeypatch.setattr(tp, "REPO", tmp_path)
+    items = tp.load_items(["oud"])
+    assert [it["name"] for it in items] == ["a.m4a", "b.m4a"]
+
+
+def test_report_and_pick_fold_rows_that_share_audio():
+    from scripts.pick_benchmark_items import pick
+    from scripts.pool_report import fold_duplicates
+
+    minor = [0, 300, 500, 700, 1000]
+    a = _row("oud_abcd1234_song", "oud", "A", 4, minor, minor, [True] * 5, 0.99, 400, 4, 0.5, False)
+    a2 = _row("oud_abcd1234_song_copy", "oud", "A", 4, minor, minor, [True] * 5, 0.99, 400, 4, 0.5, False)
+    b = _row("oud_9999ffff_other", "oud", "D", 4, minor, minor, [True] * 5, 0.97, 300, 3, 0.5, False)
+    kept, folded = fold_duplicates([a2, a, b])
+    assert folded == 1 and [r["slug"] for r in kept] == ["oud_9999ffff_other", "oud_abcd1234_song"]
+    assert "1 pool rows were files with the same audio" in build_report([a, a2, b], "d")
+    assert "| A | 1 |" in build_report([a, a2, b], "d")
+    assert [r["slug"] for r in pick([a, a2, b], n=5, min_vocal=0)] == ["oud_abcd1234_song", "oud_9999ffff_other"]
