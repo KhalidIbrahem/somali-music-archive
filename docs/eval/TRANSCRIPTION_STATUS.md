@@ -45,7 +45,7 @@ The pool report (`TRANSCRIPTION_POOL_REPORT.md`) still describes the run before
 legato; only the five benchmark items were rerun.
 
 Listening review for annotators who do not read notation:
-`http://127.0.0.1:8000/demo/review` (per pack, four-bar phrases from the beat
+`http://127.0.0.1:8000/demo/review` (every transcribed recording: the packs, the whole pool, the demos; four-bar phrases from the beat
 grid, Original against the machine's notes synthesized on the same timeline,
 verdicts and a recorded version saved to `data/annotation/<slug>/review_<name>.json`,
 export of the phrases marked wrong). `bash scripts/dev-up.sh --lan` opens the

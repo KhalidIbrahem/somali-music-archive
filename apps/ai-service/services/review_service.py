@@ -1,16 +1,19 @@
-"""Listening review of an annotation pack, one phrase at a time.
+"""Listening review of a transcribed recording, one phrase at a time.
 
 A musician who does not read notation can still tell whether the machine
-heard the tune. This module cuts a pack (data/annotation/<slug>/) into
-phrases of about four bars along the beat grid the score was snapped to,
-serves each phrase two ways (the recording itself, and the score's notes
-played back on the same timeline by a plucked-string synth), and keeps the
-listener's verdicts, notes and recordings in review_<annotator>.json next
-to the pack. The export lists what was marked wrong with the bar numbers
-and timestamps needed to fix it in MuseScore.
+heard the tune. This module cuts a recording into phrases of about four bars
+along the beat grid the score was snapped to, serves each phrase two ways
+(the recording itself, and the score's notes played back on the same
+timeline by a plucked-string synth), and keeps the listener's verdicts,
+notes and recordings in data/annotation/<slug>/review_<annotator>.json. The
+export lists what was marked wrong with the bar numbers and timestamps
+needed to fix it in MuseScore.
 
-Nothing here leaves the pack folder: the source audio is served only inside
-the local service, and the review files sit beside the corrected MusicXML.
+A recording can come from an annotation pack (data/annotation/<slug>/), from
+the transcription pool (data/transcription_pool/<slug>/) or from the demo
+folders (data/transcription_demo/<name>/, slug demo_<name>); every transcribed
+recording on disk is offered. Nothing leaves this machine: the source audio is
+served only inside the local service.
 """
 from __future__ import annotations
 
@@ -28,6 +31,9 @@ import soundfile as sf
 
 REPO = Path(__file__).resolve().parents[3]
 ANNOTATION_ROOT = REPO / "data" / "annotation"
+POOL_ROOT = REPO / "data" / "transcription_pool"
+DEMO_ROOT = REPO / "data" / "transcription_demo"
+HASH_RE = re.compile(r"^(?:oud|band)_([0-9a-f]{8})_")
 
 SR = 44100
 BEATS_PER_BAR = 4
@@ -89,13 +95,173 @@ def list_packs(root: Path | None = None) -> list[dict]:
     return out
 
 
-def load_pipeline(d: Path) -> dict:
-    return _read_json(d / f"{d.name}_pipeline.json")
+@dataclass(frozen=True)
+class Item:
+    """One transcribed recording the page can offer, wherever it lives."""
+    slug: str
+    kind: str            # pack | pool | demo
+    dir: Path            # holds the pipeline JSON and the source wav
+    pipeline: Path
+    source: Path
+    review_dir: Path     # data/annotation/<slug>/, created on the first save
+    title: str
+    source_kind: str | None
+    duration_s: float | None
+    legato: bool         # transcribed with the legato segmenter (after 2026-09-11)
+    score_name: str      # the MusicXML the export's bar numbers refer to
 
 
-def pack_title(d: Path) -> str:
+def _head(p: Path, n: int = 16384) -> str:
+    with open(p, "rb") as f:
+        return f.read(n).decode("utf-8", "ignore")
+
+
+def _head_fields(p: Path) -> tuple[bool, float | None, str | None]:
+    """legato flag, duration and source file name from the start of a
+    pipeline JSON (the frame arrays that follow are too big to parse for an
+    index)."""
+    h = _head(p)
+    legato = re.search(r'"legato":\s*true', h) is not None
+    m = re.search(r'"duration_sec":\s*([0-9.]+)', h)
+    f = re.search(r'"file":\s*"([^"]+)"', h)
+    return legato, (float(m.group(1)) if m else None), (Path(f.group(1)).name if f else None)
+
+
+def _output_dir_files(d: Path) -> tuple[Path, Path] | None:
+    """(pipeline json, input wav) of a transcribe.py output folder."""
+    js = sorted(p for p in d.glob("*.json") if p.name != "pool_row.json" and not p.name.endswith("_pipeline.json"))
+    for j in js:
+        wav = d / (j.name[:-len(".json")] + ".input.wav")
+        if wav.is_file():
+            return j, wav
+    return None
+
+
+def _pack_item(d: Path) -> Item:
     src = _read_json(d / "source.json") if (d / "source.json").is_file() else {}
-    return src.get("source_name") or d.name
+    pj = d / f"{d.name}_pipeline.json"
+    legato, dur, _ = _head_fields(pj)
+    return Item(slug=d.name, kind="pack", dir=d, pipeline=pj, source=d / f"{d.name}_source.wav",
+                review_dir=d, title=src.get("source_name") or d.name, source_kind=src.get("source"),
+                duration_s=src.get("duration_s") or dur, legato=legato, score_name=f"{d.name}_corrected.musicxml")
+
+
+def _pool_item(d: Path, annotation_root: Path) -> Item | None:
+    files = _output_dir_files(d)
+    if files is None:
+        return None
+    pj, wav = files
+    row = _read_json(d / "pool_row.json") if (d / "pool_row.json").is_file() else {}
+    if row.get("error"):
+        return None
+    legato, dur, _ = _head_fields(pj)
+    name = row.get("name") or pj.name[:-len(".json")]
+    return Item(slug=d.name, kind="pool", dir=d, pipeline=pj, source=wav, review_dir=annotation_root / d.name,
+                title=Path(name).stem, source_kind=row.get("source"), duration_s=row.get("duration_s") or dur,
+                legato=legato, score_name=pj.name[:-len(".json")] + ".musicxml")
+
+
+def _demo_item(d: Path, annotation_root: Path) -> Item | None:
+    files = _output_dir_files(d)
+    if files is None:
+        return None
+    pj, wav = files
+    legato, dur, _ = _head_fields(pj)
+    slug = f"demo_{d.name}"
+    return Item(slug=slug, kind="demo", dir=d, pipeline=pj, source=wav, review_dir=annotation_root / slug,
+                title=pj.name[:-len(".json")], source_kind="demo", duration_s=dur, legato=legato,
+                score_name=pj.name[:-len(".json")] + ".musicxml")
+
+
+def resolve(slug: str, annotation_root: Path | None = None, pool_root: Path | None = None,
+            demo_root: Path | None = None) -> Item:
+    """The recording behind a slug: an annotation pack first, then a pool
+    folder, then a demo folder (slug demo_<name>)."""
+    annotation_root = annotation_root or ANNOTATION_ROOT
+    pool_root = pool_root or POOL_ROOT
+    demo_root = demo_root or DEMO_ROOT
+    if not SLUG_RE.fullmatch(slug) or ".." in slug:
+        raise KeyError(slug)
+    d = annotation_root / slug
+    if (d / f"{slug}_pipeline.json").is_file():
+        return _pack_item(d)
+    d = pool_root / slug
+    if d.is_dir():
+        it = _pool_item(d, annotation_root)
+        if it:
+            return it
+    if slug.startswith("demo_"):
+        d = demo_root / slug[len("demo_"):]
+        if d.is_dir():
+            it = _demo_item(d, annotation_root)
+            if it:
+                return it
+    raise KeyError(slug)
+
+
+def _reviews(review_dir: Path) -> list[str]:
+    if not review_dir.is_dir():
+        return []
+    return sorted(p.name[len("review_"):-len(".json")] for p in review_dir.glob("review_*.json"))
+
+
+def _item_row(it: Item) -> dict:
+    return {"slug": it.slug, "kind": it.kind, "title": it.title, "source": it.source_kind,
+            "duration_s": it.duration_s, "legato": it.legato, "reviews": _reviews(it.review_dir)}
+
+
+def list_items(annotation_root: Path | None = None, pool_root: Path | None = None,
+               demo_root: Path | None = None) -> list[dict]:
+    """Every transcribed recording on disk: the packs, then the pool folded
+    to one entry per recording (duplicate files share the content hash in
+    the slug), then the demos that are not already in the pool."""
+    annotation_root = annotation_root or ANNOTATION_ROOT
+    pool_root = pool_root or POOL_ROOT
+    demo_root = demo_root or DEMO_ROOT
+    out: list[dict] = []
+    seen_slugs: set[str] = set()
+    seen_hashes: set[str] = set()
+    if annotation_root.is_dir():
+        for d in sorted(p for p in annotation_root.iterdir() if p.is_dir() and not p.name.startswith("_")):
+            if (d / "meta.json").is_file() and (d / f"{d.name}_pipeline.json").is_file():
+                out.append(_item_row(_pack_item(d)))
+                seen_slugs.add(d.name)
+                m = HASH_RE.match(d.name)
+                if m:
+                    seen_hashes.add(m.group(1))
+    pool_names: set[str] = set()
+    if pool_root.is_dir():
+        for d in sorted(p for p in pool_root.iterdir() if p.is_dir() and not p.name.startswith("_")):
+            m = HASH_RE.match(d.name)
+            if d.name in seen_slugs or (m and m.group(1) in seen_hashes):
+                continue
+            it = _pool_item(d, annotation_root)
+            if it is None:
+                continue
+            if m:
+                seen_hashes.add(m.group(1))
+            row = _read_json(d / "pool_row.json") if (d / "pool_row.json").is_file() else {}
+            if row.get("name"):
+                pool_names.add(row["name"])
+            out.append(_item_row(it))
+    if demo_root.is_dir():
+        for d in sorted(p for p in demo_root.iterdir() if p.is_dir() and not p.name.startswith("_")):
+            it = _demo_item(d, annotation_root)
+            if it is None:
+                continue
+            _, _, src_name = _head_fields(it.pipeline)
+            if src_name and src_name in pool_names:
+                continue
+            out.append(_item_row(it))
+    return out
+
+
+def load_pipeline(it: Item) -> dict:
+    return _read_json(it.pipeline)
+
+
+def pack_title(it: Item) -> str:
+    return it.title
 
 
 # ---------------------------------------------------------------- the grid
@@ -201,9 +367,9 @@ def wav_bytes(x: np.ndarray, sr: int) -> bytes:
     return buf.getvalue()
 
 
-def original_audio(d: Path, ph: Phrase) -> bytes:
-    """The phrase's window of the pack's source recording, mono, faded."""
-    src = d / f"{d.name}_source.wav"
+def original_audio(it: Item, ph: Phrase) -> bytes:
+    """The phrase's window of the source recording, mono, faded."""
+    src = it.source
     info = sf.info(src)
     a, b = int(round(ph.start * info.samplerate)), int(round(ph.end * info.samplerate))
     data, sr = sf.read(src, start=a, stop=b, dtype="float32", always_2d=True)
@@ -269,18 +435,17 @@ def machine_audio(pipeline: dict, ph: Phrase, sr: int = SR) -> bytes:
     return wav_bytes(_fade(np.ascontiguousarray(out), sr), sr)
 
 
-def cached_audio(d: Path, ph: Phrase, kind: str, pipeline: dict) -> bytes:
-    """Phrase audio, rendered once per pack build (the key carries the
-    pipeline file's size and mtime, so a rebuilt pack renders afresh)."""
-    pj = d / f"{d.name}_pipeline.json"
-    st = pj.stat()
+def cached_audio(it: Item, ph: Phrase, kind: str, pipeline: dict) -> bytes:
+    """Phrase audio, rendered once per transcription (the key carries the
+    pipeline file's size and mtime, so a rerun renders afresh)."""
+    st = it.pipeline.stat()
     key = hashlib.sha1(f"{kind}|{ph.index}|{ph.start}|{ph.end}|{st.st_size}|{int(st.st_mtime)}".encode()).hexdigest()[:12]
-    cache = d / ".review_cache"
+    cache = it.dir / ".review_cache"
     cache.mkdir(exist_ok=True)
     f = cache / f"{kind}_{ph.index:03d}_{key}.wav"
     if f.is_file():
         return f.read_bytes()
-    data = original_audio(d, ph) if kind == "original" else machine_audio(pipeline, ph)
+    data = original_audio(it, ph) if kind == "original" else machine_audio(pipeline, ph)
     tmp = f.with_suffix(".tmp")
     tmp.write_bytes(data)
     os.replace(tmp, f)
@@ -289,33 +454,33 @@ def cached_audio(d: Path, ph: Phrase, kind: str, pipeline: dict) -> bytes:
 
 # ---------------------------------------------------------------- review state
 
-def review_path(d: Path, annotator: str) -> Path:
-    return d / f"review_{annotator}.json"
+def review_path(it: Item, annotator: str) -> Path:
+    return it.review_dir / f"review_{annotator}.json"
 
 
-def recordings_dir(d: Path, annotator: str) -> Path:
-    return d / f"review_{annotator}_recordings"
+def recordings_dir(it: Item, annotator: str) -> Path:
+    return it.review_dir / f"review_{annotator}_recordings"
 
 
 def _now() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
 
 
-def load_review(d: Path, annotator: str) -> dict:
-    p = review_path(d, annotator)
+def load_review(it: Item, annotator: str) -> dict:
+    p = review_path(it, annotator)
     if p.is_file():
         return _read_json(p)
-    return {"slug": d.name, "annotator": annotator, "created": _now(), "updated": None, "phrases": {}}
+    return {"slug": it.slug, "annotator": annotator, "created": _now(), "updated": None, "phrases": {}}
 
 
-def save_phrase(d: Path, annotator: str, ph: Phrase, *, verdict: str | None = None,
+def save_phrase(it: Item, annotator: str, ph: Phrase, *, verdict: str | None = None,
                 note: str | None = None, recording: str | None = None) -> dict:
     """Merge one phrase's verdict / note / recording into the review file and
     write it at once. The phrase bounds are stored with it, so the export
     stands on its own even after the pack is rebuilt."""
     if verdict is not None and verdict not in VERDICTS + ("",):
         raise ValueError(f"verdict must be one of {VERDICTS}")
-    rev = load_review(d, annotator)
+    rev = load_review(it, annotator)
     entry = rev["phrases"].get(str(ph.index), {})
     entry.update({"bar_from": ph.bar_from, "bar_to": ph.bar_to, "start": ph.start, "end": ph.end})
     if verdict is not None:
@@ -327,11 +492,12 @@ def save_phrase(d: Path, annotator: str, ph: Phrase, *, verdict: str | None = No
     entry["updated"] = _now()
     rev["phrases"][str(ph.index)] = entry
     rev["updated"] = entry["updated"]
-    _write_json(review_path(d, annotator), rev)
+    it.review_dir.mkdir(parents=True, exist_ok=True)
+    _write_json(review_path(it, annotator), rev)
     return rev
 
 
-def save_recording(d: Path, annotator: str, ph: Phrase, data: bytes, content_type: str) -> str:
+def save_recording(it: Item, annotator: str, ph: Phrase, data: bytes, content_type: str) -> str:
     if not data:
         raise ValueError("empty recording")
     if len(data) > MAX_RECORDING_BYTES:
@@ -339,17 +505,17 @@ def save_recording(d: Path, annotator: str, ph: Phrase, data: bytes, content_typ
     ext = RECORDING_TYPES.get((content_type or "").split(";")[0].strip().lower(), "bin")
     stamp = dt.datetime.now().strftime("%Y%m%dT%H%M%S")
     name = f"phrase_{ph.index:03d}_{stamp}.{ext}"
-    rd = recordings_dir(d, annotator)
-    rd.mkdir(exist_ok=True)
+    rd = recordings_dir(it, annotator)
+    rd.mkdir(parents=True, exist_ok=True)
     (rd / name).write_bytes(data)
-    save_phrase(d, annotator, ph, recording=name)
+    save_phrase(it, annotator, ph, recording=name)
     return name
 
 
-def recording_file(d: Path, annotator: str, name: str) -> Path:
+def recording_file(it: Item, annotator: str, name: str) -> Path:
     if not re.fullmatch(r"phrase_\d{3}_\d{8}T\d{6}\.[a-z0-9]{1,5}", name):
         raise KeyError(name)
-    p = recordings_dir(d, annotator) / name
+    p = recordings_dir(it, annotator) / name
     if not p.is_file():
         raise KeyError(name)
     return p
@@ -360,20 +526,20 @@ def _mmss(t: float) -> str:
     return f"{int(m)}:{s:04.1f}"
 
 
-def export_markdown(d: Path, annotator: str) -> str:
+def export_markdown(it: Item, annotator: str) -> str:
     """The phrases marked wrong, with the bar numbers and timestamps to find
     them in MuseScore, in phrase order."""
-    rev = load_review(d, annotator)
+    rev = load_review(it, annotator)
     items = sorted(((int(k), v) for k, v in rev["phrases"].items()), key=lambda kv: kv[0])
     judged = [v for _, v in items if v.get("verdict")]
     wrong = [(k, v) for k, v in items if v.get("verdict") in ("wrong_notes", "wrong_rhythm")]
     label = {"wrong_notes": "wrong notes", "wrong_rhythm": "wrong rhythm", "correct": "correct"}
     lines = [
-        f"# Listening review: {pack_title(d)}",
+        f"# Listening review: {it.title}",
         "",
-        f"Pack `{d.name}`, reviewed by `{annotator}`, exported {dt.datetime.now().strftime('%Y-%m-%d %H:%M')}.",
+        f"Recording `{it.slug}`, reviewed by `{annotator}`, exported {dt.datetime.now().strftime('%Y-%m-%d %H:%M')}.",
         f"{len(judged)} phrase{'s' if len(judged) != 1 else ''} judged, {len(wrong)} marked wrong. Bar numbers are those of "
-        f"`{d.name}_corrected.musicxml`; times are seconds into `{d.name}_source.wav`.",
+        f"`{it.score_name}`; times are seconds into `{it.source.name}`.",
         "",
     ]
     if not wrong:
@@ -400,12 +566,14 @@ def _write_json(p: Path, obj: dict) -> None:
     os.replace(tmp, p)
 
 
-def phrases_payload(d: Path, pipeline: dict) -> dict:
+def phrases_payload(it: Item, pipeline: dict) -> dict:
     phrases = split_phrases(pipeline)
     t = pipeline.get("tempo", {})
     return {
-        "slug": d.name,
-        "title": pack_title(d),
+        "slug": it.slug,
+        "title": it.title,
+        "kind": it.kind,
+        "legato": it.legato,
         "duration_sec": pipeline.get("duration_sec"),
         "bpm": t.get("bpm"),
         "grid": Grid(pipeline).kind,
