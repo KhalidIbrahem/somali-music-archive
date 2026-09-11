@@ -47,7 +47,7 @@ over songs. Validation CE per checkpoint. On the 16-clip A/B: voiced fraction
 time and peak MPS memory.
 
 **Transcription, over the 91 recordings.** Counts of tonic (12 pitch classes)
-and mode (5); the score ratio of the best reading with a different tonic to
+and mode (5); the score ratio of the highest-scoring reading with a different tonic to
 the winning reading, and the count with ratio at or above 0.95 ("tonic
 ambiguous"); for each template interval above the tonic, the deviation of the
 refined degree from 12-TET in cents (n, mean, sd, median, IQR, range) and the
@@ -61,7 +61,7 @@ notes marked off-scale; the count of recordings with warning signs.
 
 | | medium (1.5 B) | large (3.3 B) |
 | --- | --- | --- |
-| best checkpoint | step 2750 | step 2750 |
+| checkpoint with the lowest held-out CE | step 2750 | step 2750 |
 | validation CE, base → adapter | 4.4584 → 4.3724 | final 4.3245 |
 | per-song test CE, base → adapter | 4.1011 → 3.9996 | 4.0750 → 3.9469 |
 | CE improvement, 95% CI | +0.102 [0.078, 0.123] | +0.128 [0.104, 0.152] |
