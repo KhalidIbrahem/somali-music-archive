@@ -66,3 +66,22 @@ def test_stem_artifacts_are_served_for_separated_jobs(tmp_path, monkeypatch):
     r = client.get("/notation/jobs/j1/artifacts/stem_vocals")
     assert r.status_code == 200 and r.content == b"RIFFvox" and r.headers["content-type"].startswith("audio/wav")
     assert client.get("/notation/jobs/j1/artifacts/stem_other").status_code == 404
+
+
+def test_generate_surfaces_the_backend_detail(monkeypatch):
+    import httpx
+
+    import services.musicgen_client as client
+
+    def fake_post(url, json, headers, timeout):
+        return httpx.Response(503, json={"detail": "adapter 'large' is not ready: its engine is loading"},
+                              request=httpx.Request("POST", url))
+
+    monkeypatch.setattr(client.httpx, "post", fake_post)
+    monkeypatch.setattr(client, "_token", lambda: "t")
+    try:
+        client.generate("Somali qaraami on the oud", "large", 5, 1)
+    except RuntimeError as exc:
+        assert "503" in str(exc) and "is loading" in str(exc)
+    else:
+        raise AssertionError("expected a RuntimeError carrying the backend detail")
