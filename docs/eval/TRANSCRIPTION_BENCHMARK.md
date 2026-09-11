@@ -32,15 +32,19 @@ yet.
 
 ## Annotation format
 
-One directory per item, `data/transcription_benchmark/<song_id>/`:
+One directory per item, `data/annotation/<slug>/`, built by
+`scripts/make_annotation_pack.py <slug>` from the transcription pool
+(`data/transcription_pool/`, see `INDEX.md` there):
 
 | file | content |
 | --- | --- |
-| `source.json` | source path, SHA-256, excerpt start and length, instrumentation |
-| `pipeline.musicxml`, `pipeline.json`, `pipeline.pdf` | the automatic transcription exactly as produced (`scripts/transcribe.py`) |
-| `corrected_<initials>.musicxml` | one annotator's correction, edited in MuseScore starting from `pipeline.musicxml` |
-| `adjudicated.musicxml` | where two annotators disagree, the version they settled on together |
-| `meta.json` | the reference scale: `tonic_name`, `scale_cents` (each degree in cents above the tonic), `mode`, notes on metre |
+| `<slug>_machine.musicxml`, `<slug>_machine.pdf`, `<slug>_pipeline.json` | the automatic transcription exactly as produced (`scripts/transcribe.py`); the JSON is what the metrics script scores |
+| `<slug>_corrected.musicxml` | the annotator's correction, edited in MuseScore starting from a copy of the machine file; a second annotator saves `<slug>_corrected_<initials>.musicxml` |
+| `<slug>_adjudicated.musicxml` | where two annotators disagree, the version they settled on together |
+| `<slug>_source.wav`, `stems/` | the audio the transcription was made from (an excerpt for long songs) and the separated stems when there are any |
+| `meta.json` | the reference scale: `tonic_name`, `scale_cents` (each degree in cents above the tonic), `mode`, the metre, `confirmed` |
+| `source.json` | source path and SHA-256, excerpt, instrumentation, the machine summary |
+| `ANNOTATION_GUIDE.md` | the one-page instructions for that item |
 
 The per-note **verified flag** lives inside the MusicXML as a note colour, so
 it survives editing in MuseScore and needs no side file:
