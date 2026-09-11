@@ -213,6 +213,10 @@ Next: (1) full 605-track processing and re-estimation of every number in this pa
 > (4) MERT-probe and fine-tuned Whisper baselines, and, for generative adaptation (§7.5), a listening study with Somali musicians on the base-vs-adapter pairs, MusicGen-medium with longer clips, melody-conditioned generation from the platform's own transcriptions, and cassette-level splits for the Harvard corpus;
  (5) consented field recordings with living masters as the calibration standard; (6) public release (annotations + code) with DOI, and a research-access pathway for audio with Harvard Library.
 
+## Acknowledgements
+
+To the performers and elders whose repertoire this work preserves, and in particular to Ahmed Ali Egal, whose intonation anchors the analysis.
+
 ## 10. References
 
 [1] Andrzejewski, B. W., & Lewis, I. M. (1964). *Somali Poetry: An Introduction.* Oxford: Clarendon Press.

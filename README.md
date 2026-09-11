@@ -8,6 +8,7 @@ pentatonic conformance metric for judging whether generated or transcribed
 material stays inside the tradition's scale system. The recordings themselves
 are never distributed. The code, the method, and the measurements are.
 Built by Khalid Ibrahim, Minneapolis.
+Dedicated to Ahmed Ali Egal, whose intonation anchors the analysis.
 
 ## The five-minute path for a reviewer
 
