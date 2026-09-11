@@ -65,7 +65,11 @@ function detailOf(body: unknown, status: number): string {
     if (typeof d === 'string') return d;
     if (Array.isArray(d)) {
       return d
-        .map((e) => (e && typeof e === 'object' && 'msg' in e ? String((e as { msg: unknown }).msg) : JSON.stringify(e)))
+        .map((e) =>
+          e && typeof e === 'object' && 'msg' in e
+            ? String((e as { msg: unknown }).msg)
+            : JSON.stringify(e),
+        )
         .join('; ');
     }
   }
@@ -74,7 +78,8 @@ function detailOf(body: unknown, status: number): string {
 
 export async function getGenerationStatus(): Promise<GenerationServiceStatus> {
   const res = await fetch(`${AI_URL}/demo/config`);
-  if (!res.ok) throw new ServiceError(`AI service answered HTTP ${res.status} for /demo/config`, res.status);
+  if (!res.ok)
+    throw new ServiceError(`AI service answered HTTP ${res.status} for /demo/config`, res.status);
   const data = (await res.json()) as { generation: GenerationServiceStatus };
   return data.generation;
 }
@@ -130,9 +135,17 @@ export function timingText(t: AdapterTiming | null | undefined): string {
   return `about ${t.seconds_per_audio_second.toFixed(1)} s per second of audio (${Math.round(t.seconds_for_30s_clip)} s for a 30 s clip)`;
 }
 
+/**
+ * Adapters trained on the Harvard cassettes are not offered on the web page,
+ * whatever the service is serving: that material is held for research only.
+ */
+function listed(id: string): boolean {
+  return !id.startsWith('harvard');
+}
+
 /** One card per adapter the service reports as loaded right now. */
 export function adapterCards(status: GenerationServiceStatus): AdapterCard[] {
-  const details = status.adapter_details?.filter((d) => d.loaded);
+  const details = status.adapter_details?.filter((d) => d.loaded && listed(d.id));
   if (details && details.length > 0) {
     return details.map((d) => ({
       id: d.id,
@@ -144,7 +157,7 @@ export function adapterCards(status: GenerationServiceStatus): AdapterCard[] {
   }
   // An older service without adapter_details: size from the base model id.
   const size = modelSizeLabel(status.base_model);
-  return status.adapters.map((id) => ({
+  return status.adapters.filter(listed).map((id) => ({
     id,
     title: size,
     subtitle: id === 'base' ? 'base model, no adapter' : `${id} adapter`,
