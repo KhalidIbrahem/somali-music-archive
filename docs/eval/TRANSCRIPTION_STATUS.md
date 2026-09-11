@@ -15,11 +15,12 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 - Tools: Demucs 4.1.0, music21 10.5.0, Verovio, pytest in `musicgen-env`; MuseScore Studio 4.7.5 in `/Applications`.
 - Three demo recordings transcribed end to end (table below). Nothing from the Harvard collection was used.
 - Benchmark scaffold: `docs/eval/TRANSCRIPTION_BENCHMARK.md`, `scripts/transcription_metrics.py`, synthetic test.
+- Overnight queue item 2 (runner): `scripts/transcribe_pool.py`, resumable, one subprocess per recording, INDEX.md rewritten after every item.
 - Overnight queue item 1: `--tonic`/`--mode` overrides (reported as pinned), "tonic ambiguous: D (F)" at 5 percent, `--min-conf` documented (default 0.6).
 
 ## Running
 
-- Nothing at the moment.
+- Overnight queue item 2: `scripts/transcribe_pool.py` over 103 recordings (40 oud in full, 63 band with vocals as 90 s excerpts), CPU CREPE, started 2026-09-10 morning, about six hours. Progress: `data/transcription_pool/INDEX.md` and `pool.log`; done marker `POOL_DONE`.
 
 ## Failed, and what was done
 
