@@ -111,8 +111,16 @@ def build_pack(slug: str, pool_dir: Path, out_dir: Path) -> Path:
         raise FileNotFoundError(f"{xml} missing")
     pack = out_dir / slug
     pack.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(xml, pack / f"{slug}_machine.musicxml")
-    shutil.copy2(xml, pack / f"{slug}_corrected.musicxml")
+    corrected = pack / f"{slug}_corrected.musicxml"
+    machine = pack / f"{slug}_machine.musicxml"
+    # An annotator's edited copy is never overwritten: only refresh the
+    # corrected copy while it is still identical to the machine file it came from.
+    refresh_corrected = not corrected.exists() or (machine.exists() and corrected.read_bytes() == machine.read_bytes())
+    shutil.copy2(xml, machine)
+    if refresh_corrected:
+        shutil.copy2(xml, corrected)
+    else:
+        print(f"{slug}: kept the annotator's edited {corrected.name}; the machine file was refreshed")
     pdf = src / f"{stem}.pdf"
     if pdf.exists():
         shutil.copy2(pdf, pack / f"{slug}_machine.pdf")

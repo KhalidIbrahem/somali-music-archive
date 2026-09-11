@@ -86,3 +86,79 @@ def test_microtones_survive_in_cents() -> None:
     notes = segment_notes(t, c, p)
     assert np.isclose(notes[0].cents, 6935.0)
     assert notes[0].midi == 69  # rounded for display; cents keep the truth
+
+
+# ---------------------------------------------------------------- legato (plucked strings)
+def _pluck(times, start, dur, cents, attack=0.9, floor=0.2, conf_high=0.9, conf_low=0.2, decay_at=0.4):
+    """One plucked note: pitch steady, envelope decaying from `attack` to `floor`,
+    CREPE confidence dropping under the threshold after `decay_at` of the note."""
+    i0, i1 = int(start * 100), int((start + dur) * 100)
+    idx = np.arange(i0, i1)
+    frac = (idx - i0) / max(len(idx) - 1, 1)
+    amp = attack * (1 - frac) + floor * frac
+    conf = np.where(frac < decay_at, conf_high, conf_low)
+    return idx, np.full(len(idx), cents, dtype=float), conf, amp
+
+
+def _ribbon(seconds, plucks):
+    n = int(seconds * 100)
+    times = np.arange(n) / 100.0
+    cents = np.full(n, np.nan); conf = np.zeros(n); amp = np.full(n, 0.02)
+    for p in plucks:
+        idx, c, k, a = p
+        cents[idx], conf[idx], amp[idx] = c, k, a
+    return times, cents, conf, amp
+
+
+def test_legato_sustains_through_the_ring_out_and_ends_at_silence():
+    from scripts.f0_notes import segment_notes
+
+    times, cents, conf, amp = _ribbon(2.0, [_pluck(None, 0.2, 1.0, 6200)])
+    plain = segment_notes(times, cents, conf, amp)
+    legato = segment_notes(times, cents, conf, amp, legato=True)
+    assert len(plain) == 1 and plain[0].end - plain[0].start < 0.5   # cut where confidence drops
+    assert len(legato) == 1
+    assert legato[0].start == plain[0].start
+    assert legato[0].end >= 1.15  # carried through the decay to where the audio goes silent
+    assert abs(legato[0].cents - 6200) < 1
+
+
+def test_legato_still_ends_at_a_real_pitch_change():
+    from scripts.f0_notes import segment_notes
+
+    a = _pluck(None, 0.1, 0.6, 6200, decay_at=1.1)  # confident throughout
+    b = _pluck(None, 0.7, 0.6, 6400, decay_at=1.1)
+    times, cents, conf, amp = _ribbon(1.5, [a, b])
+    notes = segment_notes(times, cents, conf, amp, legato=True)
+    assert [round(n.cents) for n in notes] == [6200, 6400]
+    assert abs(notes[0].end - 0.7) < 0.1 and abs(notes[1].start - 0.7) < 0.1
+
+
+def test_legato_re_pluck_on_the_same_pitch_is_a_new_onset():
+    from scripts.f0_notes import segment_notes
+
+    a = _pluck(None, 0.1, 0.5, 6200, attack=0.9, floor=0.25, decay_at=1.1)
+    b = _pluck(None, 0.6, 0.5, 6200, attack=0.9, floor=0.25, decay_at=1.1)
+    times, cents, conf, amp = _ribbon(1.3, [a, b])
+    notes = segment_notes(times, cents, conf, amp, legato=True)
+    assert len(notes) == 2 and abs(notes[1].start - 0.6) < 0.05
+
+
+def test_legato_does_not_sustain_when_the_envelope_has_died():
+    from scripts.f0_notes import segment_notes
+
+    times, cents, conf, amp = _ribbon(2.0, [_pluck(None, 0.2, 1.0, 6200, floor=0.0, decay_at=0.4)])
+    notes = segment_notes(times, cents, conf, amp, legato=True)
+    assert len(notes) == 1 and notes[0].end < 1.15  # the envelope reaches 15 percent before the end
+
+
+def test_merge_notes_joins_same_pitch_across_short_gaps_only():
+    from scripts.f0_notes import F0Note, merge_notes
+
+    a = F0Note(0.0, 0.50, 6200.0, 0.9, 0.8)
+    b = F0Note(0.60, 0.90, 6205.0, 0.7, 0.5)   # 100 ms gap, same pitch -> merged
+    c = F0Note(1.10, 1.40, 6200.0, 0.9, 0.6)   # 200 ms gap -> kept apart
+    d = F0Note(1.45, 1.70, 6400.0, 0.9, 0.6)   # short gap, different pitch -> kept apart
+    out = merge_notes([a, b, c, d], max_gap_sec=0.12)
+    assert [(n.start, n.end) for n in out] == [(0.0, 0.9), (1.1, 1.4), (1.45, 1.7)]
+    assert 6200 < out[0].cents < 6205 and out[0].amp == 0.8

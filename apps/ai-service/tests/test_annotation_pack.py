@@ -57,3 +57,15 @@ def test_instrumental_pack_has_no_stems_and_refuses_failed_items(tmp_path):
 
     with pytest.raises(RuntimeError):
         build_pack("oud_y_song", pool, out)
+
+
+def test_rebuilding_a_pack_keeps_an_edited_corrected_file(tmp_path):
+    pool, out = tmp_path / "pool", tmp_path / "annotation"
+    _fake_pool_item(pool, "oud_z_song", separated=False)
+    pack = build_pack("oud_z_song", pool, out)
+    corrected = pack / "oud_z_song_corrected.musicxml"
+    corrected.write_text("<score-partwise>edited by ear</score-partwise>")
+    (pool / "oud_z_song" / "song.musicxml").write_text("<score-partwise>new machine</score-partwise>")
+    build_pack("oud_z_song", pool, out)
+    assert corrected.read_text() == "<score-partwise>edited by ear</score-partwise>"
+    assert (pack / "oud_z_song_machine.musicxml").read_text() == "<score-partwise>new machine</score-partwise>"

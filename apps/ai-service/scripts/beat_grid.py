@@ -86,6 +86,7 @@ def snap_notes_monophonic(
     sub: int = 2,
     beats_per_bar: int = 4,
     bar_shift: float | None = None,
+    min_rest_ql: float = 0.0,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Grid snap for ONE notation voice: pickups keep their place, overlaps are
     resolved, so the result can be engraved as a single line.
@@ -101,6 +102,9 @@ def snap_notes_monophonic(
     input note, kept or not. `bar_shift` fixes the shift in beats (a multiple
     of beats_per_bar) so several staves of one score share it; None computes
     it from these notes alone. pickup_shift_beats() gives the shared value.
+    `min_rest_ql` > 0: a gap between two kept notes no longer than that many
+    quarter lengths is not written as a rest; the earlier note is extended to
+    the next onset instead (0.5 = an eighth at the score's tempo).
     """
     step = 1.0 / sub
     sb = times_to_beats(starts, beat_times)
@@ -120,5 +124,7 @@ def snap_notes_monophonic(
             overrun = offsets[last] + durations[last] - offsets[i]
             if overrun > 0:
                 durations[last] = max(step, offsets[i] - offsets[last])
+            elif min_rest_ql > 0 and 0 < -overrun <= min_rest_ql:
+                durations[last] = offsets[i] - offsets[last]  # too short for a rest: sustain
         last = i
     return offsets, durations, keep

@@ -22,14 +22,15 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.f0_notes import hz_to_cents, median_smooth, segment_notes  # noqa: E402
+from scripts.f0_notes import hz_to_cents, median_smooth, merge_notes, segment_notes  # noqa: E402
 
 SAMPLE_RATE = 16_000  # CREPE's native rate
 HOP = 160  # 10 ms
 
 
 def extract_notes(audio_path: str | Path, voicing_threshold: float = 0.5,
-                  return_frames: bool = False, device: str | None = None) -> dict:
+                  return_frames: bool = False, device: str | None = None,
+                  legato: bool = False, merge_gap_sec: float = 0.12) -> dict:
     import librosa
     import torch
     import torchcrepe
@@ -68,13 +69,16 @@ def extract_notes(audio_path: str | Path, voicing_threshold: float = 0.5,
 
     cents = median_smooth(hz_to_cents(f0), width=5)
     conf = median_smooth(conf, width=3)
-    notes = segment_notes(times, cents, conf, amp, voicing_threshold=voicing_threshold)
+    notes = segment_notes(times, cents, conf, amp, voicing_threshold=voicing_threshold, legato=legato)
+    if legato:
+        notes = merge_notes(notes, max_gap_sec=merge_gap_sec)
 
     result = {
         "engine": "torchcrepe-full",
         "device": device,
         "n_frames": int(n),
         "voiced_fraction": round(float(np.mean(conf >= voicing_threshold)), 3),
+        "legato": bool(legato),
         "notes": [
             {
                 "start": round(nt.start, 4),
@@ -103,8 +107,9 @@ if __name__ == "__main__":
     ap.add_argument("audio")
     ap.add_argument("out_json")
     ap.add_argument("--voicing", type=float, default=0.5)
+    ap.add_argument("--legato", action="store_true", help="sustain plucked notes through the ring-out")
     args = ap.parse_args()
-    result = extract_notes(args.audio, voicing_threshold=args.voicing)
+    result = extract_notes(args.audio, voicing_threshold=args.voicing, legato=args.legato)
     Path(args.out_json).write_text(json.dumps(result, indent=1))
     print(json.dumps({k: v for k, v in result.items() if k != "notes"}
                      | {"n_notes": len(result["notes"])}))
