@@ -221,15 +221,21 @@ def artifact_path(job_id: str, kind: str) -> Path:
             raise NotationError("original audio missing")
         return p
     ext = {"musicxml": ".musicxml", "svg": ".svg", "midi": ".mid",
-           "pdf": ".pdf", "json": ".json"}.get(kind)
-    if ext is None:
+           "pdf": ".pdf", "json": ".json", "stem_vocals": None, "stem_other": None}
+    if kind not in ext:
         raise NotationError(f"unknown artifact kind '{kind}'")
     state = read_job(job_id)
     if state["status"] != "done":
         raise NotationError(f"job is {state['status']}, artifacts not ready")
-    # Separated jobs transcribe the vocals stem, so artifacts carry its stem.
     stem = state.get("artifact_stem") or Path(state["input"]).stem
-    p = job_dir(job_id) / f"{stem}{ext}"
+    if kind.startswith("stem_"):
+        # Demucs writes stems/htdemucs/<decoded wav stem>/{vocals,other}.wav;
+        # the decoded wav is <stem>.input.wav.
+        p = job_dir(job_id) / "stems" / "htdemucs" / f"{stem}.input" / f"{kind[5:]}.wav"
+        if not p.exists():
+            raise NotationError("no separated stems for this job")
+        return p
+    p = job_dir(job_id) / f"{stem}{ext[kind]}"
     if not p.exists():
         raise NotationError(f"artifact {kind} missing")
     return p
