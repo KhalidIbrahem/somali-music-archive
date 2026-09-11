@@ -58,8 +58,12 @@ module.exports = {
       name: 'ai-service',
       cwd: path.join(ROOT, 'apps', 'ai-service'),
       script: PY,
-      args: '-m uvicorn main:app --host 127.0.0.1 --port 8000',
-      env: { PATH },
+      // Loopback by default. `bash scripts/dev-up.sh --lan` sets
+      // AI_SERVICE_HOST=0.0.0.0 so an iPad on the same network can open the
+      // listening review page (/demo/review); REVIEW_HTTPS_URL is the https
+      // address that page names for recording (Tailscale, when available).
+      args: `-m uvicorn main:app --host ${process.env.AI_SERVICE_HOST || '127.0.0.1'} --port 8000`,
+      env: { PATH, REVIEW_HTTPS_URL: process.env.REVIEW_HTTPS_URL || '' },
       out_file: path.join(LOGS, 'ai-service.out.log'),
       error_file: path.join(LOGS, 'ai-service.err.log'),
     },

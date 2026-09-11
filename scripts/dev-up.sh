@@ -4,6 +4,8 @@
 #   service (8765) as its launchd user agent. Re-runnable; idempotent.
 #
 #   bash scripts/dev-up.sh                      start (or restart) everything
+#   bash scripts/dev-up.sh --lan                also reachable from the local network
+#                                               (the listening review page on an iPad)
 #   bash scripts/dev-up.sh --install-login-agent  also run this at login (survives a reboot)
 #   bash scripts/dev-up.sh --remove-login-agent
 #   bash scripts/dev-status.sh · bash scripts/dev-down.sh
@@ -17,7 +19,19 @@ AGENT_PLIST="$HOME/Library/LaunchAgents/$AGENT_LABEL.plist"
 MUSICGEN_LABEL="com.qaraamigen.musicgen-api"
 mkdir -p logs apps/api/.data
 
+LAN=0
+TAILSCALE="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 case "${1:-}" in
+  --lan)
+    LAN=1
+    export AI_SERVICE_HOST=0.0.0.0
+    # A browser opens the microphone only on a secure origin; over the tailnet
+    # `Tailscale serve` gives this machine an https address with a valid
+    # certificate. Not run here: it changes what the machine exposes.
+    if [ -x "$TAILSCALE" ]; then
+      TS_NAME=$("$TAILSCALE" status --json 2>/dev/null | sed -n 's/.*"DNSName": *"\([^"]*\)\.".*/\1/p' | head -1)
+      [ -n "$TS_NAME" ] && export REVIEW_HTTPS_URL="https://$TS_NAME"
+    fi ;;
   --install-login-agent)
     cat > "$AGENT_PLIST" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
@@ -74,4 +88,12 @@ wait_for web          http://127.0.0.1:3000/       90
 wait_for musicgen-api http://127.0.0.1:8765/health 120
 echo
 echo "web:  http://localhost:3000        demo: http://127.0.0.1:8000/demo"
+if [ "$LAN" = 1 ]; then
+  LAN_IP="$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null)"
+  echo "listening review on the local network:  http://${LAN_IP:-<this Mac>}:8000/demo/review"
+  if [ -n "${REVIEW_HTTPS_URL:-}" ]; then
+    echo "to record on the iPad (needs https): run  \"$TAILSCALE\" serve --bg 8000"
+    echo "  then open  ${REVIEW_HTTPS_URL}/demo/review  on an iPad signed into the tailnet"
+  fi
+fi
 echo "logs: $ROOT/logs/                 status: bash scripts/dev-status.sh   stop: bash scripts/dev-down.sh"
