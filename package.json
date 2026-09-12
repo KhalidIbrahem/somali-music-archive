@@ -42,7 +42,7 @@
     "tokens:gen": "node scripts/gen-tokens.mjs",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
     "export-share": "git archive --format=zip HEAD -o ../qaraamigen-share.zip && echo 'wrote ../qaraamigen-share.zip (tracked files at HEAD only)'",
-    "prepare": "husky"
+    "prepare": "node .husky/install.mjs"
   },
   "//lint-staged": "Runs on staged files only (via the husky pre-commit hook), so commits stay fast. Prettier auto-formats and re-stages. Per-app ESLint joins this list once each app's eslint config lands (Phase 1). Prettier honours .prettierignore, so ignored paths (e.g. package-lock.json, *.md) are skipped.",
   "lint-staged": {
