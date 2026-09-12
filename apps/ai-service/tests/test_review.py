@@ -203,3 +203,12 @@ def test_pool_folders_are_offered_and_reviewed_under_annotation(pool_item):
     assert "A pool take.musicxml" in md and "wrong notes" in md
     assert rs.list_items()[0]["reviews"] == ["hodan"]
     assert client.get("/demo/review/demo_nothing_here").status_code == 404
+
+
+def test_the_legato_copy_of_a_duplicated_recording_is_the_one_offered(pool_item):
+    slug, d, pipeline = pool_item
+    dup = d.parent / (slug + "_2")
+    p2 = dict(pipeline); p2["stems"] = {"Oud (kaban)": {"legato": True}}
+    (dup / "A pool take.json").write_text(json.dumps(p2))
+    items = rs.list_items()
+    assert [i["slug"] for i in items] == [slug + "_2"] and items[0]["legato"] is True
