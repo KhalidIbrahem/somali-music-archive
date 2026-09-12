@@ -231,6 +231,10 @@ def list_items(annotation_root: Path | None = None, pool_root: Path | None = Non
                     seen_hashes.add(m.group(1))
     pool_names: set[str] = set()
     if pool_root.is_dir():
+        # One entry per recording. Files with the same content hash are one
+        # recording; of those, the folder transcribed with legato wins, since
+        # the pool runner may have rerun either copy.
+        groups: dict[str, list[Item]] = {}
         for d in sorted(p for p in pool_root.iterdir() if p.is_dir() and not p.name.startswith("_")):
             m = HASH_RE.match(d.name)
             if d.name in seen_slugs or (m and m.group(1) in seen_hashes):
@@ -238,9 +242,10 @@ def list_items(annotation_root: Path | None = None, pool_root: Path | None = Non
             it = _pool_item(d, annotation_root)
             if it is None:
                 continue
-            if m:
-                seen_hashes.add(m.group(1))
-            row = _read_json(d / "pool_row.json") if (d / "pool_row.json").is_file() else {}
+            groups.setdefault(m.group(1) if m else d.name, []).append(it)
+        chosen = [next((it for it in its if it.legato), its[0]) for its in groups.values()]
+        for it in sorted(chosen, key=lambda x: x.slug):
+            row = _read_json(it.dir / "pool_row.json") if (it.dir / "pool_row.json").is_file() else {}
             if row.get("name"):
                 pool_names.add(row["name"])
             out.append(_item_row(it))
