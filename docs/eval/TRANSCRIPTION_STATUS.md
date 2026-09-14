@@ -41,12 +41,25 @@ Notes rise where repeated plucks of one pitch were previously one fragment
 each; rests fall because the decay is no longer written as silence. Outputs
 before this change are kept beside the new ones as `_v0/` under
 `data/transcription_demo/`, `data/transcription_pool/` and `data/annotation/`.
-The pool has been rerun with legato in three sittings: the five benchmark
-items, then all 28 oud recordings (2026-09-11), then 48 of the remaining 61
-band recordings (2026-09-13 to 14). The last 13 band recordings wait for the
-archive drive that holds their source files (see Running). The pool report
-(`TRANSCRIPTION_POOL_REPORT.md`) still describes the run before legato and is
-regenerated once those 13 are done.
+The whole pool has been rerun with legato (the five benchmark items, all 28
+oud recordings on 2026-09-11, the 63 band recordings on 2026-09-13 to 14), and
+`TRANSCRIPTION_POOL_REPORT.md` is regenerated from the new index. Across the
+pool, against the pre-legato rows kept under `_v0/`:
+
+| source | recordings | notes before → after | off-scale notes marked before → after | PCS median before → after |
+| --- | ---: | ---: | ---: | ---: |
+| oud | 28 | 24,198 → 28,855 (+19%) | 1,264 → 1,820 | 0.964 → 0.962 |
+| band | 63 | 11,389 → 12,383 (+9%) | 3,453 → 3,764 | 0.717 → 0.743 |
+
+PCS medians as the pool report gives them; note counts summed over the pool's
+rows. Kept notes per minute of audio rose from a mean of 115 to 128.
+
+The tonic reading changed on 29 recordings (7 oud, 22 band): 11 are the same
+pitch-class set read from another root (a relative mode), 18 are a different
+scale. Tonic-ambiguous recordings went from 10 to 7 and recordings with a
+warning sign from 69 to 70. The corrected files of the benchmark items remain
+the authority on the scale; the pool numbers describe the pipeline, not the
+music.
 
 Listening review for annotators who do not read notation:
 `http://127.0.0.1:8000/demo/review` (every transcribed recording: the packs, the whole pool, the demos; four-bar phrases from the beat
@@ -62,6 +75,13 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 
 ## Done
 
+- Legato rerun of the whole pool (done 2026-09-14 14:27, CPU CREPE): 91 of 91
+  recordings, 0 failures, in three sittings because the `Khalid_Archives`
+  volume that holds the band source files unmounts when the Mac sleeps (three
+  band items show hours of wall-clock runtime from an overnight hibernation).
+  Pre-legato outputs kept under `_v0/`; pool report regenerated; numbers in
+  the legato section above. Rerun script: `~/ai/rerun_pool_legato.sh` (reruns
+  only what is still pre-legato; needs the volume mounted and AC power).
 - Inventory of the existing Track B code and what runs on this machine.
 - `scripts/pentatonic.py`: data-driven scale in cents relative to the tonic (`refine_scale_cents`, weighted median per degree, unsung degrees keep their template interval), runner-up (tonic, mode) readings with scores.
 - `scripts/quantize.py`: `deviation_cents`, `degree`, `rel_cents` on every note; `detect_scale(refine=True)`; snapping and PCS against the refined degrees.
@@ -83,18 +103,7 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 
 ## Running
 
-- Legato rerun of the band recordings in the pool, paused: 48 of 61 done
-  between 2026-09-13 22:43 and 2026-09-14 13:18 (CPU CREPE, 90-second
-  excerpts; the Mac hibernated on battery overnight, which is why three items
-  show hours of wall-clock runtime). The last 13 failed at decode because the
-  `Khalid_Archives` volume, which holds every band source file, was no longer
-  mounted. Their pre-legato rows and outputs were restored from `_v0/`, so the
-  index shows no failures and the review page offers them marked as before the
-  fix. To finish: reconnect and unlock the drive, then on AC power run
-  `nohup bash ~/ai/rerun_pool_legato.sh > ~/ai/rerun_pool_legato.log 2>&1 &`
-  (it reruns only what is still pre-legato, about 25 minutes), then regenerate
-  the pool report. The `POOL_LEGATO_DONE` marker in the pool folder is from the
-  interrupted run.
+- Nothing at the moment.
 
 ## Failed, and what was done
 
