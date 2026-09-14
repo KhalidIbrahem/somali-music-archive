@@ -41,8 +41,12 @@ Notes rise where repeated plucks of one pitch were previously one fragment
 each; rests fall because the decay is no longer written as silence. Outputs
 before this change are kept beside the new ones as `_v0/` under
 `data/transcription_demo/`, `data/transcription_pool/` and `data/annotation/`.
-The pool report (`TRANSCRIPTION_POOL_REPORT.md`) still describes the run before
-legato; only the five benchmark items were rerun.
+The pool has been rerun with legato in three sittings: the five benchmark
+items, then all 28 oud recordings (2026-09-11), then 48 of the remaining 61
+band recordings (2026-09-13 to 14). The last 13 band recordings wait for the
+archive drive that holds their source files (see Running). The pool report
+(`TRANSCRIPTION_POOL_REPORT.md`) still describes the run before legato and is
+regenerated once those 13 are done.
 
 Listening review for annotators who do not read notation:
 `http://127.0.0.1:8000/demo/review` (every transcribed recording: the packs, the whole pool, the demos; four-bar phrases from the beat
@@ -79,7 +83,18 @@ Decisions and their reasons: `TRANSCRIPTION_DECISIONS.md`.
 
 ## Running
 
-- Nothing at the moment.
+- Legato rerun of the band recordings in the pool, paused: 48 of 61 done
+  between 2026-09-13 22:43 and 2026-09-14 13:18 (CPU CREPE, 90-second
+  excerpts; the Mac hibernated on battery overnight, which is why three items
+  show hours of wall-clock runtime). The last 13 failed at decode because the
+  `Khalid_Archives` volume, which holds every band source file, was no longer
+  mounted. Their pre-legato rows and outputs were restored from `_v0/`, so the
+  index shows no failures and the review page offers them marked as before the
+  fix. To finish: reconnect and unlock the drive, then on AC power run
+  `nohup bash ~/ai/rerun_pool_legato.sh > ~/ai/rerun_pool_legato.log 2>&1 &`
+  (it reruns only what is still pre-legato, about 25 minutes), then regenerate
+  the pool report. The `POOL_LEGATO_DONE` marker in the pool folder is from the
+  interrupted run.
 
 ## Failed, and what was done
 
