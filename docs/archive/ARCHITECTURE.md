@@ -1304,7 +1304,7 @@ GET    /research/v1/embeddings        → batch embedding export
 # Prerequisites: Node 20+, Python 3.11+, Docker Desktop
 
 # Clone the monorepo
-git clone https://github.com/khalid-ibrahim/somali-music-archive
+git clone https://github.com/KhalidIbrahem/somali-music-archive
 cd somali-music-archive
 
 # Start all services with Docker Compose
