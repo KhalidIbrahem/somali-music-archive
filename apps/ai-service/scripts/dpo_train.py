@@ -48,10 +48,23 @@ import soundfile as sf
 import torch
 import torch.nn.functional as F
 from peft import PeftModel
-from transformers import AutoProcessor, MusicgenForConditionalGeneration, get_cosine_schedule_with_warmup
+from transformers import (
+    AutoProcessor,
+    MusicgenForConditionalGeneration,
+    get_cosine_schedule_with_warmup,
+)
 
 from scripts.pentatonic import PC_NAMES
-from scripts.scale_train import BOS, DEVICE, delayed_labels, git_commit, load_split, mps_mem_gb, token_path, zero_functional_dropout
+from scripts.scale_train import (
+    BOS,
+    DEVICE,
+    delayed_labels,
+    git_commit,
+    load_split,
+    mps_mem_gb,
+    token_path,
+    zero_functional_dropout,
+)
 
 REPO = Path(__file__).resolve().parents[3]
 RUNS_DIR = REPO / "runs"

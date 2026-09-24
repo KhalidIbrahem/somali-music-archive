@@ -1,0 +1,221 @@
+Draft PR for huggingface/transformers — not opened. Written against 4.57.6 source
+(line numbers from the installed wheel; re-anchor on main before submitting).
+Companion to docs/oss/transformers_musicgen_dropout_issue.md.
+
+Title: MusicGen: default `dropout=0.0` to match the released checkpoints, warn when train mode turns dropout on
+
+Summary
+- The released MusicGen checkpoints were trained without dropout (audiocraft
+  `config/model/lm/default.yaml`: `dropout: 0.`), but `MusicgenDecoderConfig`
+  and `MusicgenMelodyDecoderConfig` default `dropout=0.1`, and that default was
+  written into every hub config. In `train()` mode the functional dropout at 25
+  decoder sites raises the token loss on the model's own tokens from 4.8 to 9.7
+  nats (above uniform), so fine-tuning optimises a path `generate()` never uses.
+- This PR (1) changes the config default to 0.0, (2) warns once when a MusicGen
+  model enters train mode with any non-zero dropout, (3) adds tests. Hub configs
+  are fixed in separate hub PRs (`"dropout": 0.0`, `"decoder_start_token_id": 2048`).
+- Behaviour change: only for configs constructed without an explicit `dropout`.
+  Existing hub checkpoints keep 0.1 until their configs are updated; the new
+  warning tells those users what is happening.
+
+---
+ src/transformers/models/musicgen/configuration_musicgen.py               |  7 ++--
+ src/transformers/models/musicgen/modeling_musicgen.py                    | 24 ++++++++++++++
+ src/transformers/models/musicgen_melody/configuration_musicgen_melody.py |  7 ++--
+ src/transformers/models/musicgen_melody/modeling_musicgen_melody.py      | 24 ++++++++++++++
+ tests/models/musicgen/test_modeling_musicgen.py                          | 38 ++++++++++++++++++++++
+ tests/models/musicgen_melody/test_modeling_musicgen_melody.py            | 20 ++++++++++++
+ 6 files changed, 116 insertions(+), 4 deletions(-)
+
+diff --git a/src/transformers/models/musicgen/configuration_musicgen.py b/src/transformers/models/musicgen/configuration_musicgen.py
+--- a/src/transformers/models/musicgen/configuration_musicgen.py
++++ b/src/transformers/models/musicgen/configuration_musicgen.py
+@@ -49,8 +49,11 @@ class MusicgenDecoderConfig(PretrainedConfig):
+             The non-linear activation function (function or string) in the decoder and pooler. If string, `"gelu"`,
+             `"relu"`, `"silu"` and `"gelu_new"` are supported.
+-        dropout (`float`, *optional*, defaults to 0.1):
+-            The dropout probability for all fully connected layers in the embeddings, text_encoder, and pooler.
++        dropout (`float`, *optional*, defaults to 0.0):
++            The dropout probability applied to the summed codebook embeddings and after the attention and
++            feed-forward blocks of every decoder layer. The released MusicGen checkpoints were trained without
++            dropout; a non-zero value makes the train-mode forward pass differ from the one used by `generate`,
++            so set it only if you intend to regularise a fine-tune.
+         attention_dropout (`float`, *optional*, defaults to 0.0):
+             The dropout ratio for the attention probabilities.
+         activation_dropout (`float`, *optional*, defaults to 0.0):
+@@ -90,7 +93,7 @@ class MusicgenDecoderConfig(PretrainedConfig):
+         use_cache=True,
+         activation_function="gelu",
+         hidden_size=1024,
+-        dropout=0.1,
++        dropout=0.0,
+         attention_dropout=0.0,
+         activation_dropout=0.0,
+         initializer_factor=0.02,
+diff --git a/src/transformers/models/musicgen/modeling_musicgen.py b/src/transformers/models/musicgen/modeling_musicgen.py
+--- a/src/transformers/models/musicgen/modeling_musicgen.py
++++ b/src/transformers/models/musicgen/modeling_musicgen.py
+@@ -423,6 +423,30 @@ class MusicgenPreTrainedModel(PreTrainedModel):
+     _supports_sdpa = True
+     _supports_flex_attn = True
+
++    _warned_dropout_in_train_mode = False
++
++    def train(self, mode: bool = True):
++        # The MusicGen decoder applies dropout functionally (`nn.functional.dropout(..., training=self.training)`)
++        # from three float config attributes, so `nn.Dropout` sweeps do not reveal it. The released checkpoints
++        # were trained without dropout: with the historical config value of 0.1 the train-mode loss on the model's
++        # own tokens roughly doubles, and a fine-tune optimises a path that `generate` never uses. Say so once.
++        if mode and not self._warned_dropout_in_train_mode:
++            decoder_config = getattr(self.config, "decoder", self.config)
++            active = {
++                name: getattr(decoder_config, name, 0.0)
++                for name in ("dropout", "attention_dropout", "activation_dropout")
++                if getattr(decoder_config, name, 0.0)
++            }
++            if active:
++                logger.warning(
++                    "MusicGen entered train mode with non-zero decoder dropout %s. The pretrained MusicGen "
++                    "checkpoints were trained without dropout, so the train-mode forward pass will differ from the "
++                    "eval-mode pass used by `generate`. To fine-tune on the same path, set these to 0.0 in the "
++                    "decoder config before training.",
++                    active,
++                )
++            self._warned_dropout_in_train_mode = True
++        return super().train(mode)
++
+     def _init_weights(self, module):
+         std = self.config.initializer_factor
+         if isinstance(module, nn.Linear):
+diff --git a/src/transformers/models/musicgen_melody/configuration_musicgen_melody.py b/src/transformers/models/musicgen_melody/configuration_musicgen_melody.py
+--- a/src/transformers/models/musicgen_melody/configuration_musicgen_melody.py
++++ b/src/transformers/models/musicgen_melody/configuration_musicgen_melody.py
+@@ -57,8 +57,11 @@ class MusicgenMelodyDecoderConfig(PretrainedConfig):
+         hidden_size (`int`, *optional*, defaults to 1024):
+             Dimensionality of the layers and the pooler layer.
+-        dropout (`float`, *optional*, defaults to 0.1):
+-            The dropout probability for all fully connected layers in the embeddings, text_encoder, and pooler.
++        dropout (`float`, *optional*, defaults to 0.0):
++            The dropout probability applied to the summed codebook embeddings and after the attention and
++            feed-forward blocks of every decoder layer. The released MusicGen Melody checkpoints were trained
++            without dropout; a non-zero value makes the train-mode forward pass differ from the one used by
++            `generate`, so set it only if you intend to regularise a fine-tune.
+         attention_dropout (`float`, *optional*, defaults to 0.0):
+             The dropout ratio for the attention probabilities.
+         activation_dropout (`float`, *optional*, defaults to 0.0):
+@@ -92,7 +95,7 @@ class MusicgenMelodyDecoderConfig(PretrainedConfig):
+         use_cache=True,
+         activation_function="gelu",
+         hidden_size=1024,
+-        dropout=0.1,
++        dropout=0.0,
+         attention_dropout=0.0,
+         activation_dropout=0.0,
+         initializer_factor=0.02,
+diff --git a/src/transformers/models/musicgen_melody/modeling_musicgen_melody.py b/src/transformers/models/musicgen_melody/modeling_musicgen_melody.py
+--- a/src/transformers/models/musicgen_melody/modeling_musicgen_melody.py
++++ b/src/transformers/models/musicgen_melody/modeling_musicgen_melody.py
+@@ -<MusicgenMelodyPreTrainedModel class attributes> @@ class MusicgenMelodyPreTrainedModel(PreTrainedModel):
+     _supports_sdpa = True
+     _supports_flex_attn = True
+
++    _warned_dropout_in_train_mode = False
++
++    # Copied from transformers.models.musicgen.modeling_musicgen.MusicgenPreTrainedModel.train
++    def train(self, mode: bool = True):
++        if mode and not self._warned_dropout_in_train_mode:
++            decoder_config = getattr(self.config, "decoder", self.config)
++            active = {
++                name: getattr(decoder_config, name, 0.0)
++                for name in ("dropout", "attention_dropout", "activation_dropout")
++                if getattr(decoder_config, name, 0.0)
++            }
++            if active:
++                logger.warning(
++                    "MusicGen entered train mode with non-zero decoder dropout %s. The pretrained MusicGen "
++                    "checkpoints were trained without dropout, so the train-mode forward pass will differ from the "
++                    "eval-mode pass used by `generate`. To fine-tune on the same path, set these to 0.0 in the "
++                    "decoder config before training.",
++                    active,
++                )
++            self._warned_dropout_in_train_mode = True
++        return super().train(mode)
++
+     def _init_weights(self, module):
+diff --git a/tests/models/musicgen/test_modeling_musicgen.py b/tests/models/musicgen/test_modeling_musicgen.py
+--- a/tests/models/musicgen/test_modeling_musicgen.py
++++ b/tests/models/musicgen/test_modeling_musicgen.py
+@@ -<inside class MusicgenDecoderTest(ModelTesterMixin, GenerationTesterMixin, unittest.TestCase)> @@
++    def test_train_mode_matches_eval_mode_by_default(self):
++        # The released MusicGen checkpoints were trained without dropout. A default config must not turn any on,
++        # or fine-tuning optimises a forward path that `generate` never uses (train-mode loss on the model's own
++        # tokens went from 4.8 to 9.7 nats with the old default of 0.1).
++        config, inputs_dict = self.model_tester.prepare_config_and_inputs_for_common()
++        self.assertEqual(config.dropout, 0.0)
++        model = MusicgenForCausalLM(config).to(torch_device).eval()
++        torch.manual_seed(0)
++        with torch.no_grad():
++            eval_logits = model(**inputs_dict).logits
++        model.train()
++        torch.manual_seed(0)
++        with torch.no_grad():
++            train_logits = model(**inputs_dict).logits
++        torch.testing.assert_close(eval_logits, train_logits)
++
++    def test_train_mode_warns_once_when_dropout_is_on(self):
++        config, _ = self.model_tester.prepare_config_and_inputs_for_common()
++        config.dropout = 0.1
++        model = MusicgenForCausalLM(config).to(torch_device)
++        logger = logging.get_logger("transformers.models.musicgen.modeling_musicgen")
++        with CaptureLogger(logger) as cl:
++            model.train()
++            model.eval()
++            model.train()
++        self.assertEqual(cl.out.count("entered train mode with non-zero decoder dropout"), 1)
++        self.assertIn("'dropout': 0.1", cl.out)
++
++    def test_train_mode_is_silent_when_dropout_is_off(self):
++        config, _ = self.model_tester.prepare_config_and_inputs_for_common()
++        model = MusicgenForCausalLM(config).to(torch_device)
++        logger = logging.get_logger("transformers.models.musicgen.modeling_musicgen")
++        with CaptureLogger(logger) as cl:
++            model.train()
++        self.assertEqual(cl.out, "")
++
+diff --git a/tests/models/musicgen_melody/test_modeling_musicgen_melody.py b/tests/models/musicgen_melody/test_modeling_musicgen_melody.py
+--- a/tests/models/musicgen_melody/test_modeling_musicgen_melody.py
++++ b/tests/models/musicgen_melody/test_modeling_musicgen_melody.py
+@@ -<inside class MusicgenMelodyDecoderTest> @@
++    def test_train_mode_matches_eval_mode_by_default(self):
++        # Same contract as MusicgenDecoderTest: the default config turns no dropout on.
++        config, inputs_dict = self.model_tester.prepare_config_and_inputs_for_common()
++        self.assertEqual(config.dropout, 0.0)
++        model = MusicgenMelodyForCausalLM(config).to(torch_device).eval()
++        torch.manual_seed(0)
++        with torch.no_grad():
++            eval_logits = model(**inputs_dict).logits
++        model.train()
++        torch.manual_seed(0)
++        with torch.no_grad():
++            train_logits = model(**inputs_dict).logits
++        torch.testing.assert_close(eval_logits, train_logits)
++
++    def test_train_mode_warns_once_when_dropout_is_on(self):
++        config, _ = self.model_tester.prepare_config_and_inputs_for_common()
++        config.dropout = 0.1
++        model = MusicgenMelodyForCausalLM(config).to(torch_device)
++        logger = logging.get_logger("transformers.models.musicgen_melody.modeling_musicgen_melody")
++        with CaptureLogger(logger) as cl:
++            model.train()
++            model.train()
++        self.assertEqual(cl.out.count("entered train mode with non-zero decoder dropout"), 1)
+
+Notes for submission
+- `CaptureLogger` and `logging` come from `transformers.testing_utils` / `transformers.utils`; both test
+  files already import `torch_device` from `transformers.testing_utils`.
+- The tester's `prepare_config_and_inputs_for_common` currently builds its config without passing
+  `dropout`; if a tester passes `dropout=0.1` explicitly, drop that argument in the same PR.
+- The `# Copied from` marker keeps `utils/check_copies.py` happy; run `make fix-copies`.
+- Separate hub PRs (not in this diff): `facebook/musicgen-small`, `-medium`, `-large`, `-melody`,
+  `-melody-large`, `-stereo-*`: set `"decoder": {"dropout": 0.0, ...}` and add
+  `"decoder_start_token_id": 2048` so `model(**inputs, labels=...)` works out of the box.

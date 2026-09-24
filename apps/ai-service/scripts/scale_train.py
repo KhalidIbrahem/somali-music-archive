@@ -36,7 +36,12 @@ import numpy as np
 import soundfile as sf
 import torch
 from peft import LoraConfig, get_peft_model
-from transformers import AutoProcessor, MusicgenForConditionalGeneration, MusicgenMelodyForConditionalGeneration, get_cosine_schedule_with_warmup
+from transformers import (
+    AutoProcessor,
+    MusicgenForConditionalGeneration,
+    MusicgenMelodyForConditionalGeneration,
+    get_cosine_schedule_with_warmup,
+)
 
 REPO = Path(__file__).resolve().parents[3]
 RUNS_DIR = REPO / "runs"

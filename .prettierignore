@@ -7,3 +7,8 @@ build
 coverage
 *.md
 package-lock.json
+
+# Result artifacts and machine-local config are not source; Prettier must not gate them.
+runs
+data
+.claude

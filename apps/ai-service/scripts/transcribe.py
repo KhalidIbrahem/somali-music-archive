@@ -33,7 +33,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import subprocess
 import sys
 import time
@@ -44,11 +43,20 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.beat_grid import (  # noqa: E402
-    MIN_BEATS_FOR_GRID, median_bpm, pickup_shift_beats, snap_notes_monophonic,
+    MIN_BEATS_FOR_GRID,
+    median_bpm,
+    pickup_shift_beats,
+    snap_notes_monophonic,
 )
 from scripts.melody import melody_skyline  # noqa: E402
 from scripts.pentatonic import PC_NAMES  # noqa: E402
-from scripts.quantize import Note, QNote, detect_scale, pcs_of_notes, pentatonic_quantize  # noqa: E402
+from scripts.quantize import (  # noqa: E402
+    Note,
+    QNote,
+    detect_scale,
+    pcs_of_notes,
+    pentatonic_quantize,
+)
 
 MSCORE = Path("/Applications/MuseScore 4.app/Contents/MacOS/mscore")
 AMBIGUITY_RATIO = 0.95  # runner-up with another tonic within 5 percent of the winner
@@ -220,8 +228,9 @@ def build_score(parts: list[tuple[str, list[QNote], tuple[np.ndarray, np.ndarray
     notehead and the signed deviation in cents as a lyric, so an editor sees
     exactly what was not snapped. Returns the music21 Score (MIDI is written
     from the same object)."""
-    from music21 import (clef, expressions, instrument, metadata, meter,
-                         note as m21note, stream, tempo as m21tempo)
+    from music21 import clef, expressions, instrument, metadata, meter, stream
+    from music21 import note as m21note
+    from music21 import tempo as m21tempo
 
     score = stream.Score()
     score.metadata = metadata.Metadata(title=title)

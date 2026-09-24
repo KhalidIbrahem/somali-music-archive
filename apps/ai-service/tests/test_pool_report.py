@@ -31,6 +31,7 @@ def test_report_counts_and_deviations_are_right():
 
 def test_pool_items_with_identical_content_are_folded(monkeypatch, tmp_path):
     import json
+
     from scripts import transcribe_pool as tp
 
     inv = tmp_path / "data" / "inventory"

@@ -40,7 +40,7 @@ import webbrowser
 from dataclasses import dataclass, field
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import urlparse
 
 REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "data"

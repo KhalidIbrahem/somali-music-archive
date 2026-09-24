@@ -67,6 +67,7 @@ def from_run(run: Path, tag: str, n: int, rnd: int) -> Path:
 
 def generate(model_name: str, adapter: Path, tag: str, n: int, k: int, seconds: int, seed: int) -> Path:
     from transformers import AutoProcessor
+
     from scripts.reward_model import Reference, composite, score_clips
 
     processor = AutoProcessor.from_pretrained(model_name)

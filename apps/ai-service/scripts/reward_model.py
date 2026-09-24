@@ -45,7 +45,6 @@ import argparse
 import hashlib
 import json
 import re
-import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -266,7 +265,7 @@ class Reference:
 
     @classmethod
     def fit(cls, oud_train_dir: Path = DATA / "oud_clips/train", oud_test_dir: Path = DATA / "oud_clips/test",
-            out: Path = REF_PATH, device: str = DEVICE) -> "Reference":
+            out: Path = REF_PATH, device: str = DEVICE) -> Reference:
         train = sorted(oud_train_dir.glob("*.wav"))
         test = sorted(oud_test_dir.glob("*.wav"))
         t0 = time.time()
@@ -310,7 +309,7 @@ class Reference:
         return ref
 
     @classmethod
-    def load(cls, path: Path = REF_PATH) -> "Reference":
+    def load(cls, path: Path = REF_PATH) -> Reference:
         z = np.load(path, allow_pickle=False)
         return cls(z["pca_mean"], z["components"], z["mu"], z["cov_inv"], z["centroid"], z["test_pca"],
                    json.loads(str(z["hiss_mean"])), json.loads(str(z["hiss_std"])))
