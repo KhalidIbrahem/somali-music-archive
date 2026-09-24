@@ -1,7 +1,9 @@
 # Draft issue for `huggingface/transformers` — not yet filed
 
 *Drafted 2026-09-24 from the QaraamiGen fine-tuning work. Every number below was
-produced by `docs/oss/musicgen_dropout_repro.py` on this machine on that date.
+produced by `docs/oss/musicgen_dropout_repro.py` on this machine on that date,
+on transformers 4.57.6 (the training env) and again on 5.17.0 (the latest
+release, fresh `uv` venv at `~/ai/tf-latest`). Line numbers are for 5.17.0.
 Khalid files it himself; nothing here has been posted.*
 
 ---
@@ -14,12 +16,12 @@ MusicGen: `train()` mode doubles the loss of the pretrained checkpoints because 
 
 | item | value |
 | --- | --- |
-| transformers | 4.57.6 |
+| transformers | 5.17.0 (latest release, 2026-09-24); also reproduced on 4.57.6 |
 | torch | 2.14.0 |
 | peft (not needed for the repro) | 0.20.0 |
 | Python | 3.11.16 |
 | platform | macOS 26 (Darwin 25.6.0), Apple M5 Max, arm64 |
-| devices tested | `cpu` and `mps` (same result on both) |
+| devices tested | `cpu` and `mps` (same result on both; on 5.x + `mps` the repro loads with `attn_implementation="eager"`, see note under the output) |
 | checkpoints | `facebook/musicgen-small`, `-medium`, `-large` (all three hub `config.json` files have `"decoder": {"dropout": 0.1, "attention_dropout": 0.0, "activation_dropout": 0.0}`) |
 
 ## Minimal reproduction (runs in about 20 s on CPU)
@@ -30,19 +32,35 @@ own EnCodec so the labels are in-distribution, then scores the same tokens with
 the same weights under four settings:
 
 ```
-$ python musicgen_dropout_repro.py cpu
+$ python musicgen_dropout_repro.py cpu        # transformers 5.17.0
 transformers decoder config: dropout=0.1 attention_dropout=0.0 activation_dropout=0.0 layers=24
-functional dropout attributes > 0: 37  (nn.Dropout modules: 37)
+functional dropout attributes > 0: 37 total, 25 in decoder  (nn.Dropout modules: 37 total, 0 in decoder)
 labels shape (1, 247, 4)
-eval mode                        loss = 4.8118
-train mode                       loss = 9.6970
-train mode, nn.Dropout p=0       loss = 9.5071
-train mode, functional attrs=0   loss = 4.8118
-(cpu, 16 s)
+eval mode                        loss = 4.4363
+train mode                       loss = 10.2944
+train mode, nn.Dropout p=0       loss = 10.2059
+train mode, functional attrs=0   loss = 4.4363
+(cpu, 19 s)
 ```
 
-On `mps`: eval 4.6730, train 9.6468, train with `nn.Dropout` modules at 0:
-9.7517, train with the functional attributes at 0: 4.6730.
+| transformers | device | eval | train | train, `nn.Dropout` p=0 | train, functional attrs=0 |
+| --- | --- | --- | --- | --- | --- |
+| 5.17.0 | cpu | 4.4363 | 10.2944 | 10.2059 | 4.4363 |
+| 5.17.0 | mps | 4.6730 | 9.6468 | 9.7517 | 4.6730 |
+| 4.57.6 | cpu | 4.8118 | 9.6970 | 9.5071 | 4.8118 |
+| 4.57.6 | mps | 4.6730 | 9.6468 | 9.7517 | 4.6730 |
+
+The eval/train gap is the same on every row. (The cpu eval loss differs between
+versions because the 5 s sample the script generates for itself differs; the
+mps rows are bit-identical across versions.)
+
+Note on `mps` with transformers 5.x: T5 attention now goes through SDPA, and
+torch's MPS SDPA kernel raises `NotImplementedError: scaled_dot_product_attention
+for MPS does not support dropout` as soon as the text encoder runs in train
+mode with its default `dropout=0.1`. The script therefore loads with
+`attn_implementation="eager"` on `mps`, which gives the same losses as SDPA on
+cpu. That is a separate MPS limitation, not part of this issue, but it means
+the default train path of this checkpoint cannot run on `mps` at all under 5.x.
 
 ## Expected
 
@@ -70,28 +88,33 @@ in our project was entirely this.
 
 ## Root cause
 
-1. `MusicgenDecoderConfig.__init__` defaults `dropout=0.1`
-   (`configuration_musicgen.py`), and `MusicgenMelodyDecoderConfig` does the same.
+1. `MusicgenDecoderConfig` defaults `dropout=0.1` (`configuration_musicgen.py`
+   line 41 in 5.17.0, `dropout: float | int = 0.1`; an `__init__` default in
+   4.x), and `MusicgenMelodyDecoderConfig` does the same.
 2. The conversion script did not override it, so all released hub configs carry
    `dropout: 0.1`.
 3. The original models were trained with **no dropout**: audiocraft's
    `config/model/lm/default.yaml` sets `dropout: 0.` for the transformer LM.
 4. `modeling_musicgen.py` applies that value functionally at 25 sites in the
    decoder: on the summed codebook embeddings in `MusicgenDecoder.forward`
-   (line 594 in 4.57.6) and after self-attention, cross-attention and the FFN in
-   each of the 24 `MusicgenDecoderLayer`s (lines 385, 403, 412). The other 12
-   of the 37 attributes are `T5Attention.dropout` in the text encoder; those are
-   harmless (train-mode text encoder alone: 4.6567 vs 4.6730 eval).
+   (line 524 in 5.17.0; 594 in 4.57.6) and after self-attention,
+   cross-attention and the FFN in each of the 24 `MusicgenDecoderLayer`s
+   (lines 356, 371, 380 in 5.17.0; 385, 403, 412 in 4.57.6). The decoder
+   contains no `nn.Dropout` module at all, which is why zeroing `p` on every
+   `nn.Dropout` in the model does nothing; all 37 of those live in the T5 text
+   encoder. The other 12 of the 37 functional attributes are
+   `T5Attention.dropout` in the text encoder; those are harmless (train-mode
+   text encoder alone: 4.6567 vs 4.6730 eval).
 
 The weights are not robust to a perturbation they never met. A single site is
 enough to break the forward pass: keeping only `MusicgenDecoder.dropout` at 0.1
 gives 9.59; keeping only layer 0's dropout gives 8.17 (isolation run,
 2026-09-24, mps).
 
-A second, smaller defect surfaces in the same repro: the hub configs leave
-`decoder_start_token_id` unset, so `model(**inputs, labels=labels)` raises
-`ValueError: Make sure to set the decoder_start_token_id attribute` until the
-user sets it to `pad_token_id` (2048) by hand.
+(A second, unrelated defect surfaces in the same repro: `forward(labels=...)`
+raises until `decoder_start_token_id` is set by hand. That is tracked
+separately in `docs/oss/transformers_musicgen_decoder_start_issue.md`; the
+repro script sets it so this issue can be reproduced on its own.)
 
 ## Proposed fix
 
@@ -109,8 +132,9 @@ Make the config match the checkpoints, in three parts (diff in
    from the eval path and how to switch it off. Cheap, and it is what would have
    saved us three weeks.
 3. **Hub config PRs** for `facebook/musicgen-{small,medium,large,melody,...}`
-   setting `"dropout": 0.0` and `"decoder_start_token_id": 2048` (outside this
-   repo; listed here so the transformers issue can link them).
+   setting `"dropout": 0.0` (outside this repo; listed here so the transformers
+   issue can link them). The same PRs can carry the `decoder_start_token_id`
+   fix from the companion issue.
 
 ### Test
 
