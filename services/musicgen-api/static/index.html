@@ -17,7 +17,7 @@
   label { display:block; font-size: 12px; letter-spacing:.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
   input, select, textarea { width:100%; background: var(--panel); color: var(--ink); border:1px solid var(--line); border-radius: 4px; padding: 10px 12px; font: inherit; }
   textarea { min-height: 64px; resize: vertical; }
-  .f { flex: 1 1 160px; } .f.wide { flex: 3 1 420px; } .f.narrow { flex: 0 1 120px; }
+  .f { flex: 1 1 160px; } .f.wide { flex: 3 1 420px; } .f.narrow { flex: 0 1 120px; } .f.adapter { flex: 2 1 320px; }
   button { background: var(--accent); color:#1a1408; border:0; border-radius:4px; padding: 12px 22px; font: inherit; font-weight: 700; cursor:pointer; }
   button:disabled { opacity:.5; cursor: wait; }
   button.ghost { background: transparent; color: var(--ink); border:1px solid var(--line); }
@@ -38,6 +38,10 @@
   .bar { height: 8px; background: #26243a; border-radius: 4px; overflow: hidden; margin: 6px 0 2px; }
   .bar i { display:block; height:100%; background: var(--accent); width:0; transition: width .6s ease; }
   .bar.ok i { background: var(--ok); }
+  .badge { display:inline-block; font-size: 11px; letter-spacing:.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; border: 1px solid var(--line); color: var(--muted); margin-left: 8px; vertical-align: middle; }
+  .badge.releasable { color: var(--ok); border-color: var(--ok); }
+  .badge.research { color: var(--warn); border-color: var(--warn); }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; min-height: 18px; }
   footer { color: var(--muted); font-size: 12px; margin-top: 40px; border-top: 1px solid var(--line); padding-top: 14px; }
   code { color: var(--accent); }
 </style>
@@ -45,18 +49,19 @@
 <body>
 <header>
   <h1>Qaraami<span>Gen</span> — base model vs fine-tuned adapter</h1>
-  <p class="sub">Same prompt, same seed, batch size 1, MusicGen-small on Apple silicon. Pentatonic Conformity Score (PCS) is computed on both outputs with the project's own scorer.</p>
+  <p class="sub">Same prompt, same seed, batch size 1, MusicGen on Apple silicon. Pentatonic Conformity Score (PCS) is computed on both outputs with the project's own scorer. The adapter list, its rights and listening gates come from <code>/health</code>.</p>
 </header>
 <main>
   <div class="row">
     <div class="f narrow"><label>API token</label><input id="token" type="password" placeholder="bearer token" autocomplete="off"></div>
-    <div class="f"><label>Adapter</label>
+    <div class="f adapter"><label>Adapter <span class="badge" id="sel-rights" hidden></span></label>
       <select id="adapter">
-        <option value="oud">oud (kaban qaraami collection, step 500)</option>
-        <option value="harvard_raw">harvard_raw (Aryette collection, step 2750)</option>
-        <option value="large">large (3.3B base, qaraami pool, step 2750)</option>
-        <option value="base">base (small, no adapter)</option>
-      </select></div>
+        <option value="oud" data-rights="releasable" data-gate="passed (Khalid, 2026-09)" data-kind="lora">oud — Small 300M · releasable · gate: passed (Khalid, 2026-09)</option>
+        <option value="harvard_raw" data-rights="research_only" data-gate="not yet performed" data-kind="lora">harvard_raw — Small 300M · research-only · gate: not yet performed</option>
+        <option value="large" data-rights="research_only" data-gate="not yet performed" data-kind="lora">large — Large 3.3B · research-only · gate: not yet performed</option>
+        <option value="base" data-rights="releasable" data-gate="" data-kind="base">base — Small 300M · no adapter</option>
+      </select>
+      <div class="hint" id="adapter-hint"></div></div>
     <div class="f narrow"><label>Seconds</label><input id="duration" type="number" min="1" max="30" value="10"></div>
     <div class="f narrow"><label>CFG</label><input id="cfg" type="number" min="1" max="10" step="0.5" value="3"></div>
     <div class="f narrow"><label>Seed</label><input id="seed" type="number" min="0" value="42"></div>
@@ -72,7 +77,7 @@
 
   <div class="grid">
     <section class="card" id="card-base">
-      <h2>Base model <small>facebook/musicgen-small, no adapter</small></h2>
+      <h2>Base model <small id="base-name">facebook/musicgen-small, no adapter</small></h2>
       <audio controls id="audio-base"></audio>
       <div class="big" id="pcs-base">—<small>PCS</small></div>
       <div class="bar" id="bar-base"><i></i></div>
@@ -80,7 +85,7 @@
       <div class="prov" id="prov-base"></div>
     </section>
     <section class="card" id="card-ft">
-      <h2>Fine-tuned <small id="ft-name">oud adapter</small></h2>
+      <h2>Fine-tuned <small id="ft-name">oud adapter</small><span class="badge releasable" id="ft-rights">releasable</span></h2>
       <audio controls id="audio-ft"></audio>
       <div class="big" id="pcs-ft">—<small>PCS</small></div>
       <div class="bar" id="bar-ft"><i></i></div>
@@ -91,7 +96,7 @@
 
   <footer>
     Reading PCS: the share of voiced pitch within ±50 cents of the detected pentatonic scale, reported together with the voiced fraction (how much trackable melody there is). A higher PCS on less melody is not a win; the two numbers are read jointly. Real cassette recordings from the corpora score about 0.85–0.91 PCS at 0.43–0.53 voiced. n = 1 per click: this is a demonstration, not a measurement.<br>
-    Rights: adapters were trained on corpora whose source audio is not distributed and is not served by this page. Everything you hear here is model output.
+    Rights: adapters were trained on corpora whose source audio is not distributed and is not served by this page. Everything you hear here is model output. <b>research-only</b> adapters were trained on recordings held under research-only terms (the Harvard collection): they are served on this private network only and are never published; <b>releasable</b> adapters were trained on consented or openly licensed recordings only.
   </footer>
 </main>
 <script>
@@ -100,9 +105,62 @@ const PROMPTS = {
   oud: 'Somali qaraami led by the oud (kaban), moderate at 100 BPM, pentatonic melody rooted on A, intimate home recording',
   harvard_raw: 'Qaraami, traditional Somali music, lively at 129 BPM, pentatonic melody rooted on F#, vintage archival recording',
 };
+const RIGHTS_LABEL = { releasable: 'releasable', research_only: 'research-only' };
+const NOT_GATED = 'not yet performed';
 try { $('token').value = sessionStorage.getItem('qg.token') || ''; } catch {}
-$('preset').onclick = () => { $('prompt').value = PROMPTS[$('adapter').value]; };
-$('adapter').onchange = () => { $('ft-name').textContent = $('adapter').value + ' adapter'; };
+
+function rightsLabel(r) { return RIGHTS_LABEL[r] || r || 'unknown'; }
+function optionText(a) {
+  if (a.id === 'base') return 'base — ' + a.size + ' · no adapter';
+  const parts = [a.id + ' — ' + a.size];
+  if (a.kind === 'full_decoder') parts.push('full decoder');
+  parts.push(rightsLabel(a.rights));
+  if (a.listening_gate) parts.push('gate: ' + a.listening_gate);
+  if (!a.loaded) parts.push(a.engine_state === 'failed' ? 'FAILED to load' : 'loading…');
+  return parts.join(' · ');
+}
+// The default adapter: the first LOADED releasable one whose listening gate has PASSED,
+// else whatever the page (or the static list) already had selected.
+function pickDefault(details, current) {
+  const first = details.find(a => a.id !== 'base' && a.loaded && a.rights === 'releasable' && /^passed/i.test(a.listening_gate || ''));
+  return first ? first.id : current;
+}
+function selected() { const o = $('adapter').selectedOptions[0]; return o ? { id: o.value, rights: o.dataset.rights, gate: o.dataset.gate, kind: o.dataset.kind } : { id: 'oud' }; }
+function updateSelection() {
+  const s = selected();
+  const isBase = s.id === 'base';
+  $('ft-name').textContent = isBase ? 'base (no adapter)' : s.id + (s.kind === 'full_decoder' ? ' full-decoder fine-tune' : ' adapter');
+  const badge = $('ft-rights');
+  badge.textContent = rightsLabel(s.rights);
+  badge.className = 'badge ' + (s.rights === 'research_only' ? 'research' : s.rights === 'releasable' ? 'releasable' : '');
+  const sel = $('sel-rights'); sel.textContent = rightsLabel(s.rights); sel.className = badge.className; sel.hidden = isBase;
+  $('adapter-hint').textContent = isBase ? '' : (s.rights === 'research_only'
+    ? 'Research-only: trained on research-restricted recordings; private network only, never published.'
+    : (s.gate && s.gate !== NOT_GATED ? 'Releasable · listening gate: ' + s.gate : 'Releasable · listening gate not yet performed'));
+}
+async function loadAdapters() {
+  try {
+    const h = await (await fetch('/health')).json();
+    const details = (h.adapter_details || []);
+    if (!details.length) return;
+    const sel = $('adapter'); const current = sel.value;
+    sel.innerHTML = '';
+    for (const a of details.filter(a => a.id !== 'base').concat(details.filter(a => a.id === 'base'))) {
+      const o = document.createElement('option');
+      o.value = a.id; o.textContent = optionText(a);
+      o.dataset.rights = a.rights || ''; o.dataset.gate = a.listening_gate || ''; o.dataset.kind = a.kind || '';
+      if (a.engine_state === 'failed') o.disabled = true;
+      sel.appendChild(o);
+    }
+    sel.value = pickDefault(details, current);
+    if (!sel.value) sel.value = details.find(a => a.id !== 'base' && a.loaded)?.id || 'base';
+    $('base-name').textContent = h.base_model + ', no adapter';
+  } catch (e) { /* keep the static list */ }
+  updateSelection();
+}
+$('preset').onclick = () => { $('prompt').value = PROMPTS[$('adapter').value] || PROMPTS.oud; };
+$('adapter').onchange = updateSelection;
+loadAdapters();
 
 async function api(path, opts = {}) {
   const token = $('token').value.trim();
@@ -123,6 +181,7 @@ function fill(side, meta) {
     ['Generation time', meta.generation_seconds + ' s'],
     ['Seed / CFG / length', meta.seed + ' / ' + meta.cfg + ' / ' + meta.seconds_generated + ' s'],
   ] : [['Not scored', p.reason || 'no PCS'], ['Generation time', meta.generation_seconds + ' s']];
+  if (side === 'ft') rows.push(['Rights', meta.research_only ? 'research-only' : 'releasable']);
   $('tbl-' + side).innerHTML = rows.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('');
   $('prov-' + side).textContent = meta.provenance;
 }

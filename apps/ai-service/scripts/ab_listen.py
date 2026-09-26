@@ -15,13 +15,20 @@ Sets picked up when present:
   data/oud_ab_listening/       pairNNN_{base,finetuned}.wav + data/eval_pcs/oud_{base,lora500}.csv
   data/harvard_ab_listening/   pairNNN_{base,finetuned}.wav + data/eval_pcs/harvard_{base,lora1500}.csv
   data/ab_melody/              melodyNNN_base.wav + melody_condition.json
+  data/ab_turing_<tag>/        pairNNN_{real,model}.wav + README.txt (the question) + CAPTIONS.txt:
+                               the Turing check written by scale_eval --turing. Its test asks which
+                               side is the real recording; the result counts real / model / none with
+                               a Wilson 95% interval on "picked the model as real".
 
-Binds 127.0.0.1 only. Serves nothing but these generated clips; source audio is
-never on this page. Stdlib only.
+Binds 127.0.0.1 only. Every A/B set holds generated clips only. A Turing set also
+holds loudness-matched copies of CONSENTED held-out recordings (Ahmed Ilkacase's
+and consented contributors', as its README names them; never Harvard material);
+they stay on loopback and are never published. Stdlib only.
 
 Usage (from the repo root):
   python apps/ai-service/scripts/ab_listen.py            # http://127.0.0.1:8777
   python apps/ai-service/scripts/ab_listen.py --open     # and open it in the browser
+  python apps/ai-service/scripts/ab_listen.py --list     # print the discovered sets and exit
 """
 from __future__ import annotations
 
@@ -48,6 +55,10 @@ RUNS = REPO / "runs"
 LISTENING = Path(os.environ.get("QG_LISTENING_DIR", DATA / "listening"))
 WAV_NAME = re.compile(r"^[A-Za-z0-9_]+\.wav$")
 PAIR = re.compile(r"pair(\d{3})_(base|adapter|finetuned)\.wav$")
+TURING_PAIR = re.compile(r"pair(\d{3})_(real|model)\.wav$")
+TURING_PREFIX = "ab_turing_"
+TURING_QUESTION = "which of the two is the real recording?"
+AB_QUESTION = "which sounds more like Somali qaraami?"
 
 
 @dataclass
@@ -63,8 +74,8 @@ class Clip:
 class Pair:
     index: int
     caption: str
-    base: Clip | None = None
-    adapter: Clip | None = None
+    base: Clip | None = None      # first side: "base" (A/B sets) or "real" (Turing sets)
+    adapter: Clip | None = None   # second side: "adapter" or "model"
 
 
 @dataclass
@@ -75,10 +86,19 @@ class ListeningSet:
     note: str = ""
     pairs: list[Pair] = field(default_factory=list)
     summary: dict = field(default_factory=dict)
+    kind: str = "ab"                                  # "ab": base vs adapter; "turing": real vs model
+    sides: tuple[str, str] = ("base", "adapter")      # labels of Pair.base / Pair.adapter in results
+    question: str = AB_QUESTION
 
     @property
     def testable(self) -> bool:
         return any(p.base and p.adapter for p in self.pairs)
+
+    @property
+    def success_side(self) -> str:
+        """The side whose pick the Wilson interval is on: the adapter being
+        preferred, or the model being taken for the real recording."""
+        return self.sides[1]
 
 
 def read_captions(d: Path) -> dict[int, str]:
@@ -93,21 +113,51 @@ def read_captions(d: Path) -> dict[int, str]:
     return out
 
 
-def scan_pairs(d: Path) -> dict[int, Pair]:
+def scan_pairs(d: Path, pattern: re.Pattern[str] = PAIR, first: str = "base") -> dict[int, Pair]:
+    """pairNNN_<side>.wav files grouped by index; the side named `first` fills
+    Pair.base, any other side Pair.adapter (finetuned counts as adapter, model as
+    the second side of a Turing pair)."""
     captions = read_captions(d)
     pairs: dict[int, Pair] = {}
     for f in sorted(d.glob("pair*.wav")):
-        m = PAIR.search(f.name)
+        m = pattern.search(f.name)
         if not m:
             continue
         i = int(m.group(1))
         pair = pairs.setdefault(i, Pair(i, captions.get(i, "")))
         clip = Clip(f.name)
-        if m.group(2) == "base":
+        if m.group(2) == first:
             pair.base = clip
         else:
             pair.adapter = clip
     return pairs
+
+
+def read_question(readme: Path) -> str:
+    """The "Question: ..." line of a Turing README, else the standard question."""
+    if readme.exists():
+        for line in readme.read_text().splitlines():
+            m = re.match(r"\s*Question:\s*(.+?)\s*$", line)
+            if m:
+                return m.group(1)
+    return TURING_QUESTION
+
+
+def turing_set(d: Path) -> ListeningSet | None:
+    """data/ab_turing_<tag>/: pairNNN_real.wav (a consented held-out recording,
+    loudness-matched) against pairNNN_model.wav (the adapter's output for the
+    same caption). The blind test asks which is real; the README is the note."""
+    pairs = scan_pairs(d, TURING_PAIR, "real")
+    if not pairs:
+        return None
+    tag = d.name[len(TURING_PREFIX):] if d.name.startswith(TURING_PREFIX) else d.name
+    readme = d / "README.txt"
+    s = ListeningSet(d.name, f"Turing check · {tag.replace('_', ' ')}", d,
+                     kind="turing", sides=("real", "model"), question=read_question(readme))
+    if readme.exists():
+        s.note = readme.read_text().strip()
+    s.pairs = [pairs[i] for i in sorted(pairs)]
+    return s
 
 
 def scale_set(tag: str) -> ListeningSet | None:
@@ -264,7 +314,7 @@ def load_sets() -> list[ListeningSet]:
     known = {"ab_medium", "ab_large", "ab_melody"}
     for d in sorted(DATA.glob("ab_*")):
         if d.is_dir() and d.name not in known:
-            s = scored_set(d)
+            s = turing_set(d) if d.name.startswith(TURING_PREFIX) else scored_set(d)
             if s:
                 sets.append(s)
     s = legacy_set("oud_ab_listening", "MusicGen-small, oud adapter (step 500)", "oud_base", "oud_lora500",
@@ -367,13 +417,15 @@ def render_scale_summary(sets: list[ListeningSet]) -> str:
            '<th>PCS base → adapter</th><th>voiced base → adapter</th><th></th></tr>']
     for s in rows:
         m = s.summary
-        sig = "significant" if m["significant"] else "not significant"
+        sig = "significant" if m.get("significant") else "not significant"
+        ci = m.get("ce_ci") or [None, None]
+        # a side with no scorable clip (n_scored 0) has pcs_mean / voiced_fraction_mean null: fmt/delta print "–"
         out.append(
-            f'<tr><td>{esc(m["model"])}</td><td>{esc(m["best_ckpt"])}</td><td>{m["songs"]}</td>'
-            f'<td>{m["ce_base"]:.4f} → <b>{m["ce_adapter"]:.4f}</b></td>'
-            f'<td>+{m["ce_gain"]:.3f} [{m["ce_ci"][0]:.3f}, {m["ce_ci"][1]:.3f}], {sig}</td>'
-            f'<td>{m["pcs_base"]:.3f} → {m["pcs_adapter"]:.3f} ({delta(m["pcs_base"], m["pcs_adapter"])})</td>'
-            f'<td>{m["voiced_base"]:.3f} → {m["voiced_adapter"]:.3f} ({delta(m["voiced_base"], m["voiced_adapter"])})</td>'
+            f'<tr><td>{esc(m.get("model", ""))}</td><td>{esc(m.get("best_ckpt", ""))}</td><td>{m.get("songs", "–")}</td>'
+            f'<td>{fmt(m.get("ce_base"), 4)} → <b>{fmt(m.get("ce_adapter"), 4)}</b></td>'
+            f'<td>{fmt(m.get("ce_gain"))} [{fmt(ci[0])}, {fmt(ci[1])}], {sig}</td>'
+            f'<td>{fmt(m.get("pcs_base"))} → {fmt(m.get("pcs_adapter"))} ({delta(m.get("pcs_base"), m.get("pcs_adapter"))})</td>'
+            f'<td>{fmt(m.get("voiced_base"))} → {fmt(m.get("voiced_adapter"))} ({delta(m.get("voiced_base"), m.get("voiced_adapter"))})</td>'
             f'<td>{test_link(s)}</td></tr>')
     out.append('</table>')
     return "\n".join(out)
@@ -381,7 +433,7 @@ def render_scale_summary(sets: list[ListeningSet]) -> str:
 
 def render_side_by_side(sets: list[ListeningSet]) -> str:
     """Scale sets share captions and seeds, so one row per caption with every model across."""
-    scale = [s for s in sets if s.name.startswith("ab_") and s.name != "ab_melody"]
+    scale = [s for s in sets if s.name.startswith("ab_") and s.name != "ab_melody" and s.kind == "ab"]
     if not scale:
         return ""
     n = max(len(s.pairs) for s in scale)
@@ -415,7 +467,8 @@ def render_set(s: ListeningSet) -> str:
                    f'{fmt(sm.get("voiced_base"))} → {fmt(sm.get("voiced_adapter"))} '
                    f'({delta(sm.get("voiced_base"), sm.get("voiced_adapter"))}).</p>')
     two_sided = any(p.adapter for p in s.pairs)
-    out.append('<table><tr><th>#</th><th>caption</th><th>base</th>' + ('<th>adapter</th>' if two_sided else '') + '</tr>')
+    out.append(f'<table><tr><th>#</th><th>caption</th><th>{esc(s.sides[0])}</th>'
+               + (f'<th>{esc(s.sides[1])}</th>' if two_sided else '') + '</tr>')
     for p in s.pairs:
         out.append(f'<tr><td class="n">{p.index:03d}</td><td class="cap">{esc(p.caption)}</td>')
         out.append(clip_cell(s.name, p.base))
@@ -433,8 +486,10 @@ def page(title: str, body: str, sub: str = "") -> str:
 <h1>Qaraami<span>Gen</span> — {esc(title)}</h1>
 {f'<p class="note">{sub}</p>' if sub else ''}
 {body}
-<div class="rights">Every clip on this page is model output. The adapters were trained on recordings
-that are not distributed and are not served here.</div>
+<div class="rights">Every clip in an A/B set is model output. A Turing set also holds loudness-matched copies of
+consented held-out recordings (whose, its README says: Ahmed Ilkacase's and consented contributors'); they are served
+on this machine only (127.0.0.1) and are never published. The adapters were trained on recordings that are not
+distributed.</div>
 </main><script>{JS}</script></body></html>"""
 
 
@@ -444,11 +499,29 @@ def render(sets: list[ListeningSet]) -> str:
         if s.name in ("ab_medium", "ab_large"):
             continue
         body.append(render_set(s))
-    n_clips = sum((1 if p.base else 0) + (1 if p.adapter else 0) for s in sets for p in s.pairs)
-    sub = (f"{len(sets)} sets, {n_clips} clips, all generated by the models named on each section. "
+    n_gen, n_real = clip_counts(sets)
+    real = (f" and {n_real} real consented recording{'s' if n_real != 1 else ''} (the real side of the Turing sets, "
+            "loopback only)") if n_real else ""
+    sub = (f"{len(sets)} sets, {n_gen} generated clips (by the models named on each section){real}. "
            f"Served from this machine only (127.0.0.1). Each two-sided set has a <b>blind test</b> link: "
            f"pairs as A/B in random order, no scores, result saved to data/listening/.")
     return page("listening sets", "".join(body), sub)
+
+
+def clip_counts(sets: list[ListeningSet]) -> tuple[int, int]:
+    """(generated clips, real recordings) over the sets: the first side of a
+    Turing pair is a real recording, everything else is model output."""
+    n_gen = n_real = 0
+    for s in sets:
+        for p in s.pairs:
+            if p.base:
+                if s.kind == "turing":
+                    n_real += 1
+                else:
+                    n_gen += 1
+            if p.adapter:
+                n_gen += 1
+    return n_gen, n_real
 
 
 # --------------------------------------------------------------- blind test
@@ -470,13 +543,25 @@ def new_session(s: ListeningSet) -> str:
     sid = secrets.token_urlsafe(12)
     seed = secrets.randbits(32)
     rng = random.Random(seed)
-    order = {p.index: rng.random() < 0.5 for p in s.pairs if p.base and p.adapter}  # True: adapter is A
+    order = {p.index: rng.random() < 0.5 for p in s.pairs if p.base and p.adapter}  # True: second side (adapter / model) is A
     SESSIONS[sid] = {"set": s.name, "seed": seed, "order": order, "created": dt.datetime.now().isoformat(timespec="seconds")}
     return sid
 
 
+def test_instructions(s: ListeningSet) -> str:
+    if s.kind == "turing":
+        return (f"For every pair, listen to A and B in full, then choose the one you believe is the <b>real recording</b> "
+                f"({esc(s.question)}), or <i>neither</i> if you cannot tell. One side of every pair is a real held-out "
+                "recording and the other is the model's output for the same caption; both are loudness-matched. A/B order "
+                "is random per pair; which is real is revealed only after you submit. Every pair needs an answer.")
+    return ("For every pair, listen to A and B in full, then choose the one that sounds more like "
+            "Somali qaraami to you, or <i>neither</i>. A/B order is random per pair; which is base and which is the "
+            "adapter is revealed only after you submit. Every pair needs an answer.")
+
+
 def render_test(s: ListeningSet, sid: str) -> str:
     sess = SESSIONS[sid]
+    column = "which is the real recording?" if s.kind == "turing" else "which sounds more like qaraami?"
     rows = []
     for p in s.pairs:
         if p.index not in sess["order"]:
@@ -491,11 +576,9 @@ def render_test(s: ListeningSet, sid: str) -> str:
             f'<div><input type="text" name="n{p.index}" placeholder="note (optional)" style="width:100%;margin-top:6px"></div></td></tr>')
     body = f"""
 <form id="f">
-<p class="note">For every pair, listen to A and B in full, then choose the one that sounds more like
-Somali qaraami to you, or <i>neither</i>. A/B order is random per pair; which is base and which is the
-adapter is revealed only after you submit. Every pair needs an answer.</p>
+<p class="note">{test_instructions(s)}</p>
 <p>Listener: <input type="text" name="listener" value="khalid" required></p>
-<table><tr><th>#</th><th>caption</th><th>A</th><th>B</th><th>which sounds more like qaraami?</th></tr>
+<table><tr><th>#</th><th>caption</th><th>A</th><th>B</th><th>{esc(column)}</th></tr>
 {"".join(rows)}
 </table>
 <p style="margin-top:16px"><button type="submit">Submit</button> <span id="msg" class="note"></span></p>
@@ -527,29 +610,37 @@ def save_result(s: ListeningSet, sid: str, payload: dict) -> tuple[dict, Path]:
     listener = re.sub(r"[^A-Za-z0-9_-]+", "_", str(payload.get("listener") or "listener")).strip("_") or "listener"
     choices = payload.get("choices") or {}
     notes = payload.get("notes") or {}
-    pairs_out, counts = [], {"adapter": 0, "base": 0, "none": 0}
+    first, second = s.sides
+    pairs_out, counts = [], {second: 0, first: 0, "none": 0}
     for p in s.pairs:
         if p.index not in sess["order"]:
             continue
-        adapter_is_a = sess["order"][p.index]
+        second_is_a = sess["order"][p.index]
         c = choices.get(str(p.index))
-        if c in ("A", "B"):
-            choice = "adapter" if (c == "A") == adapter_is_a else "base"
-        else:
-            choice = "none"
+        picked_a = (c == "A") if c in ("A", "B") else None          # None: "neither"
+        choice = "none" if picked_a is None else (second if picked_a == second_is_a else first)
         counts[choice] += 1
-        pairs_out.append({"pair": p.index, "caption": p.caption, "A": "adapter" if adapter_is_a else "base",
+        pairs_out.append({"pair": p.index, "caption": p.caption, "A": second if second_is_a else first,
                           "chosen": c or "none", "preferred": choice, "note": str(notes.get(str(p.index), ""))[:500]})
     n = sum(counts.values())
-    lo, hi = wilson(counts["adapter"], n)
+    lo, hi = wilson(counts[second], n)
+    if s.kind == "turing":
+        protocol = ("paired Turing check, A/B order randomised per pair, file names hidden, "
+                    f"question: {s.question}; 'neither' allowed; 'preferred' is the side the listener called real")
+        summary = {"n": n, **counts, "model_as_real_rate": round(counts["model"] / n, 4) if n else None,
+                   "wilson95": [round(lo, 4), round(hi, 4)], "wilson95_on": "picked the model as real"}
+    else:
+        protocol = ("paired comparison, A/B order randomised per pair, scores and file names hidden, "
+                    "question: which sounds more like Somali qaraami; 'neither' allowed")
+        summary = {"n": n, **counts, "adapter_rate": round(counts["adapter"] / n, 4) if n else None,
+                   "wilson95": [round(lo, 4), round(hi, 4)]}
     result = {
-        "set": s.name, "title": s.title, "listener": listener,
+        "set": s.name, "title": s.title, "listener": listener, "kind": s.kind, "sides": list(s.sides),
+        "question": s.question,   # model_report.turing_sessions reads it; the protocol string is prose
         "date": dt.datetime.now().isoformat(timespec="seconds"), "seed": sess["seed"],
-        "protocol": "paired comparison, A/B order randomised per pair, scores and file names hidden, "
-                    "question: which sounds more like Somali qaraami; 'neither' allowed",
+        "protocol": protocol,
         "pairs": pairs_out,
-        "summary": {"n": n, **counts, "adapter_rate": round(counts["adapter"] / n, 4) if n else None,
-                    "wilson95": [round(lo, 4), round(hi, 4)]},
+        "summary": summary,
     }
     LISTENING.mkdir(parents=True, exist_ok=True)
     out = LISTENING / f"{s.name}_{listener}_{dt.datetime.now().strftime('%Y%m%d-%H%M%S')}.json"
@@ -567,11 +658,21 @@ def render_result(result: dict, path: Path) -> str:
         rel = path.relative_to(REPO)
     except ValueError:
         rel = path
-    return f"""<div class="result"><h2 style="margin-top:0">Result: adapter preferred in {sm["adapter"]} of {sm["n"]} pairs
-(base {sm["base"]}, neither {sm["none"]}); adapter rate {sm["adapter_rate"]:.2f}, 95% Wilson interval
-[{sm["wilson95"][0]:.2f}, {sm["wilson95"][1]:.2f}]</h2>
+    rate = f"{sm['wilson95'][0]:.2f}, {sm['wilson95'][1]:.2f}"
+    if result.get("kind") == "turing":
+        r = sm["model_as_real_rate"]
+        head = (f"Result: the model was taken for the real recording in {sm['model']} of {sm['n']} pairs "
+                f"(real recognised {sm['real']}, neither {sm['none']}); model-as-real rate "
+                f"{'–' if r is None else f'{r:.2f}'}, 95% Wilson interval [{rate}]")
+        col = "called real"
+    else:
+        r = sm["adapter_rate"]
+        head = (f"Result: adapter preferred in {sm['adapter']} of {sm['n']} pairs (base {sm['base']}, neither "
+                f"{sm['none']}); adapter rate {'–' if r is None else f'{r:.2f}'}, 95% Wilson interval [{rate}]")
+        col = "preferred"
+    return f"""<div class="result"><h2 style="margin-top:0">{head}</h2>
 <p class="note">Saved to {esc(rel)}. Rebuild the demo page to include it. Reload this page for a fresh, re-randomised session.</p></div>
-<table><tr><th>#</th><th>caption</th><th>A was</th><th>you chose</th><th>preferred</th><th>note</th></tr>{rows}</table>"""
+<table><tr><th>#</th><th>caption</th><th>A was</th><th>you chose</th><th>{col}</th><th>note</th></tr>{rows}</table>"""
 
 
 # ------------------------------------------------------------------- server
@@ -690,20 +791,35 @@ class Handler(BaseHTTPRequestHandler):
                 remaining -= len(chunk)
 
 
-def main() -> None:
+def set_line(s: ListeningSet) -> str:
+    """One line per discovered set: name, pairs, kind, directory, blind-test availability."""
+    try:
+        where = s.dir.relative_to(REPO)
+    except ValueError:
+        where = s.dir
+    return f"{s.name:24s} {len(s.pairs):3d} pairs  {s.kind:6s} {where}{'  (blind test available)' if s.testable else ''}"
+
+
+def main(argv: list[str] | None = None) -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--port", type=int, default=8777)
     ap.add_argument("--open", action="store_true", help="open the page in the default browser")
     ap.add_argument("--verbose", action="store_true", help="log every request")
-    args = ap.parse_args()
+    ap.add_argument("--list", action="store_true", help="print the discovered sets and exit (no server)")
+    args = ap.parse_args(argv)
 
     sets = load_sets()
+    if args.list:
+        for s in sets:
+            print(set_line(s))
+        print(f"{len(sets)} sets under {DATA}")
+        sys.exit(0)
     if not sets:
         sys.exit(f"no listening sets found under {DATA}")
     Handler.sets = {s.name: s for s in sets}
     Handler.page = render(sets).encode("utf-8")
     for s in sets:
-        print(f"{s.name:24s} {len(s.pairs):3d} pairs  {s.dir.relative_to(REPO)}{'  (blind test available)' if s.testable else ''}")
+        print(set_line(s))
 
     url = f"http://127.0.0.1:{args.port}/"
     server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
