@@ -687,3 +687,11 @@ def test_main_refuses_out_root_outside_data_unless_allowed(fake_corpus: tuple[Pa
     bs.main(["--merge", "ahmed_all", "--sets", "ahmed_oud", "ahmed_vocal"])
     assert "LEAKAGE CHECK PASSED" in capsys.readouterr().out
     assert len(_read_rows(root / "data/sets/ahmed_all_captions.jsonl")) == 4
+
+
+def test_harvard_instruments_claim_only_what_the_title_supports() -> None:
+    from scripts.build_sets import harvard_instruments, instrument_phrase
+
+    assert harvard_instruments("Side A. Track 1: Wisiisi (Longing) Sahro Axmed and others") == ["vocals", "ensemble"]
+    assert harvard_instruments("Side B. Track 2: Kaban solo") == ["vocals", "the oud (kaban)"]
+    assert instrument_phrase("full_mix", None, harvard_instruments("x")) == "vocals and ensemble"

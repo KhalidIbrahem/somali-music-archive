@@ -434,6 +434,15 @@ def is_whole_side(row: dict, cat: dict | None) -> bool:
     return not track_title
 
 
+HARVARD_OUD_RE = re.compile(r"\b(kaban|oud|cuud|kabanle)\b", re.IGNORECASE)
+
+
+def harvard_instruments(text: str) -> list[str]:
+    """No classifier runs on the Harvard tracks, so the caption claims only what the
+    catalog supports: sung ensemble recordings, with the oud named when the title says so."""
+    return ["vocals", "the oud (kaban)"] if HARVARD_OUD_RE.search(text or "") else ["vocals", "ensemble"]
+
+
 def select_harvard(manifest_rows: list[dict], catalog: dict[str, dict], root: Path = REPO) -> Selection:
     """Fetched + legacy rows on disk, minus superseded whole-side files and sha duplicates."""
     roots = [root / r for r in HARVARD_ROOTS]
@@ -478,7 +487,7 @@ def select_harvard(manifest_rows: list[dict], catalog: dict[str, dict], root: Pa
         chosen[sha] = SourceFile(
             set_name="harvard_full", path=path, name=path.name, sha256=sha, song_group=cid,
             project=f"AWM SC {cassette}" if cassette else f"AWM SC unknown ({cid})", content="full_mix",
-            rights=RIGHTS_HARVARD, genre_text=f"{title} {parent}",
+            rights=RIGHTS_HARVARD, genre_text=f"{title} {parent}", instruments=harvard_instruments(f"{title} {parent}"),
             duration_s=_float_or_none(row.get("duration_s")),
             extra={"cid": cid, "status": row["status"], "title": title, "cassette": cassette, "whole_side": whole},
         )
