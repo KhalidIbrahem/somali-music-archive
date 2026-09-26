@@ -1,8 +1,8 @@
 # Harvard collection fetch — gap list
 
-Generated 2026-09-26 05:13:00 -0500 by `apps/ai-service/scripts/harvard_gap_report.py` from `data/harvard_raw/manifest.jsonl` (983 rows, 971 objects after keeping the last row per cid; last modified 2026-09-26 05:12:59), `data/harvard_catalog/mus00044.csv` and a listing of `data/harvard_raw/legacy` (105 `*.mp3` files). Every number below is computed from those inputs; rerun the script to refresh it. Research-only material: the files it counts are git-ignored and are never served (`docs/data/HARVARD_TERMS.md`).
+Generated 2026-09-26 05:44:30 -0500 by `apps/ai-service/scripts/harvard_gap_report.py` from `data/harvard_raw/manifest.jsonl` (1085 rows, 975 objects after keeping the last row per cid; last modified 2026-09-26 05:25:24), `data/harvard_catalog/mus00044.csv` and a listing of `data/harvard_raw/legacy` (105 `*.mp3` files). Every number below is computed from those inputs; rerun the script to refresh it. Research-only material: the files it counts are git-ignored and are never served (`docs/data/HARVARD_TERMS.md`).
 
-**Status: PARTIAL — the fetch is still running.** 4 of 975 linked catalog objects have no manifest row yet, and 110 skipped objects are re-queued on the fetcher's next run. Rerun this script when `harvard_fetch` prints `HARVARD_FETCH_DONE`.
+**Status: complete.** Every one of the 975 linked catalog objects has a manifest row; 109 skipped objects would be re-queued by another fetcher run.
 
 ## 1. Totals
 
@@ -10,15 +10,15 @@ Generated 2026-09-26 05:13:00 -0500 by `apps/ai-service/scripts/harvard_gap_repo
 | --- | --- |
 | catalog rows (Series / Item / Track) | 1 / 152 / 1142 |
 | catalog objects with a digital-content link | 975 (150 cassette-level, 825 tracks) |
-| manifest rows / objects | 983 / 971 |
-| fetched (this run) | 658 |
+| manifest rows / objects | 1085 / 975 |
+| fetched (this run) | 663 |
 | legacy (2025 files matched to the catalog by URN) | 102 |
-| skipped, total | 211 |
-| skipped: no public stream on the SDS page (no playlist) | 109 |
-| skipped: stream download failed (ffmpeg) | 1 |
+| skipped, total | 210 |
+| skipped: requires a Harvard login (HarvardKey); not public | 77 |
+| skipped: no public stream on the SDS page (no playlist) | 32 |
 | skipped: cassette-level object superseded by its track objects (policy skip) | 91 |
 | skipped: same digital object as another component (duplicate link, policy skip) | 10 |
-| pending (linked objects with no manifest row yet) | 4 |
+| pending (linked objects with no manifest row yet) | 0 |
 | catalog tracks with no digital object (not a fetch failure) | 317 |
 | catalog cassette-level objects with no digital object | 2 |
 | legacy files on disk / with no manifest row (see 8) | 105 / 3 |
@@ -29,10 +29,10 @@ Generated 2026-09-26 05:13:00 -0500 by `apps/ai-service/scripts/harvard_gap_repo
 
 | files | hours |
 | --- | --- |
-| fetched only | 101.57 h |
+| fetched only | 102.27 h |
 | legacy only | 21.84 h |
-| fetched + legacy | 123.40 h |
-| fetched + legacy, minus legacy whole-cassette files whose tracks are also on disk (unique audio) | 114.70 h |
+| fetched + legacy | 124.11 h |
+| fetched + legacy, minus legacy whole-cassette files whose tracks are also on disk (unique audio) | 115.40 h |
 
 ## 3. Plan and progress
 
@@ -40,7 +40,7 @@ Generated 2026-09-26 05:13:00 -0500 by `apps/ai-service/scripts/harvard_gap_repo
 
 | plan group | objects | note |
 | --- | --- | --- |
-| fetch | 772 | fetched 658, skipped 110, pending 4; 37 of them cassette-level objects without linked tracks |
+| fetch | 772 | fetched 663, skipped 109, pending 0; 37 of them cassette-level objects without linked tracks |
 | legacy | 102 | 2025 files, not re-fetched |
 | cassette_superseded_by_tracks | 91 | policy skip, see 4 |
 | duplicate_link | 10 | policy skip, see 4 |
@@ -49,79 +49,92 @@ Generated 2026-09-26 05:13:00 -0500 by `apps/ai-service/scripts/harvard_gap_repo
 
 Every manifest object whose last row has `status: skipped`, grouped by reason. Policy skips are final; the others are re-queued on the fetcher's next run.
 
-### 4.1 No public stream on the SDS page (no playlist) (109) — `no_playlist`
+### 4.1 Requires a Harvard login (HarvardKey); not public (77) — `requires_login`
 
 | cid | cassette | type | title | reason | link |
 | --- | --- | --- | --- | --- | --- |
-| mus00044c00257 | 12222 | Track | Side A. Track 1: Allay Ileehee Ilwaaday, 1988 | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962064 |
-| mus00044c00258 | 12222 | Track | Side A. Track 2: Cibaaro | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962066 |
-| mus00044c00259 | 12222 | Track | Side A. Track 3: Geestaada ila qabo | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962078 |
-| mus00044c00260 | 12222 | Track | Side A. Track 4: Xilashadii Gayaankay | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962074 |
-| mus00044c00261 | 12222 | Track | Side A. Track 5: Bal kaalay Bilanay | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962072 |
-| mus00044c00262 | 12222 | Track | Side B. Track 1: Nabsi Baa Hiiliyoo | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962080 |
-| mus00044c00263 | 12222 | Track | Side B. Track 2: Raaxeeye Burcaawi | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962070 |
-| mus00044c00264 | 12222 | Track | Side B. Track 3: Sidii Hogosha Roobka | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962084 |
-| mus00044c00265 | 12222 | Track | Side B. Track 4: Gardarro | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962062 |
-| mus00044c00266 | 12222 | Track | Side B. Track 5: Sidee Baan Tolow Idhaahdaa | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962076 |
-| mus00044c00267 | 12223 | Track | Side A. Track 1: Afka Lagama Sheegtoo | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959066 |
-| mus00044c00268 | 12223 | Track | Side A. Track 2: Laqanyada Jacaylka | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959068 |
-| mus00044c00269 | 12223 | Track | Side A. Track 3: Faraskaagii laga badi | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959054 |
-| mus00044c00270 | 12223 | Track | Side A. Track 4: Mas'alo (or Waxaan kaa magansadaba) | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959070 |
-| mus00044c00271 | 12223 | Track | Side A. Track 5: Baraarug | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959056 |
-| mus00044c00272 | 12223 | Track | Side B. Track 1: Awrkii Cirka | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959074 |
-| mus00044c00273 | 12223 | Track | Side B. Track 2: Waa iska Xaal Adduun | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959072 |
-| mus00044c00274 | 12223 | Track | Side B. Track 3: Sida Laamo looshaha | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959062 |
-| mus00044c00275 | 12223 | Track | Side B. Track 4: Xaafuun | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959058 |
-| mus00044c00276 | 12223 | Track | Side B. Track 5: Dardaaran or Adiyo doqonnimadaa | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959060 |
-| mus00044c00277 | 12224 | Track | Side A. Track 1: Naagtii Walaalkay | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962379 |
-| mus00044c00278 | 12224 | Track | Side A. Track 2: Taallo ma u samaysaan (or: Iga tiiri caashaqa) | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962373 |
-| mus00044c00279 | 12224 | Track | Side A. Track 3: Durdur, 1975 | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962377 |
-| mus00044c00280 | 12224 | Track | Side A. Track 4: Nayruus, 1974-09-08 | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962371 |
-| mus00044c00281 | 12224 | Track | Side B. Track 1: Raalliya | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962367 |
-| mus00044c00282 | 12224 | Track | Side B. Track 2: Aroor | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962369 |
-| mus00044c00283 | 12224 | Track | Side B. Track 3: Nugul | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962381 |
-| mus00044c00668 | 12277 | Track | Side A. Track 1: Arrintaan | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428942 |
-| mus00044c00669 | 12277 | Track | Side A. Track 2: Waan kaa helay | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428952 |
-| mus00044c00670 | 12277 | Track | Side A. Track 3: Hammigayga waa heli waayey | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428901 |
-| mus00044c00671 | 12277 | Track | Side A. Track 4: Inaan meel kale maagayeey | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428950 |
-| mus00044c00672 | 12277 | Track | Side A. Track 5: Abbaayeey adoon ku arkaaya | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428958 |
-| mus00044c00673 | 12277 | Track | Side B. Track 1: Duqyahow da'daa ogaaw | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428891 |
-| mus00044c00674 | 12277 | Track | Side B. Track 2: Aduun baan ku eegaa ii imaaw | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428936 |
-| mus00044c00675 | 12277 | Track | Side B. Track 3: Ilmo aabbahood ku imaan qabaan | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428899 |
-| mus00044c00676 | 12277 | Track | Side B. Track 4: Ma kaa maarmow | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428917 |
-| mus00044c00677 | 12277 | Track | Side B. Track 5: Ka haray, ka haray | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428919 |
-| mus00044c00679 | 12278 | Track | Side A. Track 1: Adigu iskay sii | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429049 |
-| mus00044c00680 | 12278 | Track | Side A. Track 2: Shishifadii Naftaydow | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428999 |
-| mus00044c00681 | 12278 | Track | Side A. Track 3: Kaftan iyo jacaylkuna | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429031 |
-| mus00044c00683 | 12278 | Track | Side B. Track 2: Alla kala fogaa | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429011 |
-| mus00044c00684 | 12278 | Track | Side B. Track 3: Anna wadhida dumarkiyo | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429019 |
-| mus00044c00685 | 12278 | Track | Side B. Track 4: Garta qaad jacaylow | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429025 |
-| mus00044c00686 | 12278 | Track | Side B. Track 5: Caashaqa sed ima harinee | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429007 |
-| mus00044c00700 | 12279 | Track | Side A. Track 1: Waqti | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429763 |
-| mus00044c00701 | 12279 | Track | Side A. Track 2: Qaraami | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429723 |
-| mus00044c00702 | 12279 | Track | Side A. Track 3: Nasteexo | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429731 |
-| mus00044c00703 | 12279 | Track | Side A. Track 4: Qaraami | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429755 |
-| mus00044c00704 | 12279 | Track | Side A. Track 5: Raaxeeye | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429709 |
-| mus00044c00705 | 12279 | Track | Side B. Track 1: Gufaaco | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429707 |
-| mus00044c00706 | 12279 | Track | Side B. Track 2: Sannad waliba hoodiyo | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429691 |
-| mus00044c00707 | 12279 | Track | Side B. Track 3: Ii dheel dhudiyeey | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429699 |
-| mus00044c00708 | 12279 | Track | Side B. Track 4: Ma ogtahay | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429739 |
-| mus00044c00710 | 12280 | Track | Side A. Track 1: Geesiga sidee baa loo helaa | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430585 |
-| mus00044c00711 | 12280 | Track | Side A. Track 2: Ruuneey waxaa la yidhi | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430615 |
-| mus00044c00712 | 12280 | Track | Side A. Track 3: Aboowe ii warran | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430595 |
-| mus00044c00713 | 12280 | Track | Side A. Track 4: Ma doob loo xishaa jira | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430617 |
-| mus00044c00714 | 12280 | Track | Side B. Track 1: Fadhiyaro geel | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430551 |
-| mus00044c00715 | 12280 | Track | Side B. Track 2: Doob qalanjadii gabay | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430563 |
-| mus00044c00716 | 12280 | Track | Side B. Track 3: Nin xun xilo ha moodinin | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430553 |
-| mus00044c00717 | 12280 | Track | Side B. Track 4: Heer Tumasho | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430559 |
-| mus00044c00719 | 12281 | Track | Side A. Track 1: Adduunyooy waalaaleey | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430614 |
-| mus00044c00720 | 12281 | Track | Side A. Track 2: Dhawrta idinkaa eh | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430572 |
-| mus00044c00721 | 12281 | Track | Side A. Track 3: Dalxiis | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430647 |
-| mus00044c00722 | 12281 | Track | Side B. Track 1: Waa la i heloo | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430591 |
-| mus00044c00723 | 12281 | Track | Side B. Track 2: Xaggeen talo kaga hagaagaa | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430633 |
-| mus00044c00724 | 12281 | Track | Side B. Track 3: Calaf lama dago | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430562 |
-| mus00044c00725 | 12281 | Track | Side B. Track 4: Masiibo | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430594 |
-| mus00044c00726 | 12281 | Track | Side B. Track 5: Taariikhdu waxbay hagtaa | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430582 |
+| mus00044c00257 | 12222 | Track | Side A. Track 1: Allay Ileehee Ilwaaday, 1988 | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962064 |
+| mus00044c00258 | 12222 | Track | Side A. Track 2: Cibaaro | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962066 |
+| mus00044c00259 | 12222 | Track | Side A. Track 3: Geestaada ila qabo | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962078 |
+| mus00044c00260 | 12222 | Track | Side A. Track 4: Xilashadii Gayaankay | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962074 |
+| mus00044c00261 | 12222 | Track | Side A. Track 5: Bal kaalay Bilanay | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962072 |
+| mus00044c00262 | 12222 | Track | Side B. Track 1: Nabsi Baa Hiiliyoo | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962080 |
+| mus00044c00263 | 12222 | Track | Side B. Track 2: Raaxeeye Burcaawi | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962070 |
+| mus00044c00264 | 12222 | Track | Side B. Track 3: Sidii Hogosha Roobka | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962084 |
+| mus00044c00265 | 12222 | Track | Side B. Track 4: Gardarro | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962062 |
+| mus00044c00266 | 12222 | Track | Side B. Track 5: Sidee Baan Tolow Idhaahdaa | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962076 |
+| mus00044c00267 | 12223 | Track | Side A. Track 1: Afka Lagama Sheegtoo | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959066 |
+| mus00044c00268 | 12223 | Track | Side A. Track 2: Laqanyada Jacaylka | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959068 |
+| mus00044c00269 | 12223 | Track | Side A. Track 3: Faraskaagii laga badi | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959054 |
+| mus00044c00270 | 12223 | Track | Side A. Track 4: Mas'alo (or Waxaan kaa magansadaba) | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959070 |
+| mus00044c00271 | 12223 | Track | Side A. Track 5: Baraarug | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959056 |
+| mus00044c00272 | 12223 | Track | Side B. Track 1: Awrkii Cirka | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959074 |
+| mus00044c00273 | 12223 | Track | Side B. Track 2: Waa iska Xaal Adduun | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959072 |
+| mus00044c00274 | 12223 | Track | Side B. Track 3: Sida Laamo looshaha | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959062 |
+| mus00044c00275 | 12223 | Track | Side B. Track 4: Xaafuun | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959058 |
+| mus00044c00276 | 12223 | Track | Side B. Track 5: Dardaaran or Adiyo doqonnimadaa | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33959060 |
+| mus00044c00277 | 12224 | Track | Side A. Track 1: Naagtii Walaalkay | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962379 |
+| mus00044c00278 | 12224 | Track | Side A. Track 2: Taallo ma u samaysaan (or: Iga tiiri caashaqa) | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962373 |
+| mus00044c00279 | 12224 | Track | Side A. Track 3: Durdur, 1975 | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962377 |
+| mus00044c00280 | 12224 | Track | Side A. Track 4: Nayruus, 1974-09-08 | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962371 |
+| mus00044c00281 | 12224 | Track | Side B. Track 1: Raalliya | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962367 |
+| mus00044c00282 | 12224 | Track | Side B. Track 2: Aroor | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962369 |
+| mus00044c00283 | 12224 | Track | Side B. Track 3: Nugul | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33962381 |
+| mus00044c00668 | 12277 | Track | Side A. Track 1: Arrintaan | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428942 |
+| mus00044c00669 | 12277 | Track | Side A. Track 2: Waan kaa helay | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428952 |
+| mus00044c00670 | 12277 | Track | Side A. Track 3: Hammigayga waa heli waayey | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428901 |
+| mus00044c00671 | 12277 | Track | Side A. Track 4: Inaan meel kale maagayeey | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428950 |
+| mus00044c00672 | 12277 | Track | Side A. Track 5: Abbaayeey adoon ku arkaaya | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428958 |
+| mus00044c00673 | 12277 | Track | Side B. Track 1: Duqyahow da'daa ogaaw | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428891 |
+| mus00044c00674 | 12277 | Track | Side B. Track 2: Aduun baan ku eegaa ii imaaw | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428936 |
+| mus00044c00675 | 12277 | Track | Side B. Track 3: Ilmo aabbahood ku imaan qabaan | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428899 |
+| mus00044c00676 | 12277 | Track | Side B. Track 4: Ma kaa maarmow | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428917 |
+| mus00044c00677 | 12277 | Track | Side B. Track 5: Ka haray, ka haray | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428919 |
+| mus00044c00679 | 12278 | Track | Side A. Track 1: Adigu iskay sii | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429049 |
+| mus00044c00680 | 12278 | Track | Side A. Track 2: Shishifadii Naftaydow | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102428999 |
+| mus00044c00681 | 12278 | Track | Side A. Track 3: Kaftan iyo jacaylkuna | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429031 |
+| mus00044c00683 | 12278 | Track | Side B. Track 2: Alla kala fogaa | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429011 |
+| mus00044c00684 | 12278 | Track | Side B. Track 3: Anna wadhida dumarkiyo | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429019 |
+| mus00044c00685 | 12278 | Track | Side B. Track 4: Garta qaad jacaylow | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429025 |
+| mus00044c00686 | 12278 | Track | Side B. Track 5: Caashaqa sed ima harinee | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429007 |
+| mus00044c00700 | 12279 | Track | Side A. Track 1: Waqti | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429763 |
+| mus00044c00701 | 12279 | Track | Side A. Track 2: Qaraami | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429723 |
+| mus00044c00702 | 12279 | Track | Side A. Track 3: Nasteexo | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429731 |
+| mus00044c00703 | 12279 | Track | Side A. Track 4: Qaraami | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429755 |
+| mus00044c00704 | 12279 | Track | Side A. Track 5: Raaxeeye | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429709 |
+| mus00044c00705 | 12279 | Track | Side B. Track 1: Gufaaco | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429707 |
+| mus00044c00706 | 12279 | Track | Side B. Track 2: Sannad waliba hoodiyo | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429691 |
+| mus00044c00707 | 12279 | Track | Side B. Track 3: Ii dheel dhudiyeey | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429699 |
+| mus00044c00708 | 12279 | Track | Side B. Track 4: Ma ogtahay | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102429739 |
+| mus00044c00710 | 12280 | Track | Side A. Track 1: Geesiga sidee baa loo helaa | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430585 |
+| mus00044c00711 | 12280 | Track | Side A. Track 2: Ruuneey waxaa la yidhi | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430615 |
+| mus00044c00712 | 12280 | Track | Side A. Track 3: Aboowe ii warran | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430595 |
+| mus00044c00713 | 12280 | Track | Side A. Track 4: Ma doob loo xishaa jira | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430617 |
+| mus00044c00714 | 12280 | Track | Side B. Track 1: Fadhiyaro geel | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430551 |
+| mus00044c00715 | 12280 | Track | Side B. Track 2: Doob qalanjadii gabay | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430563 |
+| mus00044c00716 | 12280 | Track | Side B. Track 3: Nin xun xilo ha moodinin | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430553 |
+| mus00044c00717 | 12280 | Track | Side B. Track 4: Heer Tumasho | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430559 |
+| mus00044c00719 | 12281 | Track | Side A. Track 1: Adduunyooy waalaaleey | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430614 |
+| mus00044c00720 | 12281 | Track | Side A. Track 2: Dhawrta idinkaa eh | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430572 |
+| mus00044c00721 | 12281 | Track | Side A. Track 3: Dalxiis | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430647 |
+| mus00044c00722 | 12281 | Track | Side B. Track 1: Waa la i heloo | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430591 |
+| mus00044c00723 | 12281 | Track | Side B. Track 2: Xaggeen talo kaga hagaagaa | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430633 |
+| mus00044c00724 | 12281 | Track | Side B. Track 3: Calaf lama dago | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430562 |
+| mus00044c00725 | 12281 | Track | Side B. Track 4: Masiibo | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430594 |
+| mus00044c00726 | 12281 | Track | Side B. Track 5: Taariikhdu waxbay hagtaa | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102430582 |
+| mus00044c00832 | ? | Track | Side A. Track 1: Waa duni gabowdoo [An aged/ending world], 1964-06-20 | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449879 |
+| mus00044c00833 | ? | Track | Side A. Track 2: Caydhiin iyo Bisayl or Cawaansayeey (from the play "Indho Sarcaad"), 1964-12-05 | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449867 |
+| mus00044c00834 | ? | Track | Side A. Track 3: Dagaallan, 1963 | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449863 |
+| mus00044c00835 | ? | Track | Side A. Track 4: Geeriyo magli'i (from the play "Indho Sarcaad"), 1963 | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449875 |
+| mus00044c00836 | ? | Track | Side B. Track 1: Geeriyo magli'i (from the play Indho Sarcaad), 1963 | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449861 |
+| mus00044c00837 | ? | Track | Side B. Track 2: Hawdeey magacaagiyo, 1965-04-03 | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449871 |
+| mus00044c00838 | ? | Track | Side B. Track 3: Ma habboontahay, 1962-10-23 | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449877 |
+| mus00044c00839 | ? | Track | Side B. Track 4: Wajeereey | SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449873 |
+
+### 4.2 No public stream on the SDS page (no playlist) (32) — `no_playlist`
+
+| cid | cassette | type | title | reason | link |
+| --- | --- | --- | --- | --- | --- |
 | mus00044c01000 | 12315 | Track | Side A. Track 1: Laal | no public stream on the SDS page (no playlist) | https://somalisongs.share.library.harvard.edu/wp-content/uploads/2022/11/AWM_SC_12315_1_1_Laal.mp3 |
 | mus00044c01001 | 12315 | Track | Side A. Track 2: Hooyadaa nin liitow | no public stream on the SDS page (no playlist) | https://somalisongs.share.library.harvard.edu/wp-content/uploads/2022/11/AWM_SC_12315_1_2_Hooyadaa-nin-liitow.mp3 |
 | mus00044c01002 | 12315 | Track | Side A. Track 3: Wacanay, 1969-06-01 | no public stream on the SDS page (no playlist) | https://somalisongs.share.library.harvard.edu/wp-content/uploads/2022/11/AWM_SC_12315_1_3_Wacanay.mp3 |
@@ -154,20 +167,6 @@ Every manifest object whose last row has `status: skipped`, grouped by reason. P
 | mus00044c01029 | 12318 | Track | Side A. Track 5: Xis ii lahow | no public stream on the SDS page (no playlist) | https://somalisongs.share.library.harvard.edu/wp-content/uploads/2022/11/AWM_SC_12318_1_5_Xis-ii-lahow.mp3 |
 | mus00044c01319 | 12318 | Track | Side A. Track 6: Extra Instrumental Track | no public stream on the SDS page (no playlist) | https://somalisongs.share.library.harvard.edu/wp-content/uploads/2022/11/AWM_SC_12318_1_6_Instrumental.mp3 |
 | mus00044c01320 | 12318 | Track | Side B. Track 4: Extra Track | no public stream on the SDS page (no playlist) | https://somalisongs.share.library.harvard.edu/wp-content/uploads/2022/11/AWM_SC_12318_2_4_ExtraMusic.mp3 |
-| mus00044c00832 | ? | Track | Side A. Track 1: Waa duni gabowdoo [An aged/ending world], 1964-06-20 | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449879 |
-| mus00044c00833 | ? | Track | Side A. Track 2: Caydhiin iyo Bisayl or Cawaansayeey (from the play "Indho Sarcaad"), 1964-12-05 | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449867 |
-| mus00044c00834 | ? | Track | Side A. Track 3: Dagaallan, 1963 | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449863 |
-| mus00044c00835 | ? | Track | Side A. Track 4: Geeriyo magli'i (from the play "Indho Sarcaad"), 1963 | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449875 |
-| mus00044c00836 | ? | Track | Side B. Track 1: Geeriyo magli'i (from the play Indho Sarcaad), 1963 | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449861 |
-| mus00044c00837 | ? | Track | Side B. Track 2: Hawdeey magacaagiyo, 1965-04-03 | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449871 |
-| mus00044c00838 | ? | Track | Side B. Track 3: Ma habboontahay, 1962-10-23 | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449877 |
-| mus00044c00839 | ? | Track | Side B. Track 4: Wajeereey | no public stream on the SDS page (no playlist) | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:102449873 |
-
-### 4.2 Stream download failed (ffmpeg) (1) — `download_failed`
-
-| cid | cassette | type | title | reason | link |
-| --- | --- | --- | --- | --- | --- |
-| mus00044c00448 | 12246 | Track | Side A. Track 1: Beeni raad ma leh | stream download failed: e nor servname provided, or not known [in#0 @ 0xb43400000] Error opening input: Input/output error Error opening input file https://mps.lib.harvard.edu/vod/_definst_/smil:s3/drs-delivery-prod/490311008.smil_3A2D6B421D55B7BC48F9CE70593D3A18/playlist.m3u8. Error opening input files: Input/output error | https://nrs.lib.harvard.edu/URN-3:FHCL.LOEB:100386602 |
 
 ### 4.3 Cassette-level objects superseded by their track objects (91) — `cassette_superseded_by_tracks`
 
