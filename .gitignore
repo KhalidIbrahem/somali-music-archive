@@ -252,3 +252,37 @@ data/harvard_tokens*/
 data/sets/*/clips/
 data/sets/*/tokens/
 data/sets/*/chroma/
+
+# ── Phase 1 corpus workflow (2026-09-26): separation, internet downloads, contributor drops,
+# 10 s sets, MIDI. Stems, downloaded audio, tokens, chroma and MIDI never enter git; the
+# text provenance (manifests, skip lists, captions.jsonl, SET_CARD.md, midi/skipped.jsonl)
+# stays tracked. Owner: scripts/corpus_report.py component.
+# data/internet: every entry is ignored (the per-source audio dirs ia/, yt/, file/ and
+# their sidecars), then the top-level JSONL logs of internet_acquire.py (manifest,
+# skipped, candidates, runs) are re-included as text provenance. "data/internet/" alone
+# would make those negations dead, "data/internet/*/" would leave the logs untracked noise.
+data/separated/
+data/internet/*
+!data/internet/*.jsonl
+data/incoming/
+data/sets_10s/*/clips/
+data/sets_10s/*/tokens/
+data/sets_10s/*/chroma/
+data/sets_10s/*/chroma_midi/
+data/sets_10s/*/midi/*
+!data/sets_10s/*/midi/skipped.jsonl
+data/sets/*/chroma_midi/
+data/sets/*/midi/*
+!data/sets/*/midi/skipped.jsonl
+# MIDI derived from rights-held recordings lives under data/ (sets*/**/midi, transcription_demo);
+# the tracked web demo asset apps/web/public/demos/files/transcription.mid must stay addable.
+data/**/*.mid
+data/inventory/*.log
+# ── qaraami-v2 melody/45 s artefacts ──
+data/sets*/*/midi_a440/
+data/sets*/*/chroma_midi_a440/
+data/sets*/*/chroma_midi/
+data/sets*/*/midi/*
+!data/sets*/*/midi/skipped.jsonl
+data/sets_45s/*/clips/
+data/sets_45s/*/tokens/
