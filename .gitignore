@@ -234,3 +234,21 @@ AGENTS.md
 data/transcription_demo/
 data/transcription_pool/
 data/annotation/
+
+# ── ahmed-corpus (2026-09-25): Ahmed Ilkacase sessions + full Harvard set — audio never in git ──
+*.aif
+*.caf
+*.aac
+*.ovw
+data/harvard_raw/
+data/harvard_catalog/*.log
+data/ahmed_raw/
+data/embeddings_ahmed/
+data/ahmed_clips*/
+data/ahmed_tokens*/
+data/ahmed_chroma*/
+data/harvard_clips*/
+data/harvard_tokens*/
+data/sets/*/clips/
+data/sets/*/tokens/
+data/sets/*/chroma/

@@ -1,0 +1,341 @@
+{
+  "set": "ab_dpo_medium",
+  "title": "ab dpo medium",
+  "listener": "khalid",
+  "date": "2026-09-24T17:26:04",
+  "seed": 1887844341,
+  "protocol": "paired comparison, A/B order randomised per pair, scores and file names hidden, question: which sounds more like Somali qaraami; 'neither' allowed",
+  "pairs": [
+    {
+      "pair": 0,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 136 BPM, pentatonic melody rooted on F#, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 1,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 136 BPM, pentatonic melody rooted on F, intimate oud recording",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 2,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 136 BPM, pentatonic melody rooted on G, intimate oud recording",
+      "A": "adapter",
+      "chosen": "B",
+      "preferred": "base",
+      "note": "both"
+    },
+    {
+      "pair": 3,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 144 BPM, pentatonic melody rooted on C, intimate oud recording",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 4,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 150 BPM, pentatonic melody rooted on A, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 5,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 150 BPM, pentatonic melody rooted on C#, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 6,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 150 BPM, pentatonic melody rooted on G, intimate oud recording",
+      "A": "base",
+      "chosen": "A",
+      "preferred": "base",
+      "note": ""
+    },
+    {
+      "pair": 7,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 100 BPM, pentatonic melody rooted on C, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 8,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 100 BPM, pentatonic melody rooted on D#, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 9,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 100 BPM, pentatonic melody rooted on F, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 10,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 108 BPM, pentatonic melody rooted on A#, intimate oud recording",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 11,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 108 BPM, pentatonic melody rooted on E, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 12,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 108 BPM, pentatonic melody rooted on F, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 13,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 84 BPM, pentatonic melody rooted on A, intimate oud recording",
+      "A": "adapter",
+      "chosen": "B",
+      "preferred": "base",
+      "note": ""
+    },
+    {
+      "pair": 14,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 92 BPM, pentatonic melody rooted on A#, intimate oud recording",
+      "A": "base",
+      "chosen": "A",
+      "preferred": "base",
+      "note": ""
+    },
+    {
+      "pair": 15,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 92 BPM, pentatonic melody rooted on A, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 16,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 92 BPM, pentatonic melody rooted on F, intimate oud recording",
+      "A": "adapter",
+      "chosen": "B",
+      "preferred": "base",
+      "note": ""
+    },
+    {
+      "pair": 17,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), lively at 121 BPM, pentatonic melody rooted on C#, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 18,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), lively at 128 BPM, pentatonic melody rooted on A#, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 19,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), lively at 136 BPM, pentatonic melody rooted on A, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 20,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), lively at 144 BPM, pentatonic melody rooted on B, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 21,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), lively at 144 BPM, pentatonic melody rooted on F, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 22,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), lively at 150 BPM, pentatonic melody rooted on C, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 23,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), lively at 150 BPM, pentatonic melody rooted on D#, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 24,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 100 BPM, pentatonic melody rooted on A#, intimate oud recording",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 25,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 100 BPM, pentatonic melody rooted on C, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 26,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 100 BPM, pentatonic melody rooted on G, intimate oud recording",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 27,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 108 BPM, pentatonic melody rooted on D, intimate oud recording",
+      "A": "base",
+      "chosen": "A",
+      "preferred": "base",
+      "note": ""
+    },
+    {
+      "pair": 28,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 116 BPM, pentatonic melody rooted on A, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": "noisy"
+    },
+    {
+      "pair": 29,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 116 BPM, pentatonic melody rooted on F#, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 30,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 116 BPM, pentatonic melody rooted on G#, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 31,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 84 BPM, pentatonic melody rooted on A, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 32,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 84 BPM, pentatonic melody rooted on B, intimate oud recording",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 33,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 92 BPM, pentatonic melody rooted on A#, intimate oud recording",
+      "A": "adapter",
+      "chosen": "B",
+      "preferred": "base",
+      "note": ""
+    },
+    {
+      "pair": 34,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 92 BPM, pentatonic melody rooted on B, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 35,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 92 BPM, pentatonic melody rooted on C, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 36,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 92 BPM, pentatonic melody rooted on D#, intimate oud recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 37,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 92 BPM, pentatonic melody rooted on D, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 38,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 92 BPM, pentatonic melody rooted on F#, intimate oud recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 39,
+      "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 92 BPM, pentatonic melody rooted on F, intimate oud recording",
+      "A": "adapter",
+      "chosen": "B",
+      "preferred": "base",
+      "note": ""
+    }
+  ],
+  "summary": {
+    "n": 40,
+    "adapter": 6,
+    "base": 8,
+    "none": 26,
+    "adapter_rate": 0.15,
+    "wilson95": [
+      0.0706,
+      0.2907
+    ]
+  }
+}

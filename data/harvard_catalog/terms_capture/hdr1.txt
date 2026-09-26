@@ -1,0 +1,12 @@
+HTTP/2 202 
+server: awselb/2.0
+date: Fri, 25 Sep 2026 20:15:51 GMT
+content-length: 2047
+x-amzn-waf-action: challenge
+cache-control: no-store, max-age=0
+content-type: text/html; charset=UTF-8
+access-control-allow-origin: *
+access-control-max-age: 86400
+access-control-allow-methods: OPTIONS,GET,POST
+access-control-expose-headers: x-amzn-waf-action
+

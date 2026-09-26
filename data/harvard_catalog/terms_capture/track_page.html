@@ -1,0 +1,316 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+
+
+
+
+
+
+
+
+
+  
+    
+    
+    
+
+
+<head>
+<title>Streaming Delivery Service: Songs of the Play: Ninkeeda ku amaahday</title>
+    <link href="/sds/assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome CSS -->
+    <link href="/sds/assets/css/font-awesome.min.css" rel="stylesheet">
+<!-- Custom CSS -->
+    <link href="/sds/assets/css/audio-bootstrap.css" rel="stylesheet">
+    
+        <!-- Playlist css -->
+    <link href="/sds/assets/css/sds.css" rel="stylesheet">
+
+<script type="text/javascript" 
+        src="/sds/assets/lib/jwplayer-7.12.8/jwplayer.js">
+</script>
+<!-- JWPlayer 7 now requires license key being set. Harvard License Key -->
+<script>jwplayer.key="mBccbe9c6b60fg4Um0gYlqex9uPJGlT9KVti0RLOV5I=";</script>
+    
+<script type="text/javascript" 
+        src="/sds/assets/js/jquery-1.11.3.min.js">
+</script>
+<script type="text/javascript" 
+	src="/sds/assets/js/play.js">
+</script>
+<script type="text/javascript">
+var not_started = new Array();
+var curr_end_times = new Array();
+var curr_inx = new Array();
+var items = new Array();
+var item = new Object();
+var items_0 = new Array();
+var item = new Object();
+item.display = '1. Ayaamaha toddobada ah<br/> Performer: Khadra Daahir (Khadra Dahir); Author: Maxamuud Cabdullaahi Sangub (Mahmud Abdullahi Sangub)';
+item.start ='0.0';
+item.end ='241.92458049886622';
+items_0.push(item);
+var listdata = 'Identifier: AWM_SC_12201<br/>Songs of the Play: Ninkeeda ku amaahday<br/> Duration: 04:01.925';
+
+
+$(document).ready(function() {
+	ready_player_info(0,items_0,'itemsDiv_0' );
+adjust_classes(0, 0)
+
+	
+ 
+    $('#playlistinfop').html(listdata);
+	jwplayer().onError(
+		    function () {
+		   	 alert(arguments[0].type + ": " + arguments[0].message);
+		    }
+		);
+ 
+});
+
+</script>
+
+
+</head>
+<body>
+<noscript><br>JavaScript must be enabled to use the content on this page.</noscript>
+<!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">
+                  <img style="max-width:250px; margin-top: -7px;"
+                   src="/sds/assets/images/SDS_header_for_audio.jpeg">
+                </a>		
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                   <!-- <li><a href="#search"><span class="fa fa-search"></span> Search</a></li> -->
+                   <li><a href="#cite" data-toggle="modal" data-target="#citeModal"><span class="fa fa-quote-left" style="color:white"></span> Cite</a></li>
+                   <li> <a href="#" data-toggle="tooltip" title="No related links for this video"><span class="fa fa-link" style="color:#999999\"></span><span style="color:#999999"> Related Links</span></a></li>
+                   <li><a href="https://wiki.harvard.edu/confluence/x/qnOpD" target="sds_help"><span class="fa fa-question-circle" style="color:white"></span> Help</a></li>                   
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- Audio Item Row -->
+        <div class="row">
+
+            <div class="col-md-7 col-lg-6">
+            
+              <!-- begin JWPlayer -->
+		      <div id="player">Loading the player...
+		      <!-- crossorigin -->
+		      <!--
+		      <audio crossorigin="use-credentials">
+		      -->
+  				<div id="swf">&nbsp;</div>
+		      
+		        <script type="text/javascript">
+		        
+		        jwplayer("player").setup({
+		            height: 40,
+		            aspectratio:"12:1",
+		            autostart: "true",
+		            controlbar: "bottom",
+		            skin: {name: "beelden" },
+		            playlist: [
+
+		    	
+			      		{
+			            	file: "https://mps.lib.harvard.edu/vod/_definst_/smil:s3/drs-delivery-prod/434915658.smil_61A143C5E7AC0D98CA67F25629F6FE79/playlist.m3u8",
+			            },
+		       	
+		    		],
+
+		            "primary": "html5",
+		            "hlshtml": "true",
+		            androidhls: "false",
+		            hlsjsdefault: "true"
+		        });
+		    	
+		    	jwplayer("player").onPlaylistItem(
+		    	        function (event) {
+		    	        	adjust_classes(event.index, 0);
+		    	            
+		    	        }
+		    	    );
+			    
+			/* You can't modularize JavaScript, especially when it's intertwined with JSP */
+			jwplayer().onReady(
+			    function () {  
+			      jwplayer().play ();  
+			    }    
+			);
+			
+			
+			
+			jwplayer().onError(
+			    function () {
+			   	 alert(arguments[0].type + ": " + arguments[0].message);
+			    }
+			);
+			
+			jwplayer().onReady(
+				function () { 
+			         this.play (); 
+			    }
+			);
+			
+			jwplayer().onPlay(
+			    function () {
+			        item = jwplayer().getPlaylist();
+			    }
+			);
+			
+			
+			</script>
+		   </div>
+		        
+		      <!--crossorigin -->
+		      <!--
+		      </audio>
+		      -->
+
+		      <!-- end JWPlayer -->             
+    		<div id='itemsDiv_0' >
+<ul class='itemsList'>
+<a href="javascript:loadPlaylist(0, 0)"><li class='item' id='items0_0'>1. Ayaamaha toddobada ah <span class='ccs'>Performer: Khadra Daahir (Khadra Dahir); Author: Maxamuud Cabdullaahi Sangub (Mahmud Abdullahi Sangub)</span> </li></a>
+</ul>
+</div>
+
+            </div>
+
+            <div class="col-md-4">
+               <div id="metadata-panel">
+               <div id="playlistinfo">
+	  				<span id="playlistinfop"></span>
+	  			</div>
+                 <div id="iteminfo">
+					  <h2>Now playing...</h2>
+					  <p id ="iteminfop"></p>
+				</div>
+              </div>
+            </div>
+
+        </div>
+        <!-- /.row -->
+
+        <!--
+        <hr>
+        -->
+        
+         <!-- BEGIN Related Links -->
+		 <div class="modal fade" id="linkModal" role="dialog">
+			<div class="modal-dialog">
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+		          <h4 class="modal-title">Related Links</h4>
+		        </div>
+		        <div class="modal-body">
+		          <p>The following links provide more information about this resource.  Links open in a new window.</p>
+
+                  <ul>
+                  
+                    
+                                         
+                      
+                        
+                        
+                          <li>HOLLIS: <a href="https://id.lib.harvard.edu/aleph/015085410/catalog" target="_blank" ">https://id.lib.harvard.edu/aleph/015085410/catalog</a></li>
+                                                
+                        
+                      
+                    
+                                         
+                      
+                        
+                        
+                          <li>Finding Aid: <a href="https://id.lib.harvard.edu/ead/mus00044/catalog" target="_blank" ">https://id.lib.harvard.edu/ead/mus00044/catalog</a></li>
+                                                
+                        
+                      
+                    
+                  
+                  
+                  </ul>
+		        </div>
+
+		      </div>
+		    </div>
+		</div>
+		<!-- END Related Links --> 
+		
+         <!-- BEGIN Citation -->
+		 <div class="modal fade" id="citeModal" role="dialog">
+			<div class="modal-dialog">
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+		          <h4 class="modal-title">Citation</h4>
+		        </div>
+		        <div class="modal-body">
+		          
+                   <p style="margin-left: 25px;"><span style="font-weight: bold;">Description:</span> No label</p>
+                   
+                                      
+                   
+                     
+                     
+                      <p style="margin-left: 25px;"><span style="font-weight: bold;">Persistent Link:</span> <a href="https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33897963" target="_blank" ">https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33897963</a></p>
+                                             
+                     
+                   
+                   <p style="margin-left: 25px;"><span style="font-weight: bold;">Repository:</span> Eda Kuhn Loeb Music Library</p>                   
+                   <p style="margin-left: 25px;"><span style="font-weight: bold;">Institution:</span> Harvard University</p>
+                   <p style="margin-left: 25px;"><span style="font-weight: bold;">Accessed:</span> 25 September 2026</p>  
+		        </div>
+		        <div class="modal-footer">
+		          <a href="#" data-dismiss="modal" class="btn btn-primary">Close</a>
+		        </div>
+		      </div>
+		    </div>
+		</div>
+		<!-- END Citation -->
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Bootstrap Core -->
+    <script src="/sds/assets/js/bootstrap.min.js"></script>
+
+
+<div class="container" id="footer">
+<p id="footerp">
+
+Streaming Delivery Service<br>
+&copy; 2017 xxxxxPresident and Fellows of Harvard College
+</p>
+</div>
+<script type="text/javascript">
+    $('#footerp').html("Streaming Delivery Service<br>" +
+    		"&copy; " + new Date().getFullYear() + 
+    		" President and Fellows of Harvard College");
+</script>
+<script type="text/javascript">
+</script>
+
+</body>
+</html>
