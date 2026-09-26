@@ -406,7 +406,9 @@ def main() -> None:
             continue
         page = parse_page(text)
         if not page["playlists"]:
-            record({**base, "status": "skipped", "reason": "no public stream on the SDS page (no playlist)", **{k: v for k, v in page.items() if k != "playlists"}})
+            reason = ("SDS error page: 'Unfortunately, your request could not be completed' (server-side, not a login gate)"
+                      if "your request could not be completed" in text else "no public stream on the SDS page (no playlist)")
+            record({**base, "status": "skipped", "reason": reason, **{k: v for k, v in page.items() if k != "playlists"}})
             n_skip += 1
             continue
         files = []

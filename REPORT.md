@@ -1,3 +1,34 @@
+# QaraamiGen — ahmed-corpus report (2026-09-25, in progress)
+
+Autonomous session on the M5 Max, branch **`ahmed-corpus`** (from `resume-v1` at
+`02c76ab`). Nothing pushed, no source audio moved off the machine, the
+`musicgen-api` service untouched, no tmux session of Khalid's existed. Goal: the
+next training round on rights-clear data — Ahmed Ilkacase's own sessions plus
+the completed Harvard Aryette set — and adapters that sound like qaraami rather
+than oud texture. This section is rewritten at the end of the session; the
+PENDING marks are filled as stages finish.
+
+## PASS / FAIL per stage
+
+| stage | status | what |
+| --- | --- | --- |
+| 0 — complete the Harvard set | **RUNNING** (PENDING) | public route found (finding-aid URN → anonymous SDS page → HLS MP3; plus direct MP3 links on the collection's public site); fetcher running in tmux `harvard_fetch`; `docs/data/HARVARD_TERMS.md` (verbatim statements), `HARVARD_GAP_LIST.md` (partial snapshot) |
+| 1 — Ahmed corpus inventory | **PASS** | 1,345 files → 1,065 unique by sha256, 95.8 unique h, 79.8 h kept after dropping 264 duplicates, 60 silent, 18 Apple loops; 210 songs; MERT + scorer + seed-rule classifier (CV acc 0.79): full mix 43.7 h, drums 11.8 h, vocals 5.9 h, isolated oud 4.8 h, non-qaraami 3.2 h, unclassified 10.3 h (121 files, listed); 94 third-party suspects (10.2 h) flagged. `docs/data/AHMED_CORPUS_INVENTORY.md` |
+| 2 — training sets | **PASS (Ahmed), PENDING (Harvard)** | ahmed_oud 1,036 clips / 37 files / 26 songs (699/232/105); ahmed_mix 8,699 clips / 441 files / 113 songs (7,452/596/651); ahmed_vocal 1,075 clips (built, not trained); song-group-aware splits, leakage checks passed; tokens + chroma done; harvard_full waits for the fetch |
+| 3 — train four runs | **RUNNING** (PENDING) | `runs/_tools/orchestrate_ahmed.sh` launched 21:21 in tmux `orchestrate_ahmed`: probe → train → eval per run, sequential |
+| 4 — evaluate | PENDING | evaluator ready (per-song CE with bootstrap CI vs own base, trackable-melody %, PCS with pinned scorer, 16-pair 30 s A/B with shared captions, head-to-head) |
+| 5 — report | PENDING | this file, `docs/eval/AHMED_CORPUS_REPORT.md`, CLAUDE.md, memory |
+
+## Defaults I chose (running log; renumbered at the end)
+
+DEFAULTS_PENDING
+
+## What only you can do — ranked
+
+HUMAN_PENDING
+
+---
+
 # QaraamiGen — resume-v1 report (2026-09-24)
 
 Autonomous session on the M5 Max, branch **`resume-v1`** (from `scale-v1` at
