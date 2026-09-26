@@ -28,8 +28,9 @@ Policy (logged as defaults in REPORT.md):
     tracks and would duplicate audio across song-level splits);
   * one page request every --sleep seconds (default 5) plus a pause proportional to the
     audio just streamed; HTTP 429 -> honour Retry-After or back off 2/5/10/15/30 min;
-    resumable, idempotent (the manifest is compacted to one row per object on start,
-    rate-limited rows are dropped so they are retried).
+    resumable, idempotent (the manifest is compacted to one row per object on start;
+    rows skipped for transient reasons — 429, network error, stalled stream, SDS
+    server-error page, 5xx — are dropped so the next pass retries them).
 
 Usage (from apps/ai-service):
   python -m scripts.harvard_fetch --plan            # counts only, no network
@@ -315,7 +316,9 @@ def main() -> None:
                 r = json.loads(line)
                 done[r["cid"]] = r          # last row per cid wins
         # compact: one row per cid, and drop transient failures so they are retried
-        keep = [r for r in done.values() if not (r["status"] == "skipped" and "HTTP 429" in (r.get("reason") or ""))]
+        transient = ("HTTP 429", "network error", "stream stalled", "SDS error page", "HTTP 5")
+        keep = [r for r in done.values()
+                if not (r["status"] == "skipped" and any(t in (r.get("reason") or "") for t in transient))]
         done = {r["cid"]: r for r in keep}
         MANIFEST.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in keep))
     mf = open(MANIFEST, "a")
