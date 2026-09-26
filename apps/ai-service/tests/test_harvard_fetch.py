@@ -193,13 +193,36 @@ def test_resolve_uses_the_session_it_is_given_and_reads_retry_after() -> None:
         headers: dict[str, str] = {"Retry-After": "7"}
 
     class Session:
-        def get(self, link: str, allow_redirects: bool, timeout: int) -> Resp:
-            assert link.startswith(URN) and allow_redirects and timeout == 30
+        def get(self, link: str, allow_redirects: bool, timeout: int, stream: bool = False) -> Resp:
+            assert link.startswith(URN) and allow_redirects and timeout == 30 and stream
             return Resp()
 
     assert hf.resolve(Session(), URN + "1") == (Resp.url, 200, "<html></html>", 7.0)  # type: ignore[arg-type]
     Resp.headers = {"Retry-After": "soon"}
     assert hf.resolve(Session(), URN + "1")[3] == 0.0  # type: ignore[arg-type]
+
+
+def test_resolve_saves_a_direct_audio_response(tmp_path, monkeypatch) -> None:
+    payload = b"ID3fake-mp3-bytes" * 100
+
+    class Resp:
+        url = "https://somalisongs.share.library.harvard.edu/wp-content/uploads/2022/11/AWM_SC_12315_1_1_Laal.mp3"
+        status_code = 200
+        headers: dict[str, str] = {"Content-Type": "audio/mpeg"}
+
+        def iter_content(self, n: int):
+            for i in range(0, len(payload), n):
+                yield payload[i:i + n]
+
+    class Session:
+        def get(self, link: str, allow_redirects: bool, timeout: int, stream: bool = False) -> Resp:
+            return Resp()
+
+    monkeypatch.setattr(hf, "ffprobe_duration", lambda p: 12.5)
+    out = tmp_path / "AWM_SC_12315_A1_Laal__mus00044c01000.mp3"
+    final_url, status, marker, retry = hf.resolve(Session(), Resp.url, save_audio_to=out)  # type: ignore[arg-type]
+    assert (final_url, status, marker, retry) == (Resp.url, 200, "<direct-audio>", 0.0)
+    assert out.read_bytes() == payload and not list(tmp_path.glob("*.part.mp3"))
 
 
 # ---------------------------------------------------------------------------
@@ -502,3 +525,13 @@ def test_gap_report_cli_exits_2_on_bad_inputs(tmp_path: Path, capsys: pytest.Cap
     rc, err = run("--manifest", str(manifest), "--catalog", str(catalog), "--out", str(tmp_path))
     assert rc == 2 and "--out is a directory" in err
     assert not out.exists()
+
+
+def test_is_direct_audio() -> None:
+    from scripts.harvard_fetch import is_direct_audio
+
+    assert is_direct_audio("https://somalisongs.share.library.harvard.edu/wp-content/uploads/2022/11/AWM_SC_12315_1_1_Laal.mp3")
+    assert is_direct_audio("https://x/y.MP3?download=1")
+    assert is_direct_audio("https://mps.lib.harvard.edu/sds/audio/1", "audio/mpeg")
+    assert not is_direct_audio("https://mps.lib.harvard.edu/sds/audio/434915658", "text/html; charset=utf-8")
+    assert not is_direct_audio("https://nrs.lib.harvard.edu/urn-3:fhcl.loeb:33897963")

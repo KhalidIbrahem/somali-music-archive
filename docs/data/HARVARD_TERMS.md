@@ -150,6 +150,16 @@ Restating the standing rule (`docs/DATA_PROVENANCE.md` §1, `CLAUDE.md`
 "Hard rules — Research"), unchanged by anything in this file:
 
 - Every file under `data/harvard_raw/` (the 2025 legacy files and the 2026-09-25 completion fetch) is **research-only staging material**: git-ignored (`data/harvard_raw/` and every audio extension in `.gitignore`), never committed, never uploaded anywhere, never served by the platform, never placed on the website or in a public demo, never shared outside the machine it was fetched to.
+- **Second public route (found 2026-09-25 during the fetch):** 66 catalog objects
+  (cassettes AWM SC 12315–12317 and neighbours) carry as their digital-content
+  link a plain MP3 file on the collection's own public website,
+  `https://somalisongs.share.library.harvard.edu/wp-content/uploads/2022/11/<file>.mp3`
+  (two of the 2025 files came from it as well). The fetcher saves those
+  directly. The site's front page answered `HTTP 200` with a PHP fatal error
+  (`Failed opening required '/home/somaliso/public_html/wp-content/8b9202ee.php'`)
+  on 2026-09-25, so **no terms or about text from that site could be read**;
+  the MP3 files themselves carry ID3 tags (artist, title, album "Songs by …",
+  first poetic line) and no rights text.
 - The fetch used the same public route as the 2025 download: the finding aid's persistent URN, the public SDS player page with its anonymous session, and the HLS stream it embeds (`apps/ai-service/scripts/harvard_fetch.py`). Nothing that required a Harvard login was requested, and objects that answered with a login page, a non-200 status or no playlist were skipped and listed (`docs/data/HARVARD_GAP_LIST.md`).
 - Training on the material is inside the research context; the project treats the public use of any output of a model trained on it as blocked until the library has answered (`CLAUDE.md`, "Left", item 7).
 - **A letter to, and a meeting with, the Eda Kuhn Loeb Music Library / Archive of World Music are pending** (owner: Khalid Ibrahim). Written permission from the library is the condition in `docs/DATA_PROVENANCE.md` for any collection audio to move beyond the private research context.

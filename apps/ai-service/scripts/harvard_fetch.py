@@ -8,6 +8,10 @@ Route (verified 2026-09-25, no credentials involved):
   -> the SDS "login/public" bounce only sets an anonymous session cookie
   -> the player page embeds an HLS playlist (playlist.m3u8) whose segments are
      plain MP3 (320 kb/s, 44.1 kHz, stereo); ffmpeg copies the stream, no re-encode.
+A second public route exists for 66 catalog objects: their digital-content link
+is a plain MP3 on the collection's public site
+(somalisongs.share.library.harvard.edu/wp-content/uploads/...), which is saved
+directly (the 2025 download used it for two files too).
 Anything that lands on a real login (HarvardKey), returns non-200, or has no
 playlist is SKIPPED and reported — nothing is bypassed.
 
@@ -172,14 +176,37 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def resolve(session: requests.Session, link: str, timeout: int = 30) -> tuple[str, int, str, float]:
-    """Follow the URN to the SDS player page. Returns (final_url, status, html, retry_after_s)."""
-    r = session.get(link, allow_redirects=True, timeout=timeout)
+AUDIO_SUFFIXES = (".mp3", ".m4a", ".wav", ".flac", ".aac")
+
+
+def is_direct_audio(url: str, content_type: str = "") -> bool:
+    """A link that IS the audio (the collection's public Somali Songs site serves plain
+    MP3 files under wp-content/uploads) rather than a player page."""
+    path = url.split("?", 1)[0].lower()
+    return path.endswith(AUDIO_SUFFIXES) or content_type.lower().startswith("audio/")
+
+
+def resolve(session: requests.Session, link: str, timeout: int = 30, save_audio_to: Path | None = None) -> tuple[str, int, str, float]:
+    """Follow the link. Returns (final_url, status, html, retry_after_s). When the
+    response is audio itself and save_audio_to is given, the bytes are streamed to
+    that path and html is the marker "<direct-audio>"."""
+    r = session.get(link, allow_redirects=True, timeout=timeout, stream=True)
     ra = r.headers.get("Retry-After", "")
     try:
         retry_after = float(ra) if ra else 0.0
     except ValueError:
         retry_after = 0.0
+    ct = r.headers.get("Content-Type", "")
+    if r.status_code == 200 and save_audio_to is not None and is_direct_audio(r.url, ct):
+        tmp = save_audio_to.with_suffix(".part.mp3")
+        with open(tmp, "wb") as f:
+            for chunk in r.iter_content(1 << 16):
+                f.write(chunk)
+        if ffprobe_duration(tmp) <= 0:
+            tmp.unlink(missing_ok=True)
+            return r.url, r.status_code, "<direct-audio-unreadable>", retry_after
+        tmp.rename(save_audio_to)
+        return r.url, r.status_code, "<direct-audio>", retry_after
     return r.url, r.status_code, r.text, retry_after
 
 
@@ -188,7 +215,7 @@ STREAM_IO_TIMEOUT_S = 30      # ffmpeg gives up on a segment read that stalls th
 STREAM_MAX_S = 1800           # and on any single object that takes longer than this in total   # after HTTP 429: wait, retry; grows per consecutive 429
 
 
-def resolve_with_backoff(session: requests.Session, link: str, on_wait) -> tuple[str, int, str]:
+def resolve_with_backoff(session: requests.Session, link: str, on_wait, save_audio_to: Path | None = None) -> tuple[str, int, str]:
     """resolve() that treats HTTP 429 as "slow down": waits (Retry-After if given, else the
     growing schedule) and retries. Gives up after the schedule is exhausted and returns the 429."""
     final_url, status, text = "", 0, ""
@@ -196,13 +223,13 @@ def resolve_with_backoff(session: requests.Session, link: str, on_wait) -> tuple
         if wait:
             on_wait(wait, attempt)
             time.sleep(wait)
-        final_url, status, text, retry_after = resolve(session, link)
+        final_url, status, text, retry_after = resolve(session, link, save_audio_to=save_audio_to)
         if status != 429:
             return final_url, status, text
         if retry_after > 0:
             on_wait(retry_after, attempt)
             time.sleep(retry_after)
-            final_url, status, text, _ = resolve(session, link)
+            final_url, status, text, _ = resolve(session, link, save_audio_to=save_audio_to)
             if status != 429:
                 return final_url, status, text
     return final_url, status, text
@@ -362,6 +389,20 @@ def main() -> None:
         if "login" in final_url and "login/public" not in final_url or "key.harvard.edu" in final_url or "HarvardKey" in text:
             record({**base, "status": "skipped", "reason": "requires a Harvard login (HarvardKey); not public"})
             n_skip += 1
+            continue
+        if text == "<direct-audio-unreadable>":
+            record({**base, "status": "skipped", "reason": "direct audio link answered but the file is unreadable"})
+            n_skip += 1
+            continue
+        if text == "<direct-audio>":
+            record({**base, "status": "fetched", "route": "direct", "file": str(out.relative_to(REPO)), "files": [str(out.relative_to(REPO))],
+                    "duration_s": round(ffprobe_duration(out), 2), "bytes": out.stat().st_size, "sha256": sha256(out),
+                    "fetched_at": time.strftime("%FT%T%z")})
+            n_ok += 1
+            time.sleep(max(args.sleep, done[o.cid]["duration_s"] / 15.0))
+            if i % 10 == 0 or i == len(todo):
+                el = time.time() - t_start
+                log(f"{i}/{len(todo)} fetched={n_ok} skipped={n_skip} elapsed={el/60:.1f}min eta={(el/i)*(len(todo)-i)/60:.0f}min")
             continue
         page = parse_page(text)
         if not page["playlists"]:
