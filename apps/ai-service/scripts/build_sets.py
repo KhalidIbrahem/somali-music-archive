@@ -314,13 +314,23 @@ def ahmed_source_group(row: dict, path: Path, root: Path) -> str:
     return "ahmed_collection" if "oud_ilkacase" in Path(rel_str(path, root)).parts else "ahmed_sessions"
 
 
-def select_ahmed(rows: list[dict], set_name: str, root: Path = REPO) -> Selection:
+def select_ahmed(rows: list[dict], set_name: str, root: Path = REPO, include_third_party: bool = False) -> Selection:
     """Pick the classified rows of one Ahmed set (unique by sha256, sorted by sha).
 
     A collection file named "..._mixed" belongs to ahmed_mix only: the other
     two sets skip it with reason "collection_mix" even when the classifier
     labelled it oud or voice, so a merged run never holds one song twice with
-    two captions."""
+    two captions.
+
+    Two rules on top of the content label (defaults logged in REPORT.md):
+    * every other file of Ahmed's separate collection (data/raw_incoming/oud_ilkacase,
+      the corpus of the earlier `oud` adapter, oud-led qaraami with hand drums) counts
+      as oud for ahmed_oud whatever the classifier said — the brief's "oud collection";
+    * rows the classifier flagged `third_party_suspect` (numbered imports, "_mixed"
+      downloads, "xml" instrumental bases) are left out of every set unless
+      include_third_party is set, because the adapters may be published and those
+      files' authorship is unverified.
+    """
     want = SET_CONTENT[set_name]
     roots = [root / r for r in AHMED_ROOTS]
     skipped: Counter = Counter()
@@ -331,6 +341,9 @@ def select_ahmed(rows: list[dict], set_name: str, root: Path = REPO) -> Selectio
             skipped["excluded"] += 1
             continue
         universe.add(group_key(row))
+        if row.get("third_party_suspect") and not include_third_party:
+            skipped[f"third_party_{row.get('third_party_reason') or 'suspect'}"] += 1
+            continue
         raw = row.get("path") or ""
         if not raw:
             skipped["no_path"] += 1
@@ -348,6 +361,13 @@ def select_ahmed(rows: list[dict], set_name: str, root: Path = REPO) -> Selectio
                 skipped["collection_mix"] += 1
                 continue
             content = "full_mix"
+        elif source_group == "ahmed_collection" and set_name == "ahmed_oud":
+            if content != "oud":
+                skipped[f"collection_as_oud_from_{content or 'unclassified'}"] += 1
+            content = "oud"
+        elif source_group == "ahmed_collection" and set_name != "ahmed_oud":
+            skipped["collection_reserved_for_ahmed_oud"] += 1
+            continue
         elif content != want:
             skipped[f"content_{content or 'none'}"] += 1
             continue
@@ -1012,6 +1032,8 @@ def main(argv: list[str] | None = None) -> None:
     ap.add_argument("--seconds", type=float, default=30.0)
     ap.add_argument("--limit", type=int, default=0, help="only the first N selected files (partial run: other rows are kept)")
     ap.add_argument("--dry-run", action="store_true", help="select, split and preview captions without decoding")
+    ap.add_argument("--include-third-party", action="store_true",
+                    help="also use rows the classifier flagged third_party_suspect (default: left out of every set)")
     ap.add_argument("--prune-orphans", action="store_true", help="delete clip files under the set that no caption row references")
     ap.add_argument("--sets", nargs="*", default=[], help="--merge: set names to concatenate")
     ap.add_argument("--out", default=None, help="--merge: output captions path")
@@ -1037,7 +1059,7 @@ def main(argv: list[str] | None = None) -> None:
         classified = load_jsonl(resolve_path(args.classified, REPO))
         if not classified:
             raise SystemExit(f"no classified rows at {args.classified}")
-        selection = select_ahmed(classified, args.set, root=REPO)
+        selection = select_ahmed(classified, args.set, root=REPO, include_third_party=args.include_third_party)
     if not selection.files:
         raise SystemExit(f"{args.set}: no source files selected (skipped: {dict(selection.skipped)})")
     build_set(args.set, selection, out_root, seconds=args.seconds, limit=args.limit, dry_run=args.dry_run,
