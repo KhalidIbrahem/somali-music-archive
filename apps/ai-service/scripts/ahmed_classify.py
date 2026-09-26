@@ -740,6 +740,35 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def load_reference_seeds(path: Path, root: Path = REPO) -> tuple[list[np.ndarray], list[dict[str, Any]], list[str]]:
+    """Seed rows of another classified inventory (e.g. Ahmed's, whose file names carry the
+    role words the seed rules read) as extra training data: their cached embeddings, their
+    scalar features and their seed labels. Rows without a seed, a features dict or a readable
+    embedding are skipped. Used by --seed-from for corpora whose names carry no role words
+    (internet downloads, contributors)."""
+    embs: list[np.ndarray] = []
+    feats: list[dict[str, Any]] = []
+    labels: list[str] = []
+    for r in load_jsonl(path):
+        label = r.get("seed_label")
+        ep = r.get("embedding_path")
+        if not label or not ep or r.get("seed_conflict") or not isinstance(r.get("features"), dict):
+            continue
+        p = Path(ep) if Path(ep).is_absolute() else root / ep
+        if not p.exists():
+            continue
+        try:
+            e = np.load(p)
+        except (OSError, ValueError):
+            continue
+        if e.ndim != 1 or e.size != EMB_DIM or not np.isfinite(e).all():
+            continue
+        embs.append(e.astype(np.float32))
+        feats.append(r["features"])
+        labels.append(str(label))
+    return embs, feats, labels
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--inventory", default=DEFAULT_INVENTORY)
@@ -752,6 +781,9 @@ def main() -> None:
     ap.add_argument("--chunks", type=int, default=4)
     ap.add_argument("--shard", default="", help="I/N: analyse only every N-th eligible file starting at I (0-based); "
                                                 "combine with --features-only to fill the cache from several processes")
+    ap.add_argument("--seed-from", default=None,
+                    help="another classified inventory whose seed rows (with cached embeddings) are added as training data; "
+                         "for corpora whose file names carry no role words")
     ap.add_argument("--features-only", action="store_true",
                     help="stop after the per-file features/embeddings are cached; write no outputs")
     args = ap.parse_args()
@@ -809,9 +841,18 @@ def main() -> None:
         label, conflict, cands = seed_label(r)
         r["seed_label"], r["seed_conflict"], r["seed_candidates"] = label, conflict, cands
         seeds.append(label)
+    ref_embs: list[np.ndarray] = []
+    ref_feats: list[dict[str, Any]] = []
+    ref_labels: list[str] = []
+    if args.seed_from:
+        ref_embs, ref_feats, ref_labels = load_reference_seeds(absp(args.seed_from))
+        print(f"reference seeds from {args.seed_from}: {len(ref_labels)} rows {dict(Counter(ref_labels))}", flush=True)
     if usable:
-        X = feature_matrix([embeddings[i] for i in usable], [processed[i]["features"] for i in usable])
-        content, prob, report = train_and_predict(X, [seeds[i] for i in usable])
+        X = feature_matrix([embeddings[i] for i in usable] + ref_embs, [processed[i]["features"] for i in usable] + ref_feats)
+        content, prob, report = train_and_predict(X, [seeds[i] for i in usable] + ref_labels)
+        content, prob = content[: len(usable)], prob[: len(usable)]
+        if ref_labels:
+            report["reference_seeds"] = {"path": args.seed_from, "n": len(ref_labels), "counts": dict(sorted(Counter(ref_labels).items()))}
     else:
         content, prob, report = [], [], {"note": "no usable rows", "seed_counts": {}, "cv": None}
     apply_predictions(processed, usable, content, prob)

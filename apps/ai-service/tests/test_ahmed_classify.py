@@ -218,3 +218,23 @@ def test_doc_falls_back_to_raw_inventory(tmp_path: Path) -> None:
     assert "| unclassified | 2.05 | 5 files |" in text and "| isolated oud | 0.00 | 0 files |" in text
     assert "Classification: **not run**" in text
     assert "| d/oud/wadada 2.m4a |  |  |  | no classification |" in text
+
+
+def test_load_reference_seeds_reads_cached_embeddings(tmp_path) -> None:
+    import numpy as np
+
+    emb = tmp_path / "emb"
+    emb.mkdir()
+    np.save(emb / "a.npy", np.ones(ac.EMB_DIM, dtype=np.float32))
+    np.save(emb / "bad.npy", np.ones(7, dtype=np.float32))
+    rows = [
+        {"seed_label": "oud", "embedding_path": "emb/a.npy", "features": {"pcs": 0.9}},
+        {"seed_label": "voice", "embedding_path": "emb/bad.npy", "features": {}},       # wrong shape
+        {"seed_label": None, "embedding_path": "emb/a.npy", "features": {}},            # no seed
+        {"seed_label": "drums", "embedding_path": "emb/a.npy", "features": {}, "seed_conflict": True},
+        {"seed_label": "drums", "embedding_path": "emb/missing.npy", "features": {}},
+    ]
+    cls = tmp_path / "c.jsonl"
+    cls.write_text("".join(json.dumps(r) + "\n" for r in rows))
+    embs, feats, labels = ac.load_reference_seeds(cls, root=tmp_path)
+    assert labels == ["oud"] and len(embs) == 1 and feats == [{"pcs": 0.9}]
