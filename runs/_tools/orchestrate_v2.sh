@@ -262,13 +262,18 @@ rows = [json.loads(l) for l in open(cap)]
 for r in rows:
     r["chroma_dir"] = f"data/sets/{r['source']}/{sub}"
 missing = [r["clip_path"] for r in rows if not chroma_path(None, r).exists()]
-print(f"{sub}: {len(rows) - len(missing)}/{len(rows)} rows have their MIDI chroma")
+kept = [r for r in rows if chroma_path(None, r).exists()]
+print(f"{sub}: {len(kept)}/{len(rows)} rows have their MIDI chroma")
 if missing:
-    print(f"MISSING_CHROMA {len(missing)} rows, e.g. {missing[0]}")
-    sys.exit(4)
+    # clips without a trackable melody get no MIDI (melody_midi skipped.jsonl); they are dropped from the
+    # melody run rather than blocking it, as long as at least half of the rows remain
+    print(f"MISSING_CHROMA {len(missing)} rows dropped from the melody run, e.g. {missing[0]}")
+    if len(kept) < max(1, len(rows) // 2):
+        print("fewer than half of the rows have MIDI chroma: refusing")
+        sys.exit(4)
 tmp = cap.with_suffix(".tmp")
 with open(tmp, "w") as fh:
-    for r in rows:
+    for r in kept:
         fh.write(json.dumps(r) + "\n")
 tmp.replace(cap)
 PYEOF
