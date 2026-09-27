@@ -11,6 +11,7 @@
 
 import { GENERATED_EXAMPLES, NOT_DISTRIBUTED } from '@/lib/demoExamples';
 import { Reveal } from '@/components/Reveal';
+import { siteCopy } from '@/lib/siteCopy';
 
 export function GenerateExamples(): React.JSX.Element {
   return (
@@ -20,7 +21,7 @@ export function GenerateExamples(): React.JSX.Element {
           aria-hidden
           className="pointer-events-none absolute -top-40 left-1/2 h-[28rem] w-[46rem] rounded-full bg-amber/10 blur-3xl animate-glow-drift"
         />
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-6 py-20 text-center">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-4 sm:px-6 py-20 text-center">
           <Reveal>
             <p className="font-body text-sm uppercase tracking-[0.3em] text-amber">Abuur</p>
           </Reveal>
@@ -31,16 +32,13 @@ export function GenerateExamples(): React.JSX.Element {
           </Reveal>
           <Reveal delay={180}>
             <p className="max-w-2xl font-body text-lg leading-relaxed text-ink-secondary">
-              Generation runs on the research workstation, not on this site. Below are six clips
-              from the fine-tuned MusicGen adapters, generated ahead of time: the same prompt goes
-              to the base model and to the adapter with the same seed, and only the adapter side is
-              played here. Every clip is labelled with the corpus its adapter learned from.
+              {siteCopy.generate.label}
             </p>
           </Reveal>
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-6 py-14">
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 py-14">
         <ol className="flex flex-col gap-6">
           {GENERATED_EXAMPLES.map((clip, i) => (
             <li key={clip.id}>

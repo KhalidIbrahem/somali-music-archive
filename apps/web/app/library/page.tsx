@@ -6,6 +6,7 @@
 
 import type { Metadata } from 'next';
 import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
 import { LibraryShelf } from '@/components/library/LibraryShelf';
 import { PublicLibraryShelf } from '@/components/library/PublicLibraryShelf';
 import { flags } from '@/lib/flags';
@@ -18,9 +19,10 @@ export const metadata: Metadata = {
 
 export default function LibraryPage(): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-bg-primary text-ink-primary">
+    <div className="flex min-h-screen flex-col bg-bg-primary text-ink-primary">
       <SiteHeader active="Library" />
       {flags.requireAuth ? <LibraryShelf /> : <PublicLibraryShelf />}
+      <SiteFooter />
     </div>
   );
 }

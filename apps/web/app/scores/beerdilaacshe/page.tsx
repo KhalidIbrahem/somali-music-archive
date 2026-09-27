@@ -13,6 +13,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Metadata } from 'next';
 import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
 import { ScorePlayer, type ScoreData } from '@/components/scores/ScorePlayer';
 
 export const metadata: Metadata = {
@@ -52,9 +53,9 @@ const DOWNLOADS = [
 
 export default function BeerdilaacshePage(): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-page font-body text-hi">
+    <div className="flex min-h-screen flex-col bg-page font-body text-hi">
       <SiteHeader active="Scores" />
-      <main className="mx-auto w-full max-w-4xl px-6 pt-10 pb-24">
+      <main className="mx-auto w-full max-w-4xl px-4 sm:px-6 pt-10 pb-24">
         {/* ── Title ─────────────────────────────────────────────────────────── */}
         <header>
           <p className="numeric text-xs tracking-[0.24em] text-accent-state uppercase">
@@ -151,6 +152,7 @@ export default function BeerdilaacshePage(): React.JSX.Element {
           </p>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

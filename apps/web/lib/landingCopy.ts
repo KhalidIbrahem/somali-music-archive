@@ -18,13 +18,13 @@ export const landingCopy = {
     // Situation → stakes → turn. Author's story framing (build brief):
     // oral tradition, live performance, aging cassettes; never written down.
     kicker: 'Qaraami — the golden age, 1970s–1980s',
-    headline: 'A nation’s memory, held together by cassette tape.',
-    // alt: 'A civilization sang, and its song lived only on tape and in memory.'
-    // alt: 'A musical civilization lived on tape and in memory.'
-    // alt: 'The music was never written down.'
-    sub: 'Almost none of it was ever written into sheet music — and the recordings are decaying a little more each year.',
-    // alt: 'The voices are aging. The recordings are fading. What was never written down can still be lost.'
-    turn: 'Until now.',
+    // Author's final copy (website-v1, 2026-09-27) — verbatim.
+    headline: 'A music this beautiful, with no sheet to play from.',
+    sub: 'When my teacher and I went looking for Somali sheet music, there was none. So I combined AI and my own music training so people and machines can finally read, play, and understand Somali music.',
+    // Earlier lines kept for the record:
+    // headline: 'A nation’s memory, held together by cassette tape.'
+    // sub: 'Almost none of it was ever written into sheet music — and the recordings are decaying a little more each year.'
+    // turn: 'Until now.' — dropped: the new subline already lands the turn.
     // The three pillars, named in the author's own master-plan brief
     // (2026-08-08): "transcription of 1950s qaraami scores, playable sheet
     // music, and a professional DAW dedicated to Somali music."

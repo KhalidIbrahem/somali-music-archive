@@ -175,3 +175,91 @@ export function formatClock(sec: number): string {
   const s = Math.round(sec % 60);
   return `${m}:${String(s).padStart(2, '0')}`;
 }
+
+/**
+ * The Listen page (website-v1): four clips from the served MusicGen-large
+ * adapter, each with the numbers the project's own scorer gave it. Source:
+ * data/ab_showcase_large/ab_scores.json — the top 16 of 256 samples drawn from
+ * facebook/musicgen-large + qaraami_large_r32/ckpt_step_2750 during DPO round 1,
+ * ranked by the composite reward, one clip per prompt; these are pairs 0, 4, 6
+ * and 8 of that set, transcoded to mono MP3 (ffmpeg, 96 kb/s). Selected, not
+ * random: say so on the page.
+ *
+ * PCS (apps/ai-service/scripts/pcs.py): the share of voiced 20 ms frames whose
+ * pitch lies within ±50 cents of a degree of the pentatonic scale fitted to
+ * the clip. Voiced: the share of frames with a confident pitch (torchcrepe).
+ */
+export interface ListenSample {
+  readonly id: string;
+  readonly file: string;
+  /** Short title derived from the prompt. */
+  readonly title: string;
+  readonly prompt: string;
+  readonly durationSec: number;
+  readonly pcs: number;
+  readonly voiced: number;
+  /** Band-limited SNR of the clip in dB, from the same scorer run. */
+  readonly bandSnrDb: number;
+  /** Rank in the 16-clip showcase set (1 = highest composite reward). */
+  readonly rank: number;
+}
+
+export const LISTEN_MODEL = {
+  model: 'MusicGen-large (3.3 B)',
+  adapter: 'qaraami adapter, LoRA r32',
+  checkpoint: 'qaraami_large_r32, step 2750',
+  corpus: QARAAMI_CORPUS,
+  poolNote:
+    'the 4 clips below are chosen from the 16 best of 256 samples the model produced for these prompts, ranked by an automatic score — a curated selection, not a random draw',
+} as const;
+
+export const LISTEN_SAMPLES: readonly ListenSample[] = [
+  {
+    id: 'showcase_large_000',
+    file: '/demos/generated/showcase_large_000.mp3',
+    title: 'Oud and hand drums, 92 BPM, rooted on E',
+    prompt:
+      'qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 92 BPM, pentatonic melody rooted on E, intimate oud recording',
+    durationSec: 15,
+    pcs: 0.94,
+    voiced: 0.357,
+    bandSnrDb: 26.7,
+    rank: 1,
+  },
+  {
+    id: 'showcase_large_004',
+    file: '/demos/generated/showcase_large_004.mp3',
+    title: 'Solo oud, 108 BPM, rooted on C',
+    prompt:
+      'qaraami, Somali traditional song, led by the oud (kaban), moderate at 108 BPM, pentatonic melody rooted on C, intimate oud recording',
+    durationSec: 15,
+    pcs: 0.99,
+    voiced: 0.666,
+    bandSnrDb: 12.6,
+    rank: 5,
+  },
+  {
+    id: 'showcase_large_006',
+    file: '/demos/generated/showcase_large_006.mp3',
+    title: 'Oud and hand drums, lively at 150 BPM, rooted on G♯',
+    prompt:
+      'qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 150 BPM, pentatonic melody rooted on G#, intimate oud recording',
+    durationSec: 15,
+    pcs: 0.972,
+    voiced: 0.706,
+    bandSnrDb: 35.8,
+    rank: 7,
+  },
+  {
+    id: 'showcase_large_008',
+    file: '/demos/generated/showcase_large_008.mp3',
+    title: 'Solo oud, 100 BPM, rooted on C♯',
+    prompt:
+      'qaraami, Somali traditional song, led by the oud (kaban), moderate at 100 BPM, pentatonic melody rooted on C#, intimate oud recording',
+    durationSec: 15,
+    pcs: 0.968,
+    voiced: 0.666,
+    bandSnrDb: 25.1,
+    rank: 9,
+  },
+];

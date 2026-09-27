@@ -9,12 +9,15 @@
 
 import Image from 'next/image';
 import { TRANSCRIPTION_EXAMPLES, formatClock } from '@/lib/demoExamples';
+import { siteCopy } from '@/lib/siteCopy';
 
 export function TranscribeExamples(): React.JSX.Element {
   return (
-    <main className="mx-auto max-w-5xl px-6 py-12">
+    <main className="mx-auto max-w-5xl px-4 sm:px-6 py-12">
       <p className="font-body text-sm uppercase tracking-[0.3em] text-amber">Qormada</p>
-      <h1 className="mt-2 font-display text-4xl text-ink-primary">Audio → sheet music</h1>
+      <h1 className="mt-2 font-display text-3xl text-ink-primary sm:text-4xl">
+        {siteCopy.transcribe.label}
+      </h1>
       <p className="mt-3 max-w-2xl font-body text-ink-secondary">
         The transcription pipeline runs on the research workstation, not on this site. Below are
         three of its scores, rendered ahead of time. Each recording&apos;s scale is detected from

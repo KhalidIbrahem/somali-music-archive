@@ -11,6 +11,7 @@
 
 import type { Metadata } from 'next';
 import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
 import { GenerateExamples } from '@/components/generate/GenerateExamples';
 import { GenerationStudio } from '@/components/generate/GenerationStudio';
 import { ServedGenerationStudio } from '@/components/generate/ServedGenerationStudio';
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
 
 export default function GeneratePage(): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-bg-primary text-ink-primary">
+    <div className="flex min-h-screen flex-col bg-bg-primary text-ink-primary">
       <SiteHeader active="Generate" />
       {flags.aiServiceMode === 'off' ? (
         <GenerateExamples />
@@ -33,6 +34,7 @@ export default function GeneratePage(): React.JSX.Element {
       ) : (
         <GenerationStudio />
       )}
+      <SiteFooter />
     </div>
   );
 }

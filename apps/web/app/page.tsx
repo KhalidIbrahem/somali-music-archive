@@ -20,15 +20,15 @@ import Link from 'next/link';
 import { HeroScore, type HeroNotes } from '@/components/home/HeroScore';
 import { WaveToScore } from '@/components/home/WaveToScore';
 import { ClosingNote } from '@/components/home/ClosingNote';
-import { QaraamiGenLockup, QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
-import { ThemeToggle } from '@/components/theme/ThemeToggle';
-import { AuthMenu } from '@/components/AuthMenu';
+import { QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
+import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
 import { DemoPlayer } from '@/components/home/DemoPlayer';
 import { RESEARCH_DEMOS } from '@/lib/demos';
 import { Reveal } from '@/components/Reveal';
 import { landingCopy as copy } from '@/lib/landingCopy';
 import { flags } from '@/lib/flags';
-import { ARCHIVE_TRACKS, OUD_SESSION_TRACKS } from '@/lib/tracks';
+import { LISTEN_SAMPLES } from '@/lib/demoExamples';
 
 export const metadata: Metadata = {
   title: 'QaraamiGenAI — before the last tape fades',
@@ -44,8 +44,7 @@ const heroNotes = JSON.parse(readFileSync(join(sampleDir, 'hero-notes.json'), 'u
 // What the listening room lists: the synthesised sample, the Harvard catalogue
 // entries (audio withheld), and the held oud sessions only when the site is
 // invite-only (components/listen/ListenShelf.tsx applies the same rule).
-const LISTEN_COUNT =
-  1 + ARCHIVE_TRACKS.length + (flags.requireAuth ? OUD_SESSION_TRACKS.length : 0);
+const LISTEN_COUNT = LISTEN_SAMPLES.length;
 
 export default function Home(): React.JSX.Element {
   return (
@@ -53,37 +52,11 @@ export default function Home(): React.JSX.Element {
       {/* film grain — static SVG turbulence, one veil over the whole page */}
       <div aria-hidden className="film-grain print:hidden" />
 
-      {/* Sticky so the menus never leave the top of the screen. z-30 (not z-10
-          like main): the account dropdown lives inside this stacking context —
-          at equal z the LATER sibling (main) would sit above it and swallow its
-          clicks while the pixels showed through. */}
-      <header className="sticky top-0 z-30 border-b border-hairline bg-page/85 backdrop-blur">
-        <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
-          <QaraamiGenLockup markSize={28} />
-          <nav className="flex items-center gap-5">
-            {flags.daw ? (
-              <Link
-                href="/daw"
-                className="rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
-              >
-                Studio
-              </Link>
-            ) : null}
-            <Link
-              href="/listen"
-              className="hidden rounded-[4px] text-sm text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none sm:block"
-            >
-              Listening room
-            </Link>
-            {flags.requireAuth ? <AuthMenu variant="landing" /> : null}
-            <ThemeToggle />
-          </nav>
-        </div>
-      </header>
+      <SiteHeader active="Home" />
 
       <main className="relative z-10">
         {/* ── Hero: silence, then the turn ─────────────────────────────────── */}
-        <section className="mx-auto flex min-h-[82dvh] w-full max-w-4xl flex-col items-start justify-center px-6 py-24">
+        <section className="mx-auto flex min-h-[82dvh] w-full max-w-4xl flex-col items-start justify-center px-4 py-20 sm:px-6 sm:py-24">
           <p
             className="hero-enter numeric text-xs tracking-[0.24em] text-accent-state uppercase"
             style={{ '--enter-delay': '0ms' } as React.CSSProperties}
@@ -91,7 +64,7 @@ export default function Home(): React.JSX.Element {
             {copy.hero.kicker}
           </p>
           <h1
-            className="hero-enter mt-6 max-w-3xl font-display text-5xl leading-[1.08] sm:text-6xl"
+            className="hero-enter mt-6 max-w-3xl font-display text-4xl leading-[1.08] sm:text-5xl md:text-6xl"
             style={{ '--enter-delay': '90ms' } as React.CSSProperties}
           >
             {copy.hero.headline}
@@ -101,12 +74,6 @@ export default function Home(): React.JSX.Element {
             style={{ '--enter-delay': '260ms' } as React.CSSProperties}
           >
             {copy.hero.sub}
-          </p>
-          <p
-            className="hero-enter mt-10 font-display text-3xl text-accent-state italic sm:text-4xl"
-            style={{ '--enter-delay': '850ms' } as React.CSSProperties}
-          >
-            {copy.hero.turn}
           </p>
           <ul
             className="hero-enter mt-10 flex flex-wrap gap-x-6 gap-y-2"
@@ -125,7 +92,7 @@ export default function Home(): React.JSX.Element {
         </section>
 
         {/* ── The proof: the engraving that plays ──────────────────────────── */}
-        <section className="mx-auto w-full max-w-5xl px-6 pb-28">
+        <section className="mx-auto w-full max-w-5xl px-4 sm:px-6 pb-28">
           <Reveal className="mx-auto max-w-2xl text-center">
             <p className="numeric text-xs tracking-[0.24em] text-accent-state uppercase">
               {copy.proof.kicker}
@@ -140,7 +107,7 @@ export default function Home(): React.JSX.Element {
 
         {/* ── Research demos (Stage 2) — the shareable results ─────────────── */}
         <section id="research" className="border-t border-hairline">
-          <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-6 py-24">
+          <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 sm:px-6 py-24">
             <Reveal className="max-w-2xl">
               <p className="numeric text-xs tracking-[0.24em] text-accent-state uppercase">
                 {copy.demos.kicker}
@@ -171,7 +138,7 @@ export default function Home(): React.JSX.Element {
         {copy.sections.map((s, i) => (
           <section key={s.id} className="border-t border-hairline">
             <div
-              className={`mx-auto grid w-full max-w-5xl gap-10 px-6 py-24 lg:grid-cols-[5fr_6fr] lg:items-center ${
+              className={`mx-auto grid w-full max-w-5xl gap-10 px-4 sm:px-6 py-24 lg:grid-cols-[5fr_6fr] lg:items-center ${
                 i % 2 === 1 ? 'lg:[direction:rtl]' : ''
               }`}
             >
@@ -223,7 +190,7 @@ export default function Home(): React.JSX.Element {
                     >
                       <span className="text-sm text-hi">The listening room</span>
                       <span className="numeric text-xs text-low group-hover:text-accent-state">
-                        {LISTEN_COUNT} recordings · sources stated
+                        {LISTEN_COUNT} generated clips · AI output, labelled
                       </span>
                     </Link>
                     <Link
@@ -244,7 +211,7 @@ export default function Home(): React.JSX.Element {
 
         {/* ── Stats: museum labels, not dashboards ─────────────────────────── */}
         <section className="border-t border-hairline">
-          <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-x-8 gap-y-12 px-6 py-24 md:grid-cols-4">
+          <div className="mx-auto grid w-full max-w-5xl grid-cols-2 gap-x-8 gap-y-12 px-4 sm:px-6 py-24 md:grid-cols-4">
             {copy.stats.map((stat, i) => (
               <Reveal key={stat.label} delay={i * 100}>
                 <p className="numeric text-4xl text-hi">{stat.value}</p>
@@ -286,20 +253,7 @@ export default function Home(): React.JSX.Element {
         </section>
       </main>
 
-      <footer className="relative z-10 border-t border-hairline">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-6 py-8 text-xs text-low sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <QaraamiGenMark size={20} tone="mono" className="text-mid" />
-            <p>
-              QaraamiGenAI — built in Minneapolis for the diaspora.{' '}
-              <span className="text-mid">{copy.credit}.</span>
-            </p>
-          </div>
-          <p>
-            Recordings remain with their rights holders. Transcriptions carry their own uncertainty.
-          </p>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
