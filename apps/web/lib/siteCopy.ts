@@ -1,7 +1,6 @@
 /**
  * Site copy shared across pages — the author's exact words (website-v1,
  * 2026-09-27). Verbatim: change wording here only, never in the components.
- * `[[KHALID PROVIDE]]` marks a line the author has not written yet.
  */
 
 export const siteCopy = {
@@ -10,6 +9,7 @@ export const siteCopy = {
     { label: 'Generate', href: '/generate' },
     { label: 'Transcribe', href: '/transcribe' },
     { label: 'Listen', href: '/listen' },
+    { label: 'Library', href: '/library' },
     { label: 'Research', href: '/#research' },
   ],
 
@@ -24,7 +24,7 @@ export const siteCopy = {
 
   footer: {
     name: 'Khalid Ibrahim',
-    line: '[[KHALID PROVIDE]]',
+    line: 'Building the tools to read, play, and understand Somali music.',
     email: 'Ibrahimkhalid032@gmail.com',
     location: 'Minneapolis, MN',
     socials: [

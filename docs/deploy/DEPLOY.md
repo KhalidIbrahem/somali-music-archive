@@ -29,7 +29,7 @@ OUT=/tmp/qaraamigen-mobile-check BASE=http://127.0.0.1:3200 node apps/web/script
 
 Pass condition: `scrollW` equals the viewport on every public page at 375 px
 and 414 px, `btn true` (hamburger visible), `desktopHidden true`, the panel
-lists Home, Generate, Transcribe, Listen, Research, and `footer true`.
+lists Home, Generate, Transcribe, Listen, Library, Research, and `footer true`.
 Screenshots land in `$OUT/shots/`. Passed on 2026-09-27 (`REPORT.md`).
 
 ### 1. Vercel project settings (one-time)

@@ -4,7 +4,10 @@
  * ListenShelf — the Listen page (website-v1): where the research is now.
  * Four clips of model output from the served MusicGen-large adapter, each
  * labelled as AI output with the scorer's own numbers (lib/demoExamples.ts).
- * Nothing on this page is a recording; no source audio is ever served.
+ * Nothing on this page is a recording; no source audio is ever served. The
+ * Recordings section stays a placeholder until docs/DATA_PROVENANCE.md records
+ * a rights-clear file (the oud collection waits for its consent record; Harvard
+ * is research-only) — see REPORT.md website-v1 for the file-by-file decision.
  * Playback goes through the persistent player (root layout) so the rights
  * line travels with the clip.
  */
@@ -131,6 +134,19 @@ export function ListenShelf(): React.JSX.Element {
           );
         })}
       </ol>
+
+      <section className="mt-10 max-w-2xl">
+        <h2 className="font-display text-lg text-hi">Recordings</h2>
+        <div className="mt-3 rounded-[4px] border border-dashed border-hairline bg-chrome-1 px-5 py-4 text-[13px] leading-relaxed text-mid">
+          <p>
+            No recording is served on this site yet. The archive&apos;s source recordings are held
+            for research: the Harvard Loeb Music Library collection is research-only and never
+            appears here, and the privately shared oud (kaban) collection waits for its written
+            consent record before any of it is published. Rights-clear recordings will be listed in
+            this section, each with its source stated, as they are cleared.
+          </p>
+        </div>
+      </section>
 
       <section className="mt-8 max-w-2xl text-[13px] leading-relaxed text-mid">
         <h2 className="font-display text-lg text-hi">What the numbers mean</h2>

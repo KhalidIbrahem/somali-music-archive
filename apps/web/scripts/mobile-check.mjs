@@ -1,7 +1,7 @@
 // Mobile check for the public pages: headless Chrome over the DevTools protocol, no packages.
 // Usage: OUT=/tmp/shots BASE=http://127.0.0.1:3200 node apps/web/scripts/mobile-check.mjs
 // Pass: scrollWidth == innerWidth at 375 and 414 px on every page, hamburger visible,
-// desktop links hidden, the panel lists the five nav links, footer strip present.
+// desktop links hidden, the panel lists the six nav links, footer strip present.
 import { spawn } from 'node:child_process';
 import { writeFileSync, mkdirSync } from 'node:fs';
 const S = process.env.OUT ?? '/tmp/qaraamigen-mobile-check',
