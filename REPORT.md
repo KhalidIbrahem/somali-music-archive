@@ -26,6 +26,32 @@ Only Khalid: choose the logo variation; write the footer line and the Listen
 line; merge `website-v1` into `master` and push (Vercel builds it); buy the
 domain and follow DEPLOY.md §4.
 
+### website-v1, second pass (2026-09-27, commit `81eb396`)
+
+Listen and Library rebuilt under the rights rule; footer line final; nav is now
+Home, Generate, Transcribe, Listen, Library, Research (6 links, re-verified at
+375/414 px on all six public pages, no overflow, build 0 warnings).
+
+File-by-file decision for `apps/web/public/audio` (checked against
+`docs/audio-inventory.md`, which does not list these files, and
+`docs/DATA_PROVENANCE.md` §4/§8):
+
+| file | source | decision | reason |
+| --- | --- | --- | --- |
+| `qaraami-awliyo-heelo.mp3`, `qaraami-caruuskayagoow.m4a`, `qaraami-heeri-maahee.mp3`, `qaraami-isku-shuban-kaban.mp3`, `qaraami-kaban-wadada.m4a`, `qaraami-laxanka.mp3`, `qaraami-raaxeeye.mp3`, `qaraami-subcis-balwo.mp3`, `qaraami-tagay-luula.mp3` | oud (kaban) collection = Ahmed Ilkacase's (§4) | **excluded** | §4/§8: audio not redistributed until the written consent record exists (`docs/data/consent/` holds only a README); CLAUDE.md hard rule "no oud source audio is served"; `.vercelignore` and `.gitignore` exclude the folder, so they cannot reach Vercel anyway |
+| `public/sample/audio.mp3` (sample session) | owned synthesis from the pipeline's note list (inventory row 14) | **excluded, for Khalid** | the melody was transcribed from a corpus item; the audio is synthetic and was public before, but the strict reading of "Harvard never appears" puts the call with Khalid |
+| `public/demos/generated/showcase_large_{000,004,006,008}.mp3` | model output | **included** | AI-generated, labelled with PCS / voiced |
+| Harvard rows (`track_*`) | Harvard Loeb corpus, ⚠ unverified | **excluded** | research-only; not on disk under public/ either |
+
+Included on Library: Beerdilaacshe PDF / MIDI / LilyPond (§2, Khalid's engraving),
+a pointer to the three automatic transcriptions already public on Transcribe.
+
+Only Khalid: sign and file the Ahmed Ilkacase consent record, then say which of
+the nine oud tracks go public (they would also need a hosting path, since the
+folder is excluded from deploys); decide on the sample-session synthesis; fill
+the two `[[KHALID: ...]]` placeholders (Listen closing line, Library book slot);
+pick the logo; merge, push, domain.
+
 ---
 
 # QaraamiGen — qaraami-v2 report (2026-09-26, in progress)
