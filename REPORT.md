@@ -1,3 +1,33 @@
+# QaraamiGen — website-v1 report (2026-09-27)
+
+Branch **`website-v1`** from `qaraami-v2` at `1e810da`; commit `4d1d8fb`. Nothing
+pushed, nothing deployed, the `musicgen-api` service untouched. Goal: the public
+site usable on a phone before the domain goes live (professors open it on phones).
+
+| job | status | proof |
+| --- | --- | --- |
+| mobile header | PASS | `SiteNav.tsx` hamburger + panel; `apps/web/scripts/mobile-check.mjs` at 375 and 414 px on /, /generate, /transcribe, /listen, /scores/beerdilaacshe, /library: scrollWidth == viewport on all 12, hamburger visible, desktop links hidden, panel lists the 5 links, footer strip present |
+| logo | PASS (Khalid picks) | three SVGs in `apps/web/public/brand/`, contact sheet `docs/brand/logo-variations.html`; variation A (wave tail) wired as default + favicon |
+| Listen page | PASS | 4 clips from `data/ab_showcase_large` pairs 0/4/6/8 with PCS 0.940/0.990/0.972/0.968 and voiced 36/67/71/67 % straight from `ab_scores.json`; no source audio, Harvard catalogue rows removed from the page |
+| final copy | PASS | `lib/siteCopy.ts` + `lib/landingCopy.ts`, verbatim; old commercial footer and Privacy/Terms gone (the /register terms checkbox stays, page hidden on the public site) |
+| production build | PASS | `NEXT_PUBLIC_AI_SERVICE_MODE=off next build`: 0 warnings, 23 routes; tsc clean; eslint 0 errors (4 pre-existing warnings in courses/learn/transcribe studio) |
+| DEPLOY.md | PASS | Vercel settings, env table, deploy/rollback, custom-domain DNS |
+
+Defaults chosen: the Listen clips are the showcase set's pairs 0, 4, 6, 8 (the
+served large SFT adapter; the DPO adapter is not served and has no showcase
+set); "Research" in the nav points at the home page's research section
+(`/#research`); the hero's "Until now." line dropped because the new subline
+lands the turn; Scores and Library left out of the nav as instructed but still
+reachable; the home page's "listening room" count now reads the 4 clips; the
+Beerdilaacshe scores page and Library got the footer too. One new
+`[[KHALID: ...]]` placeholder added at the foot of Listen for a line in his words.
+
+Only Khalid: choose the logo variation; write the footer line and the Listen
+line; merge `website-v1` into `master` and push (Vercel builds it); buy the
+domain and follow DEPLOY.md §4.
+
+---
+
 # QaraamiGen — qaraami-v2 report (2026-09-26, in progress)
 
 Autonomous session on the M5 Max, branch **`qaraami-v2`** (from `ahmed-corpus`
