@@ -1,3 +1,29 @@
+# QaraamiGen — proof of generation (2026-09-28, website-v1)
+
+Read-only on the service, training, data and site. `tmux ls`: no server, no
+training. Report `docs/eval/PROOF_OF_GENERATION.md`, live script
+`docs/eval/PROOF_OF_GENERATION_DEMO.md`; artefacts in `data/proof_generation/`
+(git-ignored, added to `.gitignore`).
+
+| test | status | proof |
+| --- | --- | --- |
+| 1 determinism | PASS | seed 73 twice on `large`, 15 s: same SHA-256 `9ba95976…`, max sample diff 0.0; same bytes from a fresh process and through the page's `/demo/generate` route |
+| 2 variation | PASS | seeds 74/75 and the dhaanto prompt: r = 0.009 / −0.003 / 0.023 against seed 73, max diff ≥ 1.0 |
+| 3 compute | PASS | service log/health: 40.5–40.7 s `model.generate` per clip, MPS allocated 15,790 → 16,960 MB, driver 16.8 → 19.2 GB |
+| 4 no playback | PASS, with stated limits | code path traced; audit hook in a copy of the service: 22 opens during generate, all lazy imports plus two JSON writes, zero audio/token files; `lsof` at 4 Hz on the live pid: no new file in five generations. Native opens and sub-250 ms opens are outside both; `fs_usage` needs root |
+| 5 not a copy | PASS | 7,612 distinct train clips: MERT best 0.917 (real different-clip NN median 0.969, same-song 0.981); chroma 15 s window best 0.52 (real copied passage 0.963 rank 1, unrelated real NN median 0.48). Base-model training data not covered |
+
+Defaults: cfg 3.0 (service default); MERT = the project's `embed_mert`; chroma
+search = max windowed Pearson r, validated fast vs slow to 1e-16; the
+positive-control excerpt stays in the ignored folder. Observed, not acted on:
+245 duplicate train rows (`oud_ilkacase`) and duplicate recordings across song
+hashes in `data/scale_captions.jsonl`.
+
+Only Khalid: record the demo; decide whether the duplicate-row finding needs a
+corpus fix before the next training run.
+
+---
+
 # QaraamiGen — website-v1 report (2026-09-27)
 
 Branch **`website-v1`** from `qaraami-v2` at `1e810da`; commit `4d1d8fb`. Nothing
