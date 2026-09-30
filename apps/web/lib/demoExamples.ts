@@ -1,9 +1,8 @@
 /**
  * Examples shown on the Transcribe and Generate pages when no AI service is
  * attached (NEXT_PUBLIC_AI_SERVICE_MODE=off, the public site). Everything
- * here was produced by the same pipeline and the same adapters the pages call
- * when a service is attached; it was rendered ahead of time and copied into
- * public/demos/. No source recording is included: the scores are the
+ * here was produced by the project's own pipeline and adapters on the research
+ * workstation; it was rendered ahead of time and copied into public/demos/. No source recording is included: the scores are the
  * pipeline's output and the clips are model output.
  *
  * Numbers come from each score's pipeline JSON (`summary`); the clip
@@ -78,25 +77,42 @@ export interface GeneratedExample {
   readonly file: string;
   readonly model: string;
   readonly adapter: string;
-  /** Run directory and checkpoint step under runs/. */
+  /** Run directory and checkpoint under runs/. */
   readonly checkpoint: string;
   /** What the adapter was trained on. */
   readonly corpus: string;
   readonly prompt: string;
-  /** torch.manual_seed before generation; the base-model clip for the same prompt used it too. */
+  /** Generation seed; the base-model clip for the same prompt used it too. */
   readonly seed: number;
   readonly durationSec: number;
+  /** Pentatonic conformity (apps/ai-service/scripts/pcs.py), 0–1. */
+  readonly pcs: number;
+  /** Share of 20 ms frames with a confident pitch (torchcrepe), 0–1. */
+  readonly voiced: number;
 }
 
+/*
+ * Rights: only adapters whose model card says `releasable` may appear here.
+ * Adapters trained on the Harvard collection (harvard_raw, medium, large,
+ * qaraami_all and the DPO rounds on them) are research-only and are never
+ * published; apps/web/scripts/check-public-audio-rights.mjs fails the build
+ * if a public audio file or a /demos/generated/ reference breaks this.
+ */
 const OUD_CORPUS = 'a private oud (kaban) qaraami collection, 28 songs';
-const QARAAMI_CORPUS =
-  'the held qaraami corpus, 43 hours: Harvard AWM Spec Coll 103 cassettes, a private oud collection and band recordings';
+const CLEAN_OUD_CORPUS =
+  'isolated oud stems from one performer’s own recordings in a private collection, 5.7 hours; no archival or internet audio';
 
-const PROMPT_VOICE =
-  'qaraami, Somali traditional song, led by vocals, moderate at 110 BPM, pentatonic melody rooted on E, archival qaraami recording';
-const PROMPT_OUD =
-  'qaraami, Somali traditional song, led by the oud (kaban), lively at 156 BPM, pentatonic melody rooted on D#, archival qaraami recording';
+const ACE_MODEL = 'ACE-Step 1.5 xl-sft (4 B)';
+const ACE_ADAPTER = 'clean-oud LoRA';
+const ACE_CHECKPOINT = 'v3_ace_xlsft, final';
 
+/*
+ * The four ACE-Step clips are the adapter side of pairs 1, 4, 11 and 12 of the
+ * 16-pair blind set data/ab_stage3_acelora_vs_acebase (held-out captions,
+ * seeds 2000 + pair), picked as the top four of 16 by z(PCS) + z(voiced);
+ * PCS and voiced come from that set's ab_scores.json. The oud clips were
+ * scored with the same scorer on the published MP3s (2026-09-30).
+ */
 export const GENERATED_EXAMPLES: readonly GeneratedExample[] = [
   {
     id: 'oud_000',
@@ -109,6 +125,8 @@ export const GENERATED_EXAMPLES: readonly GeneratedExample[] = [
       'Somali qaraami led by the oud (kaban), lively at 121 BPM, pentatonic melody rooted on D, intimate home recording',
     durationSec: 10,
     seed: 42,
+    pcs: 0.991,
+    voiced: 0.468,
   },
   {
     id: 'oud_002',
@@ -121,50 +139,64 @@ export const GENERATED_EXAMPLES: readonly GeneratedExample[] = [
       'Somali qaraami led by the oud (kaban), moderate at 110 BPM, pentatonic melody rooted on B, intimate home recording',
     durationSec: 10,
     seed: 44,
+    pcs: 0.842,
+    voiced: 0.813,
   },
   {
-    id: 'medium_000',
-    file: '/demos/generated/medium_000_adapter.mp3',
-    model: 'MusicGen-medium (1.5 B)',
-    adapter: 'qaraami adapter',
-    checkpoint: 'qaraami_medium_r32, step 2750',
-    corpus: QARAAMI_CORPUS,
-    prompt: PROMPT_VOICE,
-    durationSec: 15,
-    seed: 42,
+    id: 'ace_oud_final_004',
+    file: '/demos/generated/ace_oud_final_004.mp3',
+    model: ACE_MODEL,
+    adapter: ACE_ADAPTER,
+    checkpoint: ACE_CHECKPOINT,
+    corpus: CLEAN_OUD_CORPUS,
+    prompt:
+      'qaraami, Somali traditional song, led by the oud (kaban), solo oud, moderate at 110 BPM, pentatonic melody rooted on G, studio recording, clean, solo instrumental, no vocals',
+    durationSec: 30,
+    seed: 2004,
+    pcs: 0.974,
+    voiced: 0.774,
   },
   {
-    id: 'large_000',
-    file: '/demos/generated/large_000_adapter.mp3',
-    model: 'MusicGen-large (3.3 B)',
-    adapter: 'qaraami adapter',
-    checkpoint: 'qaraami_large_r32, step 2750',
-    corpus: QARAAMI_CORPUS,
-    prompt: PROMPT_VOICE,
-    durationSec: 15,
-    seed: 42,
+    id: 'ace_oud_final_001',
+    file: '/demos/generated/ace_oud_final_001.mp3',
+    model: ACE_MODEL,
+    adapter: ACE_ADAPTER,
+    checkpoint: ACE_CHECKPOINT,
+    corpus: CLEAN_OUD_CORPUS,
+    prompt:
+      'qaraami, Somali traditional song, led by the oud (kaban), solo oud, moderate at 110 BPM, pentatonic melody rooted on C, studio recording, clean, solo instrumental, no vocals',
+    durationSec: 30,
+    seed: 2001,
+    pcs: 0.901,
+    voiced: 0.841,
   },
   {
-    id: 'medium_008',
-    file: '/demos/generated/medium_008_adapter.mp3',
-    model: 'MusicGen-medium (1.5 B)',
-    adapter: 'qaraami adapter',
-    checkpoint: 'qaraami_medium_r32, step 2750',
-    corpus: QARAAMI_CORPUS,
-    prompt: PROMPT_OUD,
-    durationSec: 15,
-    seed: 50,
+    id: 'ace_oud_final_011',
+    file: '/demos/generated/ace_oud_final_011.mp3',
+    model: ACE_MODEL,
+    adapter: ACE_ADAPTER,
+    checkpoint: ACE_CHECKPOINT,
+    corpus: CLEAN_OUD_CORPUS,
+    prompt:
+      'qaraami, Somali traditional song, led by the oud (kaban), solo oud, moderate at 107 BPM, pentatonic melody rooted on E, studio recording, clean, solo instrumental, no vocals',
+    durationSec: 30,
+    seed: 2011,
+    pcs: 0.983,
+    voiced: 0.678,
   },
   {
-    id: 'large_008',
-    file: '/demos/generated/large_008_adapter.mp3',
-    model: 'MusicGen-large (3.3 B)',
-    adapter: 'qaraami adapter',
-    checkpoint: 'qaraami_large_r32, step 2750',
-    corpus: QARAAMI_CORPUS,
-    prompt: PROMPT_OUD,
-    durationSec: 15,
-    seed: 50,
+    id: 'ace_oud_final_012',
+    file: '/demos/generated/ace_oud_final_012.mp3',
+    model: ACE_MODEL,
+    adapter: ACE_ADAPTER,
+    checkpoint: ACE_CHECKPOINT,
+    corpus: CLEAN_OUD_CORPUS,
+    prompt:
+      'qaraami, Somali traditional song, led by the oud (kaban), solo oud, lively at 150 BPM, pentatonic melody rooted on G, tuned 41 cents flat of A440, studio recording, clean, solo instrumental, no vocals',
+    durationSec: 30,
+    seed: 2012,
+    pcs: 0.983,
+    voiced: 0.673,
   },
 ];
 
@@ -177,13 +209,15 @@ export function formatClock(sec: number): string {
 }
 
 /**
- * The Listen page (website-v1): four clips from the served MusicGen-large
- * adapter, each with the numbers the project's own scorer gave it. Source:
- * data/ab_showcase_large/ab_scores.json — the top 16 of 256 samples drawn from
- * facebook/musicgen-large + qaraami_large_r32/ckpt_step_2750 during DPO round 1,
- * ranked by the composite reward, one clip per prompt; these are pairs 0, 4, 6
- * and 8 of that set, transcoded to mono MP3 (ffmpeg, 96 kb/s). Selected, not
- * random: say so on the page.
+ * The Listen page (website-v1): four clips from the ACE-Step 1.5 xl-sft
+ * clean-oud LoRA (runs/v3_ace_xlsft/final), the releasable adapter trained
+ * only on one performer's own oud stems. They are the adapter side of pairs
+ * 4, 1, 11 and 12 of the 16-pair blind set data/ab_stage3_acelora_vs_acebase
+ * (held-out captions, seeds 2000 + pair), ranked 1–4 of 16 by z(PCS) +
+ * z(voiced); transcoded to mono MP3 (ffmpeg, 96 kb/s). PCS and voiced come
+ * from that set's ab_scores.json, band SNR from data/v3/s3_scores.json.
+ * Selected, not random: the page says so. No research-only (Harvard-trained)
+ * adapter may appear here — see apps/web/scripts/check-public-audio-rights.mjs.
  *
  * PCS (apps/ai-service/scripts/pcs.py): the share of voiced 20 ms frames whose
  * pitch lies within ±50 cents of a degree of the pentatonic scale fitted to
@@ -200,66 +234,65 @@ export interface ListenSample {
   readonly voiced: number;
   /** Band-limited SNR of the clip in dB, from the same scorer run. */
   readonly bandSnrDb: number;
-  /** Rank in the 16-clip showcase set (1 = highest composite reward). */
+  /** Rank among the LISTEN_MODEL.poolSize clips (1 = highest z(PCS) + z(voiced)). */
   readonly rank: number;
 }
 
 export const LISTEN_MODEL = {
-  model: 'MusicGen-large (3.3 B)',
-  adapter: 'qaraami adapter, LoRA r32',
-  checkpoint: 'qaraami_large_r32, step 2750',
-  corpus: QARAAMI_CORPUS,
+  model: ACE_MODEL,
+  adapter: ACE_ADAPTER,
+  checkpoint: ACE_CHECKPOINT,
+  corpus: CLEAN_OUD_CORPUS,
+  poolSize: 16,
   poolNote:
-    'the 4 clips below are chosen from the 16 best of 256 samples the model produced for these prompts, ranked by an automatic score — a curated selection, not a random draw',
+    'the 4 clips below are the top 4 of 16 clips the model produced for held-out prompts, ranked by an automatic score (pitch conformity plus trackable melody) — a curated selection, not a random draw',
 } as const;
+
+const SOLO_OUD_TAIL = 'studio recording, clean, solo instrumental, no vocals';
 
 export const LISTEN_SAMPLES: readonly ListenSample[] = [
   {
-    id: 'showcase_large_000',
-    file: '/demos/generated/showcase_large_000.mp3',
-    title: 'Oud and hand drums, 92 BPM, rooted on E',
-    prompt:
-      'qaraami, Somali traditional song, led by the oud (kaban) and hand drums, moderate at 92 BPM, pentatonic melody rooted on E, intimate oud recording',
-    durationSec: 15,
-    pcs: 0.94,
-    voiced: 0.357,
-    bandSnrDb: 26.7,
+    id: 'ace_oud_final_004',
+    file: '/demos/generated/ace_oud_final_004.mp3',
+    title: 'Solo oud, 110 BPM, rooted on G',
+    prompt: `qaraami, Somali traditional song, led by the oud (kaban), solo oud, moderate at 110 BPM, pentatonic melody rooted on G, ${SOLO_OUD_TAIL}`,
+    durationSec: 30,
+    pcs: 0.974,
+    voiced: 0.774,
+    bandSnrDb: 19.0,
     rank: 1,
   },
   {
-    id: 'showcase_large_004',
-    file: '/demos/generated/showcase_large_004.mp3',
-    title: 'Solo oud, 108 BPM, rooted on C',
-    prompt:
-      'qaraami, Somali traditional song, led by the oud (kaban), moderate at 108 BPM, pentatonic melody rooted on C, intimate oud recording',
-    durationSec: 15,
-    pcs: 0.99,
-    voiced: 0.666,
-    bandSnrDb: 12.6,
-    rank: 5,
+    id: 'ace_oud_final_001',
+    file: '/demos/generated/ace_oud_final_001.mp3',
+    title: 'Solo oud, 110 BPM, rooted on C',
+    prompt: `qaraami, Somali traditional song, led by the oud (kaban), solo oud, moderate at 110 BPM, pentatonic melody rooted on C, ${SOLO_OUD_TAIL}`,
+    durationSec: 30,
+    pcs: 0.901,
+    voiced: 0.841,
+    bandSnrDb: 14.5,
+    rank: 2,
   },
   {
-    id: 'showcase_large_006',
-    file: '/demos/generated/showcase_large_006.mp3',
-    title: 'Oud and hand drums, lively at 150 BPM, rooted on G♯',
-    prompt:
-      'qaraami, Somali traditional song, led by the oud (kaban) and hand drums, lively at 150 BPM, pentatonic melody rooted on G#, intimate oud recording',
-    durationSec: 15,
-    pcs: 0.972,
-    voiced: 0.706,
-    bandSnrDb: 35.8,
-    rank: 7,
+    id: 'ace_oud_final_011',
+    file: '/demos/generated/ace_oud_final_011.mp3',
+    title: 'Solo oud, 107 BPM, rooted on E',
+    prompt: `qaraami, Somali traditional song, led by the oud (kaban), solo oud, moderate at 107 BPM, pentatonic melody rooted on E, ${SOLO_OUD_TAIL}`,
+    durationSec: 30,
+    pcs: 0.983,
+    voiced: 0.678,
+    bandSnrDb: 13.8,
+    rank: 3,
   },
   {
-    id: 'showcase_large_008',
-    file: '/demos/generated/showcase_large_008.mp3',
-    title: 'Solo oud, 100 BPM, rooted on C♯',
-    prompt:
-      'qaraami, Somali traditional song, led by the oud (kaban), moderate at 100 BPM, pentatonic melody rooted on C#, intimate oud recording',
-    durationSec: 15,
-    pcs: 0.968,
-    voiced: 0.666,
-    bandSnrDb: 25.1,
-    rank: 9,
+    id: 'ace_oud_final_012',
+    file: '/demos/generated/ace_oud_final_012.mp3',
+    title: 'Solo oud, lively at 150 BPM, rooted on G',
+    prompt: `qaraami, Somali traditional song, led by the oud (kaban), solo oud, lively at 150 BPM, pentatonic melody rooted on G, tuned 41 cents flat of A440, ${SOLO_OUD_TAIL}`,
+    durationSec: 30,
+    pcs: 0.983,
+    voiced: 0.673,
+    bandSnrDb: 14.5,
+    rank: 4,
   },
 ];

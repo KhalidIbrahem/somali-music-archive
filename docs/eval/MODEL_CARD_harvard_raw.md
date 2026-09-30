@@ -1,5 +1,7 @@
 # Model card — `harvard_raw` adapter (QaraamiGen)
 
+**Rights class:** `research_only` — trained on the Harvard Loeb collection, which is not rights-cleared; its outputs never leave the machine until the Loeb letter is on file. Checked by `apps/web/scripts/check-public-audio-rights.mjs`.
+
 **Artifact:** LoRA adapter `runs/harvard_raw_3000/ckpt_step_2750` (PEFT format, 25 MB, ~6.29 M trainable parameters). Not distributed; served locally by `services/musicgen-api`.
 
 ## Base model

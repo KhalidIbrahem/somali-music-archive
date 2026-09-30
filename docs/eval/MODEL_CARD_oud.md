@@ -1,5 +1,7 @@
 # Model card — `oud` adapter (QaraamiGen)
 
+**Rights class:** `releasable` — trained only on the privately shared oud collection (§4 of DATA_PROVENANCE.md); its outputs may be published, the source audio may not. Checked by `apps/web/scripts/check-public-audio-rights.mjs`.
+
 **Artifact:** LoRA adapter `runs/oud_lora_r16_nodrop_20260809/ckpt_step_0500` (PEFT format, 25 MB, ~6.29 M trainable parameters). Not distributed; served locally by `services/musicgen-api`.
 
 ## Base model
