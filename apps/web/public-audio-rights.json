@@ -1,0 +1,47 @@
+{
+  "//": "Every audio file that can ship with the web or mobile app, and where it came from. Checked by apps/web/scripts/check-public-audio-rights.mjs (prebuild + CI): an audio file missing here, a model_output file whose adapter's model card is not `releasable`, or a /demos/generated/ reference to an unlisted file fails the build. The rights class is read from docs/eval/MODEL_CARD_<adapter>.md; `rights` here must match it.",
+  "files": {
+    "apps/mobile/assets/sample/audio.mp3": {
+      "kind": "synthesised",
+      "note": "rendered from the sample session's note list (DATA_PROVENANCE.md §3)"
+    },
+    "apps/web/public/sample/audio.mp3": {
+      "kind": "synthesised",
+      "note": "rendered from the sample session's note list (DATA_PROVENANCE.md §3)"
+    },
+    "apps/web/public/sample/hero-audio.mp3": {
+      "kind": "synthesised",
+      "note": "placeholder audio for the hand-engraved hero excerpt (DATA_PROVENANCE.md §3)"
+    },
+    "apps/web/public/demos/generated/oud_000_adapter.mp3": {
+      "kind": "model_output",
+      "adapter": "oud",
+      "rights": "releasable"
+    },
+    "apps/web/public/demos/generated/oud_002_adapter.mp3": {
+      "kind": "model_output",
+      "adapter": "oud",
+      "rights": "releasable"
+    },
+    "apps/web/public/demos/generated/ace_oud_final_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable"
+    },
+    "apps/web/public/demos/generated/ace_oud_final_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable"
+    },
+    "apps/web/public/demos/generated/ace_oud_final_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable"
+    },
+    "apps/web/public/demos/generated/ace_oud_final_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable"
+    }
+  }
+}

@@ -2,8 +2,9 @@
  * GenerateExamples (/generate with NEXT_PUBLIC_AI_SERVICE_MODE=off).
  *
  * The public site has no generation service behind it: the models run on the
- * research workstation. This page shows six clips those adapters produced,
- * each with its model, checkpoint, prompt and seed, and the line every audio
+ * research workstation. This page shows six clips from the releasable adapters
+ * (never a research-only one), each with its model, checkpoint, prompt, seed
+ * and the project's PCS / voiced scores, and the line every audio
  * output carries: which corpus the adapter learned from, and that the source
  * recordings are not distributed. Server component; the only interaction is
  * the browser's own audio control.
@@ -32,9 +33,11 @@ export function GenerateExamples(): React.JSX.Element {
           <Reveal delay={180}>
             <p className="max-w-2xl font-body text-lg leading-relaxed text-ink-secondary">
               Generation runs on the research workstation, not on this site. Below are six clips
-              from the fine-tuned MusicGen adapters, generated ahead of time: the same prompt goes
-              to the base model and to the adapter with the same seed, and only the adapter side is
-              played here. Every clip is labelled with the corpus its adapter learned from.
+              generated ahead of time by two fine-tuned adapters, the MusicGen-small oud adapter and
+              an ACE-Step LoRA trained on isolated oud stems: the same prompt goes to the base model
+              and to the adapter with the same seed, and only the adapter side is played here. Every
+              clip is AI model output, not a recording, and is labelled with the corpus its adapter
+              learned from.
             </p>
           </Reveal>
         </div>
@@ -59,7 +62,7 @@ export function GenerateExamples(): React.JSX.Element {
                   <audio controls preload="none" src={clip.file} className="mt-4 w-full">
                     Your browser cannot play this audio.
                   </audio>
-                  <dl className="mt-4 grid gap-x-6 gap-y-1 font-body text-sm text-ink-secondary sm:grid-cols-3">
+                  <dl className="mt-4 grid grid-cols-2 gap-x-6 gap-y-1 font-body text-sm text-ink-secondary sm:grid-cols-3">
                     <div>
                       <dt className="text-ink-tertiary">Checkpoint</dt>
                       <dd className="text-ink-primary">{clip.checkpoint}</dd>
@@ -74,9 +77,19 @@ export function GenerateExamples(): React.JSX.Element {
                       <dt className="text-ink-tertiary">Length</dt>
                       <dd className="text-ink-primary">{clip.durationSec} s</dd>
                     </div>
+                    <div>
+                      <dt className="text-ink-tertiary">PCS</dt>
+                      <dd className="text-ink-primary">{clip.pcs.toFixed(3)}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-ink-tertiary">Voiced</dt>
+                      <dd className="text-ink-primary">{Math.round(clip.voiced * 100)} %</dd>
+                    </div>
                   </dl>
                   <p className="mt-4 font-body text-xs text-ink-tertiary">
-                    Adapter trained on {clip.corpus}. {NOT_DISTRIBUTED}
+                    AI model output, not a recording. Adapter trained on {clip.corpus}.{' '}
+                    {NOT_DISTRIBUTED} PCS: share of pitched frames within ±50 cents of the fitted
+                    pentatonic scale; voiced: share of frames with a confident pitch.
                   </p>
                 </article>
               </Reveal>

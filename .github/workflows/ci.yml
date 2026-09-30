@@ -33,6 +33,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Before the format check, which is red on master for unrelated JSON
+      # under runs/ and data/: this gate must run on every push.
+      - name: Public audio rights (no research-only model output ships)
+        run: node apps/web/scripts/check-public-audio-rights.mjs
+
       - name: Cache MongoDB test binaries
         # mongodb-memory-server downloads mongod (~100MB) on first run; cache it
         # so the integration suites don't re-download every CI run.

@@ -5,11 +5,14 @@
   "description": "Somali Music AI Preservation Platform — Next.js web app (secondary surface + admin dashboard). ARCHITECTURE.md §5, §17.",
   "scripts": {
     "dev": "next dev -p 3000",
+    "prebuild": "node scripts/check-public-audio-rights.mjs",
     "build": "next build",
     "start": "next start -p 3000",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "clean": "rimraf .turbo .next node_modules"
+    "clean": "rimraf .turbo .next node_modules",
+    "check:audio-rights": "node scripts/check-public-audio-rights.mjs",
+    "test": "node --test scripts/check-public-audio-rights.test.mjs"
   },
   "dependencies": {
     "@openrouter/sdk": "^1.2.4",
