@@ -1,3 +1,265 @@
+# QaraamiGen — proof of generation (2026-09-28, website-v1)
+
+Read-only on the service, training, data and site. `tmux ls`: no server, no
+training. Report `docs/eval/PROOF_OF_GENERATION.md`, live script
+`docs/eval/PROOF_OF_GENERATION_DEMO.md`; artefacts in `data/proof_generation/`
+(git-ignored, added to `.gitignore`).
+
+| test | status | proof |
+| --- | --- | --- |
+| 1 determinism | PASS | seed 73 twice on `large`, 15 s: same SHA-256 `9ba95976…`, max sample diff 0.0; same bytes from a fresh process and through the page's `/demo/generate` route |
+| 2 variation | PASS | seeds 74/75 and the dhaanto prompt: r = 0.009 / −0.003 / 0.023 against seed 73, max diff ≥ 1.0 |
+| 3 compute | PASS | service log/health: 40.5–40.7 s `model.generate` per clip, MPS allocated 15,790 → 16,960 MB, driver 16.8 → 19.2 GB |
+| 4 no playback | PASS, with stated limits | code path traced; audit hook in a copy of the service: 22 opens during generate, all lazy imports plus two JSON writes, zero audio/token files; `lsof` at 4 Hz on the live pid: no new file in five generations. Native opens and sub-250 ms opens are outside both; `fs_usage` needs root |
+| 5 not a copy | PASS | 7,612 distinct train clips: MERT best 0.917 (real different-clip NN median 0.969, same-song 0.981); chroma 15 s window best 0.52 (real copied passage 0.963 rank 1, unrelated real NN median 0.48). Base-model training data not covered |
+
+Defaults: cfg 3.0 (service default); MERT = the project's `embed_mert`; chroma
+search = max windowed Pearson r, validated fast vs slow to 1e-16; the
+positive-control excerpt stays in the ignored folder. Observed, not acted on:
+245 duplicate train rows (`oud_ilkacase`) and duplicate recordings across song
+hashes in `data/scale_captions.jsonl`.
+
+Only Khalid: record the demo; decide whether the duplicate-row finding needs a
+corpus fix before the next training run.
+
+---
+
+# QaraamiGen — website-v1 report (2026-09-27)
+
+Branch **`website-v1`** from `qaraami-v2` at `1e810da`; commit `4d1d8fb`. Nothing
+pushed, nothing deployed, the `musicgen-api` service untouched. Goal: the public
+site usable on a phone before the domain goes live (professors open it on phones).
+
+| job | status | proof |
+| --- | --- | --- |
+| mobile header | PASS | `SiteNav.tsx` hamburger + panel; `apps/web/scripts/mobile-check.mjs` at 375 and 414 px on /, /generate, /transcribe, /listen, /scores/beerdilaacshe, /library: scrollWidth == viewport on all 12, hamburger visible, desktop links hidden, panel lists the 5 links, footer strip present |
+| logo | PASS (Khalid picks) | three SVGs in `apps/web/public/brand/`, contact sheet `docs/brand/logo-variations.html`; variation A (wave tail) wired as default + favicon |
+| Listen page | PASS | 4 clips from `data/ab_showcase_large` pairs 0/4/6/8 with PCS 0.940/0.990/0.972/0.968 and voiced 36/67/71/67 % straight from `ab_scores.json`; no source audio, Harvard catalogue rows removed from the page |
+| final copy | PASS | `lib/siteCopy.ts` + `lib/landingCopy.ts`, verbatim; old commercial footer and Privacy/Terms gone (the /register terms checkbox stays, page hidden on the public site) |
+| production build | PASS | `NEXT_PUBLIC_AI_SERVICE_MODE=off next build`: 0 warnings, 23 routes; tsc clean; eslint 0 errors (4 pre-existing warnings in courses/learn/transcribe studio) |
+| DEPLOY.md | PASS | Vercel settings, env table, deploy/rollback, custom-domain DNS |
+
+Defaults chosen: the Listen clips are the showcase set's pairs 0, 4, 6, 8 (the
+served large SFT adapter; the DPO adapter is not served and has no showcase
+set); "Research" in the nav points at the home page's research section
+(`/#research`); the hero's "Until now." line dropped because the new subline
+lands the turn; Scores and Library left out of the nav as instructed but still
+reachable; the home page's "listening room" count now reads the 4 clips; the
+Beerdilaacshe scores page and Library got the footer too. One new
+`[[KHALID: ...]]` placeholder added at the foot of Listen for a line in his words.
+
+Only Khalid: choose the logo variation; write the footer line and the Listen
+line; merge `website-v1` into `master` and push (Vercel builds it); buy the
+domain and follow DEPLOY.md §4.
+
+### website-v1, second pass (2026-09-27, commit `81eb396`)
+
+Listen and Library rebuilt under the rights rule; footer line final; nav is now
+Home, Generate, Transcribe, Listen, Library, Research (6 links, re-verified at
+375/414 px on all six public pages, no overflow, build 0 warnings).
+
+File-by-file decision for `apps/web/public/audio` (checked against
+`docs/audio-inventory.md`, which does not list these files, and
+`docs/DATA_PROVENANCE.md` §4/§8):
+
+| file | source | decision | reason |
+| --- | --- | --- | --- |
+| `qaraami-awliyo-heelo.mp3`, `qaraami-caruuskayagoow.m4a`, `qaraami-heeri-maahee.mp3`, `qaraami-isku-shuban-kaban.mp3`, `qaraami-kaban-wadada.m4a`, `qaraami-laxanka.mp3`, `qaraami-raaxeeye.mp3`, `qaraami-subcis-balwo.mp3`, `qaraami-tagay-luula.mp3` | oud (kaban) collection = Ahmed Ilkacase's (§4) | **excluded** | §4/§8: audio not redistributed until the written consent record exists (`docs/data/consent/` holds only a README); CLAUDE.md hard rule "no oud source audio is served"; `.vercelignore` and `.gitignore` exclude the folder, so they cannot reach Vercel anyway |
+| `public/sample/audio.mp3` (sample session) | owned synthesis from the pipeline's note list (inventory row 14) | **excluded, for Khalid** | the melody was transcribed from a corpus item; the audio is synthetic and was public before, but the strict reading of "Harvard never appears" puts the call with Khalid |
+| `public/demos/generated/showcase_large_{000,004,006,008}.mp3` | model output | **included** | AI-generated, labelled with PCS / voiced |
+| Harvard rows (`track_*`) | Harvard Loeb corpus, ⚠ unverified | **excluded** | research-only; not on disk under public/ either |
+
+Included on Library: Beerdilaacshe PDF / MIDI / LilyPond (§2, Khalid's engraving),
+a pointer to the three automatic transcriptions already public on Transcribe.
+
+Only Khalid: sign and file the Ahmed Ilkacase consent record, then say which of
+the nine oud tracks go public (they would also need a hosting path, since the
+folder is excluded from deploys); decide on the sample-session synthesis; fill
+the two `[[KHALID: ...]]` placeholders (Listen closing line, Library book slot);
+pick the logo; merge, push, domain.
+
+---
+
+# QaraamiGen — qaraami-v2 report (2026-09-26, in progress)
+
+Autonomous session on the M5 Max, branch **`qaraami-v2`** (from `ahmed-corpus`
+at `ec566bf`, which itself holds the 2026-09-25 Stage 0–2 work: Harvard fetcher
+and rights record, Ahmed corpus inventory and classification, the first three
+sets). Nothing pushed, no source audio off the machine, the `musicgen-api`
+service untouched so far. Goal: a generative model that sounds like Somali
+qaraami, trained on the rights-clear audio held here and improved in a loop
+until the corpus stops paying. PENDING marks are filled as phases finish.
+
+## PASS / FAIL per phase
+
+| phase | status | what |
+| --- | --- | --- |
+| 1 — corpus | **RUNNING** (PENDING) | inventory + classification done (1,345 files → 79.8 h kept, 210 songs); Harvard fetch running (337/975 at 00:14); tooling for Demucs separation, melody MIDI, caption v2 + 10 s clips, intake + internet acquisition and the corpus report being built and reviewed |
+| 2 — train A–E | PENDING | harness extensions (full-decoder mode, early stop, MIDI chroma) being built; runs start after Phase 1 |
+| 3 — measure | PENDING | evaluator v2 (MERT distance, tuning-offset distribution, Turing set) being built |
+| 4 — improve | PENDING | improvement-loop runner being built |
+| 5 — deliver | PENDING | model report, cards, showcase, demo, CLAUDE.md, memory |
+
+## Defaults I chose (running log; renumbered at the end)
+
+DEFAULTS_PENDING
+
+## What only you can do — ranked
+
+HUMAN_PENDING
+
+---
+
+## qaraami_all run (2026-09-26 15:20 → 2026-09-27 06:27)
+
+Brief: one musicgen-medium LoRA on every set, treat all sets as trainable (owner's
+instruction), 3000 steps, blind A/B, RESULT.md, commit, no push.
+
+| job | status | proof |
+| --- | --- | --- |
+| no concurrent training | PASS | `tmux ls` at start: only `harvard_sets` (set build) and two Demucs shards; none touched |
+| merged set | PASS | `data/sets/run_qaraami_all_captions.jsonl`: 5 sets, 1,220 songs, 36,412 clips, LEAKAGE CHECK PASSED, 0 songs in two sets |
+| dropout harness | PASS | probe and run: `functional_dropout_zeroed=61`, 480 sites, probe loss 4.2–4.5, step-0 val 4.3679 |
+| memory | PASS | peak MPS driver 11.3 GB; pressure level 1 throughout (`runs/qaraami_all/pressure.log`); guard never fired |
+| training | PASS | `SCALE_TRAIN_DONE`, RUN_EXIT=0, 12 checkpoints, val 4.3679 → 4.2825 |
+| eval + A/B | PASS | `eval_qaraami_all.json`: per-song test CE +0.0764 [0.0687, 0.0837]; `data/ab_qaraami_all/` 16 pairs, `ab_listen.py --list` shows it with a blind test |
+| RESULT.md | PASS | `runs/qaraami_all/RESULT.md` (generated by `runs/_tools/qaraami_all_result.py`) |
+
+Defaults chosen: the oud collection = the `oud_ilkacase` rows already inside `ahmed_oud`
+(no separate set); `sep_oud` left out (not in the brief, tokens not built); A/B captions
+= `data/ab_captions.json` (the `ab_medium` list) so the set is comparable with the medium
+sitting; val 48 clips as in `ahmed_only`; plateau judged with scale_train's early-stop
+rule (0.002 over 750 steps) post hoc. Speed was 22–38 s/step while the Demucs shards
+and the Harvard 10 s tokenisation shared the GPU (Khalid's jobs, left running), 10.9 s/step
+once they finished; 14.5 h wall in total. Adapter clips are far more voiced (0.70 vs 0.42)
+with lower PCS (0.74 vs 0.85) — the same pattern as the earlier SFT adapters.
+
+Only Khalid: blind-sit `ab_qaraami_all`; decide whether a Harvard-trained (research-only)
+adapter is the one to iterate on.
+
+---
+
+# QaraamiGen — resume-v1 report (2026-09-24)
+
+Autonomous session on the M5 Max, branch **`resume-v1`** (from `scale-v1` at
+`f5c28cc`). Nothing pushed, no source audio moved, the service untouched, no
+tmux sessions existed. Goal tied to the application: a `CLAUDE.md` whose every
+claim is proven from artifacts, a green CI so the public repo is credible, and
+the transformers bug report that is the programme's most citable outside
+contribution.
+
+## PASS / FAIL per job
+
+| job | status | what |
+| --- | --- | --- |
+| 1 — resolve VERIFY | **PASS** | The repo's `CLAUDE.md` had never carried VERIFY marks or Done/Left sections in any commit (the skill assumed a file that did not exist), so the six questions in the brief were treated as the VERIFY set; each is answered below with its proof, and `CLAUDE.md` now has the sections the skill reads. |
+| 2 — publishing readiness | **PASS with one finding** | The repo is **already public** at `github.com/KhalidIbrahem/somali-music-archive` (pushed 2026-09-14). Audio, secrets, LICENSE, CITATION, README verified. Finding: GitHub CI was red on every push since 2026-09-12, lint only; fixed here. |
+| 3 — transformers bug report | **PASS** | `docs/oss/transformers_musicgen_dropout_issue.md`, `docs/oss/transformers_musicgen_dropout_fix.diff`, `docs/oss/musicgen_dropout_repro.py` (16 s on CPU, 8 s on MPS). Root cause pinned tighter than before: a single functional-dropout site is enough, and the hub configs, not the modelling code, carry the wrong value. |
+
+## Job 1 — what is true today, with the proof
+
+| claim | true today | proof |
+| --- | --- | --- |
+| MusicGen-medium result | best `ckpt_step_2750`; val CE 4.4584 → 4.3724; per-song test CE 4.1011 → 3.9996, improvement +0.102, 95 % bootstrap CI [0.078, 0.123] | `runs/qaraami_medium_r32/eval_medium.json`, `loss.csv` |
+| MusicGen-large result | best `ckpt_step_2750`; val CE 4.4305 → 4.3244; per-song test CE 4.0750 → 3.9469, +0.128 [0.104, 0.152] | `runs/qaraami_large_r32/eval_large.json`, `loss.csv` |
+| A/B sets | `data/ab_medium/` and `data/ab_large/` (16 pairs each, base vs adapter, same seeds); DPO sets `data/ab_dpo_{small_oud,medium,medium_v1,large}/`; `data/ab_melody/` base-only | `ls data/ab_*` |
+| Blind tests | medium 3/0/13 (adapter/base/neither); large first sitting 11/2/3, second sitting 6/0/10, both 2026-09-08 | `data/listening/ab_*_khalid_*.json` `summary` |
+| Bootstrap CIs | landed for medium and large (27 songs) | the two eval JSONs, `docs/eval/SCALING_REPORT.md` |
+| n = 32 metrics | **did not land**; nothing in `runs/`, `docs/` or `REPORT.md` uses n = 32 | `grep -rn "n ?= ?32" docs REPORT.md` empty |
+| Ablations | transcription ablation in the paper (§7.6); generation: lr and raw/denoised rows only | `docs/ISMIR_PAPER_DRAFT.md:21,274`, `docs/eval/EVALUATION.md` T2/T3 |
+| Related work | paper §2 present with numbered references; the draft's own line 4 says every reference is verified; **not re-verified live this session** | `docs/ISMIR_PAPER_DRAFT.md:48` |
+| Listening-study protocol | on record (paired, randomised, hidden, "neither" allowed) in every listening JSON and `PREFERENCE_OPT.md`; single listener only | `data/listening/*.json` `protocol` |
+| Public-audio audit | nine source recordings in `apps/web/public/audio/` are ignored, never committed, and **404** on the Vercel site; eight tracked fixtures 200 | `curl -o /dev/null -w '%{http_code}' https://somali-music-archive.vercel.app/audio/qaraami-laxanka.mp3` (and the other eight), `git log --all -- apps/web/public/audio` empty |
+| Git remote | `origin` = `git@github.com:KhalidIbrahem/somali-music-archive.git`, public, default `master`; `master` = `scale-v1` = `origin/*` = `f5c28cc`; `github-public/master` is a stale ref | `git remote -v`, `git fetch --prune`, `curl api.github.com/repos/KhalidIbrahem/somali-music-archive` → `"private": false` |
+| Service | running, pid 1607, `mps`; small engine with `oud` + `harvard_raw`, large engine with `large` (SFT step 2750); no DPO adapter served | `launchctl print gui/501/com.qaraamigen.musicgen-api`, `curl 127.0.0.1:8765/health` |
+| Test suites | api 319, mobile 133, validators 39, AI service 214 passed (1 skipped); typecheck 6/6 | `npm test -- --force`, `pytest -q` this session |
+| CI on GitHub | failing since 2026-09-12 on `Format check (Prettier)` and `Lint (Ruff)` only | `api.github.com/.../actions/runs` + `/jobs` |
+
+## Job 2 — publishing readiness
+
+- **Tracked audio/weights/tokens:** nine MP3 files, no WAV, no weights, no
+  tokens, and none ever added in history (`git log --all --diff-filter=A`).
+  The skill's "only the two synthesised fixture WAVs" is out of date: the
+  fixtures are `apps/web/public/sample/{audio,hero-audio}.mp3` and
+  `apps/mobile/assets/sample/audio.mp3` (synthesised from note lists, per
+  `docs/audio-inventory.md`), plus six model-output clips under
+  `apps/web/public/demos/generated/` that the public Generate page plays.
+- **Secrets:** history-wide grep for Stripe/GitHub/AWS/JWT/private-key
+  patterns found nothing real; only `.env.example` files are tracked;
+  `services/musicgen-api/musicgen-api.env.example` has an empty token.
+- **LICENSE** Apache-2.0, **CITATION.cff**, reviewer-first **README** linking
+  `docs/DATA_PROVENANCE.md`: present. Model cards: `oud`, `harvard_raw` only.
+- **CI:** red for lint. Fixed on this branch: `runs`, `data`, `.claude` added
+  to `.prettierignore`; Ruff `E501` ignored package-wide, FastAPI defaults
+  whitelisted for B008, style codes ignored for `scripts/*.py` and `tests/*.py`
+  (all F/pyflakes rules still apply); Ruff's 32 safe fixes applied
+  (import order, unused imports); one lambda in a test became a `def`.
+  Local result: Prettier clean, Ruff `All checks passed`, pytest 214 passed.
+- **Since the repo already exists and is public, no create-repo command is
+  needed.** To publish this session's work Khalid runs, from
+  `~/Projects/somali-music-archive`:
+
+  ```bash
+  export DEVELOPER_DIR=/Library/Developer/CommandLineTools   # until the Xcode license is accepted
+  git ls-files | grep -iE '\.(wav|mp3|flac|m4a|npy|pt|safetensors|bin)$'   # expect the nine MP3s only
+  git checkout scale-v1 && git merge --ff-only resume-v1
+  git checkout master  && git merge --ff-only scale-v1
+  git push origin master scale-v1 resume-v1
+  ```
+  Then watch `https://github.com/KhalidIbrahem/somali-music-archive/actions`
+  for the first green run. Must be fixed first: nothing blocking; two
+  should-fix items are the missing `medium`/`large` model cards and the
+  `EVALUATION.md`/`TABLES.md` regeneration (still dated 2026-09-04).
+
+## Job 3 — the transformers report
+
+- Repro measured twice today: CPU eval 4.8118 / train 9.6970; MPS eval 4.6730 /
+  train 9.6468; `nn.Dropout` sweep changes nothing; functional attributes at 0
+  restore eval exactly. Keeping only the decoder-input dropout gives 9.59;
+  only layer 0's gives 8.17.
+- Root cause: `MusicgenDecoderConfig` defaults `dropout=0.1`; the conversion
+  wrote it into every hub config (`facebook/musicgen-small/medium/large` all
+  0.1); audiocraft's LM config trained with `dropout: 0.` (verified live at
+  `facebookresearch/audiocraft/config/model/lm/default.yaml`). 25 of the 37
+  attributes are decoder sites; the 12 `T5Attention.dropout` ones are harmless.
+- Second defect surfaced by the repro: hub configs leave
+  `decoder_start_token_id` unset, so `model(**inputs, labels=...)` raises until
+  it is set to 2048.
+- Proposed fix in the diff: config default 0.0 (both MusicGen and Melody), a
+  one-time warning in `train()` when any dropout is non-zero, three tests.
+
+## Defaults I chose
+
+| # | decision | why |
+| --- | --- | --- |
+| R1 | Treated the brief's six questions plus the skill's claims as the VERIFY set and rebuilt `CLAUDE.md` with Machine / Results / Service / Tests / Publishing / Done / Left / VERIFY sections, keeping every existing platform line. | No commit of `CLAUDE.md` ever had those sections; the skill cannot work without them. |
+| R2 | Fixed CI lint by scoping rather than reformatting 90 research scripts. | A `ruff format` pass would touch every script the paper cites by name; the pyflakes rules that catch bugs remain on. |
+| R3 | Left `apps/web/next-env.d.ts` modified and uncommitted. | Next's dev server rewrites it; the committed version is Prettier-clean. |
+| R4 | Used `uv tool run ruff` from the existing `/opt/homebrew/bin/uv`. | No Homebrew install; the env has no pip. |
+| R5 | Did not regenerate `EVALUATION.md`/`TABLES.md`. | `eval_report.py` would need to learn the scale rows; out of the brief's scope, listed under Left. |
+| R6 | Named the DPO large adapter as the clean-audio lever in `CLAUDE.md`. | It is the only artifact on record that removes the hiss (band SNR 19.8 dB) while keeping held-out CE within 0.04 nats. |
+
+## What only you can do — ranked by application impact
+
+1. **File the transformers issue and PR** from `docs/oss/` (issue text, diff,
+   repro). `python docs/oss/musicgen_dropout_repro.py cpu` first, on a fresh
+   env, to confirm the numbers travel.
+2. **Blind-test the DPO large adapter** (`data/ab_dpo_large/`, 41 pairs) and
+   the Harvard adapter (`data/harvard_ab_listening/`, 8 pairs) with
+   `apps/ai-service/scripts/ab_listen.py`; then say which adapter the demo
+   should serve. Nothing replaces the served model before that.
+3. **Push** with the commands above; until then the public repo shows red CI.
+4. **Approve the `TODO —` blocks** in `docs/ISMIR_PAPER_DRAFT.md`; the
+   abstract still carries the July negative.
+5. **Decide the `.band` corpus question** (15.1 h, mixed rights) before any
+   model trained on it is described in a public model card.
+6. **Recruit two or three Somali musicians** for the multi-listener study.
+7. **Machine hygiene:** `sudo xcodebuild -license` (git works without the
+   `DEVELOPER_DIR` workaround), `git config --global user.name/user.email`,
+   `bash scripts/dev-up.sh --install-login-agent` so the stack survives reboots.
+
+---
+
 # QaraamiGen — scale-v1 report (2026-09-04)
 
 Objective: move from "sounds like oud texture" (the harness-validation small

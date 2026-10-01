@@ -7,6 +7,7 @@
 
 import type { Metadata } from 'next';
 import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
 import { TranscribeExamples } from '@/components/transcribe/TranscribeExamples';
 import { TranscribeStudio } from '@/components/transcribe/TranscribeStudio';
 import { flags } from '@/lib/flags';
@@ -19,9 +20,10 @@ export const metadata: Metadata = {
 
 export default function TranscribePage(): React.JSX.Element {
   return (
-    <div className="min-h-screen bg-bg-primary text-ink-primary">
+    <div className="flex min-h-screen flex-col bg-bg-primary text-ink-primary">
       <SiteHeader active="Transcribe" />
       {flags.aiServiceMode === 'off' ? <TranscribeExamples /> : <TranscribeStudio />}
+      <SiteFooter />
     </div>
   );
 }

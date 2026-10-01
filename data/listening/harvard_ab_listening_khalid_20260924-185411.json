@@ -1,0 +1,85 @@
+{
+  "set": "harvard_ab_listening",
+  "title": "MusicGen-small, harvard_raw adapter (step 1500)",
+  "listener": "khalid",
+  "date": "2026-09-24T18:54:11",
+  "seed": 3879521649,
+  "protocol": "paired comparison, A/B order randomised per pair, scores and file names hidden, question: which sounds more like Somali qaraami; 'neither' allowed",
+  "pairs": [
+    {
+      "pair": 0,
+      "caption": "Qaraami, traditional Somali music, moderate at 99 BPM, pentatonic melody rooted on D, vintage archival recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 1,
+      "caption": "Qaraami, traditional Somali music, lively at 144 BPM, pentatonic melody rooted on D, vintage archival recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 2,
+      "caption": "traditional Somali song, lively at 139 BPM, pentatonic melody rooted on C#, vintage archival recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 3,
+      "caption": "traditional Somali song, lively at 134 BPM, pentatonic melody rooted on C#, vintage archival recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 4,
+      "caption": "traditional Somali song, lively at 129 BPM, pentatonic melody rooted on E, vintage archival recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 5,
+      "caption": "traditional Somali song, lively at 121 BPM, pentatonic melody rooted on E, vintage archival recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 6,
+      "caption": "Qaraami, traditional Somali music, moderate at 96 BPM, pentatonic melody rooted on D, vintage archival recording",
+      "A": "base",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    },
+    {
+      "pair": 7,
+      "caption": "Qaraami, traditional Somali music, moderate at 117 BPM, pentatonic melody rooted on D, vintage archival recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": ""
+    }
+  ],
+  "summary": {
+    "n": 8,
+    "adapter": 0,
+    "base": 0,
+    "none": 8,
+    "adapter_rate": 0.0,
+    "wilson95": [
+      0.0,
+      0.3244
+    ]
+  }
+}

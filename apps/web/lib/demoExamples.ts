@@ -9,6 +9,8 @@
  * provenance from the run directories named below.
  */
 
+import publishedClips from './published-clips.json';
+
 export interface TranscriptionExample {
   readonly slug: string;
   readonly title: string;
@@ -72,11 +74,14 @@ export const TRANSCRIPTION_EXAMPLES: readonly TranscriptionExample[] = [
   },
 ];
 
+/** One published clip of model output, as written to published-clips.json. */
 export interface GeneratedExample {
   readonly id: string;
   readonly file: string;
   readonly model: string;
   readonly adapter: string;
+  /** Adapter name in the rights manifest / model card (docs/eval/MODEL_CARD_<id>.md). */
+  readonly adapterId: string;
   /** Run directory and checkpoint under runs/. */
   readonly checkpoint: string;
   /** What the adapter was trained on. */
@@ -97,108 +102,14 @@ export interface GeneratedExample {
  * qaraami_all and the DPO rounds on them) are research-only and are never
  * published; apps/web/scripts/check-public-audio-rights.mjs fails the build
  * if a public audio file or a /demos/generated/ reference breaks this.
+ *
+ * The clips themselves are listed in published-clips.json, written by
+ * `apps/ai-service/scripts/clip_chooser.py publish` from the clips Khalid
+ * picks in the chooser page; provenance and scores travel with each entry.
  */
-const OUD_CORPUS = 'a private oud (kaban) qaraami collection, 28 songs';
-const CLEAN_OUD_CORPUS =
-  'isolated oud stems from one performer’s own recordings in a private collection, 5.7 hours; no archival or internet audio';
+const PUBLISHED: PublishedClips = publishedClips;
 
-const ACE_MODEL = 'ACE-Step 1.5 xl-sft (4 B)';
-const ACE_ADAPTER = 'clean-oud LoRA';
-const ACE_CHECKPOINT = 'v3_ace_xlsft, final';
-
-/*
- * The four ACE-Step clips are the adapter side of pairs 1, 4, 11 and 12 of the
- * 16-pair blind set data/ab_stage3_acelora_vs_acebase (held-out captions,
- * seeds 2000 + pair), picked as the top four of 16 by z(PCS) + z(voiced);
- * PCS and voiced come from that set's ab_scores.json. The oud clips were
- * scored with the same scorer on the published MP3s (2026-09-30).
- */
-export const GENERATED_EXAMPLES: readonly GeneratedExample[] = [
-  {
-    id: 'oud_000',
-    file: '/demos/generated/oud_000_adapter.mp3',
-    model: 'MusicGen-small (300 M)',
-    adapter: 'oud adapter',
-    checkpoint: 'oud_lora_r16_nodrop_20260809, step 500',
-    corpus: OUD_CORPUS,
-    prompt:
-      'Somali qaraami led by the oud (kaban), lively at 121 BPM, pentatonic melody rooted on D, intimate home recording',
-    durationSec: 10,
-    seed: 42,
-    pcs: 0.991,
-    voiced: 0.468,
-  },
-  {
-    id: 'oud_002',
-    file: '/demos/generated/oud_002_adapter.mp3',
-    model: 'MusicGen-small (300 M)',
-    adapter: 'oud adapter',
-    checkpoint: 'oud_lora_r16_nodrop_20260809, step 500',
-    corpus: OUD_CORPUS,
-    prompt:
-      'Somali qaraami led by the oud (kaban), moderate at 110 BPM, pentatonic melody rooted on B, intimate home recording',
-    durationSec: 10,
-    seed: 44,
-    pcs: 0.842,
-    voiced: 0.813,
-  },
-  {
-    id: 'ace_oud_final_004',
-    file: '/demos/generated/ace_oud_final_004.mp3',
-    model: ACE_MODEL,
-    adapter: ACE_ADAPTER,
-    checkpoint: ACE_CHECKPOINT,
-    corpus: CLEAN_OUD_CORPUS,
-    prompt:
-      'qaraami, Somali traditional song, led by the oud (kaban), solo oud, moderate at 110 BPM, pentatonic melody rooted on G, studio recording, clean, solo instrumental, no vocals',
-    durationSec: 30,
-    seed: 2004,
-    pcs: 0.974,
-    voiced: 0.774,
-  },
-  {
-    id: 'ace_oud_final_001',
-    file: '/demos/generated/ace_oud_final_001.mp3',
-    model: ACE_MODEL,
-    adapter: ACE_ADAPTER,
-    checkpoint: ACE_CHECKPOINT,
-    corpus: CLEAN_OUD_CORPUS,
-    prompt:
-      'qaraami, Somali traditional song, led by the oud (kaban), solo oud, moderate at 110 BPM, pentatonic melody rooted on C, studio recording, clean, solo instrumental, no vocals',
-    durationSec: 30,
-    seed: 2001,
-    pcs: 0.901,
-    voiced: 0.841,
-  },
-  {
-    id: 'ace_oud_final_011',
-    file: '/demos/generated/ace_oud_final_011.mp3',
-    model: ACE_MODEL,
-    adapter: ACE_ADAPTER,
-    checkpoint: ACE_CHECKPOINT,
-    corpus: CLEAN_OUD_CORPUS,
-    prompt:
-      'qaraami, Somali traditional song, led by the oud (kaban), solo oud, moderate at 107 BPM, pentatonic melody rooted on E, studio recording, clean, solo instrumental, no vocals',
-    durationSec: 30,
-    seed: 2011,
-    pcs: 0.983,
-    voiced: 0.678,
-  },
-  {
-    id: 'ace_oud_final_012',
-    file: '/demos/generated/ace_oud_final_012.mp3',
-    model: ACE_MODEL,
-    adapter: ACE_ADAPTER,
-    checkpoint: ACE_CHECKPOINT,
-    corpus: CLEAN_OUD_CORPUS,
-    prompt:
-      'qaraami, Somali traditional song, led by the oud (kaban), solo oud, lively at 150 BPM, pentatonic melody rooted on G, tuned 41 cents flat of A440, studio recording, clean, solo instrumental, no vocals',
-    durationSec: 30,
-    seed: 2012,
-    pcs: 0.983,
-    voiced: 0.673,
-  },
-];
+export const GENERATED_EXAMPLES: readonly GeneratedExample[] = PUBLISHED.generate;
 
 export const NOT_DISTRIBUTED = 'The source recordings are not distributed.';
 
@@ -207,3 +118,31 @@ export function formatClock(sec: number): string {
   const s = Math.round(sec % 60);
   return `${m}:${String(s).padStart(2, '0')}`;
 }
+
+/**
+ * The Listen page (website-v1): the clips in published-clips.json `listen`,
+ * each with its own model, adapter and the numbers the project's own scorer
+ * gave it. Selected, not random: `selectionNote` says how, and the page shows it.
+ *
+ * PCS (apps/ai-service/scripts/pcs.py): the share of voiced 20 ms frames whose
+ * pitch lies within ±50 cents of a degree of the pentatonic scale fitted to
+ * the clip. Voiced: the share of frames with a confident pitch (torchcrepe).
+ */
+export interface ListenSample extends GeneratedExample {
+  /** Short title derived from the prompt. */
+  readonly title: string;
+  /** Band-limited SNR of the clip in dB, when the scorer measured it. */
+  readonly bandSnrDb?: number;
+  /** Rank in the scored pool (1 = best by the automatic score), when ranked. */
+  readonly rank?: number;
+  readonly rankOf?: number;
+}
+
+interface PublishedClips {
+  readonly generate: readonly GeneratedExample[];
+  readonly listen: { readonly selectionNote: string; readonly clips: readonly ListenSample[] };
+}
+
+export const LISTEN_SELECTION_NOTE: string = PUBLISHED.listen.selectionNote;
+
+export const LISTEN_SAMPLES: readonly ListenSample[] = PUBLISHED.listen.clips;

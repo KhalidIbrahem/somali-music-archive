@@ -1,0 +1,85 @@
+{
+  "set": "ab_restore_harvard",
+  "title": "ab restore harvard",
+  "listener": "khalid",
+  "date": "2026-09-24T17:30:57",
+  "seed": 1158760557,
+  "protocol": "paired comparison, A/B order randomised per pair, scores and file names hidden, question: which sounds more like Somali qaraami; 'neither' allowed",
+  "pairs": [
+    {
+      "pair": 0,
+      "caption": "traditional Somali song, moderate at 114 BPM, pentatonic melody rooted on C, vintage archival recording",
+      "A": "adapter",
+      "chosen": "A",
+      "preferred": "adapter",
+      "note": "Both but A is more close"
+    },
+    {
+      "pair": 1,
+      "caption": "Qaraami, traditional Somali music, moderate at 107 BPM, pentatonic melody rooted on D, vintage archival recording",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": "BOTH but B is most clear"
+    },
+    {
+      "pair": 2,
+      "caption": "Qaraami, traditional Somali music, moderate at 110 BPM, pentatonic melody rooted on D, vintage archival recording",
+      "A": "base",
+      "chosen": "A",
+      "preferred": "base",
+      "note": "both"
+    },
+    {
+      "pair": 3,
+      "caption": "traditional Somali song, moderate at 107 BPM, pentatonic melody rooted on G#, vintage archival recording",
+      "A": "adapter",
+      "chosen": "A",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 4,
+      "caption": "traditional Somali song, moderate at 96 BPM, pentatonic melody rooted on C#, vintage archival recording",
+      "A": "base",
+      "chosen": "A",
+      "preferred": "base",
+      "note": ""
+    },
+    {
+      "pair": 5,
+      "caption": "traditional Somali song, lively at 144 BPM, pentatonic melody rooted on E, vintage archival recording",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 6,
+      "caption": "traditional Somali song, lively at 150 BPM, pentatonic melody rooted on C#, vintage archival recording",
+      "A": "base",
+      "chosen": "B",
+      "preferred": "adapter",
+      "note": ""
+    },
+    {
+      "pair": 7,
+      "caption": "traditional Somali song, lively at 139 BPM, pentatonic melody rooted on B, vintage archival recording",
+      "A": "adapter",
+      "chosen": "none",
+      "preferred": "none",
+      "note": "Noisy but close"
+    }
+  ],
+  "summary": {
+    "n": 8,
+    "adapter": 5,
+    "base": 2,
+    "none": 1,
+    "adapter_rate": 0.625,
+    "wilson95": [
+      0.3057,
+      0.8632
+    ]
+  }
+}

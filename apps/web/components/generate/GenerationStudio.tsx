@@ -22,6 +22,7 @@ import { ApiError, getGenerationJob, requestGeneration } from '@/lib/api';
 import { brandMessage, brandProviderName, MODEL_TIERS } from '@/lib/brand';
 import { getToken } from '@/lib/auth';
 import { Reveal } from '@/components/Reveal';
+import { siteCopy } from '@/lib/siteCopy';
 
 const POLL_INTERVAL_MS = 3_000;
 
@@ -123,7 +124,7 @@ export function GenerationStudio(): React.JSX.Element {
           aria-hidden
           className="pointer-events-none absolute -top-40 left-1/2 h-[28rem] w-[46rem] rounded-full bg-amber/10 blur-3xl animate-glow-drift"
         />
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-6 py-20 text-center">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-4 sm:px-6 py-20 text-center">
           <Reveal>
             <p className="font-body text-sm uppercase tracking-[0.3em] text-amber">Abuur</p>
           </Reveal>
@@ -134,17 +135,13 @@ export function GenerationStudio(): React.JSX.Element {
           </Reveal>
           <Reveal delay={180}>
             <p className="max-w-2xl font-body text-lg leading-relaxed text-ink-secondary">
-              Describe a song and let AI compose in the spirit of the Somali musical tradition. This
-              studio is built on our own AI research, where we are training foundation models using
-              restored Somali music archives to preserve, analyze, and extend the Qaraami tradition.
-              Every generated composition is an experimental interpretation, always kept separate
-              from the authentic archival recordings that inspire it.
+              {siteCopy.generate.label}
             </p>
           </Reveal>
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-6 py-14">
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 py-14">
         {hasToken === false || authFailed ? (
           <Reveal>
             <div className="flex flex-col items-center gap-4 rounded-2xl border border-line-secondary bg-bg-secondary p-12 text-center">

@@ -22,6 +22,7 @@ import {
   type ServedGeneration,
 } from '@/lib/aiService';
 import { Reveal } from '@/components/Reveal';
+import { siteCopy } from '@/lib/siteCopy';
 
 const STARTERS: ReadonlyArray<{ label: string; prompt: string }> = [
   {
@@ -102,7 +103,7 @@ export function ServedGenerationStudio(): React.JSX.Element {
           aria-hidden
           className="pointer-events-none absolute -top-40 left-1/2 h-[28rem] w-[46rem] rounded-full bg-amber/10 blur-3xl animate-glow-drift"
         />
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-6 py-20 text-center">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-5 px-4 sm:px-6 py-20 text-center">
           <Reveal>
             <p className="font-body text-sm uppercase tracking-[0.3em] text-amber">Abuur</p>
           </Reveal>
@@ -113,16 +114,13 @@ export function ServedGenerationStudio(): React.JSX.Element {
           </Reveal>
           <Reveal delay={180}>
             <p className="max-w-2xl font-body text-lg leading-relaxed text-ink-secondary">
-              Generate with the MusicGen adapters fine-tuned on the qaraami corpus and served on
-              this machine. Only the models running right now are listed. Every piece is labelled
-              with the adapter and the corpus it was trained on; the source recordings are never
-              distributed, and generated pieces stay separate from the archive.
+              {siteCopy.generate.label}
             </p>
           </Reveal>
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-6 py-14">
+      <section className="mx-auto max-w-4xl px-4 sm:px-6 py-14">
         <div className="flex flex-col gap-8">
           <Reveal>
             <div className="rounded-2xl border border-line-secondary bg-bg-secondary p-8">

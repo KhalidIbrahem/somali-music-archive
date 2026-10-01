@@ -10,6 +10,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { siteCopy } from '@/lib/siteCopy';
 
 const AI_URL = process.env['NEXT_PUBLIC_AI_URL'] ?? 'http://localhost:8000';
 const PC_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -119,9 +120,11 @@ export function TranscribeStudio(): React.JSX.Element {
   };
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-12">
+    <main className="mx-auto max-w-5xl px-4 sm:px-6 py-12">
       <p className="font-body text-sm uppercase tracking-[0.3em] text-amber">Qormada</p>
-      <h1 className="mt-2 font-display text-4xl text-ink-primary">Audio → sheet music</h1>
+      <h1 className="mt-2 font-display text-3xl text-ink-primary sm:text-4xl">
+        {siteCopy.transcribe.label}
+      </h1>
       <p className="mt-3 max-w-2xl font-body text-ink-secondary">
         Upload a recording and get notation that detects the pentatonic scale from the audio itself.
         Notes outside the scale are <span className="text-danger">kept and marked</span> — ornaments

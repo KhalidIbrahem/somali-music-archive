@@ -69,6 +69,11 @@ def main() -> None:
         from peft import PeftModel
         model = PeftModel.from_pretrained(model, args.adapter)
     zero_functional_dropout(model)
+    from scripts.scale_eval import (
+        patch_melody_generation,  # transformers 4.57: keep the text+chroma prefix at step 1
+    )
+
+    patch_melody_generation(model)
     model.to(DEVICE).eval()
     sr_model = model.config.audio_encoder.sampling_rate
 

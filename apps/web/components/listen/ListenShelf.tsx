@@ -1,260 +1,175 @@
 'use client';
 
 /**
- * ListenShelf — the archive listening room (B1-15): track records at studio
- * density, not a playlist. Every record carries its source-and-rights line;
- * the one transcribed recording exposes "View score", which opens the synced
- * engraving driven by the same player clock.
+ * ListenShelf — the Listen page (website-v1): where the research is now.
+ * The clips Khalid chose with apps/ai-service/scripts/clip_chooser.py (listed in
+ * lib/published-clips.json), each labelled as AI output with its model, adapter
+ * and the scorer's own numbers. Releasable adapters only (build-time gate).
+ * Nothing on this page is a recording; no source audio is ever served. The
+ * Recordings section stays a placeholder until docs/DATA_PROVENANCE.md records
+ * a rights-clear file (the oud collection waits for its consent record; Harvard
+ * is research-only) — see REPORT.md website-v1 for the file-by-file decision.
+ * Playback goes through the persistent player (root layout) so the rights
+ * line travels with the clip.
  */
 
-import { useMemo, useState } from 'react';
+import { siteCopy } from '@/lib/siteCopy';
 import {
-  ARCHIVE_TRACKS,
-  HARVARD_RIGHTS_LINE,
-  OUD_RIGHTS_LINE,
-  OUD_SESSION_TRACKS,
-  SAMPLE_RIGHTS_LINE,
-  SAMPLE_SESSION_TRACK,
-  type ArchiveTrack,
-} from '@/lib/tracks';
+  LISTEN_SAMPLES,
+  LISTEN_SELECTION_NOTE,
+  NOT_DISTRIBUTED,
+  type ListenSample,
+} from '@/lib/demoExamples';
 import { usePlayer, type PlayerTrack } from '@/components/player/PlayerProvider';
-import { flags } from '@/lib/flags';
-import { ListenScore } from './ListenScore';
-import { formatDuration } from '@/components/studio/format';
 
-interface ShelfTrack extends ArchiveTrack {
-  rightsLine: string;
-  hasScore: boolean;
-  /** Detected values exist only where a transcription exists — never invented. */
-  detected?: { root: string; bpm: number; grid: string } | undefined;
+const OUTPUT_LINE = 'AI model output — generated, not a recording';
+
+function toPlayerTrack(s: ListenSample): PlayerTrack {
+  return {
+    id: s.id,
+    title: s.title,
+    performer: `${s.model} · ${s.adapter}`,
+    src: s.file,
+    durationSec: s.durationSec,
+    rightsLine: OUTPUT_LINE,
+  };
 }
 
-const SHELF: readonly ShelfTrack[] = [
-  {
-    ...SAMPLE_SESSION_TRACK,
-    rightsLine: SAMPLE_RIGHTS_LINE,
-    hasScore: true,
-    detected: { root: 'A', bpm: 106, grid: 'beat-tracked' },
-  },
-  // Kaban (oud) sessions: a private collection held for research, none of it
-  // cleared for public use. Listed only in the invite-only configuration;
-  // the public site never offers these files.
-  ...(flags.requireAuth
-    ? OUD_SESSION_TRACKS.map((t) => ({ ...t, rightsLine: OUD_RIGHTS_LINE, hasScore: false }))
-    : []),
-  ...ARCHIVE_TRACKS.map((t) => ({ ...t, rightsLine: HARVARD_RIGHTS_LINE, hasScore: false })),
-];
-
-function toPlayerTrack(t: ShelfTrack): PlayerTrack {
-  return {
-    id: t.id,
-    title: t.title,
-    performer: t.artists,
-    src: t.src,
-    durationSec: t.durationSec,
-    rightsLine: t.rightsLine,
-    sourceUrl: t.sourceUrl || undefined,
-    hasScore: t.hasScore,
-  };
+function pct(x: number): string {
+  return `${Math.round(x * 100)} %`;
 }
 
 export function ListenShelf(): React.JSX.Element {
   const player = usePlayer();
-  const [query, setQuery] = useState('');
-  const [scoreOpen, setScoreOpen] = useState(false);
+  const activeId = player.track?.id;
 
-  const visible = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (q === '') return SHELF;
-    return SHELF.filter(
-      (t) => t.title.toLowerCase().includes(q) || t.artists.toLowerCase().includes(q),
-    );
-  }, [query]);
-
-  const playAt = (track: ShelfTrack): void => {
-    // Withheld records never enter the queue — next/prev must skip them.
-    const playable = visible.filter((t) => t.audioWithheld !== true);
-    const index = playable.findIndex((t) => t.id === track.id);
-    if (index === -1) return;
-    player.play(playable.map(toPlayerTrack), index);
-    if (track.hasScore) setScoreOpen(true);
+  const playAt = (index: number): void => {
+    player.play(LISTEN_SAMPLES.map(toPlayerTrack), index);
   };
 
-  const activeId = player.track?.id;
-  const showScorePanel = scoreOpen && activeId === 'sample-session';
-
   return (
-    <main className="mx-auto w-full max-w-4xl px-6 pt-10 pb-32">
-      <header className="mb-6">
-        <h1 className="font-display text-3xl text-hi">Dhageyso — the listening room</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-mid">
-          Digitised cassettes from the tradition, with their sources stated plainly. One recording
-          carries an engraved transcription today; play it and the score follows.
+    <main className="mx-auto w-full max-w-4xl px-4 pt-10 pb-32 sm:px-6">
+      <header className="mb-8">
+        <p className="numeric text-xs tracking-[0.24em] text-accent-state uppercase">
+          Where the research is now
+        </p>
+        <h1 className="mt-3 font-display text-3xl text-hi sm:text-4xl">Dhageyso — listen</h1>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-mid sm:text-base">
+          {LISTEN_SAMPLES.length} clips generated by the project&apos;s research models, each
+          labelled with the model and the recordings its adapter learned from. Every clip is AI
+          output, not a recording, and none of the source recordings is served here. The models are
+          work in progress: they have learned the timbre and melodic shape of the tradition, and
+          they still add noise and drift from the scale at times. The numbers under each clip are
+          from the project&apos;s own scorer, unedited.
+        </p>
+        <p className="mt-3 max-w-2xl text-[13px] leading-relaxed text-low">
+          Selection: {LISTEN_SELECTION_NOTE}. {NOT_DISTRIBUTED}
         </p>
       </header>
 
-      <div className="mb-6 flex items-center gap-3">
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by title or performer"
-          aria-label="Search the listening room"
-          className="h-8 w-full max-w-sm rounded-[4px] border border-hairline bg-chrome-2 px-3 text-[13px] text-hi placeholder:text-low focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
-        />
-        <span className="numeric text-xs text-low">
-          {visible.length} of {SHELF.length}
-        </span>
-      </div>
-
-      {visible.length === 0 ? (
-        <div className="rounded-[4px] border border-hairline bg-chrome-1 px-6 py-10 text-center">
-          <p className="text-sm text-mid">
-            No recordings match “{query.trim()}”. The search filter is the only one active.
-          </p>
-          <button
-            type="button"
-            onClick={() => setQuery('')}
-            className="mt-4 h-8 rounded-[4px] border border-hairline bg-chrome-2 px-4 text-[13px] text-hi transition-colors hover:border-accent-state focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
-          >
-            Clear the search
-          </button>
-        </div>
-      ) : (
-        <ol className="divide-y divide-hairline border-y border-hairline">
-          {visible.map((t) => {
-            const isActive = activeId === t.id;
-            return (
-              <li key={t.id} className={`py-4 ${isActive ? 'bg-chrome-1/60' : ''}`}>
-                <div className="flex items-start gap-4 px-2">
-                  {t.audioWithheld === true ? (
-                    <span
-                      title="Hosted audio withheld pending rights clearance"
-                      className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-[4px] border border-hairline text-low"
-                    >
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
-                        <rect
-                          x="2.5"
-                          y="5.2"
-                          width="7"
-                          height="5"
-                          rx="1"
-                          stroke="currentColor"
-                          strokeWidth="1.2"
-                        />
-                        <path
-                          d="M4 5V3.8a2 2 0 0 1 4 0V5"
-                          stroke="currentColor"
-                          strokeWidth="1.2"
-                        />
-                      </svg>
-                    </span>
+      <ol className="divide-y divide-hairline border-y border-hairline">
+        {LISTEN_SAMPLES.map((s, i) => {
+          const isActive = activeId === s.id;
+          const playing = isActive && (player.status === 'playing' || player.status === 'loading');
+          return (
+            <li key={s.id} className={`py-5 ${isActive ? 'bg-chrome-1/60' : ''}`}>
+              <div className="flex items-start gap-3 px-1 sm:gap-4 sm:px-2">
+                <button
+                  type="button"
+                  aria-label={playing ? `Pause ${s.title}` : `Play ${s.title}`}
+                  onClick={() => (isActive ? player.toggle() : playAt(i))}
+                  className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] border transition-colors focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none ${
+                    isActive
+                      ? 'border-hairline bg-chrome-2 text-accent-live'
+                      : 'border-hairline text-mid hover:text-hi'
+                  }`}
+                >
+                  {playing ? (
+                    <svg width="14" height="14" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
+                      <rect x="2" y="1.5" width="3" height="9" />
+                      <rect x="7" y="1.5" width="3" height="9" />
+                    </svg>
                   ) : (
-                    <button
-                      type="button"
-                      aria-label={
-                        isActive && player.status === 'playing'
-                          ? `Pause ${t.title}`
-                          : `Play ${t.title}`
-                      }
-                      onClick={() => (isActive ? player.toggle() : playAt(t))}
-                      className={`mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-[4px] border transition-colors focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none ${
-                        isActive
-                          ? 'border-hairline bg-chrome-2 text-accent-live'
-                          : 'border-hairline text-mid hover:text-hi'
-                      }`}
-                    >
-                      {isActive && (player.status === 'playing' || player.status === 'loading') ? (
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 12 12"
-                          fill="currentColor"
-                          aria-hidden
-                        >
-                          <rect x="2" y="1.5" width="3" height="9" />
-                          <rect x="7" y="1.5" width="3" height="9" />
-                        </svg>
-                      ) : (
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 12 12"
-                          fill="currentColor"
-                          aria-hidden
-                        >
-                          <path d="M2.5 1.2v9.6L11 6 2.5 1.2Z" />
-                        </svg>
-                      )}
-                    </button>
+                    <svg width="14" height="14" viewBox="0 0 12 12" fill="currentColor" aria-hidden>
+                      <path d="M2.5 1.2v9.6L11 6 2.5 1.2Z" />
+                    </svg>
                   )}
+                </button>
 
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-baseline gap-x-3">
-                      <h2 className="font-display text-lg text-hi">{t.title}</h2>
-                      <span className="numeric text-xs text-low">
-                        {t.year ?? 'undated'} · {formatDuration(t.durationSec)}
-                      </span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <h2 className="font-display text-lg text-hi">{s.title}</h2>
+                    <span className="numeric rounded-full border border-hairline px-2 py-0.5 text-[11px] tracking-[0.14em] text-accent-state uppercase">
+                      AI output
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[13px] leading-relaxed text-mid">
+                    <span className="text-low">Prompt: </span>
+                    {s.prompt}
+                  </p>
+                  <dl className="numeric mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-xs text-mid sm:grid-cols-4">
+                    <div>
+                      <dt className="text-[11px] tracking-[0.14em] text-low uppercase">PCS</dt>
+                      <dd className="text-hi">{s.pcs.toFixed(3)}</dd>
                     </div>
-                    <p className="text-[13px] text-mid">
-                      {t.artists} · ensemble
-                      {t.detected !== undefined && (
-                        <span className="numeric ml-2 text-xs text-accent-state">
-                          root {t.detected.root} · {t.detected.bpm} BPM · {t.detected.grid}
-                        </span>
-                      )}
-                    </p>
-                    <p className="mt-1 text-[13px] leading-relaxed text-low">{t.note}</p>
-                    <p className="mt-1 text-[11px] text-low">
-                      {t.rightsLine}
-                      {t.sourceUrl !== '' && (
-                        <>
-                          {' '}
-                          ·{' '}
-                          <a
-                            href={t.sourceUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-accent-live underline-offset-2 hover:underline"
-                          >
-                            Harvard record
-                          </a>
-                        </>
-                      )}
-                    </p>
-                    {t.audioWithheld === true && (
-                      <p className="mt-1 text-[12px] text-low">
-                        Hosted audio withheld pending written permission from the Loeb Music Library
-                        — the Harvard record link is the listening copy.
-                      </p>
+                    <div>
+                      <dt className="text-[11px] tracking-[0.14em] text-low uppercase">Voiced</dt>
+                      <dd className="text-hi">{pct(s.voiced)}</dd>
+                    </div>
+                    {s.bandSnrDb !== undefined && (
+                      <div>
+                        <dt className="text-[11px] tracking-[0.14em] text-low uppercase">
+                          Band SNR
+                        </dt>
+                        <dd className="text-hi">{s.bandSnrDb.toFixed(1)} dB</dd>
+                      </div>
                     )}
-                    {t.hasScore ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (!isActive) playAt(t);
-                          setScoreOpen((v) => (isActive ? !v : true));
-                        }}
-                        className="mt-2 h-7 rounded-[4px] border border-hairline bg-chrome-2 px-3 text-[12px] text-hi transition-colors hover:border-accent-state focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
-                      >
-                        {showScorePanel && isActive ? 'Hide the score' : 'View score'}
-                      </button>
-                    ) : (
-                      <p className="mt-2 text-[12px] text-low">No score for this recording yet.</p>
-                    )}
-                  </div>
+                    <div>
+                      <dt className="text-[11px] tracking-[0.14em] text-low uppercase">Length</dt>
+                      <dd className="text-hi">{s.durationSec} s</dd>
+                    </div>
+                  </dl>
+                  <p className="mt-2 text-[11px] text-low">
+                    {OUTPUT_LINE} · {s.model} · {s.adapter} ({s.checkpoint}), trained on {s.corpus}
+                    {s.rank !== undefined && s.rankOf !== undefined
+                      ? ` · rank ${s.rank} of ${s.rankOf} by the scorer`
+                      : ''}
+                  </p>
                 </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
 
-                {showScorePanel && isActive && (
-                  <div className="mt-4 px-2">
-                    <ListenScore />
-                  </div>
-                )}
-              </li>
-            );
-          })}
-        </ol>
-      )}
+      <section className="mt-10 max-w-2xl">
+        <h2 className="font-display text-lg text-hi">Recordings</h2>
+        <div className="mt-3 rounded-[4px] border border-dashed border-hairline bg-chrome-1 px-5 py-4 text-[13px] leading-relaxed text-mid">
+          <p>
+            No recording is served on this site yet. The archive&apos;s source recordings are held
+            for research: the Harvard Loeb Music Library collection is research-only and never
+            appears here, and the privately shared oud (kaban) collection waits for its written
+            consent record before any of it is published. Rights-clear recordings will be listed in
+            this section, each with its source stated, as they are cleared.
+          </p>
+        </div>
+      </section>
+
+      <section className="mt-8 max-w-2xl text-[13px] leading-relaxed text-mid">
+        <h2 className="font-display text-lg text-hi">What the numbers mean</h2>
+        <p className="mt-2">
+          <span className="text-hi">PCS</span> (pentatonic conformity score): the share of voiced
+          frames whose pitch sits within ±50 cents of a degree of the five-note scale fitted to the
+          clip. <span className="text-hi">Voiced</span>: the share of frames with a confident pitch;
+          a low value means long unpitched stretches, not silence.{' '}
+          <span className="text-hi">Band SNR</span>: the clip&apos;s signal-to-noise ratio in the
+          melody band; the adapters still add hiss, and this is the number that shows it. All three
+          come from the same scorer used in the evaluation, not from listening.
+        </p>
+        {siteCopy.listen.closingLine && (
+          <p className="mt-2 text-low">{siteCopy.listen.closingLine}</p>
+        )}
+      </section>
     </main>
   );
 }

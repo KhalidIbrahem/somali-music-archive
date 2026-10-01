@@ -1,0 +1,447 @@
+{
+  "tag": "qaraami_all",
+  "model": "facebook/musicgen-medium",
+  "run": "/Users/khalidibrahimm5max/Projects/somali-music-archive/runs/qaraami_all",
+  "best_ckpt": "ckpt_step_3000",
+  "ckpt_kind": "lora",
+  "test_clips": 128,
+  "test_songs": 64,
+  "test_sources": {
+    "ahmed_mix": {
+      "clips": 43,
+      "songs": 25
+    },
+    "ahmed_oud": {
+      "clips": 42,
+      "songs": 4
+    },
+    "harvard_full": {
+      "clips": 43,
+      "songs": 35
+    }
+  },
+  "captions": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/sets/run_qaraami_all_captions.jsonl",
+  "scorer_version": {
+    "torchcrepe": "0.0.24",
+    "pcs_hop": 320,
+    "pcs_conf_thresh": 0.5,
+    "pcs_file_sha256": "b488db8c56f13a03f4e446766bbd94bae1195eb4036e8c8e5f88065678de5ebc"
+  },
+  "rights": {
+    "research_only": true,
+    "ab_rights": null,
+    "real_content": [
+      "oud",
+      "sep_oud"
+    ]
+  },
+  "generation": {
+    "stamp_file": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/ab_qaraami_all/GENERATED_BY.json",
+    "base": {
+      "existing": 0,
+      "cleared": 0,
+      "reasons": [],
+      "generated": 16
+    },
+    "adapter": {
+      "existing": 0,
+      "cleared": 0,
+      "reasons": [],
+      "generated": 16
+    }
+  },
+  "per_song_ce": {
+    "n_songs": 64,
+    "base": {
+      "mean": 4.2107,
+      "ci95": [
+        4.0611,
+        4.3387
+      ]
+    },
+    "adapter": {
+      "mean": 4.1343,
+      "ci95": [
+        3.9863,
+        4.2605
+      ]
+    },
+    "improvement_base_minus_adapter": {
+      "mean": 0.0764,
+      "ci95": [
+        0.0687,
+        0.0837
+      ],
+      "significant": true
+    }
+  },
+  "ab_captions_file": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/ab_captions.json",
+  "ab": {
+    "dir": "/Users/khalidibrahimm5max/Projects/somali-music-archive/data/ab_qaraami_all",
+    "n": 16,
+    "seconds": 30,
+    "base": {
+      "pcs_mean": 0.8505,
+      "voiced_fraction_mean": 0.424,
+      "n_scored": 16
+    },
+    "adapter": {
+      "pcs_mean": 0.7376,
+      "voiced_fraction_mean": 0.702,
+      "n_scored": 16
+    },
+    "pairs": [
+      {
+        "pair": 0,
+        "caption": "qaraami, Somali traditional song, led by vocals, moderate at 110 BPM, pentatonic melody rooted on E, archival qaraami recording",
+        "base": {
+          "scored": true,
+          "pcs": 0.9062,
+          "voiced_fraction": 0.107,
+          "tuning_offset_cents": 2.8,
+          "tonic": "D#"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.6514,
+          "voiced_fraction": 0.745,
+          "tuning_offset_cents": 5.4,
+          "tonic": "G"
+        }
+      },
+      {
+        "pair": 1,
+        "caption": "Somali song, led by ensemble, lively at 139 BPM, pentatonic melody rooted on A, vintage archival cassette recording, 1955\u20131991, performed by Sahro Axmed",
+        "base": {
+          "scored": true,
+          "pcs": 0.9203,
+          "voiced_fraction": 0.754,
+          "tuning_offset_cents": 24.3,
+          "tonic": "G#"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.6714,
+          "voiced_fraction": 0.14,
+          "tuning_offset_cents": 10.9,
+          "tonic": "C"
+        }
+      },
+      {
+        "pair": 2,
+        "caption": "Somali song, led by ensemble, lively at 125 BPM, pentatonic melody rooted on D, vintage archival cassette recording, 1955\u20131991, performed by Nabi Ammaan [Songs Praising the Prophet]",
+        "base": {
+          "scored": true,
+          "pcs": 0.89,
+          "voiced_fraction": 0.686,
+          "tuning_offset_cents": 0.6,
+          "tonic": "A"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.7338,
+          "voiced_fraction": 0.895,
+          "tuning_offset_cents": -6.3,
+          "tonic": "G#"
+        }
+      },
+      {
+        "pair": 3,
+        "caption": "Somali song, led by ensemble, moderate at 107 BPM, pentatonic melody rooted on C#, vintage archival cassette recording, 1955\u20131991, performed by Maxamed Axmed Kuluc and others",
+        "base": {
+          "scored": true,
+          "pcs": 0.9801,
+          "voiced_fraction": 0.201,
+          "tuning_offset_cents": -0.5,
+          "tonic": "G#"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.8039,
+          "voiced_fraction": 0.555,
+          "tuning_offset_cents": 23.9,
+          "tonic": "C"
+        }
+      },
+      {
+        "pair": 4,
+        "caption": "Somali song, led by ensemble, moderate at 104 BPM, pentatonic melody rooted on C#, vintage archival cassette recording, 1955\u20131991, performed by Hibo Maxamed and Faysal Cumar Mushteeg",
+        "base": {
+          "scored": true,
+          "pcs": 0.851,
+          "voiced_fraction": 0.278,
+          "tuning_offset_cents": 6.5,
+          "tonic": "G#"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.9044,
+          "voiced_fraction": 0.838,
+          "tuning_offset_cents": 36.1,
+          "tonic": "C#"
+        }
+      },
+      {
+        "pair": 5,
+        "caption": "Somali song, led by ensemble, moderate at 101 BPM, pentatonic melody rooted on C#, vintage archival cassette recording, 1955\u20131991, performed by Hibo Maxamed and Faysal Cumar Mushteeg",
+        "base": {
+          "scored": true,
+          "pcs": 0.759,
+          "voiced_fraction": 0.222,
+          "tuning_offset_cents": 2.4,
+          "tonic": "D#"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.7866,
+          "voiced_fraction": 0.679,
+          "tuning_offset_cents": -26.3,
+          "tonic": "G#"
+        }
+      },
+      {
+        "pair": 6,
+        "caption": "Somali song, led by ensemble, lively at 139 BPM, pentatonic melody rooted on F#, vintage archival cassette recording, 1955\u20131991, performed by Qalinle, Xarago, Kinsi",
+        "base": {
+          "scored": true,
+          "pcs": 0.8022,
+          "voiced_fraction": 0.486,
+          "tuning_offset_cents": 4.1,
+          "tonic": "A#"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.8319,
+          "voiced_fraction": 0.878,
+          "tuning_offset_cents": -7.7,
+          "tonic": "G#"
+        }
+      },
+      {
+        "pair": 7,
+        "caption": "Somali song, led by ensemble, lively at 134 BPM, pentatonic melody rooted on G, vintage archival cassette recording, 1955\u20131991, performed by Qalinle, Xarago, Kinsi",
+        "base": {
+          "scored": true,
+          "pcs": 0.8727,
+          "voiced_fraction": 0.692,
+          "tuning_offset_cents": -19.6,
+          "tonic": "A#"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.7531,
+          "voiced_fraction": 0.854,
+          "tuning_offset_cents": 0.8,
+          "tonic": "D"
+        }
+      },
+      {
+        "pair": 8,
+        "caption": "qaraami, Somali traditional song, led by the oud (kaban), lively at 156 BPM, pentatonic melody rooted on D#, archival qaraami recording",
+        "base": {
+          "scored": true,
+          "pcs": 0.7717,
+          "voiced_fraction": 0.146,
+          "tuning_offset_cents": -38.7,
+          "tonic": "F#"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.6944,
+          "voiced_fraction": 0.771,
+          "tuning_offset_cents": -29.3,
+          "tonic": "A#"
+        }
+      },
+      {
+        "pair": 9,
+        "caption": "Somali song, led by ensemble, lively at 134 BPM, pentatonic melody rooted on F#, vintage archival cassette recording, 1955\u20131991, performed by Qalinle, Xarago, Kinsi",
+        "base": {
+          "scored": true,
+          "pcs": 0.8922,
+          "voiced_fraction": 0.477,
+          "tuning_offset_cents": 9.2,
+          "tonic": "G"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.7707,
+          "voiced_fraction": 0.556,
+          "tuning_offset_cents": -37.9,
+          "tonic": "G#"
+        }
+      },
+      {
+        "pair": 10,
+        "caption": "qaraami, Somali traditional song, led by the oud (kaban), moderate at 114 BPM, pentatonic melody rooted on G#, archival qaraami recording",
+        "base": {
+          "scored": true,
+          "pcs": 0.9661,
+          "voiced_fraction": 0.473,
+          "tuning_offset_cents": 0.8,
+          "tonic": "G#"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.9081,
+          "voiced_fraction": 0.37,
+          "tuning_offset_cents": 4.8,
+          "tonic": "G"
+        }
+      },
+      {
+        "pair": 11,
+        "caption": "qaraami, Somali traditional song, led by hand drums, lively at 170 BPM, pentatonic melody rooted on A, archival qaraami recording",
+        "base": {
+          "scored": true,
+          "pcs": 0.6815,
+          "voiced_fraction": 0.105,
+          "tuning_offset_cents": -2.8,
+          "tonic": "E"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.6735,
+          "voiced_fraction": 0.846,
+          "tuning_offset_cents": -28.2,
+          "tonic": "B"
+        }
+      },
+      {
+        "pair": 12,
+        "caption": "Somali song, led by ensemble, lively at 125 BPM, pentatonic melody rooted on E, vintage archival cassette recording, 1955\u20131991, performed by Sahro Axmed",
+        "base": {
+          "scored": true,
+          "pcs": 0.851,
+          "voiced_fraction": 0.73,
+          "tuning_offset_cents": 32.0,
+          "tonic": "F#"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.5145,
+          "voiced_fraction": 0.83,
+          "tuning_offset_cents": 6.6,
+          "tonic": "A#"
+        }
+      },
+      {
+        "pair": 13,
+        "caption": "Somali song, led by ensemble, lively at 125 BPM, pentatonic melody rooted on E, vintage archival cassette recording, 1955\u20131991, performed by Qalinle, Sado Ali, and Marwo Mohamed",
+        "base": {
+          "scored": true,
+          "pcs": 0.9266,
+          "voiced_fraction": 0.146,
+          "tuning_offset_cents": 6.2,
+          "tonic": "E"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.7782,
+          "voiced_fraction": 0.906,
+          "tuning_offset_cents": 17.0,
+          "tonic": "C"
+        }
+      },
+      {
+        "pair": 14,
+        "caption": "Somali song, led by ensemble, lively at 134 BPM, pentatonic melody rooted on F, vintage archival cassette recording, 1955\u20131991, performed by Qalinle, Xarago, Kinsi",
+        "base": {
+          "scored": true,
+          "pcs": 0.8498,
+          "voiced_fraction": 0.729,
+          "tuning_offset_cents": 3.1,
+          "tonic": "A"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.6622,
+          "voiced_fraction": 0.551,
+          "tuning_offset_cents": 34.3,
+          "tonic": "G"
+        }
+      },
+      {
+        "pair": 15,
+        "caption": "Somali song, led by ensemble, lively at 150 BPM, pentatonic melody rooted on E, vintage archival cassette recording, 1955\u20131991, performed by Sahro Axmed",
+        "base": {
+          "scored": true,
+          "pcs": 0.6883,
+          "voiced_fraction": 0.546,
+          "tuning_offset_cents": 12.5,
+          "tonic": "G"
+        },
+        "adapter": {
+          "scored": true,
+          "pcs": 0.6634,
+          "voiced_fraction": 0.825,
+          "tuning_offset_cents": 31.1,
+          "tonic": "G#"
+        }
+      }
+    ]
+  },
+  "tuning": {
+    "threshold_cents": 15.0,
+    "real": null,
+    "base": {
+      "n": 16,
+      "mean": 2.68,
+      "sd": 15.31,
+      "frac_abs_ge_threshold": 0.25
+    },
+    "adapter": {
+      "n": 16,
+      "mean": 2.2,
+      "sd": 22.81,
+      "frac_abs_ge_threshold": 0.562
+    },
+    "ks_real_adapter": null,
+    "ks_real_base": null,
+    "ks_base_adapter": {
+      "statistic": 0.25,
+      "pvalue": 0.7164,
+      "n_a": 16,
+      "n_b": 16
+    },
+    "offsets": {
+      "real": null,
+      "base": [
+        2.8,
+        24.3,
+        0.6,
+        -0.5,
+        6.5,
+        2.4,
+        4.1,
+        -19.6,
+        -38.7,
+        9.2,
+        0.8,
+        -2.8,
+        32.0,
+        6.2,
+        3.1,
+        12.5
+      ],
+      "adapter": [
+        5.4,
+        10.9,
+        -6.3,
+        23.9,
+        36.1,
+        -26.3,
+        -7.7,
+        0.8,
+        -29.3,
+        -37.9,
+        4.8,
+        -28.2,
+        6.6,
+        17.0,
+        34.3,
+        31.1
+      ]
+    }
+  }
+}
