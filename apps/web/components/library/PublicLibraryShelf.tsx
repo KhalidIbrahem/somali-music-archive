@@ -9,6 +9,7 @@
  * invite-only flag. Server component.
  */
 
+import { siteCopy } from '@/lib/siteCopy';
 import { statSync } from 'node:fs';
 import { join } from 'node:path';
 import Link from 'next/link';
@@ -120,10 +121,9 @@ export function PublicLibraryShelf(): React.JSX.Element {
               <h3 className="font-display text-xl leading-snug text-ink-primary">
                 Somali music history book
               </h3>
-              <p className="font-body text-sm text-ink-tertiary">
-                [[KHALID: one or two lines about the book — what it is, who wrote it, and when it
-                will be on the shelf]]
-              </p>
+              {siteCopy.library.bookBlurb && (
+                <p className="font-body text-sm text-ink-tertiary">{siteCopy.library.bookBlurb}</p>
+              )}
               <div
                 aria-hidden
                 className="mt-auto flex h-24 items-center justify-center rounded-lg border border-dashed border-line-secondary bg-bg-primary/40 font-body text-xs text-ink-tertiary"

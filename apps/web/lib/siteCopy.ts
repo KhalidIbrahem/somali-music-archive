@@ -22,6 +22,17 @@ export const siteCopy = {
     label: 'Turn a Somali recording into readable notation.',
   },
 
+  // Khalid fills these two in; an empty string hides the line on the site.
+  listen: {
+    /** One line in your own words about where this is going (end of the Listen page). */
+    closingLine: '',
+  },
+
+  library: {
+    /** One or two lines about the book: what it is, who wrote it, when it will be on the shelf. */
+    bookBlurb: '',
+  },
+
   footer: {
     name: 'Khalid Ibrahim',
     line: 'Building the tools to read, play, and understand Somali music.',

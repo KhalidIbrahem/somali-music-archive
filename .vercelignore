@@ -26,6 +26,14 @@ node_modules
 dist
 apps/api/api
 
+# Research data and run artifacts: hundreds of GB, including held source audio.
+# Never part of a deploy (a CLI deploy from the repo root would upload them).
+data
+runs
+logs
+HANDOVER.md
+REPORT.md
+
 # Not needed by the web or api builds
 apps/mobile/ios
 apps/mobile/android

@@ -111,7 +111,9 @@ function listFiles(root) {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
     });
-    return { files: out.split('\0').filter(Boolean), fromGit: true };
+    // Deleted-but-not-yet-committed files are still in the index: count only what exists.
+    const files = out.split('\0').filter((f) => f && existsSync(path.join(root, f)));
+    return { files, fromGit: true };
   } catch {
     // No git (the Vercel build): walk what was uploaded.
     const files = [];
@@ -158,6 +160,20 @@ function main() {
   }
 
   const errors = check({ audioFiles, manifest, cards, cardsAvailable, references });
+
+  // Every published clip must name the same adapter as its manifest entry.
+  const pubPath = path.join(root, 'apps/web/lib/published-clips.json');
+  if (existsSync(pubPath)) {
+    const pub = JSON.parse(readFileSync(pubPath, 'utf8'));
+    for (const c of [...(pub.generate ?? []), ...(pub.listen?.clips ?? [])]) {
+      const e = manifest.files?.[`apps/web/public${c.file}`];
+      if (e && e.adapter !== c.adapterId) {
+        errors.push(
+          `published-clips.json: ${c.id} says adapter ${c.adapterId}, manifest says ${e.adapter}`,
+        );
+      }
+    }
+  }
   const shipped = audioFiles.filter((f) => SHIPPED_ROOTS.some((r) => f.startsWith(r))).length;
   if (errors.length) {
     console.error(`public-audio rights check FAILED (${errors.length}):`);

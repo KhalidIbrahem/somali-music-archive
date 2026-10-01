@@ -4,10 +4,10 @@
   "private": true,
   "description": "Somali Music AI Preservation Platform — Next.js web app (secondary surface + admin dashboard). ARCHITECTURE.md §5, §17.",
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev -p 3000 -H 127.0.0.1",
     "prebuild": "node scripts/check-public-audio-rights.mjs",
     "build": "next build",
-    "start": "next start -p 3000",
+    "start": "next start -p 3000 -H 127.0.0.1",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "clean": "rimraf .turbo .next node_modules",
@@ -20,7 +20,7 @@
     "@sma/types": "*",
     "@sma/validators": "*",
     "html-midi-player": "^1.6.0",
-    "next": "^16.2.10",
+    "next": "^16.3.8",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "verovio": "^6.2.0"

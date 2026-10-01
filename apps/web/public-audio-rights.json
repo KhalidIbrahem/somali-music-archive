@@ -13,35 +13,41 @@
       "kind": "synthesised",
       "note": "placeholder audio for the hand-engraved hero excerpt (DATA_PROVENANCE.md §3)"
     },
-    "apps/web/public/demos/generated/oud_000_adapter.mp3": {
+    "apps/web/public/demos/generated/v3final_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair004_adapter.wav"
+    },
+    "apps/web/public/demos/generated/v3final_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair001_adapter.wav"
+    },
+    "apps/web/public/demos/generated/v3final_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair011_adapter.wav"
+    },
+    "apps/web/public/demos/generated/v3final_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair012_adapter.wav"
+    },
+    "apps/web/public/demos/generated/oud_000.mp3": {
       "kind": "model_output",
       "adapter": "oud",
-      "rights": "releasable"
+      "rights": "releasable",
+      "source": "data/oud_ab_listening/pair000_finetuned.wav"
     },
-    "apps/web/public/demos/generated/oud_002_adapter.mp3": {
+    "apps/web/public/demos/generated/oud_002.mp3": {
       "kind": "model_output",
       "adapter": "oud",
-      "rights": "releasable"
-    },
-    "apps/web/public/demos/generated/ace_oud_final_001.mp3": {
-      "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable"
-    },
-    "apps/web/public/demos/generated/ace_oud_final_004.mp3": {
-      "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable"
-    },
-    "apps/web/public/demos/generated/ace_oud_final_011.mp3": {
-      "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable"
-    },
-    "apps/web/public/demos/generated/ace_oud_final_012.mp3": {
-      "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable"
+      "rights": "releasable",
+      "source": "data/oud_ab_listening/pair002_finetuned.wav"
     }
   }
 }

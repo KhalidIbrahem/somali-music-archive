@@ -1,6 +1,6 @@
 # Model card — `ace_clean_oud` adapter (QaraamiGen, qaraami-v3)
 
-**Rights class:** `releasable` — trained only on isolated oud stems from one performer's own recordings (the `clean_oud` set, rights tag `ahmed_ilkacase_consented`); no Harvard, internet or other third-party audio. Its outputs may be published; the source audio and stems may not. Checked by `apps/web/scripts/check-public-audio-rights.mjs`.
+**Rights class:** `releasable` — trained only on isolated oud stems from one performer's own recordings (the `clean_oud` set; the performer consented to training and to publishing outputs, `docs/DATA_PROVENANCE.md` §8); no Harvard, internet or other third-party audio. Its outputs may be published; the source audio and stems may not. Checked by `apps/web/scripts/check-public-audio-rights.mjs`.
 
 **Artifact:** LoRA adapter `runs/v3_ace_xlsft/final` (PEFT format, 336 MB, rank 64, α = 128, dropout 0.05, `q/k/v/o` projections in self- and cross-attention). Not distributed.
 

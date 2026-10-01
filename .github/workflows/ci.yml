@@ -78,12 +78,15 @@ jobs:
           python-version: '3.11'
 
       - name: Install test tooling
-        # What the test suite imports, and no more: CPU-only torch, no Whisper,
-        # CREPE or model weights (tests that need those skip themselves).
-        # Measured 2026-09-30 in a clean 3.11 env: 214 passed, 1 skipped.
+        # What the test suite imports, and no more: CPU-only torch, no model
+        # weights (tests that need weights skip themselves). transformers and
+        # peft pinned to the research env (MusicgenConfig.from_sub_models_config
+        # is gone in later transformers). Clean 3.11 env, 2026-09-30: 739 passed, 1 skipped.
         run: |
-          pip install pytest pytest-asyncio ruff numpy scipy fastapi httpx python-multipart pydantic-settings soundfile music21
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install pytest pytest-asyncio ruff numpy scipy fastapi httpx python-multipart pydantic-settings \
+            soundfile music21 pyloudnorm pretty_midi safetensors transformers==4.57.6 peft==0.20.0 \
+            internetarchive demucs torchcrepe yt-dlp
 
       - name: Lint (Ruff)
         run: ruff check .

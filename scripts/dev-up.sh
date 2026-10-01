@@ -24,7 +24,15 @@ TAILSCALE="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 case "${1:-}" in
   --lan)
     LAN=1
-    export AI_SERVICE_HOST=0.0.0.0
+    # Never 0.0.0.0: the AI service serves source-recording audio on /demo/review
+    # without login. "LAN" means this Mac's Tailscale address (tailnet devices only).
+    TS_BIN="$(command -v tailscale || echo /Applications/Tailscale.app/Contents/MacOS/Tailscale)"
+    TS_IP="$("$TS_BIN" ip -4 2>/dev/null | head -1)"
+    if [ -z "$TS_IP" ]; then
+      echo "dev-up: --lan needs Tailscale up (no tailnet address found); refusing to bind 0.0.0.0" >&2
+      exit 1
+    fi
+    export AI_SERVICE_HOST="$TS_IP"
     # A browser opens the microphone only on a secure origin; over the tailnet
     # `Tailscale serve` gives this machine an https address with a valid
     # certificate. Not run here: it changes what the machine exposes.
@@ -89,8 +97,7 @@ wait_for musicgen-api http://127.0.0.1:8765/health 120
 echo
 echo "web:  http://localhost:3000        demo: http://127.0.0.1:8000/demo"
 if [ "$LAN" = 1 ]; then
-  LAN_IP="$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null)"
-  echo "listening review on the local network:  http://${LAN_IP:-<this Mac>}:8000/demo/review"
+  echo "listening review on the tailnet:  http://${AI_SERVICE_HOST}:8000/demo/review"
   if [ -n "${REVIEW_HTTPS_URL:-}" ]; then
     echo "to record on the iPad (needs https): run  \"$TAILSCALE\" serve --bg 8000"
     echo "  then open  ${REVIEW_HTTPS_URL}/demo/review  on an iPad signed into the tailnet"
