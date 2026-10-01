@@ -4,12 +4,16 @@
  * The public site has no transcription service behind it: the pipeline runs on
  * the research workstation. This page shows three of its scores, rendered
  * ahead of time as PDFs (first page previewed), with the scale the pipeline
- * fitted to each recording. No recording is included. Server component.
+ * fitted to each recording. No recording is included. Also: Beerdilaacshe,
+ * the hand-engraved score (playable MIDI), and an "open your own MusicXML"
+ * viewer that engraves and plays a local file in the browser. Server component.
  */
 
 import Image from 'next/image';
 import { TRANSCRIPTION_EXAMPLES, formatClock } from '@/lib/demoExamples';
 import { siteCopy } from '@/lib/siteCopy';
+import { MidiPlay } from './MidiPlay';
+import { MusicXmlViewer } from './MusicXmlViewer';
 
 export function TranscribeExamples(): React.JSX.Element {
   return (
@@ -25,6 +29,8 @@ export function TranscribeExamples(): React.JSX.Element {
         <span className="text-danger">kept and marked</span> with their deviation, because ornaments
         and microtonal inflections are music, not errors.
       </p>
+
+      <MusicXmlViewer />
 
       <ol className="mt-10 flex flex-col gap-10">
         {TRANSCRIPTION_EXAMPLES.map((ex) => (
@@ -86,6 +92,60 @@ export function TranscribeExamples(): React.JSX.Element {
             </a>
           </li>
         ))}
+        <li className="grid gap-6 rounded-2xl border border-line-secondary bg-bg-secondary p-6 lg:grid-cols-[1fr_320px]">
+          <div className="min-w-0">
+            <h2 className="font-display text-2xl text-ink-primary">Beerdilaacshe</h2>
+            <p className="mt-1 font-body text-sm text-ink-secondary">
+              melody by Abdillahi Qarshe (1950s) · engraved by Khalid Ibrahim · 96 BPM · 126 notes
+            </p>
+            <p className="mt-3 font-body text-sm text-ink-secondary">
+              A hand-engraved score, not an automatic transcription. Press play to hear the score
+              itself, played from its MIDI.
+            </p>
+            <div className="mt-4">
+              <MidiPlay src="/scores/beerdilaacshe/Beerdilaacshe.midi" />
+            </div>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <a
+                href="/scores/beerdilaacshe"
+                className="rounded-lg border border-amber/40 px-4 py-2 font-body text-sm font-semibold text-amber transition-colors hover:bg-amber hover:text-bg-primary"
+              >
+                Open the score page
+              </a>
+              <a
+                href="/scores/beerdilaacshe/Beerdilaacshe.pdf"
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-lg border border-line-primary px-4 py-2 font-body text-sm text-ink-secondary transition-colors hover:text-ink-primary"
+              >
+                PDF
+              </a>
+              <a
+                href="/scores/beerdilaacshe/Beerdilaacshe.midi"
+                download
+                className="rounded-lg border border-line-primary px-4 py-2 font-body text-sm text-ink-secondary transition-colors hover:text-ink-primary"
+              >
+                MIDI
+              </a>
+            </div>
+          </div>
+          <a
+            href="/scores/beerdilaacshe/Beerdilaacshe.pdf"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Beerdilaacshe, first page of the score"
+            className="block overflow-hidden rounded-lg bg-bg-inverse ring-1 ring-line-primary"
+          >
+            <Image
+              src="/scores/beerdilaacshe/Beerdilaacshe.png"
+              alt="First page of the Beerdilaacshe score"
+              width={1400}
+              height={1981}
+              sizes="(min-width: 1024px) 320px, 100vw"
+              className="h-auto w-full"
+            />
+          </a>
+        </li>
       </ol>
     </main>
   );

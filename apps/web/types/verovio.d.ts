@@ -20,6 +20,10 @@ declare module 'verovio/esm' {
     constructor(module: VerovioModule);
     setOptions(options: Record<string, unknown>): void;
     loadData(data: string): boolean;
+    /** Compressed MusicXML (.mxl) and other zip containers. */
+    loadZipDataBuffer(data: ArrayBuffer): boolean;
+    /** The loaded score as a Standard MIDI File, base64-encoded. */
+    renderToMIDI(): string;
     redoLayout(options?: Record<string, unknown>): void;
     renderToSVG(page: number): string;
     getMEI(options?: Record<string, unknown>): string;

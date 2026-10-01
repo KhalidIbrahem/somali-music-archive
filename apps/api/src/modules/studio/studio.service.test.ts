@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { createStudioService, type StudioService } from './studio.service';
 import { InMemoryStudioRepository } from './studio.repository';
 
@@ -10,13 +10,21 @@ beforeEach(() => {
   service = createStudioService({ repo: new InMemoryStudioRepository() });
 });
 
+afterEach(() => {
+  vi.useRealTimers();
+});
+
 describe('studio projects', () => {
   it('creates, lists (newest first), reads, updates, and soft-deletes', async () => {
+    // Distinct timestamps: on a fast runner two saves can land in the same millisecond.
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-01T12:00:00Z'));
     const a = await service.createProject('owner-1', {
       name: 'Dhaanto sketch',
       bpm: 104,
       data: doc,
     });
+    vi.setSystemTime(new Date('2026-10-01T12:00:01Z'));
     const b = await service.createProject('owner-1', { name: 'Heello idea', bpm: 96, data: doc });
 
     const list = await service.listProjects('owner-1');
