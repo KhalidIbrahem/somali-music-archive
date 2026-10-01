@@ -38,6 +38,10 @@ import { ArrangeView } from './ArrangeView';
 import { PianoRoll } from './PianoRoll';
 import { StepSequencer } from './StepSequencer';
 import { Mixer } from './Mixer';
+// studio-io: content & import/export
+import { LoopBrowser, loopDropHandlers } from './LoopBrowser';
+import { ImportMenu } from './ImportMenu';
+import { ExportDialog } from './ExportDialog';
 
 export interface Selection {
   trackId: string;
@@ -59,6 +63,9 @@ export function DawApp(): React.JSX.Element {
   const [transport, setTransport] = useState<EngineSnapshot>({ state: 'stopped', beat: 0 });
   const [exporting, setExporting] = useState(false);
   const [openList, setOpenList] = useState<ProjectListing[] | null>(null);
+  // studio-io: loop browser panel + export dialog
+  const [loopsOpen, setLoopsOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
 
   const localTimer = useRef(0);
   const serverTimer = useRef(0);
@@ -200,7 +207,32 @@ export function DawApp(): React.JSX.Element {
         onOpen={openDialog}
       />
 
-      <div className="min-h-0 flex-1">
+      {/* studio-io: import / export / loops strip */}
+      <div className="flex items-center gap-2 border-b border-hairline bg-chrome-1 px-3 py-1">
+        <ImportMenu project={project} playheadBeat={transport.beat} onUpdate={update} />
+        <button
+          type="button"
+          onClick={() => setExportOpen(true)}
+          className="numeric rounded-[4px] border border-hairline px-3 py-1.5 text-[11px] tracking-[0.14em] text-low uppercase transition-colors hover:border-accent-state hover:text-hi"
+        >
+          Export…
+        </button>
+        <button
+          type="button"
+          aria-pressed={loopsOpen}
+          onClick={() => setLoopsOpen((v) => !v)}
+          className={`numeric ml-auto rounded-[4px] border px-3 py-1.5 text-[11px] tracking-[0.14em] uppercase transition-colors ${
+            loopsOpen
+              ? 'border-accent-state text-accent-state'
+              : 'border-hairline text-low hover:text-hi'
+          }`}
+        >
+          Loops
+        </button>
+      </div>
+
+      {/* studio-io: relative + loop drop target; the loop browser docks on the right */}
+      <div className="relative min-h-0 flex-1" {...loopDropHandlers(update, transport.beat)}>
         <ArrangeView
           project={project}
           engine={engine}
@@ -221,6 +253,16 @@ export function DawApp(): React.JSX.Element {
             })
           }
         />
+        {loopsOpen ? (
+          <div className="fixed inset-0 z-40 sm:absolute sm:inset-y-0 sm:right-0 sm:left-auto sm:z-30 sm:shadow-2xl">
+            <LoopBrowser
+              project={project}
+              playheadBeat={transport.beat}
+              onUpdate={update}
+              onClose={() => setLoopsOpen(false)}
+            />
+          </div>
+        ) : null}
       </div>
 
       {/* ── bottom panel: editor / mixer ─────────────────────────────────── */}
@@ -273,6 +315,16 @@ export function DawApp(): React.JSX.Element {
           )}
         </div>
       </div>
+
+      {/* studio-io: export dialog */}
+      {exportOpen ? (
+        <ExportDialog
+          project={project}
+          engine={engine}
+          onUpdate={update}
+          onClose={() => setExportOpen(false)}
+        />
+      ) : null}
 
       {/* ── open-project dialog ──────────────────────────────────────────── */}
       {openList !== null ? (
