@@ -18,7 +18,8 @@ import { ServedGenerationStudio } from '@/components/generate/ServedGenerationSt
 import { flags } from '@/lib/flags';
 
 export const metadata: Metadata = {
-  title: 'Generate — QaraamiGenAI',
+  alternates: { canonical: '/generate' },
+  title: 'Generate Somali Music with AI — QaraamiGenAI',
   description:
     'Generate with the fine-tuned MusicGen adapters served on the local generation service.',
 };

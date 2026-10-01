@@ -30,7 +30,8 @@ import { landingCopy as copy } from '@/lib/landingCopy';
 import { LISTEN_SAMPLES } from '@/lib/demoExamples';
 
 export const metadata: Metadata = {
-  title: 'QaraamiGenAI — before the last tape fades',
+  alternates: { canonical: '/' },
+  title: 'Somali Music AI & Qaraami Archive — QaraamiGenAI',
   description:
     'For fifty years, Somali Qaraami lived only in performance and on aging cassettes. QaraamiGen is teaching artificial intelligence to hear it, understand it, and write it down — before it’s gone.',
 };

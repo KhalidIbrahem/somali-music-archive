@@ -17,7 +17,8 @@ import { SiteFooter } from '@/components/SiteFooter';
 import { ScorePlayer, type ScoreData } from '@/components/scores/ScorePlayer';
 
 export const metadata: Metadata = {
-  title: 'Beerdilaacshe — Qaraami Melody',
+  alternates: { canonical: '/scores/beerdilaacshe' },
+  title: 'Beerdilaacshe Sheet Music — Somali Qaraami by Abdillahi Qarshe',
   description:
     '“Beerdilaacshe” — a Qaraami melody composed by Abdillahi Qarshe in the 1950s. Sheet music transcribed and engraved by Khalid Ibrahim; performed in the browser on plucked strings with a durbaan groove.',
   authors: [{ name: 'Abdillahi Qarshe' }, { name: 'Khalid Ibrahim' }],

@@ -9,7 +9,8 @@ import { Suspense } from 'react';
 import { DawApp } from '@/components/daw/DawApp';
 
 export const metadata: Metadata = {
-  title: 'Studio — QaraamiGenAI',
+  alternates: { canonical: '/studio' },
+  title: 'Somali Music Studio Online: Oud, Durbaan, Mixer — QaraamiGenAI',
   description:
     'Compose qaraami in the browser: oud, durbaan, bass and keys with scale lock and Somali grooves, audio tracks and recording, a mixer with EQ, compression and reverb, and the QaraamiGen loop browser.',
 };

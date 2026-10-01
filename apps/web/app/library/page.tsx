@@ -12,7 +12,8 @@ import { PublicLibraryShelf } from '@/components/library/PublicLibraryShelf';
 import { flags } from '@/lib/flags';
 
 export const metadata: Metadata = {
-  title: 'Library — QaraamiGenAI',
+  alternates: { canonical: '/library' },
+  title: 'Somali Music Library: Scores and Songbooks — QaraamiGenAI',
   description:
     'Resources for reading and playing Somali music: the Beerdilaacshe engraving with its PDF, MIDI and LilyPond source, the pipeline’s automatic transcriptions, and the shelf where books will go.',
 };

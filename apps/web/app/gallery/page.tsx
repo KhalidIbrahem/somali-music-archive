@@ -12,7 +12,8 @@ import { SiteFooter } from '@/components/SiteFooter';
 import gallery from '@/lib/gallery-clips.json';
 
 export const metadata: Metadata = {
-  title: 'Gallery — QaraamiGenAI',
+  alternates: { canonical: '/gallery' },
+  title: 'Gallery: AI-Generated Somali Songs and Oud — QaraamiGenAI',
   description:
     'Every clip the QaraamiGen models generated: Somali songs with vocals and qaraami oud, all AI model output, unedited and unselected.',
 };
