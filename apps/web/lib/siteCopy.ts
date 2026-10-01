@@ -9,6 +9,7 @@ export const siteCopy = {
     { label: 'Generate', href: '/generate' },
     { label: 'Transcribe', href: '/transcribe' },
     { label: 'Listen', href: '/listen' },
+    { label: 'Gallery', href: '/gallery' },
     { label: 'Library', href: '/library' },
     { label: 'Research', href: '/#research' },
   ],

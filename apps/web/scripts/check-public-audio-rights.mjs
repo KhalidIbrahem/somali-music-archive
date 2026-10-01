@@ -25,7 +25,7 @@ export const AUDIO_RE = /\.(mp3|wav|m4a|aac|ogg|oga|opus|flac|webm|aif|aiff)$/i;
 export const SHIPPED_ROOTS = ['apps/web/public/', 'apps/mobile/assets/'];
 const SOURCE_ROOTS = ['apps/web/app', 'apps/web/components', 'apps/web/lib', 'apps/web/public'];
 const SOURCE_RE = /\.(ts|tsx|js|jsx|mjs|json|html|md)$/i;
-const REF_RE = /\/demos\/generated\/[A-Za-z0-9._-]+/g;
+const REF_RE = /\/demos\/(?:generated|gallery)\/[A-Za-z0-9._-]+/g;
 const RIGHTS_RE = /\*\*Rights class:\*\*\s*`(releasable|research_only)`/;
 const KINDS = new Set(['synthesised', 'model_output']);
 

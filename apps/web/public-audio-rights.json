@@ -48,6 +48,2838 @@
       "adapter": "oud",
       "rights": "releasable",
       "source": "data/oud_ab_listening/pair002_finetuned.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_00.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c00.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_01.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c01.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_02.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c02.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_03.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c03.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_04.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c04.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_05.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c05.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_06.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c06.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_07.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c07.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_08.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c08.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_09.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c09.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_10.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c10.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_11.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c11.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_12.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c12.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_13.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c13.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_14.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c14.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_15.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c15.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_16.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c16.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_17.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c17.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_18.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c18.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_19.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c19.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_20.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c20.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_21.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c21.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_22.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c22.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_23.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c23.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_24.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c24.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_25.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c25.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_26.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c26.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_27.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c27.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_28.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c28.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_29.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c29.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_30.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c30.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_000_31.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip000_c31.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_00.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c00.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_01.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c01.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_02.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c02.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_03.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c03.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_04.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c04.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_05.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c05.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_06.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c06.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_07.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c07.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_08.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c08.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_09.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c09.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_10.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c10.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_11.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c11.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_12.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c12.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_13.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c13.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_14.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c14.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_15.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c15.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_16.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c16.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_17.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c17.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_18.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c18.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_19.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c19.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_20.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c20.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_21.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c21.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_22.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c22.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_23.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c23.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_24.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c24.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_25.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c25.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_26.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c26.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_27.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c27.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_28.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c28.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_29.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c29.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_30.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c30.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_001_31.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip001_c31.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_00.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c00.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_01.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c01.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_02.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c02.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_03.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c03.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_04.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c04.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_05.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c05.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_06.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c06.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_07.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c07.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_08.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c08.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_09.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c09.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_10.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c10.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_11.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c11.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_12.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c12.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_13.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c13.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_14.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c14.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_15.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c15.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_16.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c16.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_17.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c17.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_18.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c18.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_19.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c19.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_20.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c20.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_21.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c21.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_22.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c22.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_23.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c23.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_24.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c24.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_25.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c25.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_26.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c26.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_27.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c27.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_28.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c28.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_29.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c29.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_30.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c30.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_002_31.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip002_c31.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_00.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c00.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_01.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c01.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_02.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c02.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_03.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c03.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_04.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c04.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_05.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c05.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_06.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c06.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_07.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c07.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_08.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c08.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_09.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c09.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_10.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c10.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_11.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c11.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_12.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c12.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_13.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c13.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_14.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c14.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_15.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c15.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_16.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c16.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_17.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c17.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_18.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c18.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_19.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c19.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_20.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c20.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_21.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c21.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_22.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c22.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_23.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c23.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_24.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c24.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_25.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c25.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_26.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c26.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_27.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c27.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_28.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c28.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_29.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c29.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_30.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c30.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_003_31.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip003_c31.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_00.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c00.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_01.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c01.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_02.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c02.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_03.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c03.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_04.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c04.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_05.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c05.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_06.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c06.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_07.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c07.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_08.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c08.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_09.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c09.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_10.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c10.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_11.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c11.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_12.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c12.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_13.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c13.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_14.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c14.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_15.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c15.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_16.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c16.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_17.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c17.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_18.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c18.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_19.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c19.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_20.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c20.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_21.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c21.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_22.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c22.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_23.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c23.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_24.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c24.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_25.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c25.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_26.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c26.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_27.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c27.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_28.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c28.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_29.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c29.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_30.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c30.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_004_31.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip004_c31.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_00.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c00.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_01.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c01.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_02.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c02.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_03.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c03.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_04.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c04.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_05.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c05.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_06.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c06.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_07.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c07.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_08.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c08.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_09.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c09.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_10.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c10.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_11.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c11.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_12.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c12.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_13.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c13.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_14.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c14.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_15.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c15.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_16.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c16.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_17.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c17.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_18.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c18.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_19.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c19.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_20.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c20.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_21.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c21.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_22.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c22.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_23.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c23.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_24.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c24.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_25.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c25.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_26.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c26.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_27.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c27.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_28.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c28.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_29.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c29.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_30.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c30.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_005_31.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip005_c31.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_00.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c00.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_01.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c01.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_02.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c02.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_03.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c03.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_04.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c04.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_05.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c05.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_06.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c06.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_07.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c07.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_08.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c08.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_09.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c09.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_10.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c10.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_11.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c11.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_12.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c12.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_13.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c13.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_14.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c14.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_15.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c15.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_16.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c16.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_17.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c17.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_18.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c18.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_19.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c19.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_20.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c20.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_21.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c21.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_22.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c22.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_23.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c23.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_24.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c24.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_25.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c25.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_26.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c26.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_27.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c27.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_28.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c28.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_29.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c29.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_30.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c30.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_006_31.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip006_c31.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_00.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c00.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_01.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c01.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_02.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c02.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_03.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c03.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_04.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c04.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_05.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c05.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_06.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c06.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_07.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c07.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_08.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c08.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_09.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c09.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_10.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c10.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_11.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c11.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_12.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c12.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_13.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c13.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_14.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c14.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_15.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c15.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_16.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c16.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_17.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c17.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_18.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c18.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_19.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c19.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_20.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c20.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_21.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c21.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_22.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c22.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_23.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c23.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_24.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c24.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_25.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c25.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_26.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c26.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_27.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c27.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_28.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c28.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_29.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c29.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_30.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c30.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_007_31.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip007_c31.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_00.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c00.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_01.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c01.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_02.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c02.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_03.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c03.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_04.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c04.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_05.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c05.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_06.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c06.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_07.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c07.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_08.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c08.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_09.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c09.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_10.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c10.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_11.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c11.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_12.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c12.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_13.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c13.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_14.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c14.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_15.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c15.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_16.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c16.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_17.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c17.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_18.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c18.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_19.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c19.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_20.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c20.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_21.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c21.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_22.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c22.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_23.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c23.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_24.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c24.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_25.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c25.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_26.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c26.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_27.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c27.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_28.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c28.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_29.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c29.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_30.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c30.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_008_31.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip008_c31.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_00.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c00.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_01.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c01.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_02.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c02.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_03.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c03.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_04.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c04.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_05.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c05.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_06.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c06.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_07.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c07.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_08.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c08.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_09.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c09.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_10.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c10.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_11.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c11.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_12.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c12.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_13.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c13.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_14.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c14.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_15.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c15.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_16.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c16.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_17.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c17.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_18.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c18.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_19.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c19.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_20.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c20.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_21.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c21.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_22.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c22.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_23.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c23.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_24.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c24.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_25.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c25.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_26.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c26.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_27.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c27.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_28.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c28.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_29.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c29.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_30.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c30.wav"
+    },
+    "apps/web/public/demos/gallery/v4pool_009_31.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sD_pool/clip009_c31.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_000.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip000.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip001.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_002.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip002.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_003.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip003.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip004.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_005.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip005.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_006.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip006.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_007.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip007.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_008.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip008.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_009.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip009.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_010.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip010.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip011.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip012.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_013.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip013.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_014.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip014.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch01_015.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch01/clip015.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_000.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip000.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip001.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_002.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip002.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_003.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip003.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip004.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_005.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip005.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_006.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip006.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_007.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip007.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_008.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip008.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_009.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip009.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_010.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip010.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip011.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip012.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_013.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip013.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_014.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip014.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch03_015.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch03/clip015.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_000.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip000.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip001.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_002.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip002.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_003.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip003.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip004.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_005.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip005.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_006.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip006.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_007.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip007.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_008.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip008.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_009.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip009.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_010.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip010.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip011.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip012.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_013.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip013.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_014.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip014.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch04_015.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch04/clip015.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_000.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip000.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip001.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_002.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip002.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_003.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip003.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip004.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_005.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip005.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_006.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip006.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_007.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip007.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_008.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip008.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_009.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip009.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_010.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip010.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip011.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip012.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_013.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip013.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_014.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip014.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch05_015.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch05/clip015.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_000.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip000.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip001.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_002.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip002.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_003.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip003.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip004.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_005.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip005.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_006.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip006.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_007.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip007.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_008.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip008.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_009.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip009.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_010.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip010.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip011.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip012.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_013.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip013.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_014.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip014.wav"
+    },
+    "apps/web/public/demos/gallery/v4_epoch06_015.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/epoch06/clip015.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_000.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip000.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip001.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_002.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip002.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_003.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip003.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip004.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_005.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip005.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_006.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip006.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_007.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip007.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_008.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip008.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_009.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip009.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_010.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip010.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip011.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip012.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_013.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip013.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_014.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip014.wav"
+    },
+    "apps/web/public/demos/gallery/v4_final_015.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_songs_v4",
+      "rights": "releasable",
+      "source": "data/v4/sC_ckpt_r256/final/clip015.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_000.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair000_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair001_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_002.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair002_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_003.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair003_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair004_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_005.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair005_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_006.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair006_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_007.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair007_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_008.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair008_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_009.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair009_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_010.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair010_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair011_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair012_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_013.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair013_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_014.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair014_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3final_015.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage3_acelora_vs_acebase/pair015_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_000.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair000_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair001_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_002.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair002_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_003.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair003_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair004_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_005.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair005_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_006.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair006_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_007.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair007_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_008.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair008_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_009.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair009_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_010.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair010_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair011_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair012_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_013.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair013_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_014.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair014_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3melody_015.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stage4_melody_vs_text/pair015_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_000.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair000_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_001.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair001_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_002.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair002_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_003.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair003_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_004.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair004_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_005.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair005_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_006.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair006_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_007.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair007_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_008.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair008_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_009.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair009_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_010.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair010_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_011.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair011_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_012.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair012_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_013.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair013_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_014.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair014_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/v3ep06_015.mp3": {
+      "kind": "model_output",
+      "adapter": "ace_clean_oud",
+      "rights": "releasable",
+      "source": "data/ab_stageA_best_epoch_vs_final/pair015_adapter.wav"
+    },
+    "apps/web/public/demos/gallery/oud_000.mp3": {
+      "kind": "model_output",
+      "adapter": "oud",
+      "rights": "releasable",
+      "source": "data/oud_ab_listening/pair000_finetuned.wav"
+    },
+    "apps/web/public/demos/gallery/oud_001.mp3": {
+      "kind": "model_output",
+      "adapter": "oud",
+      "rights": "releasable",
+      "source": "data/oud_ab_listening/pair001_finetuned.wav"
+    },
+    "apps/web/public/demos/gallery/oud_002.mp3": {
+      "kind": "model_output",
+      "adapter": "oud",
+      "rights": "releasable",
+      "source": "data/oud_ab_listening/pair002_finetuned.wav"
+    },
+    "apps/web/public/demos/gallery/oud_003.mp3": {
+      "kind": "model_output",
+      "adapter": "oud",
+      "rights": "releasable",
+      "source": "data/oud_ab_listening/pair003_finetuned.wav"
+    },
+    "apps/web/public/demos/gallery/oud_004.mp3": {
+      "kind": "model_output",
+      "adapter": "oud",
+      "rights": "releasable",
+      "source": "data/oud_ab_listening/pair004_finetuned.wav"
+    },
+    "apps/web/public/demos/gallery/oud_005.mp3": {
+      "kind": "model_output",
+      "adapter": "oud",
+      "rights": "releasable",
+      "source": "data/oud_ab_listening/pair005_finetuned.wav"
+    },
+    "apps/web/public/demos/gallery/oud_006.mp3": {
+      "kind": "model_output",
+      "adapter": "oud",
+      "rights": "releasable",
+      "source": "data/oud_ab_listening/pair006_finetuned.wav"
+    },
+    "apps/web/public/demos/gallery/oud_007.mp3": {
+      "kind": "model_output",
+      "adapter": "oud",
+      "rights": "releasable",
+      "source": "data/oud_ab_listening/pair007_finetuned.wav"
     }
   }
 }

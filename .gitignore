@@ -177,6 +177,9 @@ apps/web/public/demos/audio/
 # Model output shown on the public Generate page when no service is attached
 # (apps/web/lib/demoExamples.ts): generated audio, never a recording.
 !apps/web/public/demos/generated/*.mp3
+# All releasable model output for /gallery (rights gate checks every file)
+!apps/web/public/demos/gallery/
+!apps/web/public/demos/gallery/*.mp3
 *.npy
 *.safetensors
 *.ckpt

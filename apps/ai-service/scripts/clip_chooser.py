@@ -439,6 +439,77 @@ def publish(args: argparse.Namespace) -> None:
           "  git commit -m 'site: choose generated clips' && git push origin master")
 
 
+# ── gallery: every releasable clip on /gallery ───────────────────────────────
+GROUPS = [  # (source prefix or exact source, title, note)
+    ("data/v4/sD_pool", "Songs with vocals — best-of-32 pool",
+     "Model v4: ACE-Step 1.5 with a LoRA trained on one performer’s own songs (Somali lyrics, machine-transcribed). "
+     "32 generations for each of 10 lyric prompts; the automatic pick per prompt is marked."),
+    ("data/v4/sC_ckpt_r256", "Songs with vocals — training checkpoints",
+     "The same v4 model at different points of training (16 held-out lyric prompts, one generation each)."),
+    ("data/ab_stage3_acelora_vs_acebase", "Solo oud — ACE-Step clean-oud LoRA",
+     "Model v3: ACE-Step 1.5 with a LoRA trained on 5.7 hours of isolated oud stems; 16 held-out prompts."),
+    ("data/ab_stage4_melody_vs_text", "Solo oud — melody-conditioned covers",
+     "Model v3 given a melody transcribed from a held-out recording and asked to play it as qaraami oud."),
+    ("data/ab_stageA_best_epoch_vs_final", "Solo oud — v3 at epoch 6", "An earlier checkpoint of model v3."),
+    ("data/oud_ab_listening", "Solo oud — MusicGen-small oud adapter",
+     "The first model: MusicGen-small with a LoRA trained on a private oud collection (10 s clips)."),
+]
+
+
+def gallery(args: argparse.Namespace) -> None:
+    site = Path(args.site).expanduser().resolve()
+    web = site / "apps/web"
+    out_dir = web / "public/demos/gallery"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    clips = catalog()
+    ok = {a for a in {c.adapterId for c in clips} if card_rights(site, a) == "releasable"}
+    clips = [c for c in clips if c.adapterId in ok]
+    manifest_p = web / "public-audio-rights.json"
+    manifest = json.loads(manifest_p.read_text())
+    files = manifest["files"]
+    for rel in [k for k in files if k.startswith("apps/web/public/demos/gallery/")]:
+        del files[rel]
+    groups = []
+    for prefix, title, note in GROUPS:
+        members = [c for c in clips if c.source == prefix or c.source.startswith(prefix + "/")]
+        if not members:
+            continue
+        sub: dict[str, list] = {}
+        for c in members:
+            dst = out_dir / f"{c.id}.mp3"
+            if not dst.exists() or args.force:
+                subprocess.run(["nice", "ffmpeg", "-loglevel", "error", "-y", "-i", str(REPO / c.path), "-af",
+                                f"loudnorm=I=-14:TP=-1.5:LRA=11,atrim=0:{args.max_seconds}", "-ac", "1", "-ar", "44100",
+                                "-b:a", f"{args.kbps}k", str(dst)], check=True)
+            rel = f"apps/web/public/demos/gallery/{c.id}.mp3"
+            files[rel] = {"kind": "model_output", "adapter": c.adapterId, "rights": "releasable", "source": c.path}
+            key = c.source.split("/")[-1] if c.source.startswith("data/v4/sC_ckpt") else (
+                f"Prompt {int(c.id.split('_')[1]) + 1}" if c.id.startswith("v4pool_") else "")
+            item = {"id": c.id, "file": f"/demos/gallery/{c.id}.mp3", "title": title_for(c), "adapterId": c.adapterId,
+                    "model": c.model, "adapter": c.adapter, "checkpoint": c.checkpoint, "prompt": c.prompt,
+                    "seed": c.seed, "durationSec": round(duration(dst)), "vocals": c.vocals}
+            for k in ("pcs", "voiced", "bandSnrDb"):
+                v = getattr(c, k)
+                if v is not None:
+                    item[k] = round(v, 3 if k != "bandSnrDb" else 1)
+            if c.extra.get("autoRank") == 1:
+                item["autoPick"] = True
+            sub.setdefault(key, []).append(item)
+        for v in sub.values():
+            v.sort(key=lambda x: (not x.get("autoPick"), -(x.get("pcs") or 0)))
+        groups.append({"title": title, "note": note,
+                       "sections": [{"title": k, "clips": v} for k, v in sorted(sub.items(), key=lambda kv: kv[0])]})
+        print(f"  {title}: {len(members)} clips")
+    (web / "lib/gallery-clips.json").write_text(json.dumps({"groups": groups}, ensure_ascii=False, indent=1) + "\n")
+    manifest_p.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+    total = sum(f.stat().st_size for f in out_dir.glob("*.mp3"))
+    print(f"wrote lib/gallery-clips.json ({sum(len(s['clips']) for g in groups for s in g['sections'])} clips, "
+          f"{total / 1e6:.0f} MB of audio)")
+    node = shutil.which("node") or str(Path.home() / "ai/node-v22/bin/node")
+    if subprocess.run([node, str(web / "scripts/check-public-audio-rights.mjs")], cwd=site).returncode:
+        raise SystemExit("rights gate FAILED")
+
+
 def list_cmd(_: argparse.Namespace) -> None:
     for c in catalog():
         sc = "unscored" if c.pcs is None else f"PCS {c.pcs:.3f} voiced {c.voiced:.3f}"
@@ -455,6 +526,12 @@ def main() -> None:
     p.add_argument("--device", default="cpu", help="device for scoring unscored clips (cpu or mps)")
     p.add_argument("--max-seconds", type=float, default=60.0, help="trim longer clips (0 = keep full length)")
     p.set_defaults(fn=publish)
+    g = sub.add_parser("gallery", help="publish every releasable clip on /gallery")
+    g.add_argument("--site", default=str(REPO))
+    g.add_argument("--kbps", type=int, default=64)
+    g.add_argument("--max-seconds", type=float, default=60.0)
+    g.add_argument("--force", action="store_true", help="re-encode existing files")
+    g.set_defaults(fn=gallery)
     a = ap.parse_args()
     a.fn(a)
 
