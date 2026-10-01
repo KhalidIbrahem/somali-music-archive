@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "clean": "rimraf .turbo .next node_modules",
     "check:audio-rights": "node scripts/check-public-audio-rights.mjs",
-    "test": "node --test scripts/check-public-audio-rights.test.mjs"
+    "test": "vitest run && node --test scripts/check-public-audio-rights.test.mjs"
   },
   "dependencies": {
     "@openrouter/sdk": "^1.2.4",
