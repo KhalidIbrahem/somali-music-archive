@@ -9,6 +9,8 @@
  * ever touched from handlers/effects — never during render.
  */
 
+import { registerAudioStore } from '@/lib/daw/loops';
+import { putAudio } from '@/lib/daw/audioStore';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { DawEngine, type EngineSnapshot } from '@/lib/daw/engine';
@@ -124,6 +126,11 @@ export function DawApp(): React.JSX.Element {
     [engine],
   );
   useRecordingTakes(engine, update);
+  // Imported audio files persist in IndexedDB (lib/daw/audioStore.ts), not as session-only URLs.
+  useEffect(() => {
+    registerAudioStore({ put: putAudio });
+    return () => registerAudioStore(null);
+  }, []);
 
   // ── keyboard: space = play/stop (skip when typing) ─────────────────────────
   useEffect(() => {

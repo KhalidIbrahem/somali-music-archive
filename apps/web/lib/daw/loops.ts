@@ -210,21 +210,11 @@ export function addLoopTrack(draft: DawProject, clip: LoopClip, startBeat: numbe
 /** Drag-and-drop payload type for gallery clips. */
 export const LOOP_DRAG_MIME = 'application/x-qaraami-loop';
 
-// ── engine adapters (features another branch adds) ───────────────────────────
+// ── engine adapters ───────────────────────────
 
 export interface RenderMixOptions {
   /** Restrict the render to these track ids (stems). Absent = the full mix. */
   tracks?: string[];
-}
-
-interface RenderMixCapable {
-  renderMix: (project: DawProject, options?: RenderMixOptions) => Promise<AudioBuffer>;
-}
-
-function hasRenderMix(engine: object): engine is RenderMixCapable {
-  return (
-    'renderMix' in engine && typeof (engine as { renderMix: unknown }).renderMix === 'function'
-  );
 }
 
 /** A copy of the project that plays only the given tracks (mute/solo cleared on them). */
@@ -248,15 +238,13 @@ export async function renderProject(
   project: DawProject,
   trackIds?: readonly string[],
 ): Promise<AudioBuffer> {
-  if (hasRenderMix(engine)) {
-    return engine.renderMix(project, trackIds ? { tracks: [...trackIds] } : {});
-  }
-  return engine.renderMixdown(trackIds ? projectWithOnly(project, trackIds) : project);
+  // The v2 engine always renders audio regions + fx; `tracks` isolates stems.
+  return engine.renderMix(project, trackIds ? { tracks: [...trackIds] } : {});
 }
 
 /** Whether the current engine can render audio regions (else stems/mix are MIDI-only). */
-export function engineRendersAudio(engine: DawEngine): boolean {
-  return hasRenderMix(engine);
+export function engineRendersAudio(_engine: DawEngine): boolean {
+  return true;
 }
 
 // ── user audio storage ───────────────────────────────────────────────────────
