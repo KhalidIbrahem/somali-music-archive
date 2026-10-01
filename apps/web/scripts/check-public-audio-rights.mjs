@@ -37,9 +37,10 @@ export function cardRights(text) {
 
 /**
  * Pure check. `cards` maps adapter name → card text (undefined when there is
- * no card); `cardsAvailable` is false when docs/ is not part of the checkout
- * (the Vercel upload excludes it), and then the manifest's own `rights` field
- * is trusted — CI always has the cards and cross-checks it.
+ * no card); `cardsAvailable` is false outside a git checkout (the Vercel build
+ * has no .git and only part of docs/), and then the manifest's own `rights`
+ * field is trusted — CI and local runs are git checkouts with every card and
+ * cross-check it.
  * Returns a list of error strings; empty means pass.
  */
 export function check({ audioFiles, manifest, cards, cardsAvailable, references }) {
@@ -101,6 +102,7 @@ export function check({ audioFiles, manifest, cards, cardsAvailable, references 
   return errors;
 }
 
+/** The checkout's files, and whether they came from git (CI, local) or a walk (deploy upload). */
 function listFiles(root) {
   try {
     // Tracked plus untracked-but-not-ignored: what a commit or deploy would carry.
@@ -109,7 +111,7 @@ function listFiles(root) {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
     });
-    return out.split('\0').filter(Boolean);
+    return { files: out.split('\0').filter(Boolean), fromGit: true };
   } catch {
     // No git (the Vercel build): walk what was uploaded.
     const files = [];
@@ -124,7 +126,7 @@ function listFiles(root) {
       }
     };
     for (const r of [...SHIPPED_ROOTS, ...SOURCE_ROOTS]) walk(r.replace(/\/$/, ''));
-    return [...new Set(files)];
+    return { files: [...new Set(files)], fromGit: false };
   }
 }
 
@@ -133,11 +135,14 @@ function main() {
   const manifest = JSON.parse(
     readFileSync(path.join(root, 'apps/web/public-audio-rights.json'), 'utf8'),
   );
-  const files = listFiles(root);
+  const { files, fromGit } = listFiles(root);
   const audioFiles = files.filter((f) => AUDIO_RE.test(f));
 
   const cardsDir = path.join(root, 'docs/eval');
-  const cardsAvailable = existsSync(cardsDir);
+  // Vercel's upload has no .git and only part of docs/ (its first deploy of
+  // this gate failed on "no model card"), so cards are only required in a git
+  // checkout, where every card is present.
+  const cardsAvailable = fromGit && existsSync(cardsDir);
   const cards = {};
   for (const e of Object.values(manifest.files ?? {})) {
     if (!e.adapter || e.adapter in cards) continue;
@@ -163,7 +168,7 @@ function main() {
     `public-audio rights check passed: ${shipped} shipped audio files, ${references.length} /demos/generated references` +
       (cardsAvailable
         ? ', rights cross-checked against the model cards'
-        : ' (docs/ absent: manifest rights trusted)'),
+        : ' (no git checkout: manifest rights trusted, cards checked in CI)'),
   );
 }
 
