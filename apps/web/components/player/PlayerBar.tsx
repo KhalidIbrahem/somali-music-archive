@@ -242,6 +242,24 @@ export function PlayerBar(): React.JSX.Element | null {
           aria-label="Volume"
           className="hidden w-20 accent-(--accent-live) md:block"
         />
+
+        {/* close: stop playback and hide the bar */}
+        <button
+          type="button"
+          onClick={player.close}
+          aria-label="Close player"
+          title="Close player (Esc)"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[4px] border border-hairline text-mid transition-colors hover:text-hi focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
+            <path
+              d="M2 2l8 8M10 2l-8 8"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   );

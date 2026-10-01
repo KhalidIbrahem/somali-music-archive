@@ -55,6 +55,8 @@ interface PlayerApi extends PlayerState {
   seek: (t: number) => void;
   seekBy: (dt: number) => void;
   setVolume: (v: number) => void;
+  /** Stop playback and hide the player bar. */
+  close: () => void;
   /** Subscribe to the clock (rAF cadence while playing). Returns unsubscribe. */
   onTime: (cb: (t: number) => void) => () => void;
   /** Current position — for one-off reads (score panel mount, scrub start). */
@@ -223,6 +225,24 @@ export function PlayerProvider({ children }: { children: React.ReactNode }): Rea
     [getAudio],
   );
 
+  const close = useCallback((): void => {
+    const audio = audioRef.current;
+    if (audio !== null) {
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load();
+    }
+    cancelAnimationFrame(rafRef.current);
+    setState((s) => ({
+      ...s,
+      queue: [],
+      index: 0,
+      track: null,
+      status: 'idle',
+      errorMessage: null,
+    }));
+  }, []);
+
   // keyboard — yields to inputs/textareas/contenteditable and to other
   // shortcuts' modifiers; space also yields to buttons (their native action).
   useEffect(() => {
@@ -239,6 +259,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }): Rea
       if (e.key === ' ') {
         e.preventDefault();
         toggle();
+      } else if (e.key === 'Escape') {
+        close();
       } else if (e.key === 'ArrowRight') {
         e.preventDefault();
         seekBy(5);
@@ -255,7 +277,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }): Rea
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [toggle, seekBy, setVolume]);
+  }, [toggle, seekBy, setVolume, close]);
 
   const onTime = useCallback((cb: (t: number) => void): (() => void) => {
     timeCbs.current.add(cb);
@@ -274,10 +296,11 @@ export function PlayerProvider({ children }: { children: React.ReactNode }): Rea
       seek,
       seekBy,
       setVolume,
+      close,
       onTime,
       getTime,
     }),
-    [state, loadAndPlay, toggle, next, prev, seek, seekBy, setVolume, onTime, getTime],
+    [state, loadAndPlay, toggle, next, prev, seek, seekBy, setVolume, close, onTime, getTime],
   );
 
   return <PlayerContext.Provider value={api}>{children}</PlayerContext.Provider>;
