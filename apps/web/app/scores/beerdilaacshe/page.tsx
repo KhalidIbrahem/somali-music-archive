@@ -12,6 +12,7 @@
 import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { ScorePlayer, type ScoreData } from '@/components/scores/ScorePlayer';
@@ -107,25 +108,25 @@ export default function BeerdilaacshePage(): React.JSX.Element {
               Download PDF
             </a>
           </div>
-          <object
-            data="/scores/beerdilaacshe/Beerdilaacshe.pdf"
-            type="application/pdf"
-            aria-label="Beerdilaacshe sheet music, one page"
-            className="h-[75vh] min-h-[480px] w-full rounded-[2px] bg-paper ring-1 ring-paper-edge"
+          {/* The engraving as an image (shows on every browser and phone); the PDF is one click away. */}
+          <a
+            href="/scores/beerdilaacshe/Beerdilaacshe.pdf"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Beerdilaacshe sheet music, open the PDF"
+            className="block overflow-hidden rounded-[2px] bg-paper ring-1 ring-paper-edge"
           >
-            <div className="flex h-full flex-col items-center justify-center gap-3 p-8 text-center">
-              <p className="text-sm text-mid">
-                This browser doesn’t display PDFs inline — the engraving is one page.
-              </p>
-              <a
-                href="/scores/beerdilaacshe/Beerdilaacshe.pdf"
-                download
-                className="rounded-[4px] border border-hairline px-4 py-2 text-sm text-hi transition-colors hover:border-accent-state focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
-              >
-                Download the PDF
-              </a>
-            </div>
-          </object>
+            <Image
+              src="/scores/beerdilaacshe/Beerdilaacshe.png"
+              alt="Beerdilaacshe sheet music, engraved score (one page)"
+              width={1400}
+              height={1981}
+              sizes="(min-width: 1024px) 960px, 100vw"
+              className="h-auto w-full"
+              priority
+            />
+          </a>
+          <p className="mt-2 text-xs text-low">Tap the score to open the full-resolution PDF.</p>
         </section>
 
         {/* ── Downloads ─────────────────────────────────────────────────────── */}

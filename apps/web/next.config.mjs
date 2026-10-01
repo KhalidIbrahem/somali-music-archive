@@ -9,15 +9,16 @@ const repoRoot = fileURLToPath(new URL('../..', import.meta.url));
  * @type {import('next').NextConfig}
  */
 // Security headers on every route. No script CSP (Next inlines bootstrap
-// scripts); framing, plugins and base-URI injection are shut off.
+// scripts). Only this site may frame its pages (the score and course pages
+// embed their own PDFs); base-URI and form-target injection are shut off.
 const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'X-Frame-Options', value: 'DENY' },
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(), geolocation=(), payment=(), usb=()' },
   {
     key: 'Content-Security-Policy',
-    value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'",
+    value: "frame-ancestors 'self'; base-uri 'self'; form-action 'self'",
   },
 ];
 
