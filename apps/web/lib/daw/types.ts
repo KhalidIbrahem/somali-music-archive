@@ -37,9 +37,68 @@ export interface DawRegion {
   notes: DawNote[];
 }
 
+/** 'midi' tracks play an instrument from note regions; 'audio' tracks play audio regions. */
+export type TrackKind = 'midi' | 'audio';
+
+/**
+ * An audio clip on an audio track (Studio v2). Musical position in beats, like
+ * MIDI regions; the audio itself is referenced, never embedded in the document.
+ */
+export interface DawAudioRegion {
+  id: string;
+  kind: 'audio';
+  name: string;
+  startBeat: number;
+  /** Visible length on the timeline, in beats (may trim the file). */
+  lengthBeats: number;
+  /** ≥1 — repeats of [offsetSec, offsetSec + lengthBeats) back to back. */
+  loopCount: number;
+  /**
+   * 'idb:<id>' — user audio (import or recording) kept in this browser's
+   * IndexedDB (lib/daw/audioStore.ts); or a same-origin URL such as
+   * '/demos/gallery/v4pool_000_11.mp3' for QaraamiGen generations.
+   */
+  source: string;
+  /** Where in the file playback starts, seconds. */
+  offsetSec: number;
+  /** Linear clip gain, 0–2. */
+  gain: number;
+  /** Fade in / out lengths, seconds. */
+  fadeInSec: number;
+  fadeOutSec: number;
+}
+
+/** Per-track insert effects (Studio v2). */
+export interface TrackFx {
+  /** 3-band EQ gains in dB, −12…+12 (low shelf 200 Hz, peak 1 kHz, high shelf 5 kHz). */
+  eq: { low: number; mid: number; high: number };
+  comp: { enabled: boolean; thresholdDb: number; ratio: number };
+  /** Send level to the shared reverb bus, 0–1. */
+  reverbSend: number;
+}
+
+export const DEFAULT_FX: TrackFx = {
+  eq: { low: 0, mid: 0, high: 0 },
+  comp: { enabled: false, thresholdDb: -18, ratio: 3 },
+  reverbSend: 0.1,
+};
+
+/** A named point on the timeline (verse, chorus, …). */
+export interface DawMarker {
+  id: string;
+  beat: number;
+  name: string;
+}
+
 export interface DawTrack {
   id: string;
   name: string;
+  /** Absent in v1 documents = 'midi'. Read with trackKind(). */
+  kind?: TrackKind;
+  /** Audio clips (audio tracks). Absent = none. Read with audioRegionsOf(). */
+  audioRegions?: DawAudioRegion[];
+  /** Absent = DEFAULT_FX. Read with trackFx(). */
+  fx?: TrackFx;
   instrument: InstrumentId;
   gain: number;
   pan: number;
@@ -59,6 +118,8 @@ export interface DawProject {
   loop: { enabled: boolean; startBeat: number; endBeat: number };
   metronome: { enabled: boolean; countInBars: 0 | 1 | 2 };
   masterGain: number;
+  /** Absent in v1 documents = none. */
+  markers?: DawMarker[];
   tracks: DawTrack[];
   updatedAt: string;
 }
@@ -119,6 +180,48 @@ export function newTrack(name: string, instrument: InstrumentId): DawTrack {
   };
 }
 
+export function trackKind(track: DawTrack): TrackKind {
+  return track.kind ?? 'midi';
+}
+
+export function audioRegionsOf(track: DawTrack): DawAudioRegion[] {
+  return track.audioRegions ?? [];
+}
+
+export function trackFx(track: DawTrack): TrackFx {
+  return track.fx ?? DEFAULT_FX;
+}
+
+export function newAudioTrack(name: string): DawTrack {
+  return {
+    ...newTrack(name, 'keys'),
+    kind: 'audio',
+    audioRegions: [],
+    fx: { ...DEFAULT_FX, eq: { ...DEFAULT_FX.eq }, comp: { ...DEFAULT_FX.comp } },
+  };
+}
+
+export function newAudioRegion(
+  source: string,
+  name: string,
+  startBeat: number,
+  lengthBeats: number,
+): DawAudioRegion {
+  return {
+    id: newId('arg'),
+    kind: 'audio',
+    name,
+    startBeat,
+    lengthBeats,
+    loopCount: 1,
+    source,
+    offsetSec: 0,
+    gain: 1,
+    fadeInSec: 0.01,
+    fadeOutSec: 0.05,
+  };
+}
+
 export function newRegion(startBeat: number, lengthBeats: number): DawRegion {
   return { id: newId('rgn'), kind: 'midi', startBeat, lengthBeats, loopCount: 1, notes: [] };
 }
@@ -128,6 +231,9 @@ export function projectEndBeat(project: DawProject): number {
   let end = project.timeSignature.beatsPerBar;
   for (const track of project.tracks) {
     for (const region of track.regions) {
+      end = Math.max(end, region.startBeat + region.lengthBeats * region.loopCount);
+    }
+    for (const region of audioRegionsOf(track)) {
       end = Math.max(end, region.startBeat + region.lengthBeats * region.loopCount);
     }
   }
