@@ -58,8 +58,8 @@ SONGS_CORPUS = (
 # Every candidate source. kind: "ab" = blind set with ab_scores.json (adapter side),
 # "genlog" = generation directory with generation_log.json, "captions" = the oud A/B set.
 SOURCES: list[dict] = [
-    {"key": "v4", "kind": "genlog", "glob": "data/v4/showcase_bestof32", "adapterId": "ace_songs_v4",
-     "model": ACE, "adapter": "songs-with-lyrics LoRA (v4)", "checkpoint": "v4_ace_songs_r256, best-of-32 showcase",
+    {"key": "v4pool", "kind": "genlog", "glob": "data/v4/sD_pool", "adapterId": "ace_songs_v4", "perK": True,
+     "model": ACE, "adapter": "songs-with-lyrics LoRA (v4)", "checkpoint": "v4_ace_songs_r256, epoch 6 (best-of-32 pool)",
      "corpus": SONGS_CORPUS},
     {"key": "v4", "kind": "genlog", "glob": "data/v4/sC_ckpt_r256/*", "adapterId": "ace_songs_v4",
      "model": ACE, "adapter": "songs-with-lyrics LoRA (v4)", "checkpoint": "v4_ace_songs_r256, {dir}",
@@ -111,6 +111,13 @@ def _scores_by_path() -> dict[str, dict]:
             d = json.loads(p.read_text())
         except json.JSONDecodeError:
             continue
+        # best-of-32 ranking: {"prompts": [{"ranking": [{file, pcs, voiced, band_snr_db, score}, ...]}]}
+        for pr in d.get("prompts", []) if isinstance(d, dict) and isinstance(d.get("prompts"), list) else []:
+            for rank, r in enumerate(pr.get("ranking", []), 1):
+                if isinstance(r, dict) and "file" in r:
+                    out[r["file"]] = {"pcs": r.get("pcs"), "voiced_fraction": r.get("voiced"),
+                                      "band_snr_db": r.get("band_snr_db"), "autoRank": rank,
+                                      "autoOf": len(pr["ranking"]), "autoScore": r.get("score")}
         for v in d.values() if isinstance(d, dict) else []:
             for c in v.get("clips", []) if isinstance(v, dict) else []:
                 if isinstance(c, dict) and "path" in c:
@@ -155,7 +162,10 @@ def catalog() -> list[Clip]:
                         continue
                     rel = str(wav.relative_to(REPO))
                     sc = scores.get(rel, {})
-                    clips.append(Clip(id=f"{src['key']}_{d.name}_{c.get('i', 0):03d}", source=str(d.relative_to(REPO)),
+                    cid = (f"{src['key']}_{c.get('i', 0):03d}_{c.get('k', 0):02d}" if src.get("perK")
+                           else f"{src['key']}_{d.name}_{c.get('i', 0):03d}")
+                    auto = {k: sc[k] for k in ("autoRank", "autoOf", "autoScore") if sc.get(k) is not None}
+                    clips.append(Clip(id=cid, source=str(d.relative_to(REPO)), extra=auto,
                                       path=rel, checkpoint=src["checkpoint"].format(dir=d.name),
                                       prompt=c.get("caption", ""), seed=c.get("seed"), pcs=_f(sc.get("pcs")),
                                       voiced=_f(sc.get("voiced_fraction")), bandSnrDb=_f(sc.get("band_snr_db")),
@@ -210,21 +220,33 @@ select{background:#0f0e16;color:var(--ink);border:1px solid #333;padding:4px}.nu
 details{margin-top:4px}pre{white-space:pre-wrap;color:var(--mid)}
 </style>
 <h1>Clip chooser</h1>
-<p class=muted>Releasable adapters only (Harvard-trained adapters are never listed). Tick <b>Listen</b> or <b>Generate</b> to put a clip on that page, edit the title, then <b>Save</b>. Then run <code>publish</code> (see HANDOVER.md).</p>
-<div class=bar>Show <select id=f></select> &nbsp; <label><input type=checkbox id=onlyon> only chosen</label>
+<p class=muted>Releasable adapters only (Harvard-trained adapters are never listed). Click the stars to rate (saved at once), sort by <b>my stars</b>, tick <b>Listen page</b> / <b>Generate page</b> for the best, edit the title, then <b>Save selection</b> and run <code>publish</code> (HANDOVER.md §3). The v4 pool holds 32 songs per prompt; the automatic pick per prompt is marked.</p>
+<div class=bar>Show <select id=f></select> &nbsp; Sort <select id=sort><option value=stars>my stars</option><option value=auto>auto pick first</option><option value=pcs>PCS</option><option value=voiced>voiced</option><option value=none>source order</option></select>
+ &nbsp; <label><input type=checkbox id=onlyon> only chosen</label> <label><input type=checkbox id=vox> vocals only</label>
+ <label><input type=checkbox id=unrated> unrated only</label> <label>min ★ <select id=minr><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
 <span class=num id=count></span> &nbsp; <button id=save>Save selection</button> <span id=msg class=muted></span></div>
 <p>Listen page note (shown to visitors, say how you picked):<br><textarea id=note rows=2></textarea></p>
 <div id=list></div>
 <script>
-const C=__CLIPS__, S=__SEL__; const sel=new Map((S.clips||[]).map(x=>[x.id,x]));
+const C=__CLIPS__, S=__SEL__; const sel=new Map((S.clips||[]).map(x=>[x.id,x])); const R=S.ratings||{};
+const $=id=>document.getElementById(id);
+function body(){return {listenNote:$('note').value,clips:[...sel.values()],ratings:R};}
+async function save(quiet){const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body())});
+ $('msg').textContent=r.ok?(quiet?'rating saved':'saved to data/clip_chooser/selection.json'):'save failed: '+await r.text();}
+function order(){const k=$('sort').value,a=[...C];const v=c=>k==='stars'?(R[c.id]||0)*10+(c.extra.autoRank===1?1:0):k==='auto'?(c.extra.autoRank===1?2:c.extra.autoRank?1/c.extra.autoRank:0):k==='pcs'?(c.pcs??-1):k==='voiced'?(c.voiced??-1):0;
+ if(k!=='none')a.sort((x,y)=>v(y)-v(x));return a;}
 document.getElementById('note').value=S.listenNote||'';
 const f=document.getElementById('f'); f.innerHTML='<option value="">all sources</option>'+[...new Set(C.map(c=>c.source))].map(s=>`<option>${s}</option>`).join('');
 const fmt=x=>x==null?'—':x.toFixed(3);
-function render(){const L=document.getElementById('list');L.innerHTML='';let n=0;
- for(const c of C){const s=sel.get(c.id)||{};const on=(s.pages||[]).length>0;if(on)n++;
-  if(f.value&&c.source!==f.value)continue;if(document.getElementById('onlyon').checked&&!on)continue;
+function render(){const L=$('list');L.innerHTML='';let n=0,shown=0;
+ for(const c of C){if((sel.get(c.id)?.pages||[]).length)n++;}
+ for(const c of order()){const s=sel.get(c.id)||{};const on=(s.pages||[]).length>0;const st=R[c.id]||0;
+  if(f.value&&c.source!==f.value)continue;if($('onlyon').checked&&!on)continue;if($('vox').checked&&!c.vocals)continue;
+  if($('unrated').checked&&st)continue;if(st<+$('minr').value)continue;if(++shown>200)break;
   const d=document.createElement('div');d.className='card'+(on?' on':'');
-  d.innerHTML=`<b>${c.id}</b> <span class=muted>· ${c.model} · ${c.adapter} · ${c.checkpoint}</span>
+  const stars=[1,2,3,4,5].map(i=>`<span class=star data-r=${i} style="cursor:pointer;font-size:22px;color:${i<=st?'var(--accent)':'#444'}">★</span>`).join('');
+  const auto=c.extra.autoRank?` · auto rank ${c.extra.autoRank}/${c.extra.autoOf}${c.extra.autoRank===1?' <b style="color:var(--accent)">(auto pick)</b>':''}`:'';
+  d.innerHTML=`<div>${stars} <span class=muted>${st?st+'/5':'not rated'}</span></div><b>${c.id}</b> <span class=muted>· ${c.model} · ${c.adapter} · ${c.checkpoint}${auto}</span>
   <div class=num>PCS ${fmt(c.pcs)} · voiced ${fmt(c.voiced)} · band SNR ${c.bandSnrDb==null?'—':c.bandSnrDb.toFixed(1)+' dB'} · seed ${c.seed??'—'} ${c.vocals?'· <b>vocals</b>':''}</div>
   <audio controls preload=none src="/audio/${encodeURIComponent(c.id)}"></audio>
   <div class=muted>${c.prompt}</div>
@@ -235,13 +257,12 @@ function render(){const L=document.getElementById('list');L.innerHTML='';let n=0
   d.querySelectorAll('input[type=checkbox]').forEach(b=>b.onchange=()=>{const cur=sel.get(c.id)||{id:c.id,title:c.title,pages:[]};
    cur.pages=[...d.querySelectorAll('input[type=checkbox]')].filter(x=>x.checked).map(x=>x.dataset.p);
    cur.title=d.querySelector('input[type=text]').value; if(cur.pages.length)sel.set(c.id,cur);else sel.delete(c.id);render();});
+  d.querySelectorAll('.star').forEach(x=>x.onclick=()=>{const r=+x.dataset.r;if(R[c.id]===r)delete R[c.id];else R[c.id]=r;save(true);render();});
   d.querySelector('input[type=text]').onchange=e=>{const cur=sel.get(c.id);if(cur)cur.title=e.target.value;};
   L.appendChild(d);}
- document.getElementById('count').textContent=` ${n} chosen of ${C.length}`;}
-f.onchange=render;document.getElementById('onlyon').onchange=render;
-document.getElementById('save').onclick=async()=>{const body={listenNote:document.getElementById('note').value,clips:[...sel.values()]};
- const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
- document.getElementById('msg').textContent=r.ok?'saved to data/clip_chooser/selection.json':'save failed: '+await r.text();};
+ $('count').textContent=` ${n} chosen · ${Object.keys(R).length} rated · ${C.length} clips${shown>200?' (first 200 shown — filter to see more)':''}`;}
+['f','sort','onlyon','vox','unrated','minr'].forEach(i=>$(i).onchange=render);
+$('save').onclick=()=>save(false);
 render();
 </script>"""
 
@@ -263,7 +284,10 @@ def validate_selection(body: dict, ids: set[str]) -> dict:
         title = str(c.get("title") or "")[:80]
         if pages:
             out.append({"id": c["id"], "title": title, "pages": pages})
-    return {"listenNote": str(body.get("listenNote") or "")[:400], "clips": out}
+    raw = body.get("ratings") or {}
+    ratings = {k: int(v) for k, v in raw.items() if k in ids and isinstance(v, int) and not isinstance(v, bool) and 1 <= v <= 5} \
+        if isinstance(raw, dict) else {}
+    return {"listenNote": str(body.get("listenNote") or "")[:400], "clips": out, "ratings": ratings}
 
 
 def serve(_: argparse.Namespace) -> None:

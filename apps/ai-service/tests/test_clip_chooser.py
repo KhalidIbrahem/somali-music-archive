@@ -20,7 +20,12 @@ def test_selection_keeps_known_ids_and_pages_only():
         {"id": "a", "title": "t" * 200, "pages": ["listen", "evil"]},
         {"id": "b", "pages": []},
     ]}, {"a", "b"})
-    assert sel == {"listenNote": "n", "clips": [{"id": "a", "title": "t" * 80, "pages": ["listen"]}]}
+    assert sel == {"listenNote": "n", "clips": [{"id": "a", "title": "t" * 80, "pages": ["listen"]}], "ratings": {}}
+
+
+def test_ratings_keep_known_ids_and_1_to_5_only():
+    sel = validate_selection({"clips": [], "ratings": {"a": 5, "b": 9, "c": 3, "zz": 4, "a2": True}}, {"a", "b", "c"})
+    assert sel["ratings"] == {"a": 5, "c": 3}
 
 
 def test_selection_rejects_unknown_clip():
