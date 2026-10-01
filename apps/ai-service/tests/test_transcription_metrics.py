@@ -4,7 +4,11 @@ onset inside the tolerance."""
 import json
 
 from scripts.transcription_metrics import (
-    load_json_notes, load_musicxml_notes, match_notes, note_metrics, scale_accuracy,
+    load_json_notes,
+    load_musicxml_notes,
+    match_notes,
+    note_metrics,
+    scale_accuracy,
 )
 
 REF = ["A4", "C5", "D5", "E5", "G5", "A5", "G5", "E5", "D5", "C5"]  # A minor pentatonic

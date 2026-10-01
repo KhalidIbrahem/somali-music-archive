@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -30,7 +31,6 @@ from pathlib import Path
 import numpy as np
 import torch
 
-import os
 ANALYSIS_SECONDS = int(os.environ.get("INV_ANALYSIS_SECONDS", "240"))          # per file, in 30 s chunks spread over the track
 CHUNK = 30
 VAD_SR = 16000
@@ -95,6 +95,7 @@ class Analyzer:
 
     def descriptors(self, audio32: np.ndarray, crepe: bool = True) -> dict:
         import librosa
+
         from scripts.pcs import extract_f0, score_frames  # noqa: PLC0415
 
         if audio32.size < 32000:

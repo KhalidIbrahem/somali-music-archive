@@ -19,7 +19,11 @@ from dataclasses import dataclass, replace
 import numpy as np
 
 from scripts.pentatonic import (
-    PC_NAMES, detect_tonic, refine_scale_cents, scale_cents_template, tuning_offset,
+    PC_NAMES,
+    detect_tonic,
+    refine_scale_cents,
+    scale_cents_template,
+    tuning_offset,
 )
 
 TOL_CENTS_DEFAULT = 50.0

@@ -1,11 +1,16 @@
 """Stage 3: three zero-shot ACE-Step generations from Somali qaraami lyrics.
 Local only; MPS/float32 (bf16 unsupported on Apple GPU). No training."""
-import sys, time, json
+import json
+import time
 from pathlib import Path
 
 # ffmpeg 9 breaks torchcodec (supports 4-7); ACE-Step saves via torchaudio.save
 # which now delegates to torchcodec. Route saves through soundfile instead.
-import numpy as _np, soundfile as _sf, torch as _torch, torchaudio as _ta
+import numpy as _np
+import soundfile as _sf
+import torchaudio as _ta
+
+
 def _sf_save(uri, src, sample_rate, *a, **k):
     arr = src.detach().cpu().numpy() if hasattr(src, "detach") else _np.asarray(src)
     if arr.ndim == 2:            # (channels, samples) -> (samples, channels)
@@ -31,6 +36,7 @@ lyrics = "[verse]\n" + raw + "\n"
 STYLE = "Somali qaraami, traditional, oud (kaban), hand drums, male vocal, pentatonic melody, acoustic, warm, mid-tempo"
 
 from acestep.pipeline_ace_step import ACEStepPipeline
+
 t0 = time.time()
 pipe = ACEStepPipeline(checkpoint_dir=None, device_id=0, dtype="float32", cpu_offload=False)
 print(f"pipeline ready in {time.time()-t0:.0f}s", flush=True)

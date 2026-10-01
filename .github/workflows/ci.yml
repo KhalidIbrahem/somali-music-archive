@@ -78,8 +78,12 @@ jobs:
           python-version: '3.11'
 
       - name: Install test tooling
-        # The pure scale-mapping tests need no ML wheels — keep this job fast.
-        run: pip install pytest pytest-asyncio ruff
+        # What the test suite imports, and no more: CPU-only torch, no Whisper,
+        # CREPE or model weights (tests that need those skip themselves).
+        # Measured 2026-09-30 in a clean 3.11 env: 214 passed, 1 skipped.
+        run: |
+          pip install pytest pytest-asyncio ruff numpy scipy fastapi httpx python-multipart pydantic-settings soundfile music21
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
 
       - name: Lint (Ruff)
         run: ruff check .

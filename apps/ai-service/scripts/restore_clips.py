@@ -38,7 +38,7 @@ import numpy as np
 import pyloudnorm as pyln
 import soundfile as sf
 from scipy.ndimage import uniform_filter
-from scipy.signal import stft, istft
+from scipy.signal import istft, stft
 
 REPO = Path(__file__).resolve().parents[3]
 DATA = REPO / "data"
@@ -166,7 +166,7 @@ def main() -> None:
 
     if with_diag:
         if args.mert:
-            from scripts.reward_model import embed_mert, DEVICE
+            from scripts.reward_model import DEVICE, embed_mert
             raws = [REPO / r["clip_path"] for r in todo]
             outs = [OUT_ROOT / Path(r["clip_path"]).relative_to("data/clips") for r in todo]
             er, eo = embed_mert(raws, DEVICE), embed_mert(outs, DEVICE)

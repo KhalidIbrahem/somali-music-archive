@@ -13,9 +13,9 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from transformers import AutoProcessor
 
 from scripts.phase2_train import build_model, load_split, micro_step
-from transformers import AutoProcessor
 
 REPO = Path(__file__).resolve().parents[3]
 RUN = REPO / "runs/lora_r16_20260717"

@@ -36,7 +36,13 @@ import torch
 from transformers import AutoProcessor
 
 from scripts.pcs import extract_f0, score_frames
-from scripts.scale_train import DEVICE, build_model, delayed_labels, is_melody, load_split, token_path
+from scripts.scale_train import (
+    DEVICE,
+    build_model,
+    delayed_labels,
+    load_split,
+    token_path,
+)
 
 REPO = Path(__file__).resolve().parents[3]
 N_TEST_CLIPS = 128

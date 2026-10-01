@@ -1,5 +1,3 @@
-import numpy as np
-import pytest
 
 from scripts.quantize import (
     Note,
