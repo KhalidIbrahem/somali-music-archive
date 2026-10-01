@@ -27,7 +27,6 @@ import { DemoPlayer } from '@/components/home/DemoPlayer';
 import { RESEARCH_DEMOS } from '@/lib/demos';
 import { Reveal } from '@/components/Reveal';
 import { landingCopy as copy } from '@/lib/landingCopy';
-import { flags } from '@/lib/flags';
 import { LISTEN_SAMPLES } from '@/lib/demoExamples';
 
 export const metadata: Metadata = {
@@ -194,7 +193,7 @@ export default function Home(): React.JSX.Element {
                       </span>
                     </Link>
                     <Link
-                      href="/studio"
+                      href="/studio/score"
                       className="group flex items-center justify-between rounded-[4px] border border-hairline bg-chrome-1 px-5 py-4 transition-colors hover:border-accent-state focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
                     >
                       <span className="text-sm text-hi">The transcription studio</span>
@@ -233,7 +232,7 @@ export default function Home(): React.JSX.Element {
             <Reveal delay={150}>
               <div className="flex flex-wrap items-center justify-center gap-4">
                 <Link
-                  href={flags.daw ? '/daw' : '/studio'}
+                  href="/studio"
                   className="flex h-12 w-fit items-center rounded-[4px] bg-accent-state px-6 text-lg font-bold text-page transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none motion-reduce:transition-none"
                 >
                   {copy.closing.primaryCta}

@@ -1,18 +1,6 @@
-import type { Metadata } from 'next';
-import { Suspense } from 'react';
-import { DawApp } from '@/components/daw/DawApp';
+import { redirect } from 'next/navigation';
 
-export const metadata: Metadata = {
-  title: 'Studio — QaraamiGenAI',
-  description:
-    'The QaraamiGenAI studio: compose with oud, durbaan, bass, and keys — qaraami scale lock, Somali grooves, and WAV export. Built by Khalid Ibrahim.',
-};
-
-export default function DawPage(): React.JSX.Element {
-  return (
-    // DawApp reads ?project= via useSearchParams — Suspense keeps the shell static.
-    <Suspense fallback={null}>
-      <DawApp />
-    </Suspense>
-  );
+/** The studio moved to /studio; keep old links working. */
+export default function DawPage(): never {
+  redirect('/studio');
 }

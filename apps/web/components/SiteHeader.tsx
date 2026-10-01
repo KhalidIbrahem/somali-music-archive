@@ -16,7 +16,6 @@ import { siteCopy } from '@/lib/siteCopy';
 
 const NAV = [
   ...siteCopy.nav,
-  ...(flags.daw ? [{ label: 'Studio', href: '/daw' }] : []),
   ...(flags.learn ? [{ label: 'Learn', href: '/learn' }] : []),
   ...(flags.courses ? [{ label: 'Courses', href: '/courses' }] : []),
 ] as const;

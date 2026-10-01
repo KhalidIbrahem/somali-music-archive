@@ -1,19 +1,24 @@
 /**
- * /studio — the Transcription Studio (Block 1 §2): four-zone desktop layout on
- * the studio chrome tokens. Top bar, collapsible library rail, score canvas on
- * paper, inspector rail, fixed transport. B1-02 ships the shell; the score
- * canvas, waveform, and timeline binding land in B1-03..06.
+ * /studio — the QaraamiGenAI Studio: tracks (MIDI instruments and audio),
+ * mixer with effects, QaraamiGen loop browser, recording, MIDI and audio
+ * import/export. The transcription score view lives at /studio/score.
  */
 
 import type { Metadata } from 'next';
-import { StudioShell } from '@/components/studio/StudioShell';
+import { Suspense } from 'react';
+import { DawApp } from '@/components/daw/DawApp';
 
 export const metadata: Metadata = {
   title: 'Studio — QaraamiGenAI',
   description:
-    'Transcription studio: engraved score, source audio, and the AI pipeline’s confidence, side by side.',
+    'Compose qaraami in the browser: oud, durbaan, bass and keys with scale lock and Somali grooves, audio tracks and recording, a mixer with EQ, compression and reverb, and the QaraamiGen loop browser.',
 };
 
 export default function StudioPage(): React.JSX.Element {
-  return <StudioShell />;
+  return (
+    // DawApp reads ?project= via useSearchParams — Suspense keeps the shell static.
+    <Suspense fallback={null}>
+      <DawApp />
+    </Suspense>
+  );
 }

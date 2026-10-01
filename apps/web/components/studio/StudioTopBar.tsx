@@ -79,6 +79,12 @@ export function StudioTopBar({
       </span>
 
       <div className="ml-auto flex items-center gap-2">
+        <Link
+          href="/studio"
+          className="flex h-8 items-center rounded-[4px] border border-hairline bg-chrome-2 px-4 text-sm text-hi transition-colors hover:border-accent-state focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-live"
+        >
+          Tracks
+        </Link>
         <button
           type="button"
           className="flex h-8 items-center rounded-[4px] border border-hairline bg-chrome-2 px-4 text-sm text-hi transition-colors hover:border-accent-state focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-live"

@@ -61,7 +61,6 @@ export function disabledRoutePrefixes(): string[] {
   const out: string[] = [];
   if (!flags.courses) out.push('/courses');
   if (!flags.learn) out.push('/learn');
-  if (!flags.daw) out.push('/daw');
   if (!flags.requireAuth) out.push(...MEMBER_ROUTES);
   return out;
 }

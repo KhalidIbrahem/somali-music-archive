@@ -10,6 +10,7 @@ export const siteCopy = {
     { label: 'Transcribe', href: '/transcribe' },
     { label: 'Listen', href: '/listen' },
     { label: 'Gallery', href: '/gallery' },
+    { label: 'Studio', href: '/studio' },
     { label: 'Library', href: '/library' },
     { label: 'Research', href: '/#research' },
   ],
