@@ -14,13 +14,43 @@
  *  • durbaan — dum/tak strokes from the same module + a slap stroke;
  *  • bass/keys — original subtractive voices (osc → filter → ADSR).
  *
- * The same scheduling code renders WAV mixdowns through an
- * OfflineAudioContext — what you hear is exactly what exports.
+ * Studio v2 adds audio tracks (decoded, cached AudioBuffers scheduled per
+ * region pass — see audioSchedule.ts), per-track insert FX + a shared reverb
+ * and a master limiter (fx.ts), metering, and recording (AudioWorklet capture
+ * → WAV in the IndexedDB audio store, latency-compensated).
+ *
+ * The same scheduling code renders WAV mixdowns and stems through an
+ * OfflineAudioContext with the same FX graph — what you hear is what exports.
  */
 
 import { ENGINE_SAMPLE_RATE, dum, normalize, pluck, tak } from '@/lib/audio/qaraamiEngine';
+import {
+  type ClipStart,
+  type TransportSpan,
+  clipEnvelope,
+  bucketPeaks as bucketPeaksOf,
+  clipsInWindow,
+  levelsOf,
+  METER_FLOOR_DB,
+  recordingTrimFrames,
+  regionSegments,
+  transportSpans,
+} from './audioSchedule';
+import { getAudio, isIdbSource, putAudio } from './audioStore';
+import {
+  type MasterSection,
+  type StripParams,
+  type TrackStrip,
+  applyStripParams,
+  audibleGain,
+  buildMasterSection,
+  buildTrackStrip,
+  REVERB_DECAY_SEC,
+  resolveFx,
+} from './fx';
 import type { DawProject, DawTrack, InstrumentId } from './types';
-import { projectEndBeat } from './types';
+import { audioRegionsOf, projectEndBeat, trackKind } from './types';
+import { audioBufferToWav } from './wav';
 
 export type TransportState = 'stopped' | 'counting' | 'playing';
 
@@ -84,14 +114,7 @@ function strokeForMidi(midi: number): 'dum' | 'tak' | 'slap' {
   return 'tak';
 }
 
-// ── Per-track output chain ───────────────────────────────────────────────────
-
-interface TrackChain {
-  input: GainNode;
-  gain: GainNode;
-  pan: StereoPannerNode;
-  analyser: AnalyserNode;
-}
+// ── Note events ─────────────────────────────────────────────────────────────
 
 interface ScheduledNote {
   trackId: string;
@@ -104,13 +127,14 @@ interface ScheduledNote {
 }
 
 /** Flatten a project into absolute-beat events once per play/edit (cheap). */
-function flattenNotes(project: DawProject): ScheduledNote[] {
+function flattenNotes(
+  project: DawProject,
+  audible: (track: DawTrack) => boolean = (track) => trackAudible(project, track),
+): ScheduledNote[] {
   const secPerBeat = 60 / project.bpm;
   const events: ScheduledNote[] = [];
-  const anySolo = project.tracks.some((t) => t.solo);
   for (const track of project.tracks) {
-    const audible = anySolo ? track.solo : !track.muted;
-    if (!audible) continue;
+    if (trackKind(track) !== 'midi' || !audible(track)) continue;
     for (const region of track.regions) {
       for (let pass = 0; pass < region.loopCount; pass++) {
         const passStart = region.startBeat + pass * region.lengthBeats;
@@ -219,12 +243,177 @@ function scheduleClick(
   osc.stop(when + 0.06);
 }
 
+// ── Audio clips (shared by live playback and offline export) ─────────────────
+
+/** Start one audio clip into `destination` at context time `when`. */
+function startClip(
+  ctx: BaseAudioContext,
+  destination: AudioNode,
+  buffer: AudioBuffer,
+  clip: ClipStart,
+  when: number,
+): { source: AudioBufferSourceNode; env: GainNode } {
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  const env = ctx.createGain();
+  const points = clipEnvelope(clip);
+  const start = Math.max(when, ctx.currentTime);
+  const late = start - when;
+  env.gain.setValueAtTime(points[0]?.value ?? 0, start);
+  for (const point of points.slice(1)) {
+    env.gain.linearRampToValueAtTime(point.value, Math.max(start, when + point.t));
+  }
+  source.connect(env).connect(destination);
+  const duration = clip.durationSec - late;
+  if (duration > 0) {
+    source.start(start, clip.segment.fileOffsetSec + clip.segmentOffsetSec + late, duration);
+  }
+  return { source, env };
+}
+
+const OPEN_SPAN: TransportSpan[] = [{ unfoldedStart: 0, timelineStart: 0, timelineEnd: Infinity }];
+
+// ── Recording capture (AudioWorklet, loaded from an inline module) ───────────
+
+const CAPTURE_PROCESSOR = 'qaraami-capture';
+const CAPTURE_BLOCK = 4096;
+const CAPTURE_WORKLET_SOURCE = `
+class QaraamiCapture extends AudioWorkletProcessor {
+  constructor() {
+    super();
+    this.active = true;
+    this.buf = new Float32Array(${CAPTURE_BLOCK});
+    this.fill = 0;
+    this.blockTime = 0;
+    this.port.onmessage = (e) => {
+      if (e.data === 'stop') {
+        this.flush();
+        this.port.postMessage({ type: 'done' });
+        this.active = false;
+      }
+    };
+  }
+  flush() {
+    if (this.fill === 0) return;
+    const samples = this.buf.slice(0, this.fill);
+    this.port.postMessage({ type: 'block', time: this.blockTime, samples }, [samples.buffer]);
+    this.fill = 0;
+  }
+  process(inputs) {
+    if (!this.active) return false;
+    const input = inputs[0];
+    const ch = input && input[0];
+    if (ch) {
+      for (let i = 0; i < ch.length; i++) {
+        if (this.fill === 0) this.blockTime = (currentFrame + i) / sampleRate;
+        this.buf[this.fill++] = ch[i];
+        if (this.fill === this.buf.length) this.flush();
+      }
+    }
+    return true;
+  }
+}
+registerProcessor('${CAPTURE_PROCESSOR}', QaraamiCapture);
+`;
+
+type CaptureMessage = { type: 'block'; time: number; samples: Float32Array } | { type: 'done' };
+
+function isCaptureMessage(data: unknown): data is CaptureMessage {
+  if (typeof data !== 'object' || data === null || !('type' in data)) return false;
+  if (data.type === 'done') return true;
+  return (
+    data.type === 'block' &&
+    'time' in data &&
+    typeof data.time === 'number' &&
+    'samples' in data &&
+    data.samples instanceof Float32Array
+  );
+}
+
+interface ActiveRecording {
+  trackId: string;
+  stream: MediaStream;
+  input: MediaStreamAudioSourceNode;
+  worklet: AudioWorkletNode;
+  sink: GainNode;
+  monitor: GainNode;
+  blocks: Float32Array[];
+  captureStartTime: number | null;
+  sampleRate: number;
+  startBeat: number;
+  epoch: number;
+  compensationSec: number;
+  done: Promise<void>;
+  finishing: Promise<RecordedTake> | null;
+}
+
+/** A finished recording, already stored in the audio store. */
+export interface RecordedTake {
+  trackId: string;
+  /** 'idb:<id>' — use as DawAudioRegion.source. */
+  source: string;
+  name: string;
+  durationSec: number;
+  /** Timeline beat where the take starts (latency-compensated). */
+  startBeat: number;
+}
+
+export interface LevelReading {
+  peakDb: number;
+  rmsDb: number;
+}
+
+export interface EngineLevels {
+  master: LevelReading;
+  tracks: Record<string, LevelReading>;
+}
+
+const SILENT: LevelReading = { peakDb: METER_FLOOR_DB, rmsDb: METER_FLOOR_DB };
+
+/** Resolve a non-IDB source as a same-origin URL (never fetch other hosts). */
+function sameOriginUrl(source: string): string {
+  const base = typeof window !== 'undefined' ? window.location.href : 'http://localhost/';
+  const url = new URL(source, base);
+  if (typeof window !== 'undefined' && url.origin !== window.location.origin) {
+    throw new Error(`Audio source must be same-origin: ${source}`);
+  }
+  return url.toString();
+}
+
+async function fetchAudioBytes(source: string): Promise<ArrayBuffer> {
+  if (isIdbSource(source)) {
+    const blob = await getAudio(source);
+    if (!blob) throw new Error(`Audio not found in this browser: ${source}`);
+    return blob.arrayBuffer();
+  }
+  const response = await fetch(sameOriginUrl(source));
+  if (!response.ok) throw new Error(`Audio fetch failed (${response.status}): ${source}`);
+  return response.arrayBuffer();
+}
+
+function stripParamsFor(project: DawProject, track: DawTrack, forceAudible = false): StripParams {
+  const anySolo = project.tracks.some((t) => t.solo);
+  return {
+    fx: resolveFx(track.fx),
+    gain: track.gain,
+    pan: track.pan,
+    audible: forceAudible ? 1 : audibleGain(track.muted, track.solo, anySolo),
+  };
+}
+
+function audioSignature(project: DawProject): string {
+  return JSON.stringify([
+    project.bpm,
+    project.tracks.filter((t) => trackKind(t) === 'audio').map((t) => [t.id, audioRegionsOf(t)]),
+  ]);
+}
+
 // ── The engine ───────────────────────────────────────────────────────────────
 
 export class DawEngine {
   private ctx: AudioContext | null = null;
-  private master: GainNode | null = null;
-  private chains = new Map<string, TrackChain>();
+  private masterSection: MasterSection | null = null;
+  private strips = new Map<string, TrackStrip>();
   private project: DawProject | null = null;
   private events: ScheduledNote[] = [];
   private state: TransportState = 'stopped';
@@ -236,26 +425,57 @@ export class DawEngine {
   private scheduledUntil = 0;
   private countInUntil = 0;
 
+  // audio regions
+  private buffers = new Map<string, AudioBuffer>();
+  private loading = new Map<string, Promise<AudioBuffer>>();
+  private failed = new Set<string>();
+  private peaks = new Map<string, Float32Array>();
+  private decodeCtx: OfflineAudioContext | null = null;
+  private liveClips = new Map<AudioBufferSourceNode, GainNode>();
+  private audioSig = '';
+  private resyncTimer: number | null = null;
+  private audioListeners = new Set<(source: string) => void>();
+
+  // recording + metering
+  private rec: ActiveRecording | null = null;
+  private recordingListeners = new Set<(take: RecordedTake) => void>();
+  private captureModuleCtx: AudioContext | null = null;
+  private monitoring = false;
+  private scratch = new Map<number, Float32Array<ArrayBuffer>>();
+
+  private get master(): GainNode | null {
+    return this.masterSection?.bus ?? null;
+  }
+
   // ── lifecycle ──────────────────────────────────────────────────────────────
 
   /** Create/resume the AudioContext. MUST be called from a user gesture once. */
   unlock(): void {
     if (this.ctx === null) {
-      this.ctx = new AudioContext();
-      this.master = this.ctx.createGain();
-      this.master.gain.value = this.project?.masterGain ?? 1;
-      this.master.connect(this.ctx.destination);
+      this.ctx = new AudioContext({ latencyHint: 'interactive' });
+      this.masterSection = buildMasterSection(
+        this.ctx,
+        this.ctx.destination,
+        this.project?.masterGain ?? 1,
+      );
       if (this.project) this.rebuildChains();
     }
     if (this.ctx.state === 'suspended') void this.ctx.resume();
   }
 
   dispose(): void {
+    this.discardRecording();
     this.stop();
     this.listeners.clear();
+    this.audioListeners.clear();
+    this.recordingListeners.clear();
+    if (this.resyncTimer !== null) window.clearTimeout(this.resyncTimer);
     const ctx = this.ctx;
     this.ctx = null;
-    this.chains.clear();
+    for (const strip of this.strips.values()) strip.dispose();
+    this.strips.clear();
+    this.masterSection?.dispose();
+    this.masterSection = null;
     if (ctx && ctx.state !== 'closed') void ctx.close();
   }
 
@@ -284,39 +504,147 @@ export class DawEngine {
     if (this.master && this.ctx) {
       this.master.gain.setTargetAtTime(project.masterGain, this.ctx.currentTime, 0.02);
     }
+    // Prefetch audio so play() rarely waits on a decode.
+    for (const track of project.tracks) {
+      if (trackKind(track) !== 'audio') continue;
+      for (const region of audioRegionsOf(track)) this.requestLoad(region.source);
+    }
+    // Audio clips are long-lived sources: re-cut them when their regions change.
+    // A structural rebuild cut the live clips with the old strips: restart now.
+    const sig = audioSignature(project);
+    if (structureChanged) {
+      this.audioSig = sig;
+      this.resyncAudio();
+    } else if (sig !== this.audioSig) {
+      this.audioSig = sig;
+      this.scheduleResync();
+    }
   }
 
   private rebuildChains(): void {
     const ctx = this.ctx;
-    const master = this.master;
-    if (!ctx || !master || !this.project) return;
-    for (const chain of this.chains.values()) chain.input.disconnect();
-    this.chains.clear();
-    for (const track of this.project.tracks) {
-      const input = ctx.createGain();
-      const gain = ctx.createGain();
-      const pan = ctx.createStereoPanner();
-      const analyser = ctx.createAnalyser();
-      analyser.fftSize = 512;
-      input.connect(gain).connect(pan).connect(analyser).connect(master);
-      this.chains.set(track.id, { input, gain, pan, analyser });
+    const section = this.masterSection;
+    const project = this.project;
+    if (!ctx || !section || !project) return;
+    for (const strip of this.strips.values()) strip.dispose();
+    this.strips.clear();
+    for (const track of project.tracks) {
+      this.strips.set(
+        track.id,
+        buildTrackStrip(ctx, section.bus, section.reverbIn, stripParamsFor(project, track)),
+      );
     }
-    this.applyMix();
   }
 
   private applyMix(): void {
     const ctx = this.ctx;
-    if (!ctx || !this.project) return;
-    for (const track of this.project.tracks) {
-      const chain = this.chains.get(track.id);
-      if (!chain) continue;
-      chain.gain.gain.setTargetAtTime(track.gain, ctx.currentTime, 0.02);
-      chain.pan.pan.setTargetAtTime(track.pan, ctx.currentTime, 0.02);
+    const project = this.project;
+    if (!ctx || !project) return;
+    for (const track of project.tracks) {
+      const strip = this.strips.get(track.id);
+      if (strip) applyStripParams(strip, stripParamsFor(project, track), ctx.currentTime);
     }
   }
 
+  /** Post-pan analyser of a track (kept for older meters; prefer getLevels()). */
   getAnalyser(trackId: string): AnalyserNode | null {
-    return this.chains.get(trackId)?.analyser ?? null;
+    return this.strips.get(trackId)?.analyser ?? null;
+  }
+
+  /** Post-fader peak/RMS (dBFS) per track and post-limiter for the master. */
+  getLevels(): EngineLevels {
+    const tracks: Record<string, LevelReading> = {};
+    for (const [id, strip] of this.strips) tracks[id] = this.read(strip.analyser);
+    return {
+      master: this.masterSection ? this.read(this.masterSection.analyser) : SILENT,
+      tracks,
+    };
+  }
+
+  private read(analyser: AnalyserNode): LevelReading {
+    let block = this.scratch.get(analyser.fftSize);
+    if (!block) {
+      block = new Float32Array(analyser.fftSize);
+      this.scratch.set(analyser.fftSize, block);
+    }
+    analyser.getFloatTimeDomainData(block);
+    return levelsOf(block);
+  }
+
+  // ── audio sources ──────────────────────────────────────────────────────────
+
+  /** Decode (and cache) an audio source: 'idb:<id>' or a same-origin URL. */
+  async loadAudio(source: string): Promise<{ durationSec: number }> {
+    this.failed.delete(source);
+    const buffer = await this.decode(source);
+    return { durationSec: buffer.duration };
+  }
+
+  /** The decoded buffer for a source, if loaded (for custom rendering). */
+  getAudioBuffer(source: string): AudioBuffer | null {
+    return this.buffers.get(source) ?? null;
+  }
+
+  /**
+   * Waveform overview: absolute peak (0…1, max over channels) per bucket,
+   * `buckets` long, cached. Null until the source is decoded (a load is
+   * started; subscribeAudio() reports when it lands).
+   */
+  getPeaks(source: string, buckets: number): Float32Array | null {
+    const buffer = this.buffers.get(source);
+    if (!buffer) {
+      this.requestLoad(source);
+      return null;
+    }
+    const n = Math.max(1, Math.min(100000, Math.floor(buckets)));
+    const key = `${n}|${source}`;
+    const cached = this.peaks.get(key);
+    if (cached) return cached;
+    const channels: Float32Array[] = [];
+    for (let ch = 0; ch < buffer.numberOfChannels; ch++) channels.push(buffer.getChannelData(ch));
+    const result = bucketPeaksOf(channels, n);
+    if (this.peaks.size > 256) this.peaks.clear();
+    this.peaks.set(key, result);
+    return result;
+  }
+
+  /** Called with the source each time an audio source finishes decoding. */
+  subscribeAudio(listener: (source: string) => void): () => void {
+    this.audioListeners.add(listener);
+    return () => this.audioListeners.delete(listener);
+  }
+
+  private decode(source: string): Promise<AudioBuffer> {
+    const cached = this.buffers.get(source);
+    if (cached) return Promise.resolve(cached);
+    const pending = this.loading.get(source);
+    if (pending) return pending;
+    const promise = (async () => {
+      const bytes = await fetchAudioBytes(source);
+      const ctx: BaseAudioContext =
+        this.ctx ?? (this.decodeCtx ??= new OfflineAudioContext(2, 1, 48000));
+      const buffer = await ctx.decodeAudioData(bytes);
+      this.buffers.set(source, buffer);
+      return buffer;
+    })();
+    this.loading.set(source, promise);
+    promise.then(
+      () => {
+        this.loading.delete(source);
+        for (const listener of this.audioListeners) listener(source);
+        if (this.state !== 'stopped') this.scheduleResync();
+      },
+      () => {
+        this.loading.delete(source);
+        this.failed.add(source);
+      },
+    );
+    return promise;
+  }
+
+  private requestLoad(source: string): void {
+    if (this.buffers.has(source) || this.loading.has(source) || this.failed.has(source)) return;
+    this.decode(source).catch(() => undefined);
   }
 
   // ── transport ──────────────────────────────────────────────────────────────
@@ -382,6 +710,7 @@ export class DawEngine {
   }
 
   stop(): void {
+    if (this.rec && !this.rec.finishing) void this.stopRecording().catch(() => undefined);
     this.stopScheduler();
     this.stopSources();
     this.state = 'stopped';
@@ -412,11 +741,104 @@ export class DawEngine {
     }
   }
 
-  /** Live sources cannot be individually tracked cheaply; a hard stop swaps
-   * the master gain to zero momentarily and rebuilds track chains. */
+  /** Synth voices cannot be tracked cheaply; a hard stop rebuilds the track
+   * strips (orphaning their voices). Audio clips are tracked and faded. */
   private stopSources(): void {
     if (!this.ctx) return;
+    this.stopClips(0.004);
     this.rebuildChains();
+  }
+
+  private stopClips(fadeSec: number): void {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    for (const [source, env] of this.liveClips) {
+      env.gain.cancelScheduledValues(now);
+      env.gain.setTargetAtTime(0, now, fadeSec);
+      try {
+        source.stop(now + fadeSec * 6);
+      } catch {
+        // never started (zero-length) — nothing to stop
+      }
+    }
+    this.liveClips.clear();
+  }
+
+  /** Coalesce audio re-cuts (drags fire many edits per second). */
+  private scheduleResync(): void {
+    if (this.state === 'stopped' || this.resyncTimer !== null) return;
+    this.resyncTimer = window.setTimeout(() => {
+      this.resyncTimer = null;
+      this.resyncAudio();
+    }, 60);
+  }
+
+  /** Fade out every live clip and restart audio from just ahead of now. */
+  private resyncAudio(): void {
+    const ctx = this.ctx;
+    if (!ctx || this.state === 'stopped') return;
+    this.stopClips(0.006);
+    const from = ctx.currentTime + 0.03 - this.epoch;
+    const to = this.scheduledUntil - this.epoch;
+    if (to > from) this.scheduleAudio(ctx, from, to, true);
+  }
+
+  private loopSeconds(): { startSec: number; endSec: number } | null {
+    const project = this.project;
+    if (!project || !project.loop.enabled) return null;
+    const spb = this.secPerBeat();
+    return { startSec: project.loop.startBeat * spb, endSec: project.loop.endBeat * spb };
+  }
+
+  private scheduleAudio(
+    ctx: AudioContext,
+    fromUnfolded: number,
+    toUnfolded: number,
+    includeSounding: boolean,
+  ): void {
+    const project = this.project;
+    if (!project) return;
+    const spb = this.secPerBeat();
+    const spans = transportSpans(
+      this.playStartBeat * spb,
+      this.loopSeconds(),
+      fromUnfolded,
+      toUnfolded,
+    );
+    for (const track of project.tracks) {
+      if (trackKind(track) !== 'audio') continue;
+      const strip = this.strips.get(track.id);
+      if (!strip) continue;
+      for (const region of audioRegionsOf(track)) {
+        const buffer = this.buffers.get(region.source);
+        if (!buffer) {
+          this.requestLoad(region.source);
+          continue;
+        }
+        const segments = regionSegments(region, spb, buffer.duration);
+        for (const clip of clipsInWindow(
+          segments,
+          spans,
+          fromUnfolded,
+          toUnfolded,
+          includeSounding,
+        )) {
+          const { source, env } = startClip(
+            ctx,
+            strip.input,
+            buffer,
+            clip,
+            this.epoch + clip.unfoldedStart,
+          );
+          this.liveClips.set(source, env);
+          source.onended = () => {
+            if (this.liveClips.get(source) === env) this.liveClips.delete(source);
+            env.disconnect();
+          };
+        }
+      }
+    }
   }
 
   private schedulerTick(): void {
@@ -467,10 +889,13 @@ export class DawEngine {
       }
       for (const unfolded of occurrences) {
         if (unfolded < windowStartUnfolded - 1e-4 || unfolded >= windowEndUnfolded) continue;
-        const chain = this.chains.get(event.trackId);
-        if (chain) scheduleVoice(ctx, chain.input, event, this.epoch + unfolded);
+        const strip = this.strips.get(event.trackId);
+        if (strip) scheduleVoice(ctx, strip.input, event, this.epoch + unfolded);
       }
     }
+
+    // Audio regions: sources that start inside this window.
+    this.scheduleAudio(ctx, windowStartUnfolded, windowEndUnfolded, false);
 
     // Metronome during playback.
     if (project.metronome.enabled && this.master) {
@@ -487,8 +912,8 @@ export class DawEngine {
 
     this.scheduledUntil = horizonEnd;
 
-    // Auto-stop past the end of the arrangement (unless looping).
-    if (!loop.enabled && windowStartUnfolded > endSec + 1.5) {
+    // Auto-stop past the end of the arrangement (unless looping or recording).
+    if (!loop.enabled && !this.rec && windowStartUnfolded > endSec + 1.5) {
       this.stop();
       return;
     }
@@ -504,31 +929,257 @@ export class DawEngine {
     scheduleVoice(ctx, master, { instrument, midi, velocity, durationSec: 0.5 }, ctx.currentTime);
   }
 
+  // ── recording ──────────────────────────────────────────────────────────────
+
+  isRecording(): boolean {
+    return this.rec !== null;
+  }
+
+  /** Called with every finished take (after stopRecording() or a transport stop). */
+  onRecordingComplete(listener: (take: RecordedTake) => void): () => void {
+    this.recordingListeners.add(listener);
+    return () => this.recordingListeners.delete(listener);
+  }
+
+  /** Route the live input to the master while recording (off by default). */
+  setInputMonitoring(enabled: boolean): void {
+    this.monitoring = enabled;
+    if (this.rec && this.ctx) {
+      this.rec.monitor.gain.setTargetAtTime(enabled ? 1 : 0, this.ctx.currentTime, 0.02);
+    }
+  }
+
+  isInputMonitoring(): boolean {
+    return this.monitoring;
+  }
+
+  /**
+   * Arm the microphone and start the transport from the playhead (with the
+   * project's count-in). The take is captured sample-accurately in an
+   * AudioWorklet; stopRecording() (or stop()) finishes it.
+   * Call from a user gesture (permission prompt + AudioContext unlock).
+   */
+  async startRecording(trackId: string): Promise<void> {
+    const project = this.project;
+    if (this.rec) throw new Error('Already recording');
+    if (!project) throw new Error('No project loaded');
+    const track = project.tracks.find((t) => t.id === trackId);
+    if (!track || trackKind(track) !== 'audio') throw new Error('Recording needs an audio track');
+    this.unlock();
+    const ctx = this.ctx;
+    const section = this.masterSection;
+    if (!ctx || !section) throw new Error('Audio is unavailable');
+    if (ctx.state === 'suspended') await ctx.resume();
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      throw new Error('This browser cannot record audio');
+    }
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+    });
+    try {
+      if (this.captureModuleCtx !== ctx) {
+        const url = URL.createObjectURL(
+          new Blob([CAPTURE_WORKLET_SOURCE], { type: 'application/javascript' }),
+        );
+        try {
+          await ctx.audioWorklet.addModule(url);
+        } finally {
+          URL.revokeObjectURL(url);
+        }
+        this.captureModuleCtx = ctx;
+      }
+    } catch (error) {
+      for (const t of stream.getTracks()) t.stop();
+      throw error;
+    }
+
+    const input = ctx.createMediaStreamSource(stream);
+    const worklet = new AudioWorkletNode(ctx, CAPTURE_PROCESSOR, {
+      numberOfInputs: 1,
+      numberOfOutputs: 1,
+      outputChannelCount: [1],
+      channelCount: 1,
+      channelCountMode: 'explicit',
+      channelInterpretation: 'speakers',
+    });
+    // The worklet must be pulled by the graph; route it to a silent sink.
+    const sink = ctx.createGain();
+    sink.gain.value = 0;
+    const monitor = ctx.createGain();
+    monitor.gain.value = this.monitoring ? 1 : 0;
+    input.connect(worklet).connect(sink).connect(ctx.destination);
+    input.connect(monitor).connect(section.bus);
+
+    let resolveDone: () => void = () => undefined;
+    const done = new Promise<void>((resolve) => {
+      resolveDone = resolve;
+    });
+    // Latency compensation: what the player hears at transport time t left the
+    // speakers outputLatency later; their sound enters the graph ~baseLatency
+    // after that. Shift the take earlier by both.
+    const compensationSec = (ctx.outputLatency || 0) + (ctx.baseLatency || 0);
+    const rec: ActiveRecording = {
+      trackId,
+      stream,
+      input,
+      worklet,
+      sink,
+      monitor,
+      blocks: [],
+      captureStartTime: null,
+      sampleRate: ctx.sampleRate,
+      startBeat: 0,
+      epoch: 0,
+      compensationSec,
+      done,
+      finishing: null,
+    };
+    worklet.port.onmessage = (event: MessageEvent<unknown>) => {
+      const data = event.data;
+      if (!isCaptureMessage(data)) return;
+      if (data.type === 'done') {
+        resolveDone();
+        return;
+      }
+      if (rec.captureStartTime === null) rec.captureStartTime = data.time;
+      rec.blocks.push(data.samples);
+    };
+    this.rec = rec;
+    this.play(this.currentBeat());
+    rec.startBeat = this.playStartBeat;
+    rec.epoch = this.epoch;
+  }
+
+  /** Finish the take: stops the transport, stores a WAV, resolves the take. */
+  stopRecording(): Promise<RecordedTake> {
+    const rec = this.rec;
+    if (!rec) return Promise.reject(new Error('Not recording'));
+    if (rec.finishing) return rec.finishing;
+    rec.finishing = this.finishRecording(rec);
+    return rec.finishing;
+  }
+
+  private async finishRecording(rec: ActiveRecording): Promise<RecordedTake> {
+    rec.worklet.port.postMessage('stop');
+    await Promise.race([rec.done, new Promise<void>((r) => setTimeout(r, 500))]);
+    this.teardownRecording(rec);
+    if (this.state !== 'stopped') this.stop();
+
+    const total = rec.blocks.reduce((n, b) => n + b.length, 0);
+    const captureStart = rec.captureStartTime ?? rec.epoch;
+    const trim = recordingTrimFrames(captureStart, rec.epoch, rec.compensationSec, rec.sampleRate);
+    // A capture that began after the aligned point starts the take later.
+    const lateSec = Math.max(0, captureStart - (rec.epoch + rec.compensationSec));
+    const frames = total - trim;
+    if (frames <= 0) throw new Error('Recording stopped before the count-in finished');
+
+    const samples = new Float32Array(frames);
+    let read = 0;
+    let written = 0;
+    for (const block of rec.blocks) {
+      const from = Math.max(0, trim - read);
+      if (from < block.length) {
+        samples.set(block.subarray(from), written);
+        written += block.length - from;
+      }
+      read += block.length;
+    }
+    const ctx = this.ctx ?? new OfflineAudioContext(1, 1, rec.sampleRate);
+    const buffer = ctx.createBuffer(1, frames, rec.sampleRate);
+    buffer.getChannelData(0).set(samples);
+
+    const stamp = new Date();
+    const name = `Take ${stamp.toTimeString().slice(0, 8)}`;
+    const source = await putAudio(audioBufferToWav(buffer), `${name}.wav`);
+    this.buffers.set(source, buffer);
+    const take: RecordedTake = {
+      trackId: rec.trackId,
+      source,
+      name,
+      durationSec: buffer.duration,
+      startBeat: rec.startBeat + lateSec / this.secPerBeat(),
+    };
+    for (const listener of this.recordingListeners) listener(take);
+    return take;
+  }
+
+  private teardownRecording(rec: ActiveRecording): void {
+    rec.worklet.port.onmessage = null;
+    rec.input.disconnect();
+    rec.worklet.disconnect();
+    rec.sink.disconnect();
+    rec.monitor.disconnect();
+    for (const t of rec.stream.getTracks()) t.stop();
+    if (this.rec === rec) this.rec = null;
+  }
+
+  private discardRecording(): void {
+    const rec = this.rec;
+    if (!rec) return;
+    rec.finishing ??= Promise.reject(new Error('Recording discarded'));
+    rec.finishing.catch(() => undefined);
+    this.teardownRecording(rec);
+  }
+
   // ── offline export ─────────────────────────────────────────────────────────
 
-  /** Render the full arrangement (loop range ignored) to a stereo 44.1 kHz buffer. */
-  async renderMixdown(project: DawProject): Promise<AudioBuffer> {
-    const secPerBeat = 60 / project.bpm;
-    const lengthSec = projectEndBeat(project) * secPerBeat + 2;
-    const ctx = new OfflineAudioContext(2, Math.ceil(lengthSec * 44100), 44100);
-    const master = ctx.createGain();
-    master.gain.value = project.masterGain;
-    master.connect(ctx.destination);
+  /**
+   * Render the arrangement (loop range ignored; sample 0 = beat 0) through the
+   * same graph as playback — insert FX, reverb bus, master gain and limiter —
+   * to a stereo 44.1 kHz buffer, including a reverb tail. With `tracks`, only
+   * those tracks render and their mute/solo flags are ignored (stems).
+   */
+  async renderMix(project: DawProject, opts: { tracks?: string[] } = {}): Promise<AudioBuffer> {
+    const only = opts.tracks ? new Set(opts.tracks) : null;
+    const included = (track: DawTrack): boolean =>
+      only ? only.has(track.id) : trackAudible(project, track);
+    const tracks = project.tracks.filter(included);
 
-    const chains = new Map<string, GainNode>();
-    for (const track of project.tracks) {
-      const gain = ctx.createGain();
-      gain.gain.value = track.gain;
-      const pan = ctx.createStereoPanner();
-      pan.pan.value = track.pan;
-      gain.connect(pan).connect(master);
-      chains.set(track.id, gain);
+    const sources = new Set<string>();
+    for (const track of tracks) {
+      if (trackKind(track) !== 'audio') continue;
+      for (const region of audioRegionsOf(track)) sources.add(region.source);
     }
-    for (const event of flattenNotes(project)) {
-      const chain = chains.get(event.trackId);
-      if (chain) scheduleVoice(ctx, chain, event, event.timeSec + 0.05);
+    await Promise.all(
+      [...sources].map((s) => {
+        this.failed.delete(s);
+        return this.decode(s).catch(() => null);
+      }),
+    );
+
+    const secPerBeat = 60 / project.bpm;
+    const lengthSec = projectEndBeat(project) * secPerBeat + REVERB_DECAY_SEC + 0.5;
+    const ctx = new OfflineAudioContext(2, Math.ceil(lengthSec * 44100), 44100);
+    const section = buildMasterSection(ctx, ctx.destination, project.masterGain);
+    const strips = new Map<string, TrackStrip>();
+    for (const track of tracks) {
+      strips.set(
+        track.id,
+        buildTrackStrip(ctx, section.bus, section.reverbIn, stripParamsFor(project, track, true)),
+      );
+    }
+    for (const event of flattenNotes(project, included)) {
+      const strip = strips.get(event.trackId);
+      if (strip) scheduleVoice(ctx, strip.input, event, event.timeSec);
+    }
+    for (const track of tracks) {
+      const strip = strips.get(track.id);
+      if (!strip || trackKind(track) !== 'audio') continue;
+      for (const region of audioRegionsOf(track)) {
+        const buffer = this.buffers.get(region.source);
+        if (!buffer) continue;
+        const segments = regionSegments(region, secPerBeat, buffer.duration);
+        for (const clip of clipsInWindow(segments, OPEN_SPAN, 0, Infinity)) {
+          startClip(ctx, strip.input, buffer, clip, clip.unfoldedStart);
+        }
+      }
     }
     return ctx.startRendering();
+  }
+
+  /** The full mix (mute/solo respected). Kept for the Tier 1 export button. */
+  renderMixdown(project: DawProject): Promise<AudioBuffer> {
+    return this.renderMix(project);
   }
 }
 

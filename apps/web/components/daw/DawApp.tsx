@@ -32,6 +32,7 @@ import {
   type ProjectListing,
 } from '@/lib/daw/projectStore';
 import { audioBufferToWav, downloadBlob } from '@/lib/daw/wav';
+import { useRecordingTakes } from '@/lib/daw/useRecordingTakes';
 import { Transport } from './Transport';
 import { ArrangeView } from './ArrangeView';
 import { PianoRoll } from './PianoRoll';
@@ -115,6 +116,7 @@ export function DawApp(): React.JSX.Element {
     },
     [engine],
   );
+  useRecordingTakes(engine, update);
 
   // ── keyboard: space = play/stop (skip when typing) ─────────────────────────
   useEffect(() => {
