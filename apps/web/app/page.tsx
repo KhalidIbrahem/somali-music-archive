@@ -16,11 +16,11 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { HeroScore, type HeroNotes } from '@/components/home/HeroScore';
 import { WaveToScore } from '@/components/home/WaveToScore';
 import { ClosingNote } from '@/components/home/ClosingNote';
-import { QaraamiGenMark } from '@/components/brand/QaraamiGenLogo';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { DemoPlayer } from '@/components/home/DemoPlayer';
@@ -174,16 +174,33 @@ export default function Home(): React.JSX.Element {
                 )}
                 {s.id === 'tapes' && (
                   <div className="grain-reveal relative overflow-hidden rounded-[2px] ring-1 ring-hairline">
-                    <div className="flex h-56 items-center justify-center bg-chrome-1">
-                      <QaraamiGenMark size={96} className="text-low" tone="mono" />
-                    </div>
-                    <p className="numeric absolute bottom-3 left-4 text-[10px] tracking-[0.18em] text-low uppercase">
+                    <Image
+                      src="/images/somali-cassette-archive.jpg"
+                      alt="Vintage Somali Qaraami cassette tapes and reel-to-reel master recording equipment from the golden era"
+                      width={720}
+                      height={405}
+                      className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                      priority
+                    />
+                    <p className="numeric absolute bottom-3 left-4 rounded bg-page/85 px-2.5 py-1 text-[10px] tracking-[0.18em] text-accent-state uppercase backdrop-blur">
                       cassette-era masters · decaying
                     </p>
                   </div>
                 )}
                 {s.id === 'archive' && (
-                  <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-4">
+                    <div className="grain-reveal relative overflow-hidden rounded-[2px] ring-1 ring-hairline">
+                      <Image
+                        src="/images/somali-kaban-oud.jpg"
+                        alt="Handcrafted traditional Somali Kaban (oud) resting with parchment musical manuscript"
+                        width={720}
+                        height={405}
+                        className="h-44 w-full object-cover transition-transform duration-700 hover:scale-105"
+                      />
+                      <p className="numeric absolute bottom-3 left-4 rounded bg-page/85 px-2.5 py-1 text-[10px] tracking-[0.18em] text-accent-state uppercase backdrop-blur">
+                        Somali Kaban (Oud) · Cultural Heritage
+                      </p>
+                    </div>
                     <Link
                       href="/listen"
                       className="group flex items-center justify-between rounded-[4px] border border-hairline bg-chrome-1 px-5 py-4 transition-colors hover:border-accent-state focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"

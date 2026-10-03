@@ -12,6 +12,7 @@
 import { siteCopy } from '@/lib/siteCopy';
 import { statSync } from 'node:fs';
 import { join } from 'node:path';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const scoreDir = join(process.cwd(), 'public/scores/beerdilaacshe');
@@ -50,6 +51,14 @@ export function PublicLibraryShelf(): React.JSX.Element {
         <ul className="grid gap-5 sm:grid-cols-2">
           <li>
             <article className="flex h-full flex-col gap-3 rounded-2xl border border-line-secondary bg-bg-secondary p-6">
+              <div className="relative mb-2 aspect-[16/9] w-full overflow-hidden rounded-xl border border-line-secondary">
+                <Image
+                  src="/images/somali-kaban-oud.jpg"
+                  alt="Traditional handcrafted Somali Kaban (oud) instrument"
+                  fill
+                  className="object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
               <p className="font-body text-xs uppercase tracking-wider text-amber">
                 Engraved score
               </p>
@@ -82,6 +91,14 @@ export function PublicLibraryShelf(): React.JSX.Element {
           </li>
           <li>
             <article className="flex h-full flex-col gap-3 rounded-2xl border border-line-secondary bg-bg-secondary p-6">
+              <div className="relative mb-2 aspect-[16/9] w-full overflow-hidden rounded-xl border border-line-secondary">
+                <Image
+                  src="/images/somali-cassette-archive.jpg"
+                  alt="Vintage Somali music cassette tapes and reel-to-reel archival masters"
+                  fill
+                  className="object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
               <p className="font-body text-xs uppercase tracking-wider text-amber">
                 Automatic transcriptions
               </p>

@@ -13,6 +13,7 @@
  * line travels with the clip.
  */
 
+import Image from 'next/image';
 import { siteCopy } from '@/lib/siteCopy';
 import {
   LISTEN_SAMPLES,
@@ -66,6 +67,22 @@ export function ListenShelf(): React.JSX.Element {
           Selection: {LISTEN_SELECTION_NOTE}. {NOT_DISTRIBUTED}
         </p>
       </header>
+
+      <div className="mb-10 overflow-hidden rounded-[2px] ring-1 ring-hairline">
+        <div className="relative aspect-[21/9] w-full overflow-hidden sm:aspect-[24/9]">
+          <Image
+            src="/images/somali-qaraami-performance.jpg"
+            alt="Historical Somali Qaraami musical performance with Kaban (oud) and Durbaan frame drum"
+            fill
+            className="object-cover object-[center_30%]"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-page via-page/20 to-transparent" />
+          <p className="numeric absolute bottom-3 left-4 rounded bg-page/80 px-2.5 py-0.5 text-[10px] tracking-[0.16em] text-accent-state uppercase backdrop-blur">
+            Oral tradition · The masters of Qaraami
+          </p>
+        </div>
+      </div>
 
       <ol className="divide-y divide-hairline border-y border-hairline">
         {LISTEN_SAMPLES.map((s, i) => {
