@@ -1,37 +1,26 @@
 /**
- * QaraamiGenAI identity — the "Q string" mark (website-v1, 2026-09-27).
+ * QaraamiGenAI identity — 100-Year Heritage Brand Mark (Q-Seal).
  *
- * A letter Q whose tail is a sounding kaban (oud) string: the ring opens at the
- * lower right and the tail leaves it as a vibration. Three variations share the
- * same ring so the wordmark lockup never moves:
- *   • wave   — the tail is a waveform (the recording leaving the letter)
- *   • string — the tail is a plucked string drawn with its vibration envelope
- *   • through — the string runs horizontally through the Q; the tail is a plain stroke
- *
- * Ring rides currentColor; the string/wave rides the accent token in duo tone
- * (mono puts everything on currentColor for stamps and print). Strokes thicken
- * as the mark shrinks so the favicon and the 26 px header mark stay legible.
- *
- * Standalone SVG exports of all three: apps/web/public/brand/.
+ * An authoritative institutional archive seal:
+ *   • The letterform Q embodies the circular soundbox of the Somali Kaban (oud).
+ *   • Inner concentric bead ring giving numismatic and archival authority.
+ *   • Internal acoustic strings reflecting the Kaban's courses.
+ *   • Central 8-pointed Somali star rosette inspired by vintage kaban soundholes.
+ *   • The bold diagonal tail cuts through the lower-right quadrant like a striking
+ *     risha (plectrum), carrying oral music into permanent memory.
  */
 
-export type MarkVariant = 'wave' | 'string' | 'through';
+export type MarkVariant = 'heritage' | 'wave' | 'string' | 'through';
 
 /** The variation the site uses everywhere (header, favicon, footer). */
-export const DEFAULT_MARK_VARIANT: MarkVariant = 'wave';
+export const DEFAULT_MARK_VARIANT: MarkVariant = 'heritage';
 
-// Ring: centre (50,50), radius 34, open between 20° and 70° (lower right).
+// Previous variants retained for compatibility
 const RING_OPEN = 'M70.06 88.44 A38 38 0 1 1 88.44 70.06';
-
-// Wave tail, drawn along x then rotated 45° about the ring centre.
 const WAVE_FULL = 'M20 0 H28 L36 -11 L48 11 L58 -8 L64 0 H70';
 const WAVE_SMALL = 'M18 0 H28 L38 -13 L52 13 L62 0 H70';
-
-// String tail: the straight string plus its vibration envelope (a lens).
 const STRING_LINE = 'M20 0 H68';
 const STRING_LENS = 'M28 0 C40 -9 56 -9 66 0 C56 9 40 9 28 0 Z';
-
-// Plain tail (variation through) and the string across the centre.
 const RING_TAIL = 'M73.8 73.8 L95.01 95.01';
 const THROUGH_FULL = 'M-42 0 H-26 L-18 -10 L-6 10 L6 -10 L18 10 L26 0 H42';
 const THROUGH_SMALL = 'M-42 0 H-24 L-10 -13 L10 13 L24 0 H42';
@@ -50,9 +39,10 @@ export function QaraamiGenMark({
 }): React.JSX.Element {
   const accent = tone === 'duo' ? 'var(--accent-state)' : 'currentColor';
   const small = size < 40;
-  const stroke = small ? 12 : 10;
-  // The vibration is drawn lighter than the ring so its period stays legible.
-  const waveStroke = small ? 9 : 7;
+  const stroke = small ? 7 : 5;
+  const stringStroke = small ? 2.5 : 1.75;
+  const tailStroke = small ? 9 : 7;
+
   return (
     <svg
       viewBox="0 0 120 120"
@@ -66,6 +56,39 @@ export function QaraamiGenMark({
       aria-hidden
       className={className}
     >
+      {variant === 'heritage' && (
+        <>
+          {/* Outer Archival Seal Ring */}
+          <circle cx="56" cy="52" r="40" stroke="currentColor" strokeWidth={stroke} />
+          {/* Inner Numismatic Bead Ring */}
+          <circle
+            cx="56"
+            cy="52"
+            r="33"
+            stroke={accent}
+            strokeWidth={stringStroke}
+            strokeDasharray={small ? 'none' : '3 3'}
+            opacity={small ? 0.7 : 0.85}
+          />
+          {/* Kaban Strings (Acoustic Chamber) */}
+          <path
+            d="M44 32 V72 M56 22 V82 M68 32 V72"
+            stroke="currentColor"
+            strokeWidth={stringStroke}
+            strokeLinecap="round"
+            opacity={0.5}
+          />
+          {/* Central Somali 8-Pointed Star Rosette */}
+          <polygon
+            points="56,44 58.5,49.5 64,52 58.5,54.5 56,60 53.5,54.5 48,52 53.5,49.5"
+            fill={accent}
+            stroke="none"
+          />
+          {/* Authoritative Q Tail (Resonant Plectrum Stroke) */}
+          <path d="M56 52 L94 94" stroke={accent} strokeWidth={tailStroke} strokeLinecap="round" />
+          <circle cx="94" cy="94" r={small ? 4 : 3} fill={accent} stroke="none" />
+        </>
+      )}
       {variant === 'wave' && (
         <>
           <path d={RING_OPEN} />
@@ -73,7 +96,7 @@ export function QaraamiGenMark({
             d={small ? WAVE_SMALL : WAVE_FULL}
             transform="rotate(45 54 54) translate(54 54)"
             stroke={accent}
-            strokeWidth={waveStroke}
+            strokeWidth={small ? 9 : 7}
           />
         </>
       )}
@@ -94,7 +117,7 @@ export function QaraamiGenMark({
             d={small ? THROUGH_SMALL : THROUGH_FULL}
             transform="translate(54 54)"
             stroke={accent}
-            strokeWidth={waveStroke}
+            strokeWidth={small ? 9 : 7}
           />
         </>
       )}
@@ -103,28 +126,28 @@ export function QaraamiGenMark({
 }
 
 export function QaraamiGenLockup({
-  markSize = 36,
-  strapline = false,
+  markSize = 34,
+  strapline = true,
   className,
 }: {
   markSize?: number;
-  /** Adds the mono "Somali music archive" line under the wordmark. */
+  /** Adds the "Somali music archive" line under the wordmark. */
   strapline?: boolean;
   className?: string | undefined;
 }): React.JSX.Element {
   return (
     <span className={`inline-flex items-center gap-3 ${className ?? ''}`}>
       <QaraamiGenMark size={markSize} />
-      <span className="flex flex-col gap-0.5">
+      <span className="flex flex-col justify-center leading-none">
         <span
-          className="font-display leading-none tracking-[0.02em]"
-          style={{ fontSize: Math.round(markSize * 0.62) }}
+          className="font-display font-bold tracking-[0.06em] text-hi"
+          style={{ fontSize: Math.round(markSize * 0.58) }}
         >
-          Qaraami<span className="text-accent-state">GenAI</span>
+          QARAAMI<span className="text-accent-state font-normal ml-0.5">GEN</span>
         </span>
         {strapline && (
-          <span className="numeric text-[10px] tracking-[0.28em] text-low uppercase">
-            Somali music archive
+          <span className="numeric text-[9px] tracking-[0.24em] text-mid uppercase mt-0.5">
+            Somali Music Archive
           </span>
         )}
       </span>

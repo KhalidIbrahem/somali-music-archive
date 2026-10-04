@@ -1,8 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
-  <!-- Favicon: QaraamiGenAI "Q string" mark, variation A (wave tail), small redraw. -->
-  <rect width="120" height="120" rx="24" fill="#0C0B14"/>
-  <g fill="none" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M70.06 88.44 A38 38 0 1 1 88.44 70.06" stroke="#EDE9DC"/>
-    <path d="M18 0 H28 L38 -13 L52 13 L62 0 H70" transform="rotate(45 54 54) translate(54 54)" stroke="#C89B5F" stroke-width="9"/>
+  <!-- Favicon: QaraamiGen 100-Year Heritage Brand Seal -->
+  <rect width="120" height="120" rx="26" fill="#0C0B14"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Outer Archival Rim -->
+    <circle cx="56" cy="52" r="38" stroke="#EDE9DC" stroke-width="8"/>
+    <!-- Inner Numismatic Ring -->
+    <circle cx="56" cy="52" r="30" stroke="#C89B5F" stroke-width="2.5" stroke-dasharray="3 3" opacity="0.85"/>
+    <!-- Kaban Acoustic Strings -->
+    <path d="M44 32 V72 M56 22 V82 M68 32 V72" stroke="#EDE9DC" stroke-width="2.5" opacity="0.55"/>
+    <!-- Somali Star Rosette -->
+    <polygon points="56,44 58.5,49.5 64,52 58.5,54.5 56,60 53.5,54.5 48,52 53.5,49.5" fill="#C89B5F"/>
+    <!-- The Resonant Q Tail -->
+    <path d="M56 52 L94 94" stroke="#C89B5F" stroke-width="10"/>
+    <circle cx="94" cy="94" r="4.5" fill="#C89B5F"/>
   </g>
 </svg>

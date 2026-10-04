@@ -153,7 +153,7 @@ data/oud_ab_listening/
 
 # Corpus MP3s staged for the web listening room (~120MB, license_status=unknown):
 # audio belongs in R2/deploy uploads, never in git history.
-apps/web/public/audio/
+apps/web/public/audio/*.m4a
 # Same rule for the research-demo stems (corpus-derived, ~29MB).
 apps/web/public/demos/audio/
 .vercel-token

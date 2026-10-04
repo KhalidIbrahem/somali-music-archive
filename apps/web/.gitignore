@@ -1,4 +1,3 @@
 # Large archival audio staged locally — not committed (see public/audio/README.md)
-/public/audio/*.mp3
 .vercel
 .env*

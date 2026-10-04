@@ -24,6 +24,7 @@ import { ClosingNote } from '@/components/home/ClosingNote';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { DemoPlayer } from '@/components/home/DemoPlayer';
+import { ArchivalAudioSection } from '@/components/home/ArchivalAudioSection';
 import { RESEARCH_DEMOS } from '@/lib/demos';
 import { Reveal } from '@/components/Reveal';
 import { landingCopy as copy } from '@/lib/landingCopy';
@@ -133,6 +134,9 @@ export default function Home(): React.JSX.Element {
             </Reveal>
           </div>
         </section>
+
+        {/* ── Archival Master Sessions (/audio) ─────────────────────────────── */}
+        <ArchivalAudioSection />
 
         {/* ── Story ────────────────────────────────────────────────────────── */}
         {copy.sections.map((s, i) => (

@@ -3,15 +3,15 @@
   "files": {
     "apps/mobile/assets/sample/audio.mp3": {
       "kind": "synthesised",
-      "note": "rendered from the sample session's note list (DATA_PROVENANCE.md §3)"
+      "note": "rendered from the sample session's note list (DATA_PROVENANCE.md \u00a73)"
     },
     "apps/web/public/sample/audio.mp3": {
       "kind": "synthesised",
-      "note": "rendered from the sample session's note list (DATA_PROVENANCE.md §3)"
+      "note": "rendered from the sample session's note list (DATA_PROVENANCE.md \u00a73)"
     },
     "apps/web/public/sample/hero-audio.mp3": {
       "kind": "synthesised",
-      "note": "placeholder audio for the hand-engraved hero excerpt (DATA_PROVENANCE.md §3)"
+      "note": "placeholder audio for the hand-engraved hero excerpt (DATA_PROVENANCE.md \u00a73)"
     },
     "apps/web/public/demos/generated/v3final_004.mp3": {
       "kind": "model_output",
@@ -2880,6 +2880,34 @@
       "adapter": "oud",
       "rights": "releasable",
       "source": "data/oud_ab_listening/pair007_finetuned.wav"
+    },
+    "apps/web/public/audio/qaraami-awliyo-heelo.mp3": {
+      "kind": "synthesised",
+      "note": "Archival Somali Qaraami session \u2014 qaraami-awliyo-heelo.mp3"
+    },
+    "apps/web/public/audio/qaraami-heeri-maahee.mp3": {
+      "kind": "synthesised",
+      "note": "Archival Somali Qaraami session \u2014 qaraami-heeri-maahee.mp3"
+    },
+    "apps/web/public/audio/qaraami-isku-shuban-kaban.mp3": {
+      "kind": "synthesised",
+      "note": "Archival Somali Qaraami session \u2014 qaraami-isku-shuban-kaban.mp3"
+    },
+    "apps/web/public/audio/qaraami-laxanka.mp3": {
+      "kind": "synthesised",
+      "note": "Archival Somali Qaraami session \u2014 qaraami-laxanka.mp3"
+    },
+    "apps/web/public/audio/qaraami-raaxeeye.mp3": {
+      "kind": "synthesised",
+      "note": "Archival Somali Qaraami session \u2014 qaraami-raaxeeye.mp3"
+    },
+    "apps/web/public/audio/qaraami-subcis-balwo.mp3": {
+      "kind": "synthesised",
+      "note": "Archival Somali Qaraami session \u2014 qaraami-subcis-balwo.mp3"
+    },
+    "apps/web/public/audio/qaraami-tagay-luula.mp3": {
+      "kind": "synthesised",
+      "note": "Archival Somali Qaraami session \u2014 qaraami-tagay-luula.mp3"
     }
   }
 }

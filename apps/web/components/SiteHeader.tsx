@@ -16,6 +16,7 @@ import { siteCopy } from '@/lib/siteCopy';
 
 const NAV = [
   ...siteCopy.nav,
+  ...(flags.daw ? [{ label: 'Studio', href: '/daw' }] : []),
   ...(flags.learn ? [{ label: 'Learn', href: '/learn' }] : []),
   ...(flags.courses ? [{ label: 'Courses', href: '/courses' }] : []),
 ] as const;
@@ -28,12 +29,20 @@ export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
       <div className="relative mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-2 rounded-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blueflag"
+          className="group flex min-w-0 items-center gap-3 rounded-[4px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blueflag"
         >
-          <QaraamiGenMark size={28} className="shrink-0 text-ink-primary" />
-          <span className="truncate font-display text-lg tracking-wide text-ink-primary">
-            Qaraami<span className="text-amber">GenAI</span>
-          </span>
+          <QaraamiGenMark
+            size={34}
+            className="shrink-0 text-ink-primary transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="flex flex-col justify-center leading-none">
+            <span className="truncate font-display text-lg font-bold tracking-[0.06em] text-ink-primary">
+              QARAAMI<span className="text-amber font-normal ml-0.5">GEN</span>
+            </span>
+            <span className="numeric text-[9px] tracking-[0.24em] text-ink-tertiary uppercase mt-0.5">
+              Somali Music Archive
+            </span>
+          </div>
         </Link>
         <div className="flex items-center gap-2 sm:gap-3">
           <SiteNav items={NAV} active={active} />
