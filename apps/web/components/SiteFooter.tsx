@@ -70,7 +70,7 @@ export function SiteFooter(): React.JSX.Element {
             <QaraamiGenMark size={34} className="shrink-0 text-ink-primary" />
             <div className="flex flex-col text-left leading-none">
               <span className="font-display text-lg font-bold tracking-[0.06em] text-ink-primary">
-                QARAAMI<span className="text-amber font-normal ml-0.5">GEN</span>
+                QARAAMI<span className="text-amber font-normal ml-0.5">GEN</span><span className="text-amber font-bold ml-0.5">AI</span>
               </span>
               <span className="numeric text-[9px] tracking-[0.24em] text-ink-tertiary uppercase mt-0.5">
                 Somali Music Archive

@@ -15,182 +15,32 @@ export type MarkVariant = 'heritage' | 'wave' | 'string' | 'through';
 /** The variation the site uses everywhere (header, favicon, footer). */
 export const DEFAULT_MARK_VARIANT: MarkVariant = 'heritage';
 
-// Previous variants retained for compatibility
-const RING_OPEN = 'M70.06 88.44 A38 38 0 1 1 88.44 70.06';
-const WAVE_FULL = 'M20 0 H28 L36 -11 L48 11 L58 -8 L64 0 H70';
-const WAVE_SMALL = 'M18 0 H28 L38 -13 L52 13 L62 0 H70';
-const STRING_LINE = 'M20 0 H68';
-const STRING_LENS = 'M28 0 C40 -9 56 -9 66 0 C56 9 40 9 28 0 Z';
-const RING_TAIL = 'M73.8 73.8 L95.01 95.01';
-const THROUGH_FULL = 'M-42 0 H-26 L-18 -10 L-6 10 L6 -10 L18 10 L26 0 H42';
-const THROUGH_SMALL = 'M-42 0 H-24 L-10 -13 L10 13 L24 0 H42';
+
 
 export function QaraamiGenMark({
   size = 32,
-  tone = 'duo',
-  variant = DEFAULT_MARK_VARIANT,
   className,
 }: {
   size?: number;
-  /** duo: string/wave in the accent token; mono: everything currentColor. */
   tone?: 'duo' | 'mono';
-  variant?: MarkVariant;
+  variant?: MarkVariant | 'icon';
   className?: string | undefined;
 }): React.JSX.Element {
-  const accent = tone === 'duo' ? 'var(--accent-state)' : 'currentColor';
-  const small = size < 40;
-  const stroke = small ? 7 : 5;
-  const stringStroke = small ? 2.5 : 1.75;
-  const tailStroke = small ? 9 : 7;
-
   return (
-    <svg
-      viewBox="0 0 120 120"
-      width={size}
-      height={size}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={stroke}
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <span
+      className={`relative inline-flex items-center justify-center shrink-0 overflow-hidden rounded-full ring-1 ring-accent-state/35 shadow-[0_0_12px_rgba(200,155,95,0.22)] bg-[#0B0C0E] select-none ${className ?? ''}`}
+      style={{ width: size, height: size }}
       aria-hidden
-      className={className}
     >
-      {variant === 'heritage' && (
-        <>
-          {/* Outer Archival Q Ring */}
-          <circle cx="54" cy="50" r="38" stroke="currentColor" strokeWidth={stroke} />
-
-          {/* Kaban (Oud) Body angled inside */}
-          <g transform="translate(52, 48) rotate(-35)">
-            {/* Pear-shaped Soundbox */}
-            <path
-              d="M -5 -14 C -16 -6 -18 14 0 24 C 18 14 16 -6 5 -14 Z"
-              stroke="currentColor"
-              strokeWidth={small ? 2.5 : 2}
-              fill={accent}
-              fillOpacity={0.12}
-            />
-
-            {/* Central Rosette Soundhole */}
-            <circle cx="0" cy="2" r={small ? 4.5 : 5} stroke={accent} strokeWidth={stringStroke} />
-            <circle cx="0" cy="2" r={small ? 1.5 : 2} fill={accent} stroke="none" />
-
-            {/* Neck & Pegbox */}
-            <path
-              d="M -2.5 -14 L -2 -34 M 2.5 -14 L 2 -34"
-              stroke="currentColor"
-              strokeWidth={stringStroke}
-            />
-            {!small && (
-              <>
-                <path
-                  d="M -3.5 -34 L -4.5 -42 L 4.5 -42 L 3.5 -34 Z"
-                  stroke={accent}
-                  strokeWidth={1.5}
-                  fill={accent}
-                  fillOpacity={0.2}
-                />
-                {/* Tuning Pegs */}
-                <circle cx="-6.5" cy="-38" r="1.2" fill={accent} stroke="none" />
-                <circle cx="6.5" cy="-40" r="1.2" fill={accent} stroke="none" />
-                <circle cx="-6.5" cy="-35" r="1.2" fill={accent} stroke="none" />
-                <circle cx="6.5" cy="-37" r="1.2" fill={accent} stroke="none" />
-              </>
-            )}
-
-            {/* Kaban Strings (meeting the sound wave) */}
-            <line
-              x1={small ? -1.5 : -2}
-              y1={small ? -24 : -34}
-              x2={small ? -1.5 : -2}
-              y2="18"
-              stroke={accent}
-              strokeWidth={small ? 1.2 : 1}
-              opacity={0.8}
-            />
-            <line
-              x1="0"
-              y1={small ? -24 : -34}
-              x2="0"
-              y2="18"
-              stroke={accent}
-              strokeWidth={small ? 1.4 : 1.2}
-              opacity={0.95}
-            />
-            <line
-              x1={small ? 1.5 : 2}
-              y1={small ? -24 : -34}
-              x2={small ? 1.5 : 2}
-              y2="18"
-              stroke={accent}
-              strokeWidth={small ? 1.2 : 1}
-              opacity={0.8}
-            />
-
-            {/* Kaban Bridge */}
-            <line
-              x1="-5"
-              y1="18"
-              x2="5"
-              y2="18"
-              stroke={accent}
-              strokeWidth={small ? 2.5 : 2}
-            />
-          </g>
-
-          {/* Diagonal Base Tail of the Q */}
-          <path
-            d="M 70 66 L 96 92"
-            stroke={accent}
-            strokeWidth={tailStroke}
-            strokeLinecap="round"
-          />
-
-          {/* Sound Wave Pulse meeting strings and crossing the O rim */}
-          <path
-            d="M 50 74 L 58 74 L 62 66 L 68 82 L 74 56 L 80 88 L 86 60 L 92 78 L 96 74 L 104 74"
-            stroke={accent}
-            strokeWidth={small ? 3 : 2.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle cx="104" cy="74" r={small ? 3 : 2.5} fill={accent} stroke="none" />
-        </>
-      )}
-      {variant === 'wave' && (
-        <>
-          <path d={RING_OPEN} />
-          <path
-            d={small ? WAVE_SMALL : WAVE_FULL}
-            transform="rotate(45 54 54) translate(54 54)"
-            stroke={accent}
-            strokeWidth={small ? 9 : 7}
-          />
-        </>
-      )}
-      {variant === 'string' && (
-        <>
-          <path d={RING_OPEN} />
-          <g transform="rotate(45 54 54) translate(54 54)" stroke={accent}>
-            <path d={STRING_LINE} />
-            <path d={STRING_LENS} strokeWidth={small ? 5 : 3.5} opacity={small ? 1 : 0.85} />
-          </g>
-        </>
-      )}
-      {variant === 'through' && (
-        <>
-          <path d={RING_OPEN} />
-          <path d={RING_TAIL} />
-          <path
-            d={small ? THROUGH_SMALL : THROUGH_FULL}
-            transform="translate(54 54)"
-            stroke={accent}
-            strokeWidth={small ? 9 : 7}
-          />
-        </>
-      )}
-    </svg>
+      <img
+        src="/images/qaraami-q-icon.png"
+        alt="QaraamiGenAI — Golden String-to-Wave Fusion Q"
+        width={size}
+        height={size}
+        className="h-full w-full object-cover select-none pointer-events-none"
+        loading="eager"
+      />
+    </span>
   );
 }
 
@@ -212,7 +62,7 @@ export function QaraamiGenLockup({
           className="font-display font-bold tracking-[0.06em] text-hi"
           style={{ fontSize: Math.round(markSize * 0.58) }}
         >
-          QARAAMI<span className="text-accent-state font-normal ml-0.5">GEN</span>
+          QARAAMI<span className="text-accent-state font-normal ml-0.5">GEN</span><span className="text-accent-state font-bold ml-0.5">AI</span>
         </span>
         {strapline && (
           <span className="numeric text-[9px] tracking-[0.24em] text-mid uppercase mt-0.5">

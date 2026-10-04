@@ -37,7 +37,7 @@ export function SiteHeader({ active }: { active?: string }): React.JSX.Element {
           />
           <div className="flex flex-col justify-center leading-none">
             <span className="truncate font-display text-lg font-bold tracking-[0.06em] text-ink-primary">
-              QARAAMI<span className="text-amber font-normal ml-0.5">GEN</span>
+              QARAAMI<span className="text-amber font-normal ml-0.5">GEN</span><span className="text-amber font-bold ml-0.5">AI</span>
             </span>
             <span className="numeric text-[9px] tracking-[0.24em] text-ink-tertiary uppercase mt-0.5">
               Somali Music Archive
