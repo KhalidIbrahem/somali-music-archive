@@ -134,7 +134,7 @@ export function ArchivalAudioSection(): React.JSX.Element {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-page/90 via-page/20 to-transparent" />
               <p className="numeric absolute bottom-3 left-3 text-[10px] tracking-[0.2em] text-accent-state uppercase backdrop-blur-sm">
-                Astanta Dhaxalka &amp; Maansada Qaraamiga
+                Kaydka Hiddaha Soomaaliyeed
               </p>
             </div>
 
@@ -142,17 +142,16 @@ export function ArchivalAudioSection(): React.JSX.Element {
               <div className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent-state" />
                 <span className="numeric text-[10px] tracking-[0.2em] text-accent-state uppercase">
-                  Kaydka Boqolka Sano (100-Year Heritage)
+                  Qaraami Generative AI
                 </span>
               </div>
-              <h3 className="font-display text-lg text-hi">Heesihii Hore &amp; Geedka Tixda</h3>
-              <p className="text-xs leading-relaxed text-mid italic">
-                &ldquo;Shanqadha xadhkaha kabanka iyo codkii qaraamiga — waa dhaxal ma-guuraan ah,
-                oo facba fac u dhiibay xusuusta iyo maansada suugaanta Soomaaliyeed.&rdquo;
+              <h3 className="font-display text-lg text-hi">Kaydka Hiddaha Soomaaliyeed</h3>
+              <p className="font-display text-sm leading-relaxed text-hi italic">
+                &ldquo;Fanka Iyo Suugaantu waa ilaaliyaha Afkeena Hooyo.&rdquo;
               </p>
               <p className="text-[11px] leading-relaxed text-low">
-                Preserved institutional seal of the Somali Music Archive. Celebrating a century of
-                oral poetic verse, pentatonic kaban improvisations, and timeless acoustic memory.
+                Shanqadha xadhkaha kabanka iyo codkii qaraamiga — waa dhaxal ma-guuraan ah oo facba
+                fac u gudbinaya kaydka suugaanta iyo dhaqanka Soomaaliyeed.
               </p>
               <div className="mt-3 flex items-center justify-between border-t border-hairline pt-3">
                 <span className="numeric text-[11px] tracking-wider text-low uppercase">

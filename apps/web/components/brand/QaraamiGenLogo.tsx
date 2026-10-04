@@ -58,35 +58,104 @@ export function QaraamiGenMark({
     >
       {variant === 'heritage' && (
         <>
-          {/* Outer Archival Seal Ring */}
-          <circle cx="56" cy="52" r="40" stroke="currentColor" strokeWidth={stroke} />
-          {/* Inner Numismatic Bead Ring */}
-          <circle
-            cx="56"
-            cy="52"
-            r="33"
-            stroke={accent}
-            strokeWidth={stringStroke}
-            strokeDasharray={small ? 'none' : '3 3'}
-            opacity={small ? 0.7 : 0.85}
-          />
-          {/* Kaban Strings (Acoustic Chamber) */}
+          {/* Outer Archival Q Ring */}
+          <circle cx="54" cy="50" r="38" stroke="currentColor" strokeWidth={stroke} />
+
+          {/* Kaban (Oud) Body angled inside */}
+          <g transform="translate(52, 48) rotate(-35)">
+            {/* Pear-shaped Soundbox */}
+            <path
+              d="M -5 -14 C -16 -6 -18 14 0 24 C 18 14 16 -6 5 -14 Z"
+              stroke="currentColor"
+              strokeWidth={small ? 2.5 : 2}
+              fill={accent}
+              fillOpacity={0.12}
+            />
+
+            {/* Central Rosette Soundhole */}
+            <circle cx="0" cy="2" r={small ? 4.5 : 5} stroke={accent} strokeWidth={stringStroke} />
+            <circle cx="0" cy="2" r={small ? 1.5 : 2} fill={accent} stroke="none" />
+
+            {/* Neck & Pegbox */}
+            <path
+              d="M -2.5 -14 L -2 -34 M 2.5 -14 L 2 -34"
+              stroke="currentColor"
+              strokeWidth={stringStroke}
+            />
+            {!small && (
+              <>
+                <path
+                  d="M -3.5 -34 L -4.5 -42 L 4.5 -42 L 3.5 -34 Z"
+                  stroke={accent}
+                  strokeWidth={1.5}
+                  fill={accent}
+                  fillOpacity={0.2}
+                />
+                {/* Tuning Pegs */}
+                <circle cx="-6.5" cy="-38" r="1.2" fill={accent} stroke="none" />
+                <circle cx="6.5" cy="-40" r="1.2" fill={accent} stroke="none" />
+                <circle cx="-6.5" cy="-35" r="1.2" fill={accent} stroke="none" />
+                <circle cx="6.5" cy="-37" r="1.2" fill={accent} stroke="none" />
+              </>
+            )}
+
+            {/* Kaban Strings (meeting the sound wave) */}
+            <line
+              x1={small ? -1.5 : -2}
+              y1={small ? -24 : -34}
+              x2={small ? -1.5 : -2}
+              y2="18"
+              stroke={accent}
+              strokeWidth={small ? 1.2 : 1}
+              opacity={0.8}
+            />
+            <line
+              x1="0"
+              y1={small ? -24 : -34}
+              x2="0"
+              y2="18"
+              stroke={accent}
+              strokeWidth={small ? 1.4 : 1.2}
+              opacity={0.95}
+            />
+            <line
+              x1={small ? 1.5 : 2}
+              y1={small ? -24 : -34}
+              x2={small ? 1.5 : 2}
+              y2="18"
+              stroke={accent}
+              strokeWidth={small ? 1.2 : 1}
+              opacity={0.8}
+            />
+
+            {/* Kaban Bridge */}
+            <line
+              x1="-5"
+              y1="18"
+              x2="5"
+              y2="18"
+              stroke={accent}
+              strokeWidth={small ? 2.5 : 2}
+            />
+          </g>
+
+          {/* Diagonal Base Tail of the Q */}
           <path
-            d="M44 32 V72 M56 22 V82 M68 32 V72"
-            stroke="currentColor"
-            strokeWidth={stringStroke}
+            d="M 70 66 L 96 92"
+            stroke={accent}
+            strokeWidth={tailStroke}
             strokeLinecap="round"
-            opacity={0.5}
           />
-          {/* Central Somali 8-Pointed Star Rosette */}
-          <polygon
-            points="56,44 58.5,49.5 64,52 58.5,54.5 56,60 53.5,54.5 48,52 53.5,49.5"
-            fill={accent}
-            stroke="none"
+
+          {/* Sound Wave Pulse meeting strings and crossing the O rim */}
+          <path
+            d="M 50 74 L 58 74 L 62 66 L 68 82 L 74 56 L 80 88 L 86 60 L 92 78 L 96 74 L 104 74"
+            stroke={accent}
+            strokeWidth={small ? 3 : 2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
-          {/* Authoritative Q Tail (Resonant Plectrum Stroke) */}
-          <path d="M56 52 L94 94" stroke={accent} strokeWidth={tailStroke} strokeLinecap="round" />
-          <circle cx="94" cy="94" r={small ? 4 : 3} fill={accent} stroke="none" />
+          <circle cx="104" cy="74" r={small ? 3 : 2.5} fill={accent} stroke="none" />
         </>
       )}
       {variant === 'wave' && (

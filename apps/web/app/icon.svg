@@ -1,17 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
-  <!-- Favicon: QaraamiGen 100-Year Heritage Brand Seal -->
+  <!-- Favicon: QaraamiGen Concept 4 — Kaban & Soundwave Heritage Q -->
   <rect width="120" height="120" rx="26" fill="#0C0B14"/>
   <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <!-- Outer Archival Rim -->
-    <circle cx="56" cy="52" r="38" stroke="#EDE9DC" stroke-width="8"/>
-    <!-- Inner Numismatic Ring -->
-    <circle cx="56" cy="52" r="30" stroke="#C89B5F" stroke-width="2.5" stroke-dasharray="3 3" opacity="0.85"/>
-    <!-- Kaban Acoustic Strings -->
-    <path d="M44 32 V72 M56 22 V82 M68 32 V72" stroke="#EDE9DC" stroke-width="2.5" opacity="0.55"/>
-    <!-- Somali Star Rosette -->
-    <polygon points="56,44 58.5,49.5 64,52 58.5,54.5 56,60 53.5,54.5 48,52 53.5,49.5" fill="#C89B5F"/>
-    <!-- The Resonant Q Tail -->
-    <path d="M56 52 L94 94" stroke="#C89B5F" stroke-width="10"/>
-    <circle cx="94" cy="94" r="4.5" fill="#C89B5F"/>
+    <!-- Outer Archival Q Rim -->
+    <circle cx="54" cy="50" r="38" stroke="#EDE9DC" stroke-width="7"/>
+
+    <!-- Kaban (Oud) Body angled inside -->
+    <g transform="translate(52, 48) rotate(-35)">
+      <!-- Pear-shaped Soundbox -->
+      <path d="M -5 -14 C -16 -6 -18 14 0 24 C 18 14 16 -6 5 -14 Z" stroke="#EDE9DC" stroke-width="3" fill="#C89B5F" fill-opacity="0.18"/>
+      <!-- Rosette Soundhole -->
+      <circle cx="0" cy="2" r="5" stroke="#C89B5F" stroke-width="2.5"/>
+      <circle cx="0" cy="2" r="1.8" fill="#C89B5F"/>
+      <!-- Neck & Strings -->
+      <path d="M -2.5 -14 L -2 -34 M 2.5 -14 L 2 -34" stroke="#EDE9DC" stroke-width="2.5"/>
+      <line x1="0" y1="-34" x2="0" y2="18" stroke="#EDE9DC" stroke-width="2"/>
+      <line x1="-5" y1="18" x2="5" y2="18" stroke="#C89B5F" stroke-width="2.5"/>
+    </g>
+
+    <!-- Resonant Diagonal Q Tail -->
+    <path d="M 70 66 L 96 92" stroke="#C89B5F" stroke-width="8.5"/>
+
+    <!-- Sound Wave Pulse meeting strings and crossing the rim -->
+    <path d="M 52 74 L 60 74 L 64 66 L 70 82 L 76 56 L 82 88 L 88 60 L 94 78 L 98 74 L 105 74" stroke="#C89B5F" stroke-width="3.5"/>
+    <circle cx="105" cy="74" r="3" fill="#C89B5F"/>
   </g>
 </svg>
