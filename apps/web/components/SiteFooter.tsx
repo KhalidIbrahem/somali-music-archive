@@ -66,16 +66,11 @@ export function SiteFooter(): React.JSX.Element {
       <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-10 px-4 pt-14 pb-12 text-center sm:px-6 md:flex-row md:items-start md:justify-between md:text-left">
         {/* Identity */}
         <div className="flex min-w-0 flex-col items-center gap-4 md:items-start">
-          <div className="flex items-center gap-3">
-            <QaraamiGenMark size={34} className="shrink-0 text-ink-primary" />
-            <div className="flex flex-col text-left leading-none">
-              <span className="font-display text-lg font-bold tracking-[0.06em] text-ink-primary">
-                QARAAMI<span className="text-amber font-normal ml-0.5">GEN</span><span className="text-amber font-bold ml-0.5">AI</span>
-              </span>
-              <span className="numeric text-[9px] tracking-[0.24em] text-ink-tertiary uppercase mt-0.5">
-                Somali Music Archive
-              </span>
-            </div>
+          <div className="flex items-center gap-2.5">
+            <QaraamiGenMark size={28} className="shrink-0 text-ink-primary" />
+            <span className="font-display text-lg tracking-wide text-ink-primary">
+              Qaraami<span className="text-amber">GenAI</span>
+            </span>
           </div>
           <p className="max-w-md font-body text-sm leading-relaxed text-ink-secondary">
             {footer.line}

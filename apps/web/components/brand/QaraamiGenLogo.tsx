@@ -1,52 +1,64 @@
 /**
- * QaraamiGenAI identity — 100-Year Heritage Brand Mark (Q-Seal).
+ * QaraamiGenAI brand mark and lockup.
  *
- * An authoritative institutional archive seal:
- *   • The letterform Q embodies the circular soundbox of the Somali Kaban (oud).
- *   • Inner concentric bead ring giving numismatic and archival authority.
- *   • Internal acoustic strings reflecting the Kaban's courses.
- *   • Central 8-pointed Somali star rosette inspired by vintage kaban soundholes.
- *   • The bold diagonal tail cuts through the lower-right quadrant like a striking
- *     risha (plectrum), carrying oral music into permanent memory.
+ * Mark: Circular open ring letter Q with resonant sound wave crossing tail,
+ * in theme-aware duo-tone (currentColor / var(--accent-state)).
+ * Wordmark: Original serif font (Playfair Display) set as "QaraamiGenAI".
  */
 
-export type MarkVariant = 'heritage' | 'wave' | 'string' | 'through';
+export type MarkVariant = 'wave' | 'heritage' | 'string' | 'through';
 
-/** The variation the site uses everywhere (header, favicon, footer). */
-export const DEFAULT_MARK_VARIANT: MarkVariant = 'heritage';
+export const DEFAULT_MARK_VARIANT: MarkVariant = 'wave';
 
-
+const RING_OPEN = 'M70.06 88.44 A38 38 0 1 1 88.44 70.06';
+const WAVE_FULL = 'M20 0 H28 L36 -11 L48 11 L58 -8 L64 0 H70';
+const WAVE_SMALL = 'M18 0 H28 L38 -13 L52 13 L62 0 H70';
 
 export function QaraamiGenMark({
-  size = 32,
+  size = 30,
+  tone = 'duo',
+  variant = DEFAULT_MARK_VARIANT,
   className,
 }: {
   size?: number;
+  /** duo: string/wave in the accent token; mono: everything currentColor. */
   tone?: 'duo' | 'mono';
-  variant?: MarkVariant | 'icon';
+  variant?: MarkVariant;
   className?: string | undefined;
 }): React.JSX.Element {
+  void variant;
+  const accent = tone === 'duo' ? 'var(--accent-state)' : 'currentColor';
+  const small = size < 40;
+  const stroke = small ? 7 : 5;
+  const waveStroke = small ? 9 : 7;
+
   return (
-    <span
-      className={`relative inline-flex items-center justify-center shrink-0 overflow-hidden rounded-full ring-1 ring-accent-state/35 shadow-[0_0_12px_rgba(200,155,95,0.22)] bg-[#0B0C0E] select-none ${className ?? ''}`}
-      style={{ width: size, height: size }}
+    <svg
+      viewBox="0 0 120 120"
+      width={size}
+      height={size}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={stroke}
+      strokeLinecap="round"
+      strokeLinejoin="round"
       aria-hidden
+      className={className}
     >
-      <img
-        src="/images/qaraami-q-icon.png"
-        alt="QaraamiGenAI — Golden String-to-Wave Fusion Q"
-        width={size}
-        height={size}
-        className="h-full w-full object-cover select-none pointer-events-none"
-        loading="eager"
+      <path d={RING_OPEN} />
+      <path
+        d={small ? WAVE_SMALL : WAVE_FULL}
+        transform="rotate(45 54 54) translate(54 54)"
+        stroke={accent}
+        strokeWidth={waveStroke}
       />
-    </span>
+    </svg>
   );
 }
 
 export function QaraamiGenLockup({
-  markSize = 34,
-  strapline = true,
+  markSize = 30,
+  strapline = false,
   className,
 }: {
   markSize?: number;
@@ -55,14 +67,14 @@ export function QaraamiGenLockup({
   className?: string | undefined;
 }): React.JSX.Element {
   return (
-    <span className={`inline-flex items-center gap-3 ${className ?? ''}`}>
+    <span className={`inline-flex items-center gap-2.5 ${className ?? ''}`}>
       <QaraamiGenMark size={markSize} />
       <span className="flex flex-col justify-center leading-none">
         <span
-          className="font-display font-bold tracking-[0.06em] text-hi"
-          style={{ fontSize: Math.round(markSize * 0.58) }}
+          className="font-display tracking-wide text-hi"
+          style={{ fontSize: Math.round(markSize * 0.62) }}
         >
-          QARAAMI<span className="text-accent-state font-normal ml-0.5">GEN</span><span className="text-accent-state font-bold ml-0.5">AI</span>
+          Qaraami<span className="text-accent-state">GenAI</span>
         </span>
         {strapline && (
           <span className="numeric text-[9px] tracking-[0.24em] text-mid uppercase mt-0.5">
