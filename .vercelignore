@@ -10,7 +10,7 @@
 # Held recordings staged locally for the invite-only listening room and the
 # research-demo stems. Never part of a deploy: the July 2026 CLI upload had
 # shipped them because this file, not .gitignore, decides what is uploaded.
-apps/web/public/audio
+apps/web/public/audio/*.m4a
 apps/web/public/demos/audio
 
 # Dependencies / VCS / caches
