@@ -70,9 +70,26 @@ export function TranscribeExamples(): React.JSX.Element {
                   download
                   className="rounded-lg border border-line-primary px-4 py-2 font-body text-sm text-ink-secondary transition-colors hover:text-ink-primary"
                 >
-                  Download
+                  Download PDF
+                </a>
+                <a
+                  href={ex.musicXml}
+                  download
+                  className="rounded-lg border border-line-primary px-4 py-2 font-body text-sm text-ink-secondary transition-colors hover:text-ink-primary"
+                >
+                  Download MusicXML
+                </a>
+                <a
+                  href={ex.midi}
+                  download
+                  className="rounded-lg border border-line-primary px-4 py-2 font-body text-sm text-ink-secondary transition-colors hover:text-ink-primary"
+                >
+                  Download MIDI
                 </a>
               </div>
+              <p className="mt-2 font-body text-xs text-ink-tertiary">
+                MusicXML opens in MuseScore and Logic Pro. Use MIDI for GarageBand.
+              </p>
             </div>
             <a
               href={ex.pdf}

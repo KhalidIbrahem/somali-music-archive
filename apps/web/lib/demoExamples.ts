@@ -18,6 +18,8 @@ export interface TranscriptionExample {
   readonly source: string;
   readonly durationSec: number;
   readonly pdf: string;
+  readonly musicXml: string;
+  readonly midi: string;
   readonly preview: { readonly src: string; readonly width: number; readonly height: number };
   readonly tonic: string;
   /** The five scale degrees the pipeline fitted, in cents above the tonic. */
@@ -36,6 +38,8 @@ export const TRANSCRIPTION_EXAMPLES: readonly TranscriptionExample[] = [
     source: 'solo oud (kaban), a private qaraami collection, full recording',
     durationSec: 242,
     pdf: '/demos/scores/oud_02_aha_aha.pdf',
+    musicXml: '/demos/scores/oud_02_aha_aha.musicxml',
+    midi: '/demos/scores/oud_02_aha_aha.mid',
     preview: { src: '/demos/scores/oud_02_aha_aha.png', width: 1400, height: 1812 },
     tonic: 'A',
     scaleCents: [0, 302, 496, 800, 1005],
@@ -50,6 +54,8 @@ export const TRANSCRIPTION_EXAMPLES: readonly TranscriptionExample[] = [
     source: 'solo oud (kaban), a private qaraami collection, full recording',
     durationSec: 372,
     pdf: '/demos/scores/oud_04_kaban_wadada.pdf',
+    musicXml: '/demos/scores/oud_04_kaban_wadada.musicxml',
+    midi: '/demos/scores/oud_04_kaban_wadada.mid',
     preview: { src: '/demos/scores/oud_04_kaban_wadada.png', width: 1400, height: 1812 },
     tonic: 'A',
     scaleCents: [0, 313, 503, 709, 1016],
@@ -64,6 +70,8 @@ export const TRANSCRIPTION_EXAMPLES: readonly TranscriptionExample[] = [
     source: 'voice and oud separated first (Demucs), 30-second excerpt of a band recording',
     durationSec: 30,
     pdf: '/demos/scores/band_e0e0a1425885_seg000.pdf',
+    musicXml: '/demos/scores/band_e0e0a1425885_seg000.musicxml',
+    midi: '/demos/scores/band_e0e0a1425885_seg000.mid',
     preview: { src: '/demos/scores/band_e0e0a1425885_seg000.png', width: 1400, height: 1812 },
     tonic: 'F',
     scaleCents: [0, 199, 403, 703, 904],
