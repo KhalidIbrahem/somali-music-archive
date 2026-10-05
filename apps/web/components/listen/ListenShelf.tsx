@@ -164,7 +164,7 @@ export function ListenShelf(): React.JSX.Element {
         <div className="mt-3 rounded-[4px] border border-dashed border-hairline bg-chrome-1 px-5 py-4 text-[13px] leading-relaxed text-mid">
           <p>
             No recording is served on this site yet. The archive&apos;s source recordings are held
-            for research: the Harvard Loeb Music Library collection is research-only and never
+            for research: the archival cassette collection is research-only and never
             appears here, and the privately shared oud (kaban) collection waits for its written
             consent record before any of it is published. Rights-clear recordings will be listed in
             this section, each with its source stated, as they are cleared.
