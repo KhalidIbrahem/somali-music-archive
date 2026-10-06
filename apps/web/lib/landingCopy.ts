@@ -46,10 +46,10 @@ export const landingCopy = {
   sections: [
     {
       id: 'tapes',
-      kicker: 'The problem',
+      kicker: 'Radio Hargeisa & the archive',
       title:
-        'For generations, qaraami lived only through oral tradition, live performance, and aging cassette tapes.',
-      body: 'Qaraami lived in voices and reels, never on paper. The tape hiss grows louder every year; the people who carry the melodies grow older. A tradition remembered by only a few is one silence away from ending — and what was never written down can still be lost.',
+        'For generations, qaraami lived in voices, live performances, and the master reels of Radio Hargeisa.',
+      body: 'Born in Hargeisa with the 1943 invention of the Balwo and broadcast on Radio Hargeisa, classical Somali music lived on magnetic reels and cassettes. In 1988, station custodians heroically buried thousands of master tapes underground to save them from bombardment. Today, the hiss grows louder and magnetic tape decays — what was saved from the sands must now be written into score before it fades.',
     },
     {
       id: 'writing',

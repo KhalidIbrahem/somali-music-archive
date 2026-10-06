@@ -30,7 +30,7 @@ const PROVIDERS = MODEL_TIERS;
 
 /** Prompt starters rooted in the archive's genres — a nudge, not a constraint. */
 const STARTERS: ReadonlyArray<{ label: string; prompt: string }> = [
-  { label: 'Qaraami', prompt: 'A gentle qaraami love song with solo oud, 1960s Mogadishu style' },
+  { label: 'Qaraami', prompt: 'A gentle qaraami love song with solo oud, 1960s Radio Hargeisa style' },
   { label: 'Dhaanto', prompt: 'An upbeat dhaanto with hand claps and call-and-response vocals' },
   { label: 'Heello', prompt: 'A golden-age heello with full band, flute lines and warm vocals' },
   { label: 'Buraanbur', prompt: 'A celebratory buraanbur rhythm with frame drums and ululation' },

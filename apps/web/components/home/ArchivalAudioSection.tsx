@@ -115,7 +115,7 @@ export function ArchivalAudioSection(): React.JSX.Element {
           </h2>
           <p className="mt-3 leading-relaxed text-mid">
             Seven authentic archival takes from the private Qaraami collection. Unhurried solo kaban
-            (oud) improvisations, classical heelo melodies, and poetic balwo verses preserved with
+            (oud) improvisations, classical heelo melodies, and poetic balwo verses in the golden Radio Hargeisa tradition, preserved with
             their natural acoustic warmth.
           </p>
         </div>
@@ -151,7 +151,7 @@ export function ArchivalAudioSection(): React.JSX.Element {
               </p>
               <p className="text-[11px] leading-relaxed text-low">
                 Shanqadha xadhkaha kabanka iyo codkii qaraamiga — waa dhaxal ma-guuraan ah oo facba
-                fac u gudbinaya kaydka suugaanta iyo dhaqanka Soomaaliyeed.
+                fac u gudbinaya kaydka suugaanta iyo dhaqanka Soomaaliyeed ee Raadiyaha Hargeysa ku bilaabmay.
               </p>
               <div className="mt-3 flex items-center justify-between border-t border-hairline pt-3">
                 <span className="numeric text-[11px] tracking-wider text-low uppercase">
