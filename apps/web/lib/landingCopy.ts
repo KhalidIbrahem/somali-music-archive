@@ -17,20 +17,13 @@ export const landingCopy = {
   hero: {
     // Situation → stakes → turn. Author's story framing (build brief):
     // oral tradition, live performance, aging cassettes; never written down.
-    kicker: 'Qaraami — the golden age, 1970s–1980s',
+    kicker: 'Somali Music AI · The Golden Age of Qaraami',
     // Author's final copy (website-v1, 2026-09-27) — verbatim.
     headline: 'A music this beautiful, with no sheet to play from.',
-    sub: 'When my teacher and I went looking for Somali sheet music, there was none. So I combined AI and my own music training so people and machines can finally read, play, and understand Somali music.',
-    // Earlier lines kept for the record:
-    // headline: 'A nation’s memory, held together by cassette tape.'
-    // sub: 'Almost none of it was ever written into sheet music — and the recordings are decaying a little more each year.'
-    // turn: 'Until now.' — dropped: the new subline already lands the turn.
-    // The three pillars, named in the author's own master-plan brief
-    // (2026-08-08): "transcription of 1950s qaraami scores, playable sheet
-    // music, and a professional DAW dedicated to Somali music."
+    sub: 'When my teacher and I went looking for Somali sheet music, there was none. So I built Somali Music AI — combining artificial intelligence and traditional music training so people and machines can finally generate, transcribe, and understand Somali music.',
     pillars: [
-      'Transcription of 1950s qaraami scores',
-      'Playable sheet music',
+      'Somali Music AI generation & transcription',
+      'Playable sheet music from Radio Hargeisa tapes',
       'A professional studio (DAW) dedicated to Somali music',
     ],
   },
@@ -97,9 +90,8 @@ export const landingCopy = {
   },
 
   closing: {
-    title: 'Preserve, understand, and extend Somali musical heritage.',
-    body: 'Nothing here will ever be lost again.',
-    // alt body: 'The tapes will not wait. The writing down has begun.'
+    title: 'Preserve, generate, and extend Somali musical heritage with AI.',
+    body: 'The world’s first Somali Music AI platform. Nothing here will ever be lost again.',
     primaryCta: 'Open the studio',
     secondaryCta: 'Enter the listening room',
     noteHint: 'End on a single held note',

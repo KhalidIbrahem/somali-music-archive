@@ -19,9 +19,16 @@ import { flags } from '@/lib/flags';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/generate' },
-  title: 'Generate Somali Music with AI — QaraamiGenAI',
+  title: 'Somali Music AI Generator — Create Qaraami & Somali Songs | QaraamiGenAI',
   description:
-    'Generate with the fine-tuned MusicGen adapters served on the local generation service.',
+    'Generate authentic Somali music and Qaraami melodies with AI. Fine-tuned neural audio models rooted in traditional Somali pentatonic scales and Kaban acoustics.',
+  keywords: [
+    'somali music ai',
+    'Somali AI music generator',
+    'generate somali music',
+    'Somali music AI generator',
+    'qaraami ai',
+  ],
 };
 
 export default function GeneratePage(): React.JSX.Element {

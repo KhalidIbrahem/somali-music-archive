@@ -14,9 +14,16 @@ import { flags } from '@/lib/flags';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/transcribe' },
-  title: 'Somali Music Transcription & Sheet Music — QaraamiGenAI',
+  title: 'Somali Music AI Transcription — Convert Somali Audio to Sheet Music | QaraamiGenAI',
   description:
-    'Pentatonic-aware transcription: upload a recording, get sheet music that respects the Somali scale system instead of forcing Western keys.',
+    'AI-powered Somali music transcription: upload recordings and get sheet music respecting Somali pentatonic modes, exported to PDF, MIDI, and MusicXML.',
+  keywords: [
+    'somali music ai',
+    'Somali music transcription',
+    'Somali sheet music',
+    'Somali music notes',
+    'transcribe Somali music',
+  ],
 };
 
 export default function TranscribePage(): React.JSX.Element {

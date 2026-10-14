@@ -13,9 +13,16 @@ import gallery from '@/lib/gallery-clips.json';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/gallery' },
-  title: 'Gallery: AI-Generated Somali Songs and Oud — QaraamiGenAI',
+  title: 'Somali Music AI Gallery — AI-Generated Somali Songs & Audio | QaraamiGenAI',
   description:
-    'Every clip the QaraamiGen models generated: Somali songs with vocals and qaraami oud, all AI model output, unedited and unselected.',
+    'Explore the full gallery of AI-generated Somali songs, vocal melodies, and Kaban performances produced by QaraamiGenAI models.',
+  keywords: [
+    'somali music ai',
+    'Somali AI songs',
+    'AI Somali music gallery',
+    'Somali oud audio AI',
+    'qaraami ai gallery',
+  ],
 };
 
 interface GalleryClip {

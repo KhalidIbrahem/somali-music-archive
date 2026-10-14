@@ -16,14 +16,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority,
   });
   return [
-    page('/', 1, 'weekly'),
+    page('/', 1.0, 'weekly'),
+    page('/generate', 0.9, 'weekly'),
+    page('/transcribe', 0.9, 'weekly'),
     page('/listen', 0.9, 'weekly'),
-    page('/gallery', 0.9, 'weekly'),
-    page('/generate', 0.8, 'monthly'),
-    page('/transcribe', 0.8, 'monthly'),
-    page('/studio', 0.8, 'monthly'),
+    page('/studio', 0.9, 'weekly'),
+    page('/gallery', 0.8, 'weekly'),
+    page('/library', 0.7, 'monthly'),
     page('/scores/beerdilaacshe', 0.7, 'monthly'),
-    page('/library', 0.6, 'monthly'),
     page('/studio/score', 0.5, 'monthly'),
   ];
 }

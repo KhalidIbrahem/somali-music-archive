@@ -25,16 +25,18 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { DemoPlayer } from '@/components/home/DemoPlayer';
 import { ArchivalAudioSection } from '@/components/home/ArchivalAudioSection';
+import { SomaliMusicAiFaq } from '@/components/home/SomaliMusicAiFaq';
 import { RESEARCH_DEMOS } from '@/lib/demos';
 import { Reveal } from '@/components/Reveal';
 import { landingCopy as copy } from '@/lib/landingCopy';
+import { flags } from '@/lib/flags';
 import { LISTEN_SAMPLES } from '@/lib/demoExamples';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
-  title: 'Somali Music AI & Qaraami Archive — QaraamiGenAI',
+  title: 'Somali Music AI — Generate, Transcribe & Preserve Somali Music | QaraamiGenAI',
   description:
-    'For fifty years, Somali Qaraami lived only in performance and on aging cassettes. QaraamiGen is teaching artificial intelligence to hear it, understand it, and write it down — before it’s gone.',
+    'The premier Somali Music AI platform. Generate authentic Somali Qaraami songs, transcribe archival cassettes into sheet music, and compose with Kaban and Durbaan in our online studio.',
 };
 
 const sampleDir = join(process.cwd(), 'public/sample');
@@ -58,16 +60,22 @@ export default function Home(): React.JSX.Element {
       <main className="relative z-10">
         {/* ── Hero: silence, then the turn ─────────────────────────────────── */}
         <section className="mx-auto flex min-h-[82dvh] w-full max-w-4xl flex-col items-start justify-center px-4 py-20 sm:px-6 sm:py-24">
-          <p
-            className="hero-enter numeric text-xs tracking-[0.24em] text-accent-state uppercase"
+          <div
+            className="hero-enter flex items-center gap-2"
             style={{ '--enter-delay': '0ms' } as React.CSSProperties}
           >
-            {copy.hero.kicker}
-          </p>
+            <span className="h-1.5 w-1.5 rounded-full bg-accent-state" />
+            <p className="numeric text-xs tracking-[0.24em] text-accent-state uppercase">
+              {copy.hero.kicker}
+            </p>
+          </div>
           <h1
             className="hero-enter mt-6 max-w-3xl font-display text-4xl leading-[1.08] sm:text-5xl md:text-6xl"
             style={{ '--enter-delay': '90ms' } as React.CSSProperties}
           >
+            <span className="block text-accent-state text-sm sm:text-base font-body font-semibold tracking-[0.2em] uppercase mb-3">
+              The First Somali Music AI Platform
+            </span>
             {copy.hero.headline}
           </h1>
           <p
@@ -215,7 +223,7 @@ export default function Home(): React.JSX.Element {
                       </span>
                     </Link>
                     <Link
-                      href="/studio/score"
+                      href="/studio"
                       className="group flex items-center justify-between rounded-[4px] border border-hairline bg-chrome-1 px-5 py-4 transition-colors hover:border-accent-state focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none"
                     >
                       <span className="text-sm text-hi">The transcription studio</span>
@@ -229,6 +237,9 @@ export default function Home(): React.JSX.Element {
             </div>
           </section>
         ))}
+
+        {/* ── Somali Music AI Technology & FAQ ────────────────────────────── */}
+        <SomaliMusicAiFaq />
 
         {/* ── Stats: museum labels, not dashboards ─────────────────────────── */}
         <section className="border-t border-hairline">
@@ -254,7 +265,7 @@ export default function Home(): React.JSX.Element {
             <Reveal delay={150}>
               <div className="flex flex-wrap items-center justify-center gap-4">
                 <Link
-                  href="/studio"
+                  href={flags.daw ? '/daw' : '/studio'}
                   className="flex h-12 w-fit items-center rounded-[4px] bg-accent-state px-6 text-lg font-bold text-page transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-accent-live focus-visible:outline-none motion-reduce:transition-none"
                 >
                   {copy.closing.primaryCta}
