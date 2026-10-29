@@ -14,7 +14,9 @@ import { flags } from '@/lib/flags';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/transcribe' },
-  title: 'Somali Music AI Transcription — Convert Somali Audio to Sheet Music | QaraamiGenAI',
+  title: {
+    absolute: 'Somali Music AI Transcription — Convert Somali Audio to Sheet Music | QaraamiGenAI',
+  },
   description:
     'AI-powered Somali music transcription: upload recordings and get sheet music respecting Somali pentatonic modes, exported to PDF, MIDI, and MusicXML.',
   keywords: [

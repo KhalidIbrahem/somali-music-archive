@@ -9,7 +9,7 @@ import { StudioShell } from '@/components/studio/StudioShell';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/studio/score' },
-  title: 'Score — Studio — QaraamiGenAI',
+  title: { absolute: 'Score — Studio — QaraamiGenAI' },
   description:
     'Transcription studio: engraved score, audio, and the AI pipeline’s confidence, side by side.',
 };

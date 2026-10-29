@@ -3,7 +3,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { TeachStudio } from '@/components/teach/TeachStudio';
 
 export const metadata: Metadata = {
-  title: 'Teaching studio — QaraamiGenAI',
+  title: { absolute: 'Teaching studio — QaraamiGenAI' },
   description: 'Publish lessons and course material to the archive (educators).',
 };
 

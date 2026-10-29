@@ -13,7 +13,7 @@ import gallery from '@/lib/gallery-clips.json';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/gallery' },
-  title: 'Somali Music AI Gallery — AI-Generated Somali Songs & Audio | QaraamiGenAI',
+  title: { absolute: 'Somali Music AI Gallery — AI-Generated Somali Songs & Audio | QaraamiGenAI' },
   description:
     'Explore the full gallery of AI-generated Somali songs, vocal melodies, and Kaban performances produced by QaraamiGenAI models.',
   keywords: [

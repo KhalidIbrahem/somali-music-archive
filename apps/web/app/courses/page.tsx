@@ -3,7 +3,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { CoursesList } from '@/components/courses/CoursesList';
 
 export const metadata: Metadata = {
-  title: 'Courses — QaraamiGenAI',
+  title: { absolute: 'Courses — QaraamiGenAI' },
   description: 'Structured instrument courses built on the qaraami repertoire.',
 };
 

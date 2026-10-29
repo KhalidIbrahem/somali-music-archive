@@ -3,7 +3,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { Dashboard } from '@/components/dashboard/Dashboard';
 
 export const metadata: Metadata = {
-  title: 'Dashboard — QaraamiGenAI',
+  title: { absolute: 'Dashboard — QaraamiGenAI' },
   description: 'My Studio, Courses, Library, and platform administration.',
 };
 

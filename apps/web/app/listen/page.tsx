@@ -11,7 +11,9 @@ import { ListenShelf } from '@/components/listen/ListenShelf';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/listen' },
-  title: 'Listen to AI Somali Music — Qaraami & Radio Hargeisa Masters | QaraamiGenAI',
+  title: {
+    absolute: 'Listen to AI Somali Music — Qaraami & Radio Hargeisa Masters | QaraamiGenAI',
+  },
   description:
     'Listen to AI-generated Somali Qaraami music and explore historical archives from Radio Hargeisa. Hear neural model outputs with verified pentatonic score metrics.',
   keywords: [

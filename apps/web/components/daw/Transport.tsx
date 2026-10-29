@@ -16,6 +16,22 @@ import { BPM_MAX, BPM_MIN, type DawProject } from '@/lib/daw/types';
 import { PENTATONIC_MODES, ROOT_NAMES } from '@/lib/daw/scales';
 import type { UpdateFn } from './DawApp';
 
+/** Where the open project's latest edit lives. */
+export type SaveState = 'saving' | 'device' | 'synced';
+
+const SAVE_LABELS: Record<SaveState, string> = {
+  saving: 'saving…',
+  device: 'saved on this device',
+  synced: 'saved to account',
+};
+
+const SAVE_TITLES: Record<SaveState, string> = {
+  saving: 'Saving the latest edit',
+  device:
+    'Stored in this browser (IndexedDB), not on a server: clearing site data removes it. Export to keep a copy.',
+  synced: 'Stored in this browser and synced to your account',
+};
+
 export function Transport({
   project,
   engine,
@@ -41,7 +57,7 @@ export function Transport({
   project: DawProject;
   engine: DawEngine;
   transport: EngineSnapshot;
-  saveState: 'saved' | 'saving' | 'offline';
+  saveState: SaveState;
   exporting: boolean;
   recording: boolean;
   canUndo: boolean;
@@ -118,11 +134,11 @@ export function Transport({
           </button>
         )}
         <span
-          className={`numeric text-[9px] tracking-[0.14em] uppercase ${
-            saveState === 'offline' ? 'text-danger' : 'text-low'
-          }`}
+          className="numeric text-[9px] tracking-[0.14em] text-low uppercase"
+          title={SAVE_TITLES[saveState]}
+          role="status"
         >
-          {saveState === 'saving' ? 'saving…' : saveState === 'offline' ? 'offline copy' : 'saved'}
+          {SAVE_LABELS[saveState]}
         </span>
       </div>
 

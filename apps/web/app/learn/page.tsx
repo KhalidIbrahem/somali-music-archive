@@ -3,7 +3,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { LessonList } from '@/components/learn/LessonList';
 
 export const metadata: Metadata = {
-  title: 'Learn — QaraamiGenAI',
+  title: { absolute: 'Learn — QaraamiGenAI' },
   description:
     'Lessons and course material on Somali traditional music, written by the educators and researchers working with the archive.',
 };

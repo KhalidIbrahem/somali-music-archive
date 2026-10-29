@@ -19,7 +19,7 @@ import { flags } from '@/lib/flags';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/generate' },
-  title: 'Somali Music AI Generator — Create Qaraami & Somali Songs | QaraamiGenAI',
+  title: { absolute: 'Somali Music AI Generator — Create Qaraami & Somali Songs | QaraamiGenAI' },
   description:
     'Generate authentic Somali music and Qaraami melodies with AI. Fine-tuned neural audio models rooted in traditional Somali pentatonic scales and Kaban acoustics.',
   keywords: [

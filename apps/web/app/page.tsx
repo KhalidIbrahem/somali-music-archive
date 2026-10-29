@@ -34,7 +34,7 @@ import { LISTEN_SAMPLES } from '@/lib/demoExamples';
 
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
-  title: 'Somali Music AI — Generate, Transcribe & Preserve Somali Music | QaraamiGenAI',
+  title: { absolute: 'Somali Music AI — Generate, Transcribe & Preserve Somali Music | QaraamiGenAI' },
   description:
     'The premier Somali Music AI platform. Generate authentic Somali Qaraami songs, transcribe archival cassettes into sheet music, and compose with Kaban and Durbaan in our online studio.',
 };

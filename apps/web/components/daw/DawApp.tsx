@@ -100,6 +100,8 @@ import { ArrangeView } from './ArrangeView';
 import { PianoRoll } from './PianoRoll';
 import { StepSequencer } from './StepSequencer';
 import { Mixer } from './Mixer';
+import type { SaveState } from './Transport';
+import { PitchLens } from './PitchLens';
 // studio-io: content & import/export
 import { LoopBrowser, loopDropHandlers } from './LoopBrowser';
 import { ImportMenu } from './ImportMenu';
@@ -122,7 +124,7 @@ export interface RecordingInfo {
   startBeat: number;
 }
 
-type BottomTab = 'editor' | 'mixer';
+type BottomTab = 'editor' | 'mixer' | 'pitch';
 type FocusArea = 'arrange' | 'editor';
 
 export const ZOOM_MIN = 6;
@@ -164,7 +166,7 @@ export function DawApp(): React.JSX.Element {
   const [quantizeStrength, setQuantizeStrength] = useState(1);
   const [tab, setTab] = useState<BottomTab>('editor');
   const [bottomH, setBottomH] = useState(300);
-  const [saveState, setSaveState] = useState<'saved' | 'saving' | 'offline'>('saved');
+  const [saveState, setSaveState] = useState<SaveState>('device');
   const [transport, setTransport] = useState<EngineSnapshot>({ state: 'stopped', beat: 0 });
   const [exporting, setExporting] = useState(false);
   const [openList, setOpenList] = useState<ProjectListing[] | null>(null);
@@ -201,13 +203,15 @@ export function DawApp(): React.JSX.Element {
     setSaveState('saving');
     window.clearTimeout(localTimer.current);
     localTimer.current = window.setTimeout(() => {
-      void saveLocal(next).then(() => setSaveState('saved'));
+      void saveLocal(next).then(() => setSaveState('device'));
     }, 1500);
     window.clearTimeout(serverTimer.current);
     serverTimer.current = window.setTimeout(() => {
       void pushToServer(next.id)
-        .then(() => setSaveState('saved'))
-        .catch(() => setSaveState('offline'));
+        .then(() => setSaveState('synced'))
+        // No account server reachable (the public site, or signed out): the
+        // IndexedDB copy is the save, so say where it lives — not an error.
+        .catch(() => setSaveState('device'));
     }, 8000);
   }, []);
 
@@ -1046,7 +1050,7 @@ export function DawApp(): React.JSX.Element {
           className="absolute -top-1 right-0 left-0 z-30 h-2 cursor-ns-resize touch-none"
         />
         <div className="flex h-8 items-center gap-1 border-b border-hairline px-2">
-          {(['editor', 'mixer'] as const).map((name) => (
+          {(['editor', 'mixer', 'pitch'] as const).map((name) => (
             <button
               key={name}
               type="button"
@@ -1058,7 +1062,7 @@ export function DawApp(): React.JSX.Element {
               {name}
             </button>
           ))}
-          {tab === 'editor' && primaryFound ? (
+          {tab !== 'mixer' && primaryFound ? (
             <span className="numeric ml-2 truncate text-[10px] text-low">
               {primaryFound.track.name} ·{' '}
               {primaryFound.region.kind === 'audio' ? primaryFound.region.name : 'MIDI region'} ·
@@ -1073,6 +1077,23 @@ export function DawApp(): React.JSX.Element {
         <div className="h-[calc(100%-2rem)]">
           {tab === 'mixer' ? (
             <Mixer project={project} engine={engine} onUpdate={(m) => update(m, 'mixer')} />
+          ) : tab === 'pitch' ? (
+            primaryAudio !== null ? (
+              <PitchLens
+                engine={engine}
+                region={primaryAudio.region}
+                secPerBeat={secPerBeat}
+                onUpdate={update}
+                onNotice={flash}
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center px-6 text-center">
+                <p className="max-w-xl text-sm text-low">
+                  Select an audio region to measure its pitch: import a recording (Import → audio),
+                  record a take, or drag a QaraamiGen loop from Loops onto the timeline.
+                </p>
+              </div>
+            )
           ) : primaryAudio !== null && primary !== null ? (
             <AudioRegionInspector
               region={primaryAudio.region}
