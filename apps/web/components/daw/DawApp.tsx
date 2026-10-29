@@ -102,6 +102,7 @@ import { StepSequencer } from './StepSequencer';
 import { Mixer } from './Mixer';
 import type { SaveState } from './Transport';
 import { PitchLens } from './PitchLens';
+import { GeneratePanel } from './GeneratePanel';
 // studio-io: content & import/export
 import { LoopBrowser, loopDropHandlers } from './LoopBrowser';
 import { ImportMenu } from './ImportMenu';
@@ -124,7 +125,7 @@ export interface RecordingInfo {
   startBeat: number;
 }
 
-type BottomTab = 'editor' | 'mixer' | 'pitch';
+type BottomTab = 'editor' | 'mixer' | 'pitch' | 'generate';
 type FocusArea = 'arrange' | 'editor';
 
 export const ZOOM_MIN = 6;
@@ -1050,7 +1051,7 @@ export function DawApp(): React.JSX.Element {
           className="absolute -top-1 right-0 left-0 z-30 h-2 cursor-ns-resize touch-none"
         />
         <div className="flex h-8 items-center gap-1 border-b border-hairline px-2">
-          {(['editor', 'mixer', 'pitch'] as const).map((name) => (
+          {(['editor', 'mixer', 'pitch', 'generate'] as const).map((name) => (
             <button
               key={name}
               type="button"
@@ -1062,7 +1063,7 @@ export function DawApp(): React.JSX.Element {
               {name}
             </button>
           ))}
-          {tab !== 'mixer' && primaryFound ? (
+          {(tab === 'editor' || tab === 'pitch') && primaryFound ? (
             <span className="numeric ml-2 truncate text-[10px] text-low">
               {primaryFound.track.name} ·{' '}
               {primaryFound.region.kind === 'audio' ? primaryFound.region.name : 'MIDI region'} ·
@@ -1077,6 +1078,8 @@ export function DawApp(): React.JSX.Element {
         <div className="h-[calc(100%-2rem)]">
           {tab === 'mixer' ? (
             <Mixer project={project} engine={engine} onUpdate={(m) => update(m, 'mixer')} />
+          ) : tab === 'generate' ? (
+            <GeneratePanel playheadBeat={transport.beat} onUpdate={update} onNotice={flash} />
           ) : tab === 'pitch' ? (
             primaryAudio !== null ? (
               <PitchLens
