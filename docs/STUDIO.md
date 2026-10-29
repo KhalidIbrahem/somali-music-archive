@@ -63,6 +63,11 @@ records the architecture, what works, and what is next. Updated 2026-10-29
   0.95, new audio track; `harvard_raw` and `large` not offered.
 - Production build served with `next start`: Generate shows the not-connected
   state, Pitch its empty state.
+- Account sync gate (`lib/daw/syncPolicy.ts`, 4 tests, web total 125): a
+  production build without `NEXT_PUBLIC_API_URL`, with a stored token, an edit
+  and 11 s past the sync timer, made 0 requests to `/api/v1/` (label "saved on
+  this device"); the same flow in a build with the URL set made 4
+  `/studio/projects` requests.
 
 ## Known limitations
 
@@ -75,9 +80,8 @@ records the architecture, what works, and what is next. Updated 2026-10-29
 - Practice playback is separate from the transport (no sync with other tracks).
 - MIDI cannot hold the measured cents; the melody track rounds to semitones,
   the deviations stay in the Pitch tab.
-- The browser still calls `localhost:3001` for account sync in builds without
-  `NEXT_PUBLIC_API_URL`; the error is swallowed, but production should skip
-  the call (see next step).
+- Deleting a synced project while signed out removes only the local copy; the
+  server copy reappears in the open dialog after signing in.
 - ESLint does not run: `eslint-config-next` at the repo root cannot resolve
   `next/dist/compiled/babel/eslint-parser` (Next is only in `apps/web/node_modules`).
   CI does not lint the web app.
@@ -86,8 +90,8 @@ records the architecture, what works, and what is next. Updated 2026-10-29
 
 ## Next engineering step
 
-Make the account sync conditional: in `lib/api.ts` / `projectStore.ts`, skip
-server calls when `NEXT_PUBLIC_API_URL` is unset in a production build, with a
-test. Then: a Learn panel built only from documented material (the
+Done: account sync only runs when the build has an API server (or is a dev
+build) and the visitor is signed in (`canSync()` in `projectStore.ts`). Next: a
+Learn panel built only from documented material (the
 Beerdilaacshe score and transcription already in `public/`), a worker for the
 pitch analysis, and transport-synced slowed playback.

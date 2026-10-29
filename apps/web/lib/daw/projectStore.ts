@@ -15,10 +15,29 @@ import {
   listStudioProjects,
   saveStudioProject,
 } from '@/lib/api';
+import { getToken } from '@/lib/auth';
+import { accountSyncEnabled } from './syncPolicy';
 import type { DawProject } from './types';
 
 const DB_NAME = 'qaraami-studio';
 const STORE = 'projects';
+
+/** Whether this visitor's build and session can reach the account server. */
+export function canSync(): boolean {
+  return accountSyncEnabled({
+    apiUrl: process.env['NEXT_PUBLIC_API_URL'],
+    nodeEnv: process.env.NODE_ENV,
+    token: getToken(),
+  });
+}
+
+/** Thrown by pushToServer when there is no account server to push to. */
+export class SyncUnavailableError extends Error {
+  constructor() {
+    super('account sync unavailable');
+    this.name = 'SyncUnavailableError';
+  }
+}
 
 interface StoredProject {
   /** Local key — equals the server id once the project has synced. */
@@ -93,6 +112,7 @@ export async function saveLocal(project: DawProject, serverId?: string): Promise
  * local id. Network failures leave the entry dirty — sync retries later.
  */
 export async function pushToServer(localId: string): Promise<string> {
+  if (!canSync()) throw new SyncUnavailableError();
   const entry = await localGet(localId);
   if (!entry) return localId;
   const { project } = entry;
@@ -125,10 +145,12 @@ export interface ProjectListing {
 export async function combinedList(): Promise<ProjectListing[]> {
   const locals = await localList();
   let server: { id: string; name: string; bpm: number; updatedAt: string }[] = [];
-  try {
-    server = await listStudioProjects();
-  } catch {
-    // Offline — local list still works.
+  if (canSync()) {
+    try {
+      server = await listStudioProjects();
+    } catch {
+      // Offline — local list still works.
+    }
   }
   const byId = new Map<string, ProjectListing>();
   for (const remote of server) {
@@ -151,10 +173,12 @@ export async function combinedList(): Promise<ProjectListing[]> {
 export async function openProject(id: string): Promise<DawProject | null> {
   const local = await localGet(id);
   let remote: { data: unknown } | null = null;
-  try {
-    remote = await getStudioProject(local?.serverId ?? id);
-  } catch {
-    remote = null;
+  if (canSync()) {
+    try {
+      remote = await getStudioProject(local?.serverId ?? id);
+    } catch {
+      remote = null;
+    }
   }
   const remoteProject =
     remote && typeof remote.data === 'object' && remote.data !== null
@@ -174,7 +198,7 @@ export async function openProject(id: string): Promise<DawProject | null> {
 export async function removeProject(localId: string): Promise<void> {
   const entry = await localGet(localId);
   await localDelete(localId);
-  if (entry?.serverId) {
+  if (entry?.serverId && canSync()) {
     try {
       await deleteStudioProject(entry.serverId);
     } catch {
