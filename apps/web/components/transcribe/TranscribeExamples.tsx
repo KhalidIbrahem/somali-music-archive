@@ -4,7 +4,8 @@
  * The public site has no transcription service behind it: the pipeline runs on
  * the research workstation. This page shows three of its scores, rendered
  * ahead of time as PDFs (first page previewed), with the scale the pipeline
- * fitted to each recording. No recording is included. Also: Beerdilaacshe,
+ * fitted to each recording. No recording is included. Above them, the
+ * in-browser transcriber (BrowserTranscriber) for the visitor's own audio. Also: Beerdilaacshe,
  * the hand-engraved score (playable MIDI), and an "open your own MusicXML"
  * viewer that engraves and plays a local file in the browser. Server component.
  */
@@ -12,6 +13,7 @@
 import Image from 'next/image';
 import { TRANSCRIPTION_EXAMPLES, formatClock } from '@/lib/demoExamples';
 import { siteCopy } from '@/lib/siteCopy';
+import { BrowserTranscriber } from './BrowserTranscriber';
 import { MidiPlay } from './MidiPlay';
 import { MusicXmlViewer } from './MusicXmlViewer';
 
@@ -23,11 +25,18 @@ export function TranscribeExamples(): React.JSX.Element {
         {siteCopy.transcribe.label}
       </h1>
       <p className="mt-3 max-w-2xl font-body text-ink-secondary">
-        The transcription pipeline runs on the research workstation, not on this site. Below are
-        three of its scores, rendered ahead of time. Each recording&apos;s scale is detected from
-        the audio itself and written in cents above the tonic; notes outside that scale are{' '}
-        <span className="text-danger">kept and marked</span> with their deviation, because ornaments
-        and microtonal inflections are music, not errors.
+        Write out the melody of any recording as sheet music, with the scale detected from the audio
+        itself and the tuning in cents. Notes outside that scale are{' '}
+        <span className="text-danger">kept and marked</span>, because ornaments and microtonal
+        inflections are music, not errors.
+      </p>
+
+      <BrowserTranscriber />
+
+      <h2 className="mt-12 font-display text-2xl text-ink-primary">From the research pipeline</h2>
+      <p className="mt-2 max-w-2xl font-body text-sm text-ink-secondary">
+        The full pipeline (CREPE pitch tracking, source separation) runs on the research
+        workstation. Three of its scores, rendered ahead of time:
       </p>
 
       <MusicXmlViewer />

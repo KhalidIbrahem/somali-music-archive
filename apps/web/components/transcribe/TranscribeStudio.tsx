@@ -11,6 +11,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { siteCopy } from '@/lib/siteCopy';
+import { BrowserTranscriber } from './BrowserTranscriber';
 
 const AI_URL = process.env['NEXT_PUBLIC_AI_URL'] ?? 'http://localhost:8000';
 const PC_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -275,6 +276,7 @@ export function TranscribeStudio(): React.JSX.Element {
           </div>
         </section>
       )}
+      <BrowserTranscriber />
     </main>
   );
 }

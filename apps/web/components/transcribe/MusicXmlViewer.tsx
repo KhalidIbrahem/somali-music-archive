@@ -8,20 +8,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { VerovioToolkit } from 'verovio/esm';
-
-let toolkitPromise: Promise<VerovioToolkit> | null = null;
-
-function getToolkit(): Promise<VerovioToolkit> {
-  toolkitPromise ??= (async () => {
-    const [{ default: createVerovioModule }, { VerovioToolkit: Toolkit }] = await Promise.all([
-      import('verovio/wasm'),
-      import('verovio/esm'),
-    ]);
-    return new Toolkit(await createVerovioModule());
-  })();
-  return toolkitPromise;
-}
+import { getToolkit } from '@/lib/verovio';
 
 const ACCEPT =
   '.musicxml,.xml,.mxl,application/vnd.recordare.musicxml+xml,application/vnd.recordare.musicxml';
