@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 import { Playfair_Display, Nunito, IBM_Plex_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { InAppBrowserBanner } from '@/components/InAppBrowserBanner';
+import { SilentModeAudio } from '@/components/SilentModeAudio';
 import { PlayerProvider } from '@/components/player/PlayerProvider';
 import { PlayerBar } from '@/components/player/PlayerBar';
 import { THEME_BOOTSTRAP_SCRIPT } from '@/lib/theme';
@@ -185,6 +186,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
         <ThemeProvider>
           <PlayerProvider>
             <InAppBrowserBanner />
+            <SilentModeAudio />
             {children}
             <PlayerBar />
           </PlayerProvider>
