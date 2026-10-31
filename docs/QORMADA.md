@@ -9,16 +9,16 @@ below the server pipeline. Added 2026-10-29 on branch `qormada-v1`.
 
 ## Pipeline
 
-| step | file | what it does |
-| --- | --- | --- |
-| decode | `components/transcribe/BrowserTranscriber.tsx` | `OfflineAudioContext.decodeAudioData`; 60 MB, 10 min per transcription |
-| melody pitch | `lib/qormada/melody.ts` | downmix to ~11 kHz, 4th-order 150 Hz high-pass, YIN with a 100 Hz floor (keeps the tracker off the bass), tuning offset, pentatonic fit, note segmentation (`lib/daw/pitch.ts`), lone octave slips moved back to their neighbours |
-| plucks | `lib/qormada/onsets.ts` | a held pitch is split where the level rises 6 dB over the recent minimum (repeated oud plucks) |
-| tempo | `lib/qormada/tempo.ts` | onset-strength envelope of the whole recording (3-band log-energy rise), autocorrelation at the beat lag + half weight at half/double lag, preference around 100 BPM; beat phase by comb search. Falls back to melody onsets. The musician can type the tempo |
-| rhythm | `lib/qormada/quantize.ts` | sixteenth grid from the beat phase, one note per step, gaps under a beat joined (legato, optional), rests, barline ties; values never cross a beat inside it, two-beat values and dotted quarters start on beats 1 or 3, rests use plain values |
-| notation | `lib/qormada/musicxml.ts` | MusicXML 4.0: nearest major key holding the pentatonic set (scale notes need no accidentals), diatonic spelling, accidentals once per bar, treble or bass clef by range, tempo mark, caption with scale and tuning, cents under notes ≥ 15 c off, off-scale notes in red |
-| engrave | `lib/verovio.ts` | Verovio WASM → SVG pages + MIDI (shared with the MusicXML viewer) |
-| options | `lib/qormada/sheet.ts` | tempo, 4/4 · 3/4 · 2/4, transpose ±12, cents on/off, keep off-scale notes, legato; re-runs without re-analysing |
+| step         | file                                           | what it does                                                                                                                                                                                                                                                             |
+| ------------ | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| decode       | `components/transcribe/BrowserTranscriber.tsx` | `OfflineAudioContext.decodeAudioData`; 60 MB, 10 min per transcription                                                                                                                                                                                                   |
+| melody pitch | `lib/qormada/melody.ts`                        | downmix to ~11 kHz, 4th-order 150 Hz high-pass, YIN with a 100 Hz floor (keeps the tracker off the bass), tuning offset, pentatonic fit, note segmentation (`lib/daw/pitch.ts`), lone octave slips moved back to their neighbours                                        |
+| plucks       | `lib/qormada/onsets.ts`                        | a held pitch is split where the level rises 6 dB over the recent minimum (repeated oud plucks)                                                                                                                                                                           |
+| tempo        | `lib/qormada/tempo.ts`                         | onset-strength envelope of the whole recording (3-band log-energy rise), autocorrelation at the beat lag + half weight at half/double lag, preference around 100 BPM; beat phase by comb search. Falls back to melody onsets. The musician can type the tempo            |
+| rhythm       | `lib/qormada/quantize.ts`                      | sixteenth grid from the beat phase, one note per step, gaps under a beat joined (legato, optional), rests, barline ties; values never cross a beat inside it, two-beat values and dotted quarters start on beats 1 or 3, rests use plain values                          |
+| notation     | `lib/qormada/musicxml.ts`                      | MusicXML 4.0: nearest major key holding the pentatonic set (scale notes need no accidentals), diatonic spelling, accidentals once per bar, treble or bass clef by range, tempo mark, caption with scale and tuning, cents under notes ≥ 15 c off, off-scale notes in red |
+| engrave      | `lib/verovio.ts`                               | Verovio WASM → SVG pages + MIDI (shared with the MusicXML viewer)                                                                                                                                                                                                        |
+| options      | `lib/qormada/sheet.ts`                         | tempo, 4/4 · 3/4 · 2/4, transpose ±12, cents on/off, keep off-scale notes, legato; re-runs without re-analysing                                                                                                                                                          |
 
 ## Verification (2026-10-29)
 
@@ -44,20 +44,29 @@ below the server pipeline. Added 2026-10-29 on branch `qormada-v1`.
 Bass-locking before and after the melody mode (median MIDI note of the
 transcription; notes 10+ semitones from it):
 
-| clip | prompt BPM | median, old → new | far notes, old → new | tempo, melody onsets → whole-recording envelope |
-| --- | --- | --- | --- | --- |
-| oud_000 | 121 | 62 → 62 | 4 → 1 | 119 → 120 |
-| oud_002 | 110 | 60 → 60 | 2 → 0 | 94.5 → 109 |
-| oud_003 | 144 | 62 → 57 | 4 → 3 | 108 → 73 (half) |
-| v4_epoch01_003 | 110 | 61 → 61 | 50 → 6 | 82.5 → 110 |
-| v4_epoch05_015 | 110 | 45 → 59 | 9 → 5 | 87.5 → 109 |
-| v4pool_001_15 | 110 | 42 → 61 | 31 → 1 | 112 → 111.5 |
-| v4pool_004_19 | 110 | 45 → 59 | 32 → 4 | 163.5 → 81.5 |
-| v4pool_007_23 | 110 | 42 → 58 | 9 → 2 | 96 → 109.5 |
+| clip           | prompt BPM | median, old → new | far notes, old → new | tempo, melody onsets → whole-recording envelope |
+| -------------- | ---------- | ----------------- | -------------------- | ----------------------------------------------- |
+| oud_000        | 121        | 62 → 62           | 4 → 1                | 119 → 120                                       |
+| oud_002        | 110        | 60 → 60           | 2 → 0                | 94.5 → 109                                      |
+| oud_003        | 144        | 62 → 57           | 4 → 3                | 108 → 73 (half)                                 |
+| v4_epoch01_003 | 110        | 61 → 61           | 50 → 6               | 82.5 → 110                                      |
+| v4_epoch05_015 | 110        | 45 → 59           | 9 → 5                | 87.5 → 109                                      |
+| v4pool_001_15  | 110        | 42 → 61           | 31 → 1               | 112 → 111.5                                     |
+| v4pool_004_19  | 110        | 45 → 59           | 32 → 4               | 163.5 → 81.5                                    |
+| v4pool_007_23  | 110        | 42 → 58           | 9 → 2                | 96 → 109.5                                      |
 
 Tempo within 2 BPM of the prompt: 2 of 8 before, 6 of 8 after (7 counting the
 half-tempo reading). The prompt is what the model was asked for, not a
 measured ground truth; n = 8, directional.
+
+## Accuracy (2026-10-31)
+
+Full evaluation, method and limits: [`docs/eval/QORMADA_EVAL.md`](eval/QORMADA_EVAL.md)
+(generated by `apps/ai-service/scripts/qormada_eval_report.py`). On vocadito (40 solo singers, two
+annotators) the transcriber reaches 93 % of the human inter-annotator note F1; on a 120-file
+synthetic Somali-style set, melody mode lifts note F1 from 0.47 to 0.82 and the tuning offset is
+read within about 2 cents. Since then melody mode chooses per recording between the direct and the
+high-passed pitch track (low singers were losing their fundamental).
 
 ## Limitations
 

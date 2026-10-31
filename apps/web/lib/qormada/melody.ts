@@ -1,7 +1,12 @@
 /**
  * Melody-focused analysis for transcription. In a full mix the pitch tracker
- * locks onto the bass, so before tracking, the downmix is high-passed and the
- * pitch floor raised to the melody's range. After segmentation, single notes
+ * locks onto the bass, so the downmix is also tracked high-passed with the
+ * pitch floor raised to the melody's range. When the two pitch tracks agree
+ * (one voice or instrument, nothing underneath) and the direct track hears at
+ * least as many voiced frames, the direct track is kept: the high-pass would
+ * cut a low singer's fundamental. Otherwise a bass is pulling the direct track
+ * away (or adds nothing) and the high-passed one is kept. Measured
+ * in docs/QORMADA_EVAL.md. After segmentation, single notes
  * that jump an octave away from their neighbours (a classic pitch-tracker
  * error) are moved back by the octave. Also returns an onset-strength envelope
  * of the whole recording (drum and pluck attacks) for the tempo estimate.
@@ -15,18 +20,47 @@ import {
   tuningOffset,
   type MeasuredNote,
   type PitchAnalysis,
+  type PitchFrame,
   type TrackOptions,
 } from '@/lib/daw/pitch';
 
 export const MELODY_FMIN_HZ = 100;
 export const HIGHPASS_HZ = 150;
 export const ENVELOPE_HOP_SEC = 0.01;
+/** Share of frames voiced in both tracks that must agree within 50 c to keep the direct track. */
+export const DIRECT_AGREEMENT = 0.9;
+
+export interface MelodyOptions extends TrackOptions {
+  /** High-pass cutoff before tracking (default HIGHPASS_HZ). */
+  highpassHz?: number;
+  /** Choose between the direct and high-passed tracks (default true); false = high-passed only. */
+  adaptive?: boolean;
+}
 
 export interface MelodyAnalysis extends PitchAnalysis {
   /** Onset strength per 10 ms hop over the analysed span. */
   envelope: Float32Array;
   /** Notes moved by an octave to rejoin their neighbours. */
   octaveFixes: number;
+  /** Which pitch track the notes come from. */
+  source: 'direct' | 'highpassed';
+  /** Agreement of the two tracks (null when only the high-passed one ran). */
+  agreement: number | null;
+}
+
+/** Share of frames voiced in both tracks whose pitches are within 50 cents. */
+export function trackAgreement(a: readonly PitchFrame[], b: readonly PitchFrame[]): number {
+  let both = 0;
+  let same = 0;
+  const n = Math.min(a.length, b.length);
+  for (let i = 0; i < n; i++) {
+    const x = a[i]!.hz;
+    const y = b[i]!.hz;
+    if (x === null || y === null) continue;
+    both++;
+    if (Math.abs(1200 * Math.log2(x / y)) < 50) same++;
+  }
+  return both === 0 ? 0 : same / both;
 }
 
 /** 2nd-order Butterworth high-pass (RBJ biquad), in place on a copy. */
@@ -129,13 +163,37 @@ export async function analyseMelody(
   channels: readonly Float32Array[],
   sampleRate: number,
   span: { startSec: number; endSec: number },
-  options: TrackOptions = {},
+  options: MelodyOptions = {},
 ): Promise<MelodyAnalysis> {
+  const { highpassHz = HIGHPASS_HZ, adaptive = true, onProgress, ...track } = options;
   const { samples, rate } = downmix(channels, sampleRate, span.startSec, span.endSec);
   const envelope = onsetEnvelope(samples, rate);
   // Two passes = 4th order (24 dB per octave): a 55 Hz bass drops to about 2 %.
-  const filtered = highpass(highpass(samples, rate, HIGHPASS_HZ), rate, HIGHPASS_HZ);
-  const frames = await trackPitch(filtered, rate, { fminHz: MELODY_FMIN_HZ, ...options });
+  const filtered = highpass(highpass(samples, rate, highpassHz), rate, highpassHz);
+  const share = adaptive ? 0.5 : 1;
+  const highpassed = await trackPitch(filtered, rate, {
+    fminHz: MELODY_FMIN_HZ,
+    ...track,
+    onProgress: (f) => onProgress?.(f * share),
+  });
+  let frames = highpassed;
+  let source: MelodyAnalysis['source'] = 'highpassed';
+  let agreement: number | null = null;
+  if (adaptive) {
+    // The direct track keeps the tracker's own low floor (a low singer's fundamental).
+    const directOptions: TrackOptions = {
+      ...track,
+      onProgress: (f) => onProgress?.(0.5 + f * 0.5),
+    };
+    delete directOptions.fminHz;
+    const direct = await trackPitch(samples, rate, directOptions);
+    agreement = trackAgreement(highpassed, direct);
+    const voiced = (fs: readonly PitchFrame[]): number => fs.filter((f) => f.hz !== null).length;
+    if (agreement >= DIRECT_AGREEMENT && voiced(direct) >= voiced(highpassed)) {
+      frames = direct;
+      source = 'direct';
+    }
+  }
   const offsetCents = tuningOffset(frames);
   const fit = fitPentatonic(frames, offsetCents);
   const raw = segmentNotes(frames, offsetCents, fit);
@@ -149,5 +207,7 @@ export async function analyseMelody(
     notes: moved,
     envelope,
     octaveFixes: fixes,
+    source,
+    agreement,
   };
 }

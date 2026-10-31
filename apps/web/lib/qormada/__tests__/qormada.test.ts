@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { MeasuredNote, PitchFrame } from '@/lib/daw/pitch';
-import { analyseMelody, fixOctaveJumps, highpass, onsetEnvelope } from '../melody';
+import { analyseMelody, fixOctaveJumps, highpass, onsetEnvelope, trackAgreement } from '../melody';
 import { keyFifths, spell, toMusicXml } from '../musicxml';
 import { splitRepeatedNotes } from '../onsets';
 import { decompose, quantize, type TimedNote } from '../quantize';
@@ -191,6 +191,32 @@ describe('melody mode', () => {
     const twice = (x: Float32Array): Float32Array => highpass(highpass(x, RATE, 150), RATE, 150);
     expect(rms(twice(bass))).toBeLessThan(0.03 * rms(bass));
     expect(rms(twice(tune))).toBeGreaterThan(0.9 * rms(tune));
+  });
+
+  it('measures how often two pitch tracks agree within 50 cents', () => {
+    const f = (hz: number | null): PitchFrame => ({ t: 0, hz, clarity: 1, db: -20 });
+    const a = [f(220), f(220), f(440), f(null), f(110)];
+    const b = [f(222), f(330), f(440), f(440), f(null)];
+    // Frames voiced in both: 3; within 50 c: 220/222 and 440/440.
+    expect(trackAgreement(a, b)).toBeCloseTo(2 / 3);
+  });
+
+  it('keeps the direct track for a low solo voice', async () => {
+    // Sung D2–A2 (73–110 Hz): the high-pass and the 100 Hz floor would lose it.
+    const tune = concat([40, 43, 45, 38, 40, 43].map((m) => pluck(m, 0.6)));
+    const a = await analyseMelody([tune], RATE, { startSec: 0, endSec: tune.length / RATE });
+    expect(a.source).toBe('direct');
+    expect(a.notes.map((n) => n.midi)).toContain(40);
+  });
+
+  it('keeps the high-passed track when a bass line sits under the melody', async () => {
+    const tune = concat([69, 72, 74, 76, 74, 72, 69, 67].map((m) => pluck(m, 0.5)));
+    const bass = concat([33, 33, 40, 40, 33, 33, 40, 40].map((m) => pluck(m, 0.5)));
+    const mix = tune.map((v, i) => v + 1.4 * (bass[i] ?? 0));
+    const a = await analyseMelody([mix], RATE, { startSec: 0, endSec: mix.length / RATE });
+    expect(a.source).toBe('highpassed');
+    const median = [...a.notes.map((n) => n.midi)].sort((x, y) => x - y)[a.notes.length >> 1]!;
+    expect(median).toBeGreaterThanOrEqual(67);
   });
 
   it('finds the tempo of a drum pattern from the onset envelope', () => {
