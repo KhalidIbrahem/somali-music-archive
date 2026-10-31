@@ -1,0 +1,182 @@
+{
+  "version": 1,
+  "salt": "qaraamigen-study-2026-11",
+  "loudnessLufs": -16,
+  "comparisons": [
+    {
+      "id": "oud",
+      "pairs": [
+        {
+          "pair": 0,
+          "clips": ["83f6da32acff", "d1428a55f8f0"]
+        },
+        {
+          "pair": 1,
+          "clips": ["3dadefc9b4bc", "9b7c6309dbe1"]
+        },
+        {
+          "pair": 2,
+          "clips": ["4454a8c82491", "50b46ee91910"]
+        },
+        {
+          "pair": 3,
+          "clips": ["b282881b9c4f", "c31967c8cca0"]
+        },
+        {
+          "pair": 4,
+          "clips": ["a2f1a7a2fd3c", "cc4713c7d1dd"]
+        },
+        {
+          "pair": 5,
+          "clips": ["0a9f4e2fbae2", "eaadfa33970a"]
+        },
+        {
+          "pair": 6,
+          "clips": ["30e8c946c444", "d601b3492366"]
+        },
+        {
+          "pair": 7,
+          "clips": ["0fe7ac988e0d", "eefc9980ab28"]
+        }
+      ]
+    },
+    {
+      "id": "cleanoud",
+      "pairs": [
+        {
+          "pair": 0,
+          "clips": ["2c5c8cd07802", "fb273df1cfba"]
+        },
+        {
+          "pair": 1,
+          "clips": ["14dd59915907", "5f068f7e3ce8"]
+        },
+        {
+          "pair": 2,
+          "clips": ["4b9a884b649d", "7356154c28b0"]
+        },
+        {
+          "pair": 3,
+          "clips": ["192ddaa17331", "9f4d90ae96ee"]
+        },
+        {
+          "pair": 4,
+          "clips": ["1b96183379d9", "5e354bc0d1ca"]
+        },
+        {
+          "pair": 5,
+          "clips": ["73ed10e1acc5", "758d1f088749"]
+        },
+        {
+          "pair": 6,
+          "clips": ["47ef179c025d", "c5d665971cba"]
+        },
+        {
+          "pair": 7,
+          "clips": ["1e9eb14d8553", "bfccb8c73090"]
+        },
+        {
+          "pair": 8,
+          "clips": ["1c58dcf3ace2", "bd642e9a6cfc"]
+        },
+        {
+          "pair": 9,
+          "clips": ["1c0ece5441e5", "f5af11b63dfc"]
+        },
+        {
+          "pair": 10,
+          "clips": ["3b89fbfbf571", "81d4aeb476e7"]
+        },
+        {
+          "pair": 11,
+          "clips": ["580015dce6c1", "de67c85f4ca4"]
+        },
+        {
+          "pair": 12,
+          "clips": ["ae363a73f089", "d3f1bed47853"]
+        },
+        {
+          "pair": 13,
+          "clips": ["1f688f0b67d5", "2f8a3bc0d5a1"]
+        },
+        {
+          "pair": 14,
+          "clips": ["3c9bdcee197d", "d75069460c72"]
+        },
+        {
+          "pair": 15,
+          "clips": ["eabe66816544", "f6513a46f4f4"]
+        }
+      ]
+    },
+    {
+      "id": "songs",
+      "pairs": [
+        {
+          "pair": 0,
+          "clips": ["67900fe8576b", "b88b4f94b167"]
+        },
+        {
+          "pair": 1,
+          "clips": ["c531811c80df", "e70f0f955c44"]
+        },
+        {
+          "pair": 2,
+          "clips": ["90d2aeb32d2c", "dbe7802f7034"]
+        },
+        {
+          "pair": 3,
+          "clips": ["03e6ef23df46", "b7a8eca4201e"]
+        },
+        {
+          "pair": 4,
+          "clips": ["a2a33525d942", "d42a25dd364a"]
+        },
+        {
+          "pair": 5,
+          "clips": ["080de110491c", "68d500ade621"]
+        },
+        {
+          "pair": 6,
+          "clips": ["73eb4fd5053c", "c8352cc943f7"]
+        },
+        {
+          "pair": 7,
+          "clips": ["0d7f76e93860", "a1203e58eb41"]
+        },
+        {
+          "pair": 8,
+          "clips": ["acfc3ee9f4a1", "b705543697ea"]
+        },
+        {
+          "pair": 9,
+          "clips": ["0adc14c06ee3", "0e1ed1c07dae"]
+        },
+        {
+          "pair": 10,
+          "clips": ["6fe1fb3a0acb", "80b37abdf21b"]
+        },
+        {
+          "pair": 11,
+          "clips": ["26cd0d555167", "77adb89bd3a7"]
+        },
+        {
+          "pair": 12,
+          "clips": ["075ee20e4c62", "53a7656eaf88"]
+        },
+        {
+          "pair": 13,
+          "clips": ["375610c934f4", "7e7bf4853d0d"]
+        },
+        {
+          "pair": 14,
+          "clips": ["423c68077178", "97e5fce510dd"]
+        },
+        {
+          "pair": 15,
+          "clips": ["4368117b5352", "bece1af8733f"]
+        }
+      ]
+    }
+  ]
+}

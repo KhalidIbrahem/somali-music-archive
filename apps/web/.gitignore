@@ -1,3 +1,6 @@
 # Large archival audio staged locally — not committed (see public/audio/README.md)
 .vercel
 .env*
+
+# Listening-study responses saved by the dev server (participants' answers, never committed)
+.study-responses.local.jsonl
