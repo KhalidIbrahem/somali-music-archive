@@ -1,0 +1,1114 @@
+{
+  "version": 1,
+  "updated": "2026-11-07",
+  "license": "CC-BY-4.0",
+  "entries": [
+    {
+      "id": "qaraami",
+      "term": "qaraami",
+      "variants": ["qaraamiga", "heesta qaraamiga", "qaraami music"],
+      "english": "classic Somali love-song style",
+      "category": "genre",
+      "definition": "The classic Somali popular song style of the 1940s–1970s: a sung melody over the kaban (oud), pentatonic and lyrical, built on balwo and heello love poetry. In present-day usage \"qaraami\" names both the repertoire of that era and the intimate oud-and-voice manner of performing it.",
+      "definitionSo": "Heesaha caanka ah ee Soomaalida ee 1940-aadkii ilaa 1970-aadkii: cod iyo kaban, laxan shan-dhawaaqle, oo ku dhisan gabayada balwada iyo heellada.",
+      "etymology": "From Arabic gharām (passion, love); the Somali word also means passionate love. Attested in dictionaries; the extension to the musical style is reported usage.",
+      "related": ["heello", "balwo", "kaban", "laxan", "hees"],
+      "tags": [
+        "love song",
+        "classic",
+        "golden age",
+        "oud song",
+        "traditional popular music",
+        "1950s",
+        "1960s",
+        "romantic",
+        "jacayl",
+        "heesta jacaylka"
+      ],
+      "sources": [
+        "Johnson, John William (1996), Heelloy: Modern Poetry and Songs of the Somali, Haan",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "reported",
+      "listen": {
+        "kind": "clip",
+        "url": "/demos/generated/v3final_004.mp3"
+      }
+    },
+    {
+      "id": "heello",
+      "term": "heello",
+      "variants": ["heellada", "heelloy", "hello"],
+      "english": "modern Somali song form (from the 1940s)",
+      "category": "form",
+      "definition": "The modern Somali song form that grew out of the balwo in the late 1940s and 1950s: longer, more elaborate texts set to new melodies, performed with instruments and broadcast by radio. Its name comes from the refrain \"heelloy heellelloy\" that opened early performances. Its rhythm family lives on in the studio's heello groove.",
+      "definitionSo": "Qaab heeseed casri ah oo ka soo baxay balwada dabayaaqadii 1940-aadkii; magaceedu ka yimid \"heelloy heellelloy\".",
+      "etymology": "Attested: from the vocable refrain \"heelloy heellelloy\" (Johnson 1996).",
+      "related": ["balwo", "qaraami", "hees", "idaacadda-hargeysa"],
+      "tags": ["modern song", "radio song", "refrain", "song form", "1950s", "hello song"],
+      "sources": [
+        "Johnson, John William (1996), Heelloy: Modern Poetry and Songs of the Somali, Haan"
+      ],
+      "confidence": "attested",
+      "listen": {
+        "kind": "groove",
+        "presetId": "heello"
+      }
+    },
+    {
+      "id": "balwo",
+      "term": "balwo",
+      "variants": ["balwada", "balwooy", "belwo"],
+      "english": "short love lyric (1940s)",
+      "category": "form",
+      "definition": "A short, two- to four-line love lyric sung to a simple melody, created around 1943–1945 and associated with Cabdi Deeqsi \"Sinimo\" in the Borama–Hargeysa area. The balwo brought secular love poetry to a mass public and was the seed of the heello and of modern Somali song.",
+      "definitionSo": "Gabay gaaban oo jacayl ah, laba ilaa afar tix, oo la heesaa; waxaa 1940-aadkii bilaabay Cabdi Deeqsi \"Sinimo\".",
+      "etymology": "Usually derived from Arabic balwā (misfortune, trial); reported, not settled.",
+      "related": ["heello", "qaraami", "cabdi-sinimo"],
+      "tags": [
+        "short poem",
+        "love lyric",
+        "miniature",
+        "two lines",
+        "origin of modern song",
+        "Sinimo",
+        "misfortune"
+      ],
+      "sources": [
+        "Johnson, John William (1996), Heelloy: Modern Poetry and Songs of the Somali, Haan",
+        "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry: An Introduction, Clarendon"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees",
+      "term": "hees",
+      "variants": ["heeso", "heesta", "heesaha"],
+      "english": "song",
+      "category": "form",
+      "definition": "A song: sung verse with a melody. In the classical division of Somali oral art, hees (light, sung, often danced verse) stands apart from maanso (weighty poetry recited rather than sung); modern hees since the heello has absorbed much of maanso's seriousness.",
+      "definitionSo": "Tix la heeso oo laxan leh; waxaa ka duwan maansada, oo ah gabay culus oo la tiriyo.",
+      "related": ["maanso", "heello", "hees-hawleed", "hees-carruureed", "laxan"],
+      "tags": ["song", "sung poem", "singing", "lyric", "tune", "music piece"],
+      "sources": [
+        "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry: An Introduction, Clarendon",
+        "Johnson, John William (1996), Heelloy"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "maanso",
+      "term": "maanso",
+      "variants": ["maansada", "maanso-yahan"],
+      "english": "serious (recited) poetry",
+      "category": "poetry",
+      "definition": "The weighty, authored poetry of the Somali tradition — gabay, geeraar, jiifto and related genres — composed by named poets and recited or chanted rather than sung and danced. The hees–maanso distinction is the classical dividing line of Somali oral literature.",
+      "definitionSo": "Gabayada culus ee abwaannada magacyada leh curiyaan oo la tiriyo; waxaa ka duwan heesta.",
+      "related": ["gabay", "geeraar", "jiifto", "hees", "abwaan"],
+      "tags": [
+        "classical poetry",
+        "recited verse",
+        "serious poem",
+        "oral literature",
+        "poet",
+        "epic"
+      ],
+      "sources": [
+        "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry: An Introduction, Clarendon"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "gabay",
+      "term": "gabay",
+      "variants": ["gabayga", "gabayo", "gabaygii"],
+      "english": "the classical long-line poem",
+      "category": "poetry",
+      "definition": "The most prestigious classical Somali poetic genre: long alliterative lines in a fixed metre, chanted on a few pitches by the poet, used for politics, philosophy and dispute. Not sung as a song, but its metre and alliteration shaped how later sung forms were written.",
+      "definitionSo": "Gabayga waa tixda ugu sharafta badan maansada Soomaalida: tixo dhaadheer, miisaan go'an iyo higgaad.",
+      "related": ["maanso", "miisaan", "higgaad", "geeraar", "jiifto"],
+      "tags": ["classical poem", "long line", "chant", "political poetry", "alliteration", "metre"],
+      "sources": [
+        "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry: An Introduction, Clarendon",
+        "Banti, Giorgio & Giannattasio, Francesco (1996), Music and metre in Somali poetry, in Voice and Power (SOAS)"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "geeraar",
+      "term": "geeraar",
+      "variants": ["geeraarka", "geeraaro"],
+      "english": "short-line war/horseback poem",
+      "category": "poetry",
+      "definition": "A classical genre of short lines, traditionally recited on horseback and linked to war and challenge; faster and more clipped than the gabay.",
+      "related": ["gabay", "maanso", "jiifto"],
+      "tags": ["war poem", "short lines", "horseback", "challenge", "classical genre"],
+      "sources": [
+        "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry: An Introduction, Clarendon"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "jiifto",
+      "term": "jiifto",
+      "variants": ["jiiftada", "jiifto rhythm"],
+      "english": "classical poem of short lines; a groove name in the studio",
+      "category": "poetry",
+      "definition": "A classical Somali poetic genre of short lines, less formal than the gabay and often used for political and social argument in the twentieth century. The studio uses \"jiifto\" as the name of a light frame-drum groove preset.",
+      "related": ["gabay", "geeraar", "maanso"],
+      "tags": ["short-line poem", "political verse", "classical genre", "groove preset"],
+      "sources": [
+        "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry: An Introduction, Clarendon"
+      ],
+      "confidence": "attested",
+      "listen": {
+        "kind": "groove",
+        "presetId": "jiifto"
+      }
+    },
+    {
+      "id": "buraanbur",
+      "term": "buraanbur",
+      "variants": ["buraanburka", "buraanburo", "buraambur"],
+      "english": "women's poetry, song and dance genre",
+      "category": "poetry",
+      "definition": "The principal genre of Somali women's verse: composed and performed by women, sung with clapping and drum and danced at weddings and celebrations; its texts range from praise and celebration to pointed social commentary.",
+      "definitionSo": "Gabayga haweenka Soomaaliyeed: waxaa la heesaa, la sacbiyaa, durbaan lagu garaacaa, oo arooska iyo xafladaha lagu ciyaaraa.",
+      "related": ["hees", "ciyaar", "durbaan", "dhaanto"],
+      "tags": [
+        "women's poetry",
+        "women's dance",
+        "wedding",
+        "clapping",
+        "celebration",
+        "female poets"
+      ],
+      "sources": [
+        "Kapteijns, Lidwien with Maryan Omar Ali (1999), Women's Voices in a Man's World: Women and the Pastoral Tradition in Northern Somali Orature, c. 1899–1980, Heinemann",
+        "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "dhaanto",
+      "term": "dhaanto",
+      "variants": ["dhaantada", "dhaanto dance", "dhanto"],
+      "english": "northern dance-song in a galloping rhythm",
+      "category": "dance",
+      "definition": "A dance-song genre of northern Somali pastoral culture, performed in lines or circles with clapping and call-and-response, in a swinging rhythm often said to echo a camel's gait. Revived as a popular stage and folk-dance form in the twentieth century and still widely performed.",
+      "definitionSo": "Ciyaar iyo hees reer-miyi ah oo waqooyiga Soomaalida ka soo jeeda; sacab iyo jawaab-celin, laxan socodka geela u eg.",
+      "etymology": "The link to the camel's gait is a widely repeated description, not a documented etymology.",
+      "related": ["ciyaar", "buraanbur", "hees"],
+      "tags": [
+        "folk dance",
+        "camel rhythm",
+        "gallop",
+        "clapping",
+        "call and response",
+        "pastoral",
+        "6/8 feel",
+        "line dance"
+      ],
+      "sources": [
+        "Wikipedia, Dhaanto",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state, in Proceedings of the Third International Congress of Somali Studies"
+      ],
+      "confidence": "reported",
+      "listen": {
+        "kind": "groove",
+        "presetId": "dhaanto"
+      }
+    },
+    {
+      "id": "saar",
+      "term": "saar",
+      "variants": ["saarka", "mingis", "boorane", "zar"],
+      "english": "spirit-possession ritual music and dance",
+      "category": "genre",
+      "definition": "Music and dance of spirit-possession ceremonies (the Horn-of-Africa zār complex), led by drums and repeated sung formulas that build toward trance. Regional forms carry their own names (for example mingis and boorane). A ritual repertoire, distinct from entertainment song.",
+      "definitionSo": "Muusig iyo ciyaar xafladaha saarka (ruuxaanta): durbaan iyo heeso soo noqnoqda oo gaarsiiya xaalad dareen-dhimis.",
+      "related": ["durbaan", "ciyaar"],
+      "tags": ["possession", "ritual", "trance", "zar", "healing ceremony", "drums", "spirits"],
+      "sources": [
+        "Lewis, I. M. (1998), Saints and Somalis: Popular Islam in a Clan-based Society, Haan",
+        "Wikipedia, Zār"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "batar",
+      "term": "batar",
+      "variants": ["batarka", "baatar"],
+      "english": "southern dance-song genre",
+      "category": "dance",
+      "definition": "A dance-song of the southern (inter-riverine and Benadir) Somali regions, performed to drums with group singing. Listed here as a regional genre name; its musical detail is poorly documented in the sources available to this project.",
+      "related": ["shirib", "ciyaar", "durbaan"],
+      "tags": ["southern dance", "Benadir", "drum dance", "regional genre"],
+      "sources": ["Wikipedia, Music of Somalia"],
+      "confidence": "uncertain"
+    },
+    {
+      "id": "shirib",
+      "term": "shirib",
+      "variants": ["shiribka"],
+      "english": "southern dance-song genre",
+      "category": "dance",
+      "definition": "A southern Somali dance-song genre with drumming and group singing, associated with the riverine regions. Named in surveys of Somali folk music; musical detail is not yet documented in this project's sources.",
+      "related": ["batar", "ciyaar"],
+      "tags": ["southern dance", "riverine", "group singing", "regional genre"],
+      "sources": ["Wikipedia, Music of Somalia"],
+      "confidence": "uncertain"
+    },
+    {
+      "id": "jaandheer",
+      "term": "jaandheer",
+      "variants": ["jaandheerka", "jaan-dheer"],
+      "english": "northern leaping dance",
+      "category": "dance",
+      "definition": "A vigorous northern Somali folk dance of high leaps and stamping in a group line, with clapping and sung verses; one of the dances staged by the national troupes.",
+      "related": ["dhaanto", "ciyaar"],
+      "tags": ["leaping dance", "jump", "stamping", "northern folk dance", "line"],
+      "sources": ["Wikipedia, Music of Somalia"],
+      "confidence": "uncertain"
+    },
+    {
+      "id": "ciyaar",
+      "term": "ciyaar",
+      "variants": ["cayaar", "ciyaarta", "ciyaaro", "cayaaro"],
+      "english": "dance; play; game",
+      "category": "dance",
+      "definition": "Dance, play or game; the general word for the group dances of the folk tradition (dhaanto, buraanbur, jaandheer and others), which are at once music, poetry and movement.",
+      "definitionSo": "Ciyaar: qoob-ka-ciyaar, ciyaar ama cayaar; erayga guud ee ciyaaraha dhaqanka.",
+      "related": ["dhaanto", "buraanbur", "jaandheer", "batar"],
+      "tags": ["dance", "folk dance", "play", "game", "qoob ka ciyaar", "movement"],
+      "sources": [
+        "Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary with English Index, Dunwoody"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-hawleed",
+      "term": "hees hawleed",
+      "variants": ["heesaha hawleed", "hees hawl", "work song"],
+      "english": "work song",
+      "category": "form",
+      "definition": "Songs sung to the rhythm of work — watering camels, pounding grain, weaving, herding — with simple repeating melodies and lines that set the pace of the task. A large and old part of the pastoral repertoire.",
+      "definitionSo": "Heeso la qaado marka hawl la qabanayo: geel-waraabin, hadhuudh-tun, reer-dhisid.",
+      "related": ["hees", "hobeey", "hees-carruureed"],
+      "tags": [
+        "work song",
+        "labour",
+        "camel watering",
+        "pounding",
+        "herding",
+        "pastoral",
+        "rhythm of work"
+      ],
+      "sources": [
+        "Kapteijns, Lidwien (1999), Women's Voices in a Man's World, Heinemann",
+        "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-carruureed",
+      "term": "hees carruureed",
+      "variants": ["heesaha carruurta", "hees carruur"],
+      "english": "children's song",
+      "category": "form",
+      "definition": "Children's songs and game rhymes, sung by and to children.",
+      "related": ["hobeey", "hees"],
+      "tags": ["children", "nursery", "game song", "kids"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "reported"
+    },
+    {
+      "id": "hobeey",
+      "term": "hobeey",
+      "variants": ["hoobeeyo", "hobeeyo", "hobey"],
+      "english": "lullaby",
+      "category": "form",
+      "definition": "A lullaby; also the soothing vocable (\"hobeey, hobeeyo\") that opens and fills the lullaby's lines. Mothers' lullabies are a recognised women's genre with their own tunes and imagery.",
+      "definitionSo": "Heesta hurdada ee carruurta lagu seexiyo; eraygan laftigiisa waa hadalka lagu hurdeysiiyo.",
+      "related": ["hees-carruureed", "hees", "buraanbur"],
+      "tags": ["lullaby", "cradle song", "sleep", "baby", "mother", "soothing"],
+      "sources": ["Kapteijns, Lidwien (1999), Women's Voices in a Man's World, Heinemann"],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-wadani",
+      "term": "hees wadani",
+      "variants": ["heesaha wadaniga", "hees waddani", "heesta wadaniyadda"],
+      "english": "patriotic song",
+      "category": "form",
+      "definition": "Patriotic and nationalist songs, a central strand of Somali music from the independence struggle of the 1950s onward; many of the best-known heello of Radio Hargeysa and Radio Muqdisho belong here.",
+      "definitionSo": "Heeso wadani ah oo ka hadlaya qaranka iyo xorriyadda; qayb muhiim ah oo heesaha 1950-aadkii.",
+      "related": ["heello", "cabdullaahi-qarshe", "idaacadda-hargeysa"],
+      "tags": ["patriotic", "nationalist", "independence", "anthem", "political song", "country"],
+      "sources": [
+        "Johnson, John William (1996), Heelloy, Haan",
+        "Samatar, Said S. (1982), Oral Poetry and Somali Nationalism, Cambridge University Press"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "qasiido",
+      "term": "qasiido",
+      "variants": ["qasiidada", "qasaa'id", "qasida"],
+      "english": "religious praise poem/hymn",
+      "category": "genre",
+      "definition": "Religious poetry in praise of God, the Prophet and the saints, chanted in Arabic or Somali, often at Sufi gatherings; a devotional repertoire with its own melodic formulas, separate from secular song.",
+      "related": ["dhikri", "masafo"],
+      "tags": ["religious", "hymn", "praise poem", "Sufi", "devotional", "chant", "Islamic"],
+      "sources": ["Lewis, I. M. (1998), Saints and Somalis, Haan"],
+      "confidence": "reported"
+    },
+    {
+      "id": "dhikri",
+      "term": "dhikri",
+      "variants": ["dhikriga", "sikr", "zikr"],
+      "english": "Sufi remembrance chant",
+      "category": "genre",
+      "definition": "The rhythmic communal chanting of God's names at Sufi gatherings, with swaying and sometimes frame drums; a devotional practice rather than entertainment music.",
+      "related": ["qasiido", "saar"],
+      "tags": ["Sufi", "chant", "remembrance", "zikr", "devotional", "religious gathering"],
+      "sources": ["Lewis, I. M. (1998), Saints and Somalis, Haan"],
+      "confidence": "reported"
+    },
+    {
+      "id": "masafo",
+      "term": "masafo",
+      "variants": ["masafada"],
+      "english": "religious didactic poem",
+      "category": "poetry",
+      "definition": "A genre of religious and moral poetry in Somali, composed by sheikhs and learned men for teaching.",
+      "related": ["qasiido", "maanso"],
+      "tags": ["religious poetry", "didactic", "teaching", "sheikh", "moral"],
+      "sources": ["Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry"],
+      "confidence": "attested"
+    },
+    {
+      "id": "riwaayad",
+      "term": "riwaayad",
+      "variants": ["riwaayadda", "riwaayado", "masraxiyad"],
+      "english": "musical play",
+      "category": "form",
+      "definition": "The Somali stage play, which from the 1950s to the 1980s was the main vehicle for new songs: a spoken drama interleaved with heello written for it, performed by troupes such as Waaberi. Many classic qaraami songs were first heard in a riwaayad.",
+      "definitionSo": "Masraxiyadda Soomaalida oo hadal iyo heeso isugu jira; heeso badan oo caan ah ayaa riwaayado ka soo baxay.",
+      "related": ["waaberi", "heello", "hoobal"],
+      "tags": ["theatre", "play", "drama with songs", "stage", "musical", "troupe"],
+      "sources": [
+        "Johnson, John William (1996), Heelloy, Haan",
+        "Mumin, Hassan Sheikh (1974), Leopard Among the Women (Shabeelnaagood), trans. B. W. Andrzejewski, Oxford University Press"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "kaban",
+      "term": "kaban",
+      "variants": ["kabanka", "kamaan", "cuud", "oud", "kaman"],
+      "english": "oud (short-necked lute)",
+      "category": "instrument",
+      "definition": "The oud: the fretless short-necked lute that became the lead melodic instrument of Somali urban song from the 1940s, played with a plectrum, with doubled courses tuned in fourths. Qaraami is above all a kaban-and-voice music.",
+      "definitionSo": "Kaban: aalad xadhkaysan oo cuud ah, aan farac lahayn, oo laxanka heesaha qaraamiga hogaamin jirtay tan iyo 1940-aadkii.",
+      "etymology": "Disputed. Forms kaban/kamaan point to a loan (Arabic kamān 'violin' is one proposal); not settled in the sources used here.",
+      "related": ["qaraami", "kabanle", "shareero", "cumar-dhuule"],
+      "tags": [
+        "oud",
+        "lute",
+        "string instrument",
+        "plucked",
+        "plectrum",
+        "fretless",
+        "ud",
+        "lead instrument"
+      ],
+      "sources": ["Johnson, John William (1996), Heelloy, Haan", "Wikipedia, Music of Somalia"],
+      "confidence": "attested",
+      "listen": {
+        "kind": "clip",
+        "url": "/demos/generated/oud_000.mp3"
+      }
+    },
+    {
+      "id": "shareero",
+      "term": "shareero",
+      "variants": ["shareerada", "shariiro", "kirar", "krar"],
+      "english": "Somali lyre",
+      "category": "instrument",
+      "definition": "The traditional Somali bowl lyre, usually with five or six strings, plucked or strummed to accompany song; the main indigenous string instrument before the kaban, now rare and the subject of revival efforts.",
+      "definitionSo": "Aalad xadhkaysan oo dhaqameed, shan ama lix xadhig, oo heesaha lagu wehelin jiray ka hor kabanka.",
+      "related": ["kaban", "durbaan"],
+      "tags": [
+        "lyre",
+        "harp",
+        "traditional string instrument",
+        "five strings",
+        "indigenous instrument",
+        "krar"
+      ],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "durbaan",
+      "term": "durbaan",
+      "variants": ["durbaanka", "durbaano", "durbaan-garaac"],
+      "english": "drum",
+      "category": "instrument",
+      "definition": "The drum, in particular the hand-struck frame or cylindrical drums that carry the pulse of folk dance, buraanbur and saar, and the percussion of modern bands. The studio's durbaan voice plays three strokes: dum (low), tak (rim) and slap.",
+      "definitionSo": "Durbaan: aaladda garaacda ee ciyaaraha iyo heesaha u dhawaaqda; istuudiyadu waxay leedahay saddex dharbaaxo: dum, tak iyo dharbaaxo.",
+      "related": ["garaac", "shambal", "buraanbur", "saar"],
+      "tags": ["drum", "percussion", "frame drum", "hand drum", "beat", "dum", "tak"],
+      "sources": [
+        "Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested",
+      "listen": {
+        "kind": "groove",
+        "presetId": "banaadiri"
+      }
+    },
+    {
+      "id": "shambal",
+      "term": "shambal",
+      "variants": ["shanbal", "shambalka", "shanbaal"],
+      "english": "wooden clappers",
+      "category": "instrument",
+      "definition": "Hand-held wooden clappers struck together to mark the beat in dances such as the dhaanto.",
+      "related": ["durbaan", "dhaanto", "garaac"],
+      "tags": ["clappers", "wood blocks", "percussion", "clap", "beat keeper"],
+      "sources": ["Wikipedia, Music of Somalia"],
+      "confidence": "uncertain"
+    },
+    {
+      "id": "buun",
+      "term": "buun",
+      "variants": ["buunka", "buun-afuuf"],
+      "english": "horn, trumpet",
+      "category": "instrument",
+      "definition": "A horn or trumpet — traditionally a conch or animal horn blown for signalling and ceremony; in modern Somali also the word for brass instruments.",
+      "related": ["durbaan"],
+      "tags": ["horn", "trumpet", "conch", "brass", "wind instrument", "signal"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "gitaar",
+      "term": "gitaar",
+      "variants": ["gitaarka", "giitaar"],
+      "english": "guitar",
+      "category": "instrument",
+      "definition": "The guitar, electric and acoustic, a staple of the Radio Muqdisho and Waaberi band sound of the 1960s–1980s alongside the kaban.",
+      "related": ["kaban", "waaberi"],
+      "tags": ["guitar", "electric guitar", "band instrument", "loanword"],
+      "sources": [
+        "Ostinato Records (2017), Sweet As Broken Dates: Lost Somali Tapes from the Horn of Africa, liner notes"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "biyaano",
+      "term": "biyaano",
+      "variants": ["biyaanaha", "piano", "kiiboodh", "keyboard"],
+      "english": "piano / keyboard",
+      "category": "instrument",
+      "definition": "Piano and, by extension, the electric organs and synthesizer keyboards heard in Somali band recordings from the 1970s onward.",
+      "related": ["gitaar", "waaberi"],
+      "tags": ["piano", "keyboard", "organ", "synth", "loanword"],
+      "sources": ["Ostinato Records (2017), Sweet As Broken Dates, liner notes"],
+      "confidence": "reported"
+    },
+    {
+      "id": "laxan",
+      "term": "laxan",
+      "variants": ["laxanka", "laxamo", "lahan", "laxamaysan"],
+      "english": "melody, tune",
+      "category": "theory",
+      "definition": "The melody or tune of a song, as distinct from its words (erayo) and its poet; also used for the melodic setting a composer gives to a poem (\"laxan u samee\" — to set to a tune). In qaraami the laxan is typically pentatonic and sung in a free, ornamented line over the kaban.",
+      "definitionSo": "Laxan: luuqda ama heesta dhawaaqeed ee erayada lagu qaado; abwaanka iyo laxamiistaha waa kala duwan.",
+      "related": ["luuq", "erayo", "laxamiiste", "cod"],
+      "tags": ["melody", "tune", "musical setting", "composition", "pentatonic", "air"],
+      "sources": [
+        "Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary",
+        "Johnson, John William (1996), Heelloy"
+      ],
+      "confidence": "attested",
+      "listen": {
+        "kind": "scale",
+        "mode": "minor-pentatonic",
+        "root": 9
+      }
+    },
+    {
+      "id": "luuq",
+      "term": "luuq",
+      "variants": ["luuqda", "luuqo", "luuqeyn"],
+      "english": "vocal line, tune, manner of singing",
+      "category": "theory",
+      "definition": "The sung line or tune, with a stress on the voice's own shaping of it — a singer's luuq is their melodic manner. Often paired with laxan; also used for the chant tune of recited poetry.",
+      "definitionSo": "Luuq: codka iyo habka heesaa ugu qaado laxanka; waxaa kaloo loola jeedaa luuqda gabayga lagu tiriyo.",
+      "related": ["laxan", "cod", "heesaa"],
+      "tags": ["vocal melody", "singing style", "chant tune", "voice line", "delivery"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "cod",
+      "term": "cod",
+      "variants": ["codka", "codad", "cod-qaad", "codkar"],
+      "english": "voice; vocal",
+      "category": "theory",
+      "definition": "Voice, sound, vote; in music the singing voice and, in studio language, a vocal take (cod = the vocal track, as in the archive's session files). Cod wanaagsan — a fine voice.",
+      "definitionSo": "Cod: dhawaaqa qofka, codka heesaaga; istuudiyada waa duubista codka heesaaga.",
+      "related": ["luuq", "heesaa", "duubis"],
+      "tags": ["voice", "vocal", "vocal take", "singer's voice", "sound"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "miisaan",
+      "term": "miisaan",
+      "variants": ["miisaanka", "miisaanka maansada", "miisaamo"],
+      "english": "metre (of verse)",
+      "category": "theory",
+      "definition": "The metre of a poem or song text: the fixed pattern of long and short vowels (moras) that each Somali genre follows. Scholars showed that these quantitative metres map onto musical rhythm when verse is sung or chanted.",
+      "definitionSo": "Miisaan: hannaanka shaqallada dhaadheer iyo gaagaaban ee tix walba oo nooc kasta oo maanso leeyahay.",
+      "related": ["higgaad", "gabay", "laxan", "garaac"],
+      "tags": ["metre", "meter", "prosody", "scansion", "mora", "vowel length", "rhythm of verse"],
+      "sources": [
+        "Banti, Giorgio & Giannattasio, Francesco (1996), Music and metre in Somali poetry, in R. J. Hayward & I. M. Lewis (eds.), Voice and Power, SOAS",
+        "Johnson, John William (1996), Heelloy"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "higgaad",
+      "term": "higgaad",
+      "variants": ["higgaadda", "xarafraac", "qaafiyad"],
+      "english": "alliteration",
+      "category": "theory",
+      "definition": "Alliteration: the rule that every line (or half-line) of a poem carries at least one word beginning with the poem's chosen sound. The defining ornament of Somali verse, kept in song lyrics as well.",
+      "definitionSo": "Higgaad: xaraf la doortay oo tix walba erey ku bilaabma ku jiro; qurxinta ugu weyn ee maansada iyo heesaha.",
+      "related": ["miisaan", "gabay", "erayo"],
+      "tags": ["alliteration", "initial rhyme", "sound pattern", "lyric rule", "poetic device"],
+      "sources": [
+        "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry",
+        "Johnson, John William (1996), Heelloy"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "erayo",
+      "term": "erayo",
+      "variants": ["erey", "ereyada", "erayada heesta", "hadalka heesta"],
+      "english": "lyrics, words",
+      "category": "theory",
+      "definition": "The words of a song. In Somali practice the lyricist (abwaan) and the composer of the tune (laxamiiste) are usually credited separately, and the singer is a third name.",
+      "definitionSo": "Ereyada heesta; abwaanka qoray, laxamiistaha laxanka sameeyay iyo heesaaga qaaday waa saddex qof oo kala duwan.",
+      "related": ["laxan", "abwaan", "laxamiiste", "higgaad"],
+      "tags": ["lyrics", "words", "text", "poem of a song", "libretto"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "garaac",
+      "term": "garaac",
+      "variants": ["garaaca", "garaacid", "durbaan-garaac"],
+      "english": "beat; to strike (a drum)",
+      "category": "rhythm",
+      "definition": "To strike or beat; the drum beat itself. Garaaca durbaanka is drumming; by extension the rhythmic pulse a dance or song moves to.",
+      "definitionSo": "Garaac: wax garaacid; garaaca durbaanka waa dhawaaqa iyo xawaaraha ciyaarta lagu socdo.",
+      "related": ["durbaan", "miisaan", "shambal"],
+      "tags": ["beat", "rhythm", "pulse", "drumming", "strike", "tempo", "groove"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "dhawaaq",
+      "term": "dhawaaq",
+      "variants": ["dhawaaqa", "dhawaaqyo", "dhawaaqid"],
+      "english": "sound; note",
+      "category": "theory",
+      "definition": "Sound, and in musical talk a pitch or note; dhawaaqyada laxanka — the notes of a melody.",
+      "related": ["laxan", "cod"],
+      "tags": ["sound", "note", "pitch", "tone", "audio"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "muusig",
+      "term": "muusig",
+      "variants": ["muusiko", "muusigga", "muusikada", "fanka muusiga"],
+      "english": "music",
+      "category": "theory",
+      "definition": "Music, as the general modern term (a loanword); traditional usage speaks instead of hees (song), ciyaar (dance) and the instruments.",
+      "related": ["hees", "fan"],
+      "tags": ["music", "loanword", "general term"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "fan",
+      "term": "fan",
+      "variants": ["fanka", "fanka Soomaaliyeed", "fanaan"],
+      "english": "art; the performing arts",
+      "category": "performance",
+      "definition": "Art, and specifically the Somali performing arts of song, music, dance and theatre as a public institution (\"fanka Soomaaliyeed\"). Its practitioners are fannaaniin.",
+      "related": ["fannaan", "hoobal", "riwaayad"],
+      "tags": ["art", "performing arts", "culture sector", "entertainment", "showbusiness"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "fannaan",
+      "term": "fannaan",
+      "variants": ["fanaan", "fannaanad", "fannaaniin", "fanaaniinta"],
+      "english": "artist, singer-performer",
+      "category": "people",
+      "definition": "An artist or performer — in practice a singer; fannaanad is the feminine form and fannaaniin the plural. The everyday word for a Somali musician.",
+      "definitionSo": "Fannaan: qof fanka ku shaqeeya, badanaa heesaa; fannaanad (dheddig), fannaaniin (wadar).",
+      "related": ["heesaa", "fan", "hoobal", "abwaan"],
+      "tags": ["artist", "singer", "performer", "musician", "entertainer", "female singer"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "heesaa",
+      "term": "heesaa",
+      "variants": ["heesaaga", "heesaad", "heesayaal", "heesaayaal"],
+      "english": "singer",
+      "category": "people",
+      "definition": "A singer (one who sings — heesaa from hees); heesaad for a woman singer.",
+      "related": ["fannaan", "cod", "luuq"],
+      "tags": ["singer", "vocalist", "voice", "lead singer"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "abwaan",
+      "term": "abwaan",
+      "variants": ["abwaanka", "abwaanno", "abwaannada"],
+      "english": "poet, lyricist",
+      "category": "people",
+      "definition": "A poet, and the usual credit for the author of a song's words; abwaan carries the prestige of the classical poet into modern song.",
+      "definitionSo": "Abwaan: gabyaa, qoraaga ereyada heesta.",
+      "related": ["erayo", "halabuur", "laxamiiste", "maanso"],
+      "tags": ["poet", "lyricist", "songwriter", "author of words", "bard"],
+      "sources": [
+        "Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary",
+        "Samatar, Said S. (1982), Oral Poetry and Somali Nationalism"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "halabuur",
+      "term": "halabuur",
+      "variants": ["hal-abuur", "halabuurka", "halabuurayaal", "hal-abuure"],
+      "english": "creator; creative artist",
+      "category": "people",
+      "definition": "Literally \"one who creates\": the creative artist in any of the verbal and musical arts — poet, composer, playwright, singer-songwriter. The broadest term for a maker of Somali art.",
+      "related": ["abwaan", "laxamiiste", "fannaan"],
+      "tags": ["creator", "composer", "artist", "creative", "songwriter", "playwright"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "laxamiiste",
+      "term": "laxamiiste",
+      "variants": ["laxamiye", "laxamiistaha", "laxan-sameeye"],
+      "english": "composer of melodies",
+      "category": "people",
+      "definition": "The composer who sets a poem to a tune (laxan); credited separately from the poet and the singer in Somali song.",
+      "definitionSo": "Laxamiiste: qofka laxanka u sameeya ereyada abwaanka.",
+      "related": ["laxan", "abwaan", "heesaa", "cabdullaahi-qarshe"],
+      "tags": ["composer", "melodist", "tune writer", "arranger"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "reported"
+    },
+    {
+      "id": "kabanle",
+      "term": "kabanle",
+      "variants": ["kabaniste", "kabanlaha", "kaban-garaace", "kaban-tumaha"],
+      "english": "oud player",
+      "category": "people",
+      "definition": "An oud player; the kabanle who accompanies and often leads the qaraami singer. Masters of the instrument such as Cumar Dhuule and Hudeydi are remembered by this title.",
+      "related": ["kaban", "cumar-dhuule", "hudeydi"],
+      "tags": ["oud player", "oudist", "lute player", "instrumentalist", "accompanist"],
+      "sources": ["Wikipedia, Music of Somalia"],
+      "confidence": "reported"
+    },
+    {
+      "id": "hoobal",
+      "term": "hoobal",
+      "variants": ["hobol", "hobollo", "hobollada", "hoobalka"],
+      "english": "performing artist; troupe member",
+      "category": "people",
+      "definition": "A performing artist of the stage — singer, actor, dancer — especially a member of one of the national troupes (Hobollada Waaberi). The plural hobollo names the troupe itself.",
+      "definitionSo": "Hoobal: fannaan masraxa ka ciyaara, gaar ahaan xubin ka tirsan kooxda qaranka; hobollo waa wadarta.",
+      "related": ["waaberi", "fannaan", "riwaayad"],
+      "tags": ["troupe", "ensemble member", "stage artist", "company", "national troupe"],
+      "sources": ["Johnson, John William (1996), Heelloy, Haan"],
+      "confidence": "attested"
+    },
+    {
+      "id": "koox",
+      "term": "koox",
+      "variants": ["kooxda", "kooxo", "kooxda muusikada", "kooxda fanka"],
+      "english": "band, group",
+      "category": "performance",
+      "definition": "A group or team; kooxda muusikada is a band, kooxda fanka a performing troupe.",
+      "related": ["hoobal", "waaberi"],
+      "tags": ["band", "group", "ensemble", "orchestra", "team"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "idaacadda-hargeysa",
+      "term": "Idaacadda Hargeysa",
+      "variants": ["Radio Hargeisa", "Radio Hargeysa", "Idaacadda Hargeisa", "Radio Kudu"],
+      "english": "Radio Hargeisa",
+      "category": "institution",
+      "definition": "The radio station of Hargeysa, founded in the 1940s under the British administration (Radio Kudu, later Radio Hargeisa), whose studios and broadcasts carried the balwo, the heello and the first qaraami stars to the whole Somali-speaking Horn. Its surviving master recordings are among the most important documents of Somali music.",
+      "definitionSo": "Idaacadda Hargeysa, la aasaasay 1940-aadkii; waxay faafisay balwada, heellada iyo heesaha qaraamiga.",
+      "related": ["idaacadda-muqdisho", "cabdullaahi-qarshe", "heello", "cajalad"],
+      "tags": [
+        "radio station",
+        "Hargeisa",
+        "broadcasting",
+        "archive masters",
+        "1940s",
+        "Somaliland",
+        "Radio Kudu"
+      ],
+      "sources": ["Johnson, John William (1996), Heelloy, Haan", "Wikipedia, Radio Hargeisa"],
+      "confidence": "attested"
+    },
+    {
+      "id": "idaacadda-muqdisho",
+      "term": "Idaacadda Muqdisho",
+      "variants": ["Radio Mogadishu", "Radio Muqdisho", "Radio Mogadiscio"],
+      "english": "Radio Mogadishu",
+      "category": "institution",
+      "definition": "The national radio of the south, founded in 1951 under the Italian trusteeship; from independence the state broadcaster whose archive of songs, plays and orchestral recordings documents Somali music from the 1950s to 1991.",
+      "related": ["idaacadda-hargeysa", "waaberi", "cajalad"],
+      "tags": ["radio station", "Mogadishu", "broadcasting", "state radio", "1951", "archive"],
+      "sources": [
+        "Wikipedia, Radio Mogadishu",
+        "Ostinato Records (2017), Sweet As Broken Dates, liner notes"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "waaberi",
+      "term": "Waaberi",
+      "variants": ["Hobollada Waaberi", "Waberi", "Kooxda Waaberi"],
+      "english": "the national performing troupe (1960s–1991)",
+      "category": "institution",
+      "definition": "Hobollada Waaberi (\"Dawn\"), the state-sponsored national troupe of singers, musicians, actors and dancers formed after independence, based at the National Theatre in Muqdisho. Most celebrated Somali singers of the 1960s–1980s were Waaberi members, and its plays and songs toured widely.",
+      "definitionSo": "Hobollada Waaberi: kooxda qaranka ee fannaaniinta, muusikiistayaasha iyo jilayaasha, 1960-aadkii ilaa 1991.",
+      "related": ["hoobal", "riwaayad", "idaacadda-muqdisho", "tiyaatarka-qaranka"],
+      "tags": [
+        "national troupe",
+        "dawn",
+        "state ensemble",
+        "Mogadishu",
+        "golden era band",
+        "orchestra"
+      ],
+      "sources": [
+        "Johnson, John William (1996), Heelloy, Haan",
+        "Ostinato Records (2017), Sweet As Broken Dates, liner notes"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "walaalo-hargeysa",
+      "term": "Walaalo Hargeysa",
+      "variants": ["Walaalaha Hargeysa", "Walaalo Hargeisa"],
+      "english": "pioneer Hargeysa ensemble (1950s)",
+      "category": "institution",
+      "definition": "The pioneering Hargeysa performing group of the 1950s associated with Cabdullaahi Qarshe and the first generation of radio singers and playwrights; a seedbed of the heello and of Somali theatre.",
+      "related": ["cabdullaahi-qarshe", "idaacadda-hargeysa", "heello"],
+      "tags": ["ensemble", "pioneers", "1950s", "Hargeisa group", "theatre troupe"],
+      "sources": ["Johnson, John William (1996), Heelloy, Haan"],
+      "confidence": "reported"
+    },
+    {
+      "id": "tiyaatarka-qaranka",
+      "term": "Tiyaatarka Qaranka",
+      "variants": ["Somali National Theatre", "Masraxa Qaranka", "National Theatre of Somalia"],
+      "english": "Somali National Theatre (Mogadishu, 1967)",
+      "category": "institution",
+      "definition": "The National Theatre in Muqdisho, opened in 1967, home of Waaberi and of the musical plays through which much of the classic song repertoire reached its public; destroyed in the civil war and partly rebuilt since 2012.",
+      "related": ["waaberi", "riwaayad"],
+      "tags": ["national theatre", "Mogadishu", "1967", "stage", "venue"],
+      "sources": ["Wikipedia, Somali National Theatre"],
+      "confidence": "reported"
+    },
+    {
+      "id": "hiddo-dhawr",
+      "term": "Hiddo Dhawr",
+      "variants": ["Hiddo-Dhawr", "Hido Dhawr"],
+      "english": "Hargeysa cultural venue for live traditional music",
+      "category": "institution",
+      "definition": "A cultural centre and live venue in Hargeysa, opened in 2014 by Sahra Halgan, dedicated to performing and teaching traditional Somali music; a rare present-day stage for the qaraami repertoire.",
+      "related": ["idaacadda-hargeysa", "qaraami"],
+      "tags": [
+        "cultural centre",
+        "live venue",
+        "Hargeisa",
+        "heritage",
+        "Sahra Halgan",
+        "preservation"
+      ],
+      "sources": ["Wikipedia, Sahra Halgan"],
+      "confidence": "reported"
+    },
+    {
+      "id": "cabdullaahi-qarshe",
+      "term": "Cabdullaahi Qarshe",
+      "variants": ["Abdullahi Qarshe", "Abdillahi Qarshe", "Cabdillaahi Qarshe", "Qarshe"],
+      "english": "composer, oud pioneer (1924–1994), \"father of Somali music\"",
+      "category": "people",
+      "definition": "Composer, poet, singer and kaban player (1924–1994) who set Somali verse to new melodies at Radio Hargeysa in the 1950s and is honoured as the father of modern Somali music; author of patriotic classics and of the melody Beerdilaacshe engraved in this archive.",
+      "definitionSo": "Abwaan, laxamiiste iyo kabanle (1924–1994) loo yaqaan aabbaha fanka Soomaaliyeed; Idaacadda Hargeysa 1950-aadkii.",
+      "related": [
+        "kaban",
+        "heello",
+        "hees-wadani",
+        "idaacadda-hargeysa",
+        "walaalo-hargeysa",
+        "laxamiiste"
+      ],
+      "tags": [
+        "father of Somali music",
+        "composer",
+        "pioneer",
+        "oud",
+        "Beerdilaacshe",
+        "patriotic songs",
+        "1950s"
+      ],
+      "sources": ["Johnson, John William (1996), Heelloy, Haan", "Wikipedia, Abdullahi Qarshe"],
+      "confidence": "attested"
+    },
+    {
+      "id": "cabdi-sinimo",
+      "term": "Cabdi Deeqsi \"Sinimo\"",
+      "variants": ["Abdi Sinimo", "Cabdi Sinimo", "Abdi Deeqsi"],
+      "english": "creator of the balwo (1940s)",
+      "category": "people",
+      "definition": "Lorry driver, poet and singer credited with inventing the balwo around 1943–1945 in the Borama area, from which the heello and modern Somali song descend.",
+      "related": ["balwo", "heello"],
+      "tags": ["balwo inventor", "pioneer", "Borama", "1940s", "driver poet"],
+      "sources": ["Johnson, John William (1996), Heelloy, Haan"],
+      "confidence": "attested"
+    },
+    {
+      "id": "cumar-dhuule",
+      "term": "Cumar Dhuule",
+      "variants": ["Omar Dhuule", "Cumar Dhuule Cali", "Omar Dule"],
+      "english": "qaraami singer and oud master (1941–2003)",
+      "category": "people",
+      "definition": "Singer and kaban master of Radio Hargeysa, remembered for his intricate picking and his definitive qaraami recordings over three decades.",
+      "related": ["kaban", "kabanle", "qaraami", "idaacadda-hargeysa"],
+      "tags": ["oud master", "qaraami singer", "Hargeisa", "virtuoso"],
+      "sources": ["Wikipedia, Omar Dhuule"],
+      "confidence": "reported"
+    },
+    {
+      "id": "maxamed-mooge",
+      "term": "Maxamed Mooge Liibaan",
+      "variants": ["Mohamed Mooge Liibaan", "Mohamed Mooge", "Mooge"],
+      "english": "singer, poet and oud player (1940s–1984)",
+      "category": "people",
+      "definition": "Celebrated singer, poet and kaban player of the Radio Hargeysa generation, whose love songs and patriotic songs remain central to the qaraami repertoire.",
+      "related": ["qaraami", "kaban", "idaacadda-hargeysa"],
+      "tags": ["singer", "oud", "poet", "Hargeisa", "love songs"],
+      "sources": ["Wikipedia, Mohamed Mooge Liibaan"],
+      "confidence": "reported"
+    },
+    {
+      "id": "magool",
+      "term": "Magool",
+      "variants": ["Xaliimo Khaliif Magool", "Halima Khalif Magool", "Halima Magool"],
+      "english": "leading female singer (1948–2004)",
+      "category": "people",
+      "definition": "Xaliimo Khaliif Omar \"Magool\" (1948–2004), among the most celebrated Somali women singers, a Waaberi star of the 1960s–1980s known for her powerful voice in love songs and patriotic songs.",
+      "related": ["waaberi", "heesaa", "fannaan"],
+      "tags": ["female singer", "diva", "Waaberi", "legend", "1970s"],
+      "sources": ["Wikipedia, Magool"],
+      "confidence": "reported"
+    },
+    {
+      "id": "maryan-mursal",
+      "term": "Maryan Mursal",
+      "variants": ["Maryam Mursal", "Maryan Mursal Isse"],
+      "english": "singer (b. 1950), Waaberi and world-music career",
+      "category": "people",
+      "definition": "Singer (born 1950) who rose in the Waaberi era, later recorded internationally (Real World Records, 1998), bringing Somali song to a world audience.",
+      "related": ["waaberi", "heesaa"],
+      "tags": ["female singer", "world music", "Real World Records", "diaspora"],
+      "sources": ["Wikipedia, Maryam Mursal"],
+      "confidence": "reported"
+    },
+    {
+      "id": "hasan-aadan-samatar",
+      "term": "Hasan Aadan Samatar",
+      "variants": ["Hassan Adan Samatar", "Xasan Aadan Samatar"],
+      "english": "singer (b. 1953), Waaberi star",
+      "category": "people",
+      "definition": "One of the most popular Somali male singers of the 1970s–1980s, a Waaberi member known for love songs and patriotic songs with the full radio orchestra.",
+      "related": ["waaberi", "heesaa"],
+      "tags": ["male singer", "Waaberi", "1970s", "1980s", "crooner"],
+      "sources": ["Wikipedia, Hasan Adan Samatar"],
+      "confidence": "reported"
+    },
+    {
+      "id": "hudeydi",
+      "term": "Hudeydi",
+      "variants": [
+        "Axmed Ismaaciil Xuseen Hudeydi",
+        "Ahmed Ismail Hussein Hudeidi",
+        "Hudeidi",
+        "the King of Oud"
+      ],
+      "english": "oud master (1928–2020), \"King of Oud\"",
+      "category": "people",
+      "definition": "Axmed Ismaaciil Xuseen \"Hudeydi\" (1928–2020), Somali oud master and composer, a founder of modern Somali music in the 1940s–1950s who later lived and taught in London; called the King of Oud.",
+      "related": ["kaban", "kabanle", "qaraami"],
+      "tags": ["oud master", "king of oud", "composer", "London", "1950s", "founder"],
+      "sources": ["Wikipedia, Ahmed Ismail Hussein"],
+      "confidence": "reported"
+    },
+    {
+      "id": "saado-cali",
+      "term": "Saado Cali Warsame",
+      "variants": ["Saado Ali Warsame", "Sado Ali Warsame"],
+      "english": "singer and politician (1950–2014)",
+      "category": "people",
+      "definition": "Singer of the Waaberi generation known for socially critical and patriotic songs, later a member of parliament; killed in Mogadishu in 2014.",
+      "related": ["waaberi", "hees-wadani"],
+      "tags": ["female singer", "political songs", "parliament", "Waaberi"],
+      "sources": ["Wikipedia, Saado Ali Warsame"],
+      "confidence": "reported"
+    },
+    {
+      "id": "cajalad",
+      "term": "cajalad",
+      "variants": ["cajaladda", "cajalado", "kaasiidh", "cassette"],
+      "english": "cassette tape",
+      "category": "production",
+      "definition": "The cassette tape — the medium through which Somali music circulated from the 1970s and in which most of the surviving record of the radio era was preserved and traded, before digitisation.",
+      "definitionSo": "Cajalad: kaasiidhka heesaha lagu duubi jiray oo 1970-aadkii ka dib lagu kala qaybsan jiray.",
+      "related": ["duubis", "kayd", "idaacadda-hargeysa"],
+      "tags": ["cassette", "tape", "analogue", "preservation", "medium", "recording"],
+      "sources": [
+        "Ostinato Records (2017), Sweet As Broken Dates, liner notes",
+        "Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "duubis",
+      "term": "duubis",
+      "variants": ["duub", "duuban", "duubista", "cod-duubis"],
+      "english": "recording (the act); to record",
+      "category": "production",
+      "definition": "Recording — duub (to wrap, to record) and duubis (a recording session or take). The studio's Record mode is duubis.",
+      "related": ["cod", "cajalad", "istuudiyo"],
+      "tags": ["record", "recording", "take", "capture", "tape"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "istuudiyo",
+      "term": "istuudiyo",
+      "variants": ["istuudiyaha", "studio", "istiyuudiyo"],
+      "english": "studio",
+      "category": "production",
+      "definition": "A recording or broadcast studio (loanword).",
+      "related": ["duubis", "idaacad"],
+      "tags": ["studio", "recording room", "control room"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "reported"
+    },
+    {
+      "id": "idaacad",
+      "term": "idaacad",
+      "variants": ["idaacadda", "idaacado", "raadiyo"],
+      "english": "radio station; broadcast",
+      "category": "institution",
+      "definition": "A broadcasting station, and broadcasting itself; the radio stations were the patrons, studios and archives of Somali music from the 1940s to 1991.",
+      "related": ["idaacadda-hargeysa", "idaacadda-muqdisho"],
+      "tags": ["radio", "broadcast", "station", "transmission"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "kayd",
+      "term": "kayd",
+      "variants": ["kaydka", "kaydin", "kaydka heesaha", "archive"],
+      "english": "archive, store",
+      "category": "production",
+      "definition": "A store or archive; kaydka heesaha is a song archive. The word this project uses for the archive of recordings it preserves.",
+      "related": ["cajalad", "hidde"],
+      "tags": ["archive", "collection", "repository", "store", "preservation"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "hidde",
+      "term": "hidde",
+      "variants": ["hiddaha", "hidde iyo dhaqan", "dhaqan"],
+      "english": "heritage; tradition and culture",
+      "category": "production",
+      "definition": "Heritage and tradition; paired with dhaqan (culture) in the set phrase hidde iyo dhaqan, the usual name for traditional culture and its music.",
+      "related": ["kayd", "ciyaar", "hees"],
+      "tags": ["heritage", "tradition", "culture", "folklore", "customs"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "suugaan",
+      "term": "suugaan",
+      "variants": ["suugaanta", "suugaan afeed", "suugaanta Soomaaliyeed"],
+      "english": "literature, oral literature",
+      "category": "poetry",
+      "definition": "Literature in the broad Somali sense, including the oral poetry and song that carried it before writing; the field in which hees and maanso are studied.",
+      "related": ["maanso", "hees", "gabay"],
+      "tags": ["literature", "oral tradition", "verbal art", "poetry studies"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "sacab",
+      "term": "sacab",
+      "variants": ["sacabka", "sacbin", "sacab-tun"],
+      "english": "hand clapping",
+      "category": "rhythm",
+      "definition": "Hand clapping, the basic percussion of Somali folk dance and of buraanbur and dhaanto, often in interlocking patterns between groups.",
+      "related": ["dhaanto", "buraanbur", "garaac"],
+      "tags": ["clap", "clapping", "hand percussion", "interlocking", "applause"],
+      "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
+      "confidence": "attested"
+    },
+    {
+      "id": "jawaab-celin",
+      "term": "jawaab-celin",
+      "variants": ["jawaabcelin", "hoggaamiye iyo jawaab", "call and response"],
+      "english": "call and response",
+      "category": "performance",
+      "definition": "Answering: the leader–chorus alternation that structures dhaanto, buraanbur and work songs, where a soloist's line is answered by the group. Used here as the descriptive term; folk usage names the roles rather than the device.",
+      "related": ["dhaanto", "buraanbur", "hees-hawleed"],
+      "tags": ["call and response", "leader and chorus", "antiphony", "answer", "refrain"],
+      "sources": ["Kapteijns, Lidwien (1999), Women's Voices in a Man's World"],
+      "confidence": "reported"
+    }
+  ]
+}

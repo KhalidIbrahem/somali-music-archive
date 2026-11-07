@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * DawApp (Studio v2) — the studio's root: owns the plain-data project, the
+ * DawApp (Studio v3) — the studio's root: owns the plain-data project, the
  * undo history, the engine instance, selection (regions, notes, track),
  * view state (zoom, track height, snap), keyboard shortcuts, musical typing,
  * Web MIDI input, recording, autosave (IndexedDB, 1.5 s debounce) and
@@ -104,9 +104,17 @@ import type { SaveState } from './Transport';
 import { PitchLens } from './PitchLens';
 import { GeneratePanel } from './GeneratePanel';
 // studio-io: content & import/export
-import { LoopBrowser, loopDropHandlers } from './LoopBrowser';
-import { ImportMenu } from './ImportMenu';
+import { loopDropHandlers } from './LoopBrowser';
 import { ExportDialog } from './ExportDialog';
+// Studio v3: Logic-style panes and the five modes
+import { LibraryRail, type LibraryTab } from './LibraryRail';
+import { Inspector } from './Inspector';
+import { PlaySurface } from './PlaySurface';
+import { RecordPanel } from './RecordPanel';
+import { LearnPanel, type LearnTab, type NoteEvent } from './LearnPanel';
+import { StartOverlay, type StudioMode } from './StartOverlay';
+import { Toolbar } from './Toolbar';
+import { useBreakpoint } from '@/lib/daw/useBreakpoint';
 
 /** A selected region (kept under its v1 name for existing importers). */
 export type Selection = RegionRef;
@@ -125,7 +133,25 @@ export interface RecordingInfo {
   startBeat: number;
 }
 
-type BottomTab = 'editor' | 'mixer' | 'pitch' | 'generate';
+type BottomTab = 'editor' | 'play' | 'record' | 'learn' | 'mixer' | 'pitch' | 'generate';
+const BOTTOM_TABS: readonly BottomTab[] = [
+  'editor',
+  'play',
+  'record',
+  'learn',
+  'mixer',
+  'pitch',
+  'generate',
+];
+const START_PREF_KEY = 'sma.studio.start';
+
+function readStartPref(): boolean {
+  try {
+    return window.localStorage.getItem(START_PREF_KEY) !== 'off';
+  } catch {
+    return true;
+  }
+}
 type FocusArea = 'arrange' | 'editor';
 
 export const ZOOM_MIN = 6;
@@ -171,8 +197,7 @@ export function DawApp(): React.JSX.Element {
   const [transport, setTransport] = useState<EngineSnapshot>({ state: 'stopped', beat: 0 });
   const [exporting, setExporting] = useState(false);
   const [openList, setOpenList] = useState<ProjectListing[] | null>(null);
-  // studio-io: loop browser panel + export dialog
-  const [loopsOpen, setLoopsOpen] = useState(false);
+  // studio-io: export dialog
   const [exportOpen, setExportOpen] = useState(false);
   const [undoState, setUndoState] = useState({ undo: false, redo: false });
   const [showHelp, setShowHelp] = useState(false);
@@ -182,6 +207,17 @@ export function DawApp(): React.JSX.Element {
   const [midiStatus, setMidiStatus] = useState<'off' | 'unavailable' | 'denied' | number>('off');
   const [recording, setRecording] = useState<RecordingInfo | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  // Studio v3 shell: modes, rails, start screen, play surface, lesson inputs.
+  const bp = useBreakpoint();
+  const [mode, setMode] = useState<StudioMode>('create');
+  const [libraryOpen, setLibraryOpen] = useState(true);
+  const [libraryTab, setLibraryTab] = useState<LibraryTab>('sounds');
+  const [inspectorOpen, setInspectorOpen] = useState(true);
+  const [learnTab, setLearnTab] = useState<LearnTab>('qaamuus');
+  const [surfaceOctave, setSurfaceOctave] = useState(4);
+  const [startOpen, setStartOpen] = useState(false);
+  const noteListeners = useRef(new Set<(ev: NoteEvent) => void>());
+  const tapListeners = useRef(new Set<(timeMs: number) => void>());
 
   const projectRef = useRef<DawProject | null>(null);
   const historyRef = useRef<HistoryState<DawProject> | null>(null);
@@ -247,6 +283,7 @@ export function DawApp(): React.JSX.Element {
       if (cancelled || loaded === null) return;
       loadProject(loaded);
       void saveLocal(loaded);
+      if (requested === null) setStartOpen(readStartPref());
     })();
     return () => {
       cancelled = true;
@@ -256,6 +293,10 @@ export function DawApp(): React.JSX.Element {
 
   useEffect(() => engine.subscribe(setTransport), [engine]);
   useEffect(() => () => engine.dispose(), [engine]);
+  useEffect(() => {
+    setLibraryOpen(bp.md);
+    setInspectorOpen(bp.xl);
+  }, [bp.md, bp.xl]);
 
   // ── the single edit path ───────────────────────────────────────────────────
   const commitProject = useCallback<CommitFn>(
@@ -362,6 +403,9 @@ export function DawApp(): React.JSX.Element {
       if (!p) return;
       const midi = lockToScale(rawMidi, p.scaleLock);
       engine.audition(inputInstrument(), midi, velocity);
+      const timeMs = performance.now();
+      for (const listener of noteListeners.current)
+        listener({ type: 'on', midi, velocity, timeMs });
       setHeldNotes((held) => (held.includes(midi) ? held : [...held, midi]));
       const take = takeRef.current;
       if (take?.midiTrackId) {
@@ -376,6 +420,10 @@ export function DawApp(): React.JSX.Element {
       const p = projectRef.current;
       if (!p) return;
       const midi = lockToScale(rawMidi, p.scaleLock);
+      const timeMs = performance.now();
+      for (const listener of noteListeners.current) {
+        listener({ type: 'off', midi, velocity: 0, timeMs });
+      }
       setHeldNotes((held) => held.filter((m) => m !== midi));
       const take = takeRef.current;
       const started = take?.held.get(midi);
@@ -804,11 +852,88 @@ export function DawApp(): React.JSX.Element {
       case 'musicalTyping':
         setTypingOn((on) => !on);
         return true;
+      case 'library':
+        setLibraryOpen((v) => !v);
+        return true;
+      case 'inspector':
+        setInspectorOpen((v) => !v);
+        return true;
       case 'help':
         setShowHelp((s) => !s);
         return true;
     }
   };
+
+  // ── Studio v3: lesson inputs and modes ─────────────────────────────────────
+  const subscribeNotes = useCallback((listener: (ev: NoteEvent) => void): (() => void) => {
+    noteListeners.current.add(listener);
+    return () => noteListeners.current.delete(listener);
+  }, []);
+  const subscribeTaps = useCallback((listener: (timeMs: number) => void): (() => void) => {
+    tapListeners.current.add(listener);
+    return () => tapListeners.current.delete(listener);
+  }, []);
+
+  /**
+   * A mode sets up the panes; everything stays reachable afterwards. On a
+   * phone the rails are full-screen overlays, so a mode opens the library
+   * only when the library IS the content (Listen) and closes it otherwise.
+   */
+  const docked = bp.md;
+  const applyMode = useCallback(
+    (next: StudioMode): void => {
+      setMode(next);
+      setStartOpen(false);
+      if (!docked) setInspectorOpen(false);
+      switch (next) {
+        case 'create':
+          setTab('editor');
+          setLibraryTab('sounds');
+          setLibraryOpen(docked);
+          break;
+        case 'play':
+          setTab('play');
+          if (!docked) setLibraryOpen(false);
+          setBottomH((h) => Math.max(h, 340));
+          break;
+        case 'learn':
+          setTab('learn');
+          if (!docked) setLibraryOpen(false);
+          setBottomH((h) => Math.max(h, 420));
+          break;
+        case 'listen':
+          setLibraryTab('loops');
+          setLibraryOpen(true);
+          setTab('pitch');
+          break;
+        case 'record':
+          setTab('record');
+          if (!docked) setLibraryOpen(false);
+          setBottomH((h) => Math.max(h, 360));
+          break;
+      }
+    },
+    [docked],
+  );
+
+  const hideStartForever = useCallback((): void => {
+    try {
+      window.localStorage.setItem(START_PREF_KEY, 'off');
+    } catch {
+      // private mode: just close it
+    }
+    setStartOpen(false);
+  }, []);
+
+  /** The instrument the play surface and musical typing sound: the selected or armed MIDI track's. */
+  const surfaceInstrument: InstrumentId = (() => {
+    if (!project) return 'oud';
+    const selected = project.tracks.find((t) => t.id === selectedTrackId);
+    if (selected && trackKind(selected) === 'midi') return selected.instrument;
+    const armed = project.tracks.find((t) => t.armed && trackKind(t) === 'midi');
+    if (armed) return armed.instrument;
+    return project.tracks.find((t) => trackKind(t) === 'midi')?.instrument ?? 'oud';
+  })();
 
   // ── keyboard (latest handler via ref; listeners bound once) ────────────────
   const keyHandlers = useRef<{
@@ -842,6 +967,13 @@ export function DawApp(): React.JSX.Element {
             }
             return;
           }
+        }
+        // The rhythm lesson listens for taps: the space bar taps instead of playing.
+        if (plain && e.code === 'Space' && tab === 'learn' && tapListeners.current.size > 0) {
+          e.preventDefault();
+          const now = performance.now();
+          for (const listener of tapListeners.current) listener(now);
+          return;
         }
         const id = matchShortcut(e, { musicalTyping: typingOn });
         if (id === null) return;
@@ -964,74 +1096,89 @@ export function DawApp(): React.JSX.Element {
         onToggleTyping={() => setTypingOn((on) => !on)}
         onEnableMidi={enableMidi}
         onShowShortcuts={() => setShowHelp(true)}
+        libraryOpen={libraryOpen}
+        inspectorOpen={inspectorOpen}
+        onToggleLibrary={() => setLibraryOpen((v) => !v)}
+        onToggleInspector={() => setInspectorOpen((v) => !v)}
       />
 
-      {/* studio-io: import / export / loops strip */}
-      <div className="flex items-center gap-2 border-b border-hairline bg-chrome-1 px-3 py-1">
-        <ImportMenu project={project} playheadBeat={transport.beat} onUpdate={update} />
-        <button
-          type="button"
-          onClick={() => setExportOpen(true)}
-          className="numeric rounded-[4px] border border-hairline px-3 py-1.5 text-[11px] tracking-[0.14em] text-low uppercase transition-colors hover:border-accent-state hover:text-hi"
-        >
-          Export…
-        </button>
-        <button
-          type="button"
-          aria-pressed={loopsOpen}
-          onClick={() => setLoopsOpen((v) => !v)}
-          className={`numeric ml-auto rounded-[4px] border px-3 py-1.5 text-[11px] tracking-[0.14em] uppercase transition-colors ${
-            loopsOpen
-              ? 'border-accent-state text-accent-state'
-              : 'border-hairline text-low hover:text-hi'
-          }`}
-        >
-          Loops
-        </button>
-      </div>
+      <Toolbar
+        mode={mode}
+        project={project}
+        playheadBeat={transport.beat}
+        libraryOpen={libraryOpen}
+        inspectorOpen={inspectorOpen}
+        onMode={applyMode}
+        onUpdate={update}
+        onExport={() => setExportOpen(true)}
+        onToggleLibrary={() => setLibraryOpen((v) => !v)}
+        onToggleInspector={() => setInspectorOpen((v) => !v)}
+        onStart={() => setStartOpen(true)}
+      />
 
-      {/* studio-io: relative + loop drop target; the loop browser docks on the right */}
-      <div
-        className="relative min-h-0 flex-1"
-        {...loopDropHandlers(update, transport.beat)}
-        onPointerDownCapture={() => setFocusArea('arrange')}
-      >
-        <ArrangeView
-          project={project}
-          engine={engine}
-          transport={transport}
-          selection={liveSelection}
-          selectedTrackId={selectedTrackId}
-          view={view}
-          recording={recording}
-          quantizeStrength={quantizeStrength}
-          onSelect={selectRegions}
-          onSelectTrack={setSelectedTrackId}
-          onOpenEditor={() => {
-            setTab('editor');
-            setFocusArea('editor');
-          }}
-          onCommit={commitProject}
-          onUpdate={update}
-          onViewChange={(patch) => setView((v) => ({ ...v, ...patch }))}
-          onSeek={seek}
-          onAddMidiTrack={commands.addMidiTrack}
-          onAddAudioTrack={commands.addAudioTrack}
-          onSplit={commands.split}
-          onDuplicate={commands.duplicate}
-          onJoin={commands.join}
-          onDelete={commands.deleteRegions}
-          onLoop={commands.loop}
-          onQuantize={commands.quantize}
-          onQuantizeStrength={setQuantizeStrength}
-        />
-        {loopsOpen ? (
-          <div className="fixed inset-0 z-40 sm:absolute sm:inset-y-0 sm:right-0 sm:left-auto sm:z-30 sm:shadow-2xl">
-            <LoopBrowser
+      {/* ── panes: library · tracks area · inspector ──────────────────────── */}
+      <div className="flex min-h-0 flex-1">
+        {libraryOpen ? (
+          <div className={bp.md ? 'h-full shrink-0' : 'fixed inset-0 z-40 bg-page'}>
+            <LibraryRail
               project={project}
+              engine={engine}
+              tab={libraryTab}
               playheadBeat={transport.beat}
+              selectedTrackId={selectedTrackId}
+              onTabChange={setLibraryTab}
               onUpdate={update}
-              onClose={() => setLoopsOpen(false)}
+              onSelectTrack={setSelectedTrackId}
+              onClose={() => setLibraryOpen(false)}
+              onNotice={flash}
+            />
+          </div>
+        ) : null}
+        <div
+          className="relative min-h-0 min-w-0 flex-1"
+          {...loopDropHandlers(update, transport.beat)}
+          onPointerDownCapture={() => setFocusArea('arrange')}
+        >
+          <ArrangeView
+            project={project}
+            engine={engine}
+            transport={transport}
+            selection={liveSelection}
+            selectedTrackId={selectedTrackId}
+            view={view}
+            recording={recording}
+            quantizeStrength={quantizeStrength}
+            onSelect={selectRegions}
+            onSelectTrack={setSelectedTrackId}
+            onOpenEditor={() => {
+              setTab('editor');
+              setFocusArea('editor');
+            }}
+            onCommit={commitProject}
+            onUpdate={update}
+            onViewChange={(patch) => setView((v) => ({ ...v, ...patch }))}
+            onSeek={seek}
+            onAddMidiTrack={commands.addMidiTrack}
+            onAddAudioTrack={commands.addAudioTrack}
+            onSplit={commands.split}
+            onDuplicate={commands.duplicate}
+            onJoin={commands.join}
+            onDelete={commands.deleteRegions}
+            onLoop={commands.loop}
+            onQuantize={commands.quantize}
+            onQuantizeStrength={setQuantizeStrength}
+          />
+        </div>
+        {inspectorOpen ? (
+          <div className={bp.md ? 'h-full shrink-0' : 'fixed inset-0 z-40 bg-page'}>
+            <Inspector
+              project={project}
+              selection={liveSelection}
+              selectedTrackId={selectedTrackId}
+              onUpdate={update}
+              onCommit={commitProject}
+              onOpenMixer={() => setTab('mixer')}
+              onClose={() => setInspectorOpen(false)}
             />
           </div>
         ) : null}
@@ -1051,7 +1198,7 @@ export function DawApp(): React.JSX.Element {
           className="absolute -top-1 right-0 left-0 z-30 h-2 cursor-ns-resize touch-none"
         />
         <div className="flex h-8 items-center gap-1 border-b border-hairline px-2">
-          {(['editor', 'mixer', 'pitch', 'generate'] as const).map((name) => (
+          {BOTTOM_TABS.map((name) => (
             <button
               key={name}
               type="button"
@@ -1076,7 +1223,47 @@ export function DawApp(): React.JSX.Element {
           </span>
         </div>
         <div className="h-[calc(100%-2rem)]">
-          {tab === 'mixer' ? (
+          {tab === 'play' ? (
+            <PlaySurface
+              instrument={surfaceInstrument}
+              scaleLock={project.scaleLock}
+              heldNotes={heldNotes}
+              octave={surfaceOctave}
+              onOctaveChange={setSurfaceOctave}
+              onNoteOn={noteOn}
+              onNoteOff={noteOff}
+              compact={!bp.md}
+            />
+          ) : tab === 'record' ? (
+            <RecordPanel
+              project={project}
+              engine={engine}
+              transport={transport}
+              recording={recording}
+              selectedTrackId={selectedTrackId}
+              onUpdate={update}
+              onToggleRecord={toggleRecording}
+              onAddAudioTrack={commands.addAudioTrack}
+              onSelectTrack={setSelectedTrackId}
+              onOpenPitch={(trackId, regionId) => {
+                selectRegions([{ trackId, regionId }]);
+                setTab('pitch');
+              }}
+              onNotice={flash}
+            />
+          ) : tab === 'learn' ? (
+            <LearnPanel
+              project={project}
+              engine={engine}
+              tab={learnTab}
+              onTabChange={setLearnTab}
+              onUpdate={update}
+              onNotice={flash}
+              onOpenPlay={() => applyMode('play')}
+              subscribeNotes={subscribeNotes}
+              subscribeTaps={subscribeTaps}
+            />
+          ) : tab === 'mixer' ? (
             <Mixer project={project} engine={engine} onUpdate={(m) => update(m, 'mixer')} />
           ) : tab === 'generate' ? (
             <GeneratePanel playheadBeat={transport.beat} onUpdate={update} onNotice={flash} />
@@ -1177,6 +1364,19 @@ export function DawApp(): React.JSX.Element {
       ) : null}
 
       {showHelp ? <ShortcutsOverlay onClose={() => setShowHelp(false)} /> : null}
+
+      {startOpen ? (
+        <StartOverlay
+          projectName={project.name}
+          onPick={applyMode}
+          onOpenProjects={() => {
+            setStartOpen(false);
+            openDialog();
+          }}
+          onContinue={() => setStartOpen(false)}
+          onHideForever={hideStartForever}
+        />
+      ) : null}
 
       {/* ── open-project dialog ──────────────────────────────────────────── */}
       {openList !== null ? (

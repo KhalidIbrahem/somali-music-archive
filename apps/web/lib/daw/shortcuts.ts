@@ -39,6 +39,8 @@ export type ShortcutId =
   | 'zoomIn'
   | 'zoomOut'
   | 'musicalTyping'
+  | 'library'
+  | 'inspector'
   | 'help';
 
 export type ShortcutGroup =
@@ -64,7 +66,7 @@ export interface Shortcut {
 }
 
 /** Plain-letter shortcuts that musical typing takes over while it is on. */
-const TYPING_CONFLICTS = new Set(['KeyC', 'KeyK', 'KeyS']);
+const TYPING_CONFLICTS = new Set(['KeyC', 'KeyK', 'KeyS', 'KeyY']);
 
 export const SHORTCUTS: readonly Shortcut[] = [
   // Transport
@@ -259,6 +261,20 @@ export const SHORTCUTS: readonly Shortcut[] = [
     description: 'Musical typing on / off',
     group: 'View',
     match: [{ code: 'KeyK', mod: true }],
+  },
+  {
+    id: 'library',
+    keys: 'Y',
+    description: 'Library pane on / off',
+    group: 'View',
+    match: [{ code: 'KeyY' }],
+  },
+  {
+    id: 'inspector',
+    keys: 'I',
+    description: 'Inspector pane on / off',
+    group: 'View',
+    match: [{ code: 'KeyI' }],
   },
   {
     id: 'help',

@@ -334,6 +334,8 @@ interface ActiveRecording {
   trackId: string;
   stream: MediaStream;
   input: MediaStreamAudioSourceNode;
+  /** Pre-fader meter on the live input (RecordPanel's input meter). */
+  analyser: AnalyserNode;
   worklet: AudioWorkletNode;
   sink: GainNode;
   monitor: GainNode;
@@ -345,6 +347,14 @@ interface ActiveRecording {
   compensationSec: number;
   done: Promise<void>;
   finishing: Promise<RecordedTake> | null;
+}
+
+/** The microphone opened for a level check only (no capture, no transport). */
+interface InputCheck {
+  stream: MediaStream;
+  input: MediaStreamAudioSourceNode;
+  analyser: AnalyserNode;
+  monitor: GainNode;
 }
 
 /** A finished recording, already stored in the audio store. */
@@ -441,6 +451,7 @@ export class DawEngine {
   private recordingListeners = new Set<(take: RecordedTake) => void>();
   private captureModuleCtx: AudioContext | null = null;
   private monitoring = false;
+  private inputCheck: InputCheck | null = null;
   private scratch = new Map<number, Float32Array<ArrayBuffer>>();
 
   private get master(): GainNode | null {
@@ -465,6 +476,7 @@ export class DawEngine {
 
   dispose(): void {
     this.discardRecording();
+    this.stopInputCheck();
     this.stop();
     this.listeners.clear();
     this.audioListeners.clear();
@@ -947,10 +959,67 @@ export class DawEngine {
     if (this.rec && this.ctx) {
       this.rec.monitor.gain.setTargetAtTime(enabled ? 1 : 0, this.ctx.currentTime, 0.02);
     }
+    if (this.inputCheck && this.ctx) {
+      this.inputCheck.monitor.gain.setTargetAtTime(enabled ? 1 : 0, this.ctx.currentTime, 0.02);
+    }
   }
 
   isInputMonitoring(): boolean {
     return this.monitoring;
+  }
+
+  /**
+   * Open the microphone into a meter only — no capture, no transport — so the
+   * Record panel can show a level before the first take. Call from a user
+   * gesture (permission prompt + AudioContext unlock). Idempotent.
+   */
+  async startInputCheck(): Promise<void> {
+    if (this.inputCheck || this.rec) return;
+    this.unlock();
+    const ctx = this.ctx;
+    const section = this.masterSection;
+    if (!ctx || !section) throw new Error('Audio is unavailable');
+    if (ctx.state === 'suspended') await ctx.resume();
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      throw new Error('This browser cannot record audio');
+    }
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+    });
+    if (this.inputCheck || this.rec) {
+      for (const t of stream.getTracks()) t.stop();
+      return;
+    }
+    const input = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 1024;
+    analyser.smoothingTimeConstant = 0;
+    const monitor = ctx.createGain();
+    monitor.gain.value = this.monitoring ? 1 : 0;
+    input.connect(analyser);
+    input.connect(monitor).connect(section.bus);
+    this.inputCheck = { stream, input, analyser, monitor };
+  }
+
+  /** Close the level-check microphone (no effect while recording). */
+  stopInputCheck(): void {
+    const check = this.inputCheck;
+    if (!check) return;
+    this.inputCheck = null;
+    check.input.disconnect();
+    check.analyser.disconnect();
+    check.monitor.disconnect();
+    for (const t of check.stream.getTracks()) t.stop();
+  }
+
+  isInputChecking(): boolean {
+    return this.inputCheck !== null;
+  }
+
+  /** Live microphone level (pre-fader) while checking or recording, else null. */
+  getInputLevel(): LevelReading | null {
+    const analyser = this.rec?.analyser ?? this.inputCheck?.analyser ?? null;
+    return analyser ? this.read(analyser) : null;
   }
 
   /**
@@ -973,6 +1042,8 @@ export class DawEngine {
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
       throw new Error('This browser cannot record audio');
     }
+    // One microphone stream at a time: a running level check hands over.
+    this.stopInputCheck();
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
     });
@@ -994,6 +1065,10 @@ export class DawEngine {
     }
 
     const input = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 1024;
+    analyser.smoothingTimeConstant = 0;
+    input.connect(analyser);
     const worklet = new AudioWorkletNode(ctx, CAPTURE_PROCESSOR, {
       numberOfInputs: 1,
       numberOfOutputs: 1,
@@ -1022,6 +1097,7 @@ export class DawEngine {
       trackId,
       stream,
       input,
+      analyser,
       worklet,
       sink,
       monitor,
@@ -1106,6 +1182,7 @@ export class DawEngine {
   private teardownRecording(rec: ActiveRecording): void {
     rec.worklet.port.onmessage = null;
     rec.input.disconnect();
+    rec.analyser.disconnect();
     rec.worklet.disconnect();
     rec.sink.disconnect();
     rec.monitor.disconnect();

@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Transport (Studio v2) — a dense, Logic-style control bar: project name and
+ * Transport (Studio v3) — a dense, Logic-style control bar: pane toggles, project name and
  * save state; go-to-start / play-stop / record; cycle, metronome and
  * count-in; an LCD with bars·beats·sixteenths and clock time; BPM, time
  * signature and the qaraami scale lock; undo/redo, musical typing, MIDI
@@ -53,6 +53,10 @@ export function Transport({
   onToggleTyping,
   onEnableMidi,
   onShowShortcuts,
+  libraryOpen,
+  inspectorOpen,
+  onToggleLibrary,
+  onToggleInspector,
 }: {
   project: DawProject;
   engine: DawEngine;
@@ -74,6 +78,10 @@ export function Transport({
   onToggleTyping: () => void;
   onEnableMidi: () => void;
   onShowShortcuts: () => void;
+  libraryOpen: boolean;
+  inspectorOpen: boolean;
+  onToggleLibrary: () => void;
+  onToggleInspector: () => void;
 }): React.JSX.Element {
   const [editingName, setEditingName] = useState(false);
   const playing = transport.state !== 'stopped';
@@ -84,6 +92,10 @@ export function Transport({
   const sixteenth = Math.floor(((beat % 1) + 1e-6) * 4) + 1;
   const seconds = (beat * 60) / project.bpm;
   const clock = `${Math.floor(seconds / 60)}:${(seconds % 60).toFixed(1).padStart(4, '0')}`;
+  const modeLabel = PENTATONIC_MODES.find((m) => m.id === project.scaleLock.mode)?.label ?? '';
+  const keyLabel = project.scaleLock.enabled
+    ? `${ROOT_NAMES[project.scaleLock.root] ?? ''} ${modeLabel.replace(' pentatonic', '')}`
+    : 'free';
 
   return (
     <header className="flex flex-wrap items-center gap-x-2 gap-y-1.5 border-b border-hairline bg-chrome-1 px-2 py-1.5">
@@ -94,6 +106,39 @@ export function Transport({
       >
         ←
       </Link>
+      {/* pane toggles — Logic keeps Library and Inspector at the far left */}
+      <div className="hidden items-center gap-0.5 md:flex">
+        <IconButton
+          label={libraryOpen ? 'Hide the library (Y)' : 'Show the library (Y)'}
+          onClick={onToggleLibrary}
+          active={libraryOpen}
+        >
+          <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" />
+          <rect
+            x="1.5"
+            y="2.5"
+            width="4.5"
+            height="11"
+            rx="1.5"
+            fill={libraryOpen ? 'currentColor' : 'none'}
+          />
+        </IconButton>
+        <IconButton
+          label={inspectorOpen ? 'Hide the inspector (I)' : 'Show the inspector (I)'}
+          onClick={onToggleInspector}
+          active={inspectorOpen}
+        >
+          <rect x="1.5" y="2.5" width="13" height="11" rx="1.5" />
+          <rect
+            x="10"
+            y="2.5"
+            width="4.5"
+            height="11"
+            rx="1.5"
+            fill={inspectorOpen ? 'currentColor' : 'none'}
+          />
+        </IconButton>
+      </div>
       <Link
         href="/studio/score"
         title="Transcription score view"
@@ -265,6 +310,14 @@ export function Transport({
           />
           <span className="text-[8px] tracking-[0.18em] text-low uppercase">bpm</span>
         </label>
+        <div
+          className="hidden flex-col justify-center border-l border-hairline px-2 lg:flex"
+          aria-label="Key"
+          title="Scale lock root and mode"
+        >
+          <span className="max-w-28 truncate text-[13px] leading-none">{keyLabel}</span>
+          <span className="text-[8px] tracking-[0.18em] text-low uppercase">key</span>
+        </div>
         <label className="flex flex-col justify-center border-l border-hairline px-1.5">
           <select
             value={`${project.timeSignature.beatsPerBar}/${project.timeSignature.beatUnit}`}
@@ -395,11 +448,13 @@ function IconButton({
   label,
   onClick,
   disabled = false,
+  active = false,
   children,
 }: {
   label: string;
   onClick: () => void;
   disabled?: boolean;
+  active?: boolean;
   children: React.ReactNode;
 }): React.JSX.Element {
   return (
@@ -407,9 +462,12 @@ function IconButton({
       type="button"
       aria-label={label}
       title={label}
+      aria-pressed={active ? true : undefined}
       onClick={onClick}
       disabled={disabled}
-      className="flex h-8 w-8 items-center justify-center rounded-[4px] text-mid transition-colors hover:bg-chrome-2 hover:text-hi disabled:opacity-30 disabled:hover:bg-transparent"
+      className={`flex h-8 w-8 items-center justify-center rounded-[4px] transition-colors hover:bg-chrome-2 hover:text-hi disabled:opacity-30 disabled:hover:bg-transparent ${
+        active ? 'bg-chrome-2 text-accent-state' : 'text-mid'
+      }`}
     >
       <svg
         width="15"
