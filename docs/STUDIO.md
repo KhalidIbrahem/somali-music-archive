@@ -2,96 +2,84 @@
 
 The Studio is the browser DAW at `/studio` (Next.js, `apps/web`). The project
 file format is in [DAW-PROJECT-FORMAT.md](DAW-PROJECT-FORMAT.md); this file
-records the architecture, what works, and what is next. Updated 2026-10-29
-(branch `studio-v2`, commits `d4eb149`, `fb8362b`; not merged, not deployed).
+records the architecture, what works, and what is next. Updated 2026-11-07
+(branch `studio-v3`, worktree `~/Projects/sma-studio-v3`; not merged, not deployed).
+The research behind v3 is in `docs/research/` (six sourced notes and the
+synthesis report) and the design decisions in [STUDIO_V3_PLAN.md](STUDIO_V3_PLAN.md).
 
-## Architecture
+## Architecture (v3)
 
 | Layer | Path | Role |
 | --- | --- | --- |
 | Route | `app/studio/page.tsx` | Mounts `DawApp` in `Suspense` (reads `?project=`). `/daw` redirects here; `/studio/score` is the separate transcription score view (`components/studio/`). |
-| Root | `components/daw/DawApp.tsx` | Owns the plain-data project, undo history, engine, selection, shortcuts, MIDI input, recording, autosave. Single edit path: `commitProject` / `update`. |
-| Engine | `lib/daw/engine.ts` | The only AudioContext owner: scheduling, synthesised instruments (oud = Karplus–Strong, durbaan, bass, keys), audio regions, recording (AudioWorklet capture), mixdown. |
-| Edits | `lib/daw/editOps.ts`, `history.ts` | Pure edit operations and undo/redo. |
-| Persistence | `lib/daw/projectStore.ts`, `audioStore.ts` | IndexedDB first (1.5 s debounce), then `/api/v1/studio/projects` sync (8 s); user audio as `idb:` blobs. |
-| Bottom panel | `Editor` · `Mixer` · `Pitch` · `Generate` tabs in `DawApp` | Piano roll / step sequencer / audio clip inspector; mixer with FX; the two new tabs below. |
-| Loops | `components/daw/LoopBrowser.tsx`, `lib/daw/loops.ts` | The 472 published QaraamiGen generations (`/demos/gallery/`), drag or Add onto a new audio track. `isAllowedAudioSource` refuses archive audio and remote URLs. |
+| Root | `components/daw/DawApp.tsx` | Owns the plain-data project, undo history, engine, selection, shortcuts, MIDI input, recording, autosave, and (v3) the **mode**, the two rails, the start screen, the play surface's octave, and the note/tap event bus the lessons subscribe to. Single edit path: `commitProject` / `update`. |
+| Shell | `Transport.tsx` (control bar: pane toggles Y / I, transport, LCD with bar·beat / time / BPM / **key** / signature, scale lock) · `Toolbar.tsx` (the five modes, Import, Export…, pane toggles, Start) · `StartOverlay.tsx` (GarageBand-style chooser; `localStorage` `sma.studio.start=off` hides it) · `lib/daw/useBreakpoint.ts` (rails dock from 768 px, both open from 1280 px; below 768 px every rail is a full-screen overlay) | Logic's window anatomy: control bar + toolbar, Library left, tracks area centre, Inspector right, editors below. |
+| Library | `LibraryRail.tsx` | Sounds (the four instruments + audio track, audition / add / use on selected), Loops (`LoopBrowser` embedded), Grooves (presets with a 16-step preview, one-bar audition, add at playhead), Scales (five pentatonic modes on any root: play, lock). |
+| Inspector | `Inspector.tsx` | Region (MIDI: name, position, length, loop, notes, transpose; audio: name, clip gain, fades, span), Track (name, colour, instrument, volume, pan, M/S/●, insert FX: 3-band EQ, compressor, reverb send; "Open in Mixer"), Project (tempo, time, key, length, master). Same `editOps`/`fx` as the Mixer, so they never disagree. |
+| Engine | `lib/daw/engine.ts` | The only AudioContext owner: scheduling, synthesised instruments, audio regions, recording (AudioWorklet capture), mixdown. v3 adds `startInputCheck` / `stopInputCheck` / `isInputChecking` / `getInputLevel` (microphone meter without recording; the recording path meters too). |
+| Bottom panel | tabs **Editor · Play · Record · Learn · Mixer · Pitch · Generate** in `DawApp` | Editor = piano roll / step sequencer / audio inspector; the three new tabs below. |
+| Play | `PlaySurface.tsx`, `lib/daw/playSurface.ts` | Keyboard (1.5–3 octaves by width, multi-touch with pointer capture, glissando, velocity by vertical position, scale-lock tint, **Scale-only layout** of in-scale bars with degree numbers, octave −/+) for oud/bass/keys; three pads (dum/tak/slap, velocity by position) for durbaan. Calls only `onNoteOn/onNoteOff`; DawApp routes them through the same `noteOn/noteOff` as musical typing and MIDI (scale lock, audition, recording into an armed instrument track). |
+| Record | `RecordPanel.tsx`, `lib/daw/recordFlow.ts` | Five cards: Input (canvas meter from `engine.getInputLevel()`, Check microphone / Close, Monitor), Target (audio tracks as radios, `armOnly`, New audio track, arm the selected instrument track), Count-in & click, Record (64 px button, elapsed bars·beats), Takes (idb-sourced regions: Pitch → selects the region and opens the Pitch tab, Rename, Delete — undoable). |
+| Learn | `LearnPanel.tsx` (+ `LearnRhythm.tsx`, `LearnMelody.tsx`), `lib/learn/*` | **Qaamuus** — the reverse dictionary over `lib/learn/glossary.json` (`glossaryTypes.ts` schema; `glossarySearch.ts`: accent-insensitive, typo-tolerant, field-weighted search by meaning in English or Somali; whole-name matches win; category browse; related terms; sources; "Hear it" plays a groove, a scale or a published model-output clip). **Scale** lesson (`lessons.ts` text, modes on any root, lock). **Rhythm** lesson (`tapTrainer.ts`: expected onsets from the groove presets, greedy nearest matching within 120 ms, score, early/late bias, device calibration; taps from the Tap button, the space bar, the durbaan pads and musical typing). **Melody** lesson (`phrases.ts` splits the engraved Beerdilaacshe notes into two-bar phrases; listen at 50/75/100 % with loop; play along after a count-in; `practiceScore.ts` matches played notes to the reference — pitch class, timing within an eighth, completeness, extras — with `estimateOffset` auto-alignment; per-note green/amber/red). **History** lesson linked to glossary entries. `lib/learn/audition.ts` schedules lesson sounds through `engine.audition()`. |
+| Persistence | `lib/daw/projectStore.ts`, `audioStore.ts` | IndexedDB first (1.5 s debounce), then `/api/v1/studio/projects` sync (8 s) when the build has an API server and the visitor is signed in. |
 
-## What this session changed
+### The note/tap bus
 
-1. **`/studio` serves the DAW again.** SEO commit `2483a2d` had swapped the
-   route to the score shell, so the whole DAW was unreachable on the live site
-   (checked: `qaraamigen.com/studio` served the score viewer on 2026-10-29).
-   The SEO metadata stays; the description now calls the oud voice synthesised.
-2. **Pitch tab** (`components/daw/PitchLens.tsx`, `lib/daw/pitch.ts`) for the
-   selected audio region, all in the browser, nothing uploaded:
-   - YIN f0 every 10 ms on an ~11 kHz mono downmix (70–1000 Hz, −45 dBFS gate);
-   - tuning offset from A440 (clarity-weighted circular mean of the cents residue);
-   - best of the 12 anhemitonic pentatonic sets, tonic = most-sounded degree
-     (ambiguous when the runner-up has ≥ 95 % of its mass), mode = that rotation;
-   - each degree at the weighted median of pitches within 60 c of its template
-     (under 2 % of the mass: "too sparse"), the research transcription method;
-   - share of voiced frames within a quarter tone of the measured degrees;
-   - note events (stable runs ≥ 80 ms, a 60 c jump starts a new note) with
-     measured cents deviation and confidence; off-scale notes **marked, not snapped**;
-   - contour plot (12-TET lines faint, measured degrees dashed), click to seek;
-   - actions: **Melody → Oud track** (aligned to the region, via
-     `transcriptionToTrack`), **Use as scale lock**, and **Practice** playback
-     at 50 / 75 / 100 % with pitch preserved, loopable (`PracticePlayer.tsx`).
-3. **Generate tab** (`components/daw/GeneratePanel.tsx`,
-   `lib/daw/studioGeneration.ts`): prompt → AI service `/demo/generate` → WAV
-   fetched, stored as `idb:`, placed on a new audio track at the playhead.
-   Only `oud` and `base` are offered (allowlist; also dropped if the service
-   marks them research-only). With `NEXT_PUBLIC_AI_SERVICE_MODE` off (the
-   public site) the tab says live generation is not connected and points to Loops.
-4. **Save status** says where the project is (`saved on this device` /
-   `saved to account`) instead of a red "offline copy" for every visitor
-   without the account server.
-5. **Page titles**: pages whose title already names QaraamiGenAI use
-   `title.absolute`; the layout template no longer doubles the brand.
+Lessons never own input. `DawApp.noteOn/noteOff` (musical typing, Web MIDI,
+the play surface) publish `{ type, midi, velocity, timeMs }` to subscribers
+(`subscribeNotes`); with the Learn tab open and a rhythm lesson listening, the
+space bar publishes a tap (`subscribeTaps`) instead of toggling the transport.
+`timeMs` is `performance.now()`, so the lessons measure timing against their own
+`setTimeout` schedules; the trainer's Calibrate option subtracts the measured
+mean offset (browser output + input latency is tens of milliseconds per the
+research notes).
 
-## Verified (2026-10-29, local)
+### Modes
 
-- `npm test` in `apps/web`: 121 vitest tests (12 new: pitch 7, generation 5)
-  plus the audio-rights node tests, all pass. `tsc --noEmit` clean. Prettier
-  clean on changed files. `npm run build` passes, rights gate included.
-- Headless Chrome (DevTools protocol), 1440 × 900 and 390 × 844, no horizontal
-  scroll: Loops → add a v4 clip → Pitch → Analyse (60 s clip: E suspended
-  pentatonic, +4 c, 88 % within ¼ tone, 61 notes, 8 off-scale) → melody track
-  added → scale lock set → practice playback at 50 %.
-- Live generation with the local stack: 15 s `oud` clip in 34 s, service PCS
-  0.95, new audio track; `harvard_raw` and `large` not offered.
-- Production build served with `next start`: Generate shows the not-connected
-  state, Pitch its empty state.
-- Account sync gate (`lib/daw/syncPolicy.ts`, 4 tests, web total 125): a
-  production build without `NEXT_PUBLIC_API_URL`, with a stored token, an edit
-  and 11 s past the sync timer, made 0 requests to `/api/v1/` (label "saved on
-  this device"); the same flow in a build with the URL set made 4
-  `/studio/projects` requests.
+`applyMode()` only arranges panes — every pane stays reachable afterwards:
+Create → Editor tab, Library on Sounds (docked only); Play → Play tab;
+Learn → Learn tab; Listen → Library on Loops + Pitch tab; Record → Record tab.
+On a phone the mode closes the overlays it does not need.
+
+## Verified (2026-11-07, local, production build at 127.0.0.1:3100)
+
+- `npm test` in `apps/web`: **241 vitest tests** (85 new: glossary search 12,
+  practice score 18, phrases 12, tap trainer 16, play surface 14, record flow 13)
+  plus the 9 audio-rights node tests, all pass. `tsc --noEmit` clean. Prettier
+  clean. `npm run build` clean, rights gate included.
+- Chrome 1440 × 900: start screen → Learn (Qaamuus: "the lute" → **kaban** with
+  sources and Hear it; melody lesson: 18 phrases + All; Play surface: C4–C7 with
+  the A-minor-pentatonic tint, scale-only bars; Record panel; Listen mode opens
+  Loops + Pitch; Grooves tab). No console errors.
+- Headless Chrome 390 × 844 and 414 × 844 (`apps/web/scripts/studio-mobile-check.mjs`):
+  start, Create, Play, Learn, Listen, Record — `scrollWidth == innerWidth` on
+  every step, 0 console errors; the rails are full-screen overlays with a close.
 
 ## Known limitations
 
-- Pitch numbers are browser estimates (YIN), not the paper's CREPE scorer;
-  dense mixes with vocals give octave errors and a wide contour. The tonic
-  heuristic can disagree with a clip's caption (the test clip "rooted on A"
-  fitted E; same pitch-class set). Monophonic oud or voice measures best.
-- Analysis spans at most 10 minutes per region; it runs on the main thread in
-  chunks (cancellable), not in a worker.
-- Practice playback is separate from the transport (no sync with other tracks).
-- MIDI cannot hold the measured cents; the melody track rounds to semitones,
-  the deviations stay in the Pitch tab.
-- Deleting a synced project while signed out removes only the local copy; the
-  server copy reappears in the open dialog after signing in.
-- ESLint does not run: `eslint-config-next` at the repo root cannot resolve
-  `next/dist/compiled/babel/eslint-parser` (Next is only in `apps/web/node_modules`).
-  CI does not lint the web app.
-- AI service CORS allows `http://localhost:3000` and the old Vercel domain, not
-  `qaraamigen.com`; local generation must be opened at `localhost:3000`.
+- The control bar wraps to four rows on a phone; a condensed phone transport
+  (one row + a sheet) is the next layout step.
+- Lesson playback uses `setTimeout` auditions (fine at lesson speeds), not the
+  transport's sample-accurate scheduler; the melody lesson plays the engraved
+  notes independently of the project (mute the Oud track if both sound).
+- Rhythm scoring trusts `performance.now()` against audio scheduled on the
+  main thread: expect 20–60 ms of systematic lateness per device — that is what
+  Calibrate removes. A loopback (MLS) calibration is the research's recommendation.
+- The play surface sends raw MIDI; DawApp's `lockToScale` snaps it (so with the
+  lock on, the full keyboard lights the snapped key via `heldNotes`).
+- Glossary: 72 entries; 44 attested, 24 reported, 4 unverified (batar, shirib,
+  jaandheer, shambal). The musicology research note (`docs/research/research_notes/…/somali_music_musicology_glossary.md`)
+  lists corrections and additions still to apply.
+- ESLint does not run in the worktree (`eslint-config-next` parser resolution,
+  pre-existing); CI does not lint the web app.
 
 ## Next engineering step
 
-Done: account sync only runs when the build has an API server (or is a dev
-build) and the visitor is signed in (`canSync()` in `projectStore.ts`). Next: a
-Learn panel built only from documented material (the
-Beerdilaacshe score and transcription already in `public/`), a worker for the
-pitch analysis, and transport-synced slowed playback.
+1. Apply the glossary review (corrections, sources, 30–50 added terms) and
+   bump the glossary version; the HF dataset build reads the same file.
+2. Phone transport: one-row control bar with a "more" sheet; bottom panel as a
+   draggable sheet.
+3. Pitch analysis in a Web Worker; transport-synced slowed playback (the
+   PracticePlayer and the lessons share one time-stretch path).
+4. Loopback latency calibration for the trainers (research note §5).
+5. A kaban fretboard play surface (courses tuned in fourths, scale positions).

@@ -1,3 +1,62 @@
+# QaraamiGen — studio-v3 overnight report (2026-11-07, 02:30 → 09:45)
+
+Branch **`studio-v3`** from `master` `6bffe70`, worktree `~/Projects/sma-studio-v3`.
+Goal (Khalid, 02:40): a Logic-Pro-class studio page — create, play, learn,
+listen, record — plus a clean reference dataset for Somali music AI on Hugging
+Face, a reverse dictionary, and deep research on how to build the software.
+Nothing pushed, deployed or published. Two usage-limit pauses (03:30–04:30,
+~05:10–09:30) cut several background agents; everything below was re-verified
+after the resets.
+
+| job | status | proof |
+| --- | --- | --- |
+| Studio shell: Library · tracks · Inspector · bottom editors, control bar with pane toggles + key readout, toolbar with five modes, start screen, phone overlays | PASS (`63cf4d1`) | `docs/STUDIO.md`; Chrome 1440 px screenshots in the session; `apps/web/scripts/studio-mobile-check.mjs` 390/414 px: every mode `scrollWidth == innerWidth`, 0 console errors |
+| Play: on-screen kaban keyboard + durbaan pads on the shared note path | PASS | `PlaySurface.tsx`, 14 tests |
+| Learn: Qaamuus reverse dictionary (72 sourced terms, search by meaning in EN/SO, Hear it), scale / rhythm (tap trainer) / melody (Beerdilaacshe play-along scoring) / history lessons | PASS | `LearnPanel.tsx` + `lib/learn/*`, 58 tests; "the lute" → kaban verified in the browser |
+| Record: microphone check with live meter (engine `startInputCheck`/`getInputLevel`), target, count-in, record, takes | PASS | `RecordPanel.tsx`, 13 tests |
+| Web suite | PASS | 241 vitest + 9 rights tests; `tsc` clean; Prettier clean; `next build` clean with the rights gate |
+| HF dataset assembly (`build_hf_dataset.py`) | PASS (built, not pushed) | `dist/hf_dataset/` 983 rows / 699 files / 565 MB; `--check` passed; pytest 11/11 after the self-copy fix; deny-list grep clean; `docs/data/HF_DATASET.md` |
+| Research (six sourced notes) | PASS | `docs/research/research_notes/Somali music studio software research/` (browser DAW architecture, Logic/GarageBand feature model, music-learning software, Somali musicology + glossary sources, HF reference-dataset design, DAW UI in React) |
+| Research synthesis report | IN PROGRESS at 09:45 | writer agent resumed after the limit; `docs/research/reports/` |
+| Glossary review from the musicology note | IN PROGRESS at 09:45 | the note's "Glossary review" section is being appended; corrections not yet applied to `glossary.json` |
+
+### Defaults chosen (log them, keep going)
+
+1. **No Hugging Face upload.** There is no HF token on this machine
+   (`huggingface_hub` found none), and Khalid's message both said "we don't
+   publish any dataset to Hugging Face" and "put on Hugging Face: clean
+   dataset". The dataset is fully built and checked; `--push` (private first)
+   is the owner's command (`docs/data/HF_DATASET.md` §4).
+2. **Dataset contents = rights-clean only**: model output already public on
+   the site (rights manifest + releasable model card, both checked), the
+   synthetic benchmark with ground truth, the Beerdilaacshe engraving (already
+   public; composer rights flagged), listening records, the glossary, TABLES
+   and releasable cards. Harvard, performer, `.band`, internet audio and the
+   annotation packs are deny-listed in code. MusicGen-derived outputs carry
+   CC BY-NC 4.0 (Meta's weights licence), ACE-Step outputs and everything else
+   CC BY 4.0.
+3. **Reverse dictionary = the glossary searched by meaning**: 72 entries with
+   `attested / reported / uncertain` shown in the UI; the four unverified
+   entries (batar, shirib, jaandheer, shambal) stay flagged until sourced.
+4. **Lesson playback through `engine.audition()` on a `setTimeout` schedule**
+   (not the transport), so lessons work in any project; the tap trainer's
+   Calibrate subtracts the measured mean device offset.
+5. **Phone layout = overlays**, modes close what they do not need; the control
+   bar still wraps to four rows (next layout step).
+6. **Branch, not master.** The worktree is on `studio-v3`; the production
+   build is served locally at `http://127.0.0.1:3100/studio` for review.
+7. The transformers issue #49094 (CLAUDE.md "Filed") exists under the
+   `KhalidIbrahem` GitHub account (created 2026-09-24, now closed) — checked
+   via the GitHub API; nothing else was ever published upstream.
+
+### Human-only list (deadline order)
+
+1. Open `http://127.0.0.1:3100/studio` (or `cd ~/Projects/sma-studio-v3/apps/web && npm run build && npm start -- -p 3100`), try the five modes; then merge `studio-v3` → `master` and push (your rule).
+2. Decide the dataset namespace and name; `hf auth login`; `--push` private; review; `--public`; DOI.
+3. Decide whether the Beerdilaacshe engraving ships in the dataset (composer rights).
+4. Accept or reject the glossary corrections when the musicology review lands.
+5. Still open from before: Upstash for `/study`, the Loeb letter, the Ahmed Ilkacase consent record, the paper `TODO —` blocks.
+
 # QaraamiGen — proof of generation (2026-09-28, website-v1)
 
 Read-only on the service, training, data and site. `tmux ls`: no server, no
