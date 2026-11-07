@@ -6,7 +6,7 @@ listen, record — plus a clean reference dataset for Somali music AI on Hugging
 Face, a reverse dictionary, and deep research on how to build the software.
 Nothing pushed, deployed or published. Two usage-limit pauses (03:30–04:30,
 ~05:10–09:30) cut several background agents; everything below was re-verified
-after the resets.
+after the resets. Commits on `studio-v3`: `63cf4d1` (studio), `d141197` (dataset tooling, docs), `2ebfb08` (research), plus the glossary v2 commit.
 
 | job | status | proof |
 | --- | --- | --- |
@@ -17,8 +17,8 @@ after the resets.
 | Web suite | PASS | 241 vitest + 9 rights tests; `tsc` clean; Prettier clean; `next build` clean with the rights gate |
 | HF dataset assembly (`build_hf_dataset.py`) | PASS (built, not pushed) | `dist/hf_dataset/` 983 rows / 699 files / 565 MB; `--check` passed; pytest 11/11 after the self-copy fix; deny-list grep clean; `docs/data/HF_DATASET.md` |
 | Research (six sourced notes) | PASS | `docs/research/research_notes/Somali music studio software research/` (browser DAW architecture, Logic/GarageBand feature model, music-learning software, Somali musicology + glossary sources, HF reference-dataset design, DAW UI in React) |
-| Research synthesis report | IN PROGRESS at 09:45 | writer agent resumed after the limit; `docs/research/reports/` |
-| Glossary review from the musicology note | IN PROGRESS at 09:45 | the note's "Glossary review" section is being appended; corrections not yet applied to `glossary.json` |
+| Research synthesis report | PASS (09:43) | `docs/research/reports/Somali music studio software research.md` — 10,900 words, 260 citations, six-week roadmap |
+| Glossary review from the musicology note | PASS (09:50) | review section written (23 corrections, 64 sourced additions, better sources for 28); the 23 corrections applied to `glossary.json` → v2 (48 attested / 22 reported / 2 unverified); Learn tests 58 pass; dataset rebuilt and re-checked; the 64 additions are the next content step |
 
 ### Defaults chosen (log them, keep going)
 
