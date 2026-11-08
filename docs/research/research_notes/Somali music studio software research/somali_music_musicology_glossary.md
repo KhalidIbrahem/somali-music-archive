@@ -282,6 +282,8 @@ Entries that are correct but should carry the added detail (no error): `hees` (K
 
 **(b) Sourced terms missing from the glossary** (term — variants — gloss — one-line definition — source)
 
+*Status 2026-11-08: all 64 lines applied as glossary v3 (the lines name 125 terms: 122 new entries, plus `digri` merged into `dhikri`, and `shanbal` and `biyaano`, which already existed). Each term was checked against the source's own text, and five statements below did not survive: line 24, the cited page does not gloss hoyal as a mat-weaving song; line 26, Hirsi labels hooris and hoojis first and second inconsistently, so the entries define them by who sings them; line 36, nothing says Bullo and Buunlo are the same dance, so the entry flags it; line 37, the catalogue lists Sayle and Seylici as separate dances, and the fetched Sahan Journal page names neither saylici nor wilwile; line 64, Al Jazeera writes "hoyga sugaanta".*
+
 Poetry and song forms
 1. wiglo — wilgo — sailors' declaimed song — oldest popular genre, two-line verses, soloist, vocable refrain "woyaale...", no accompaniment; a "minor" genre behind the heello — [Xaange ch. IV §1](https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf); [Giannattasio 1988](https://arcadia.sba.uniroma3.it/handle/2307/984).
 2. hirwo — hurbo, xurbo — western dance-song — wiglo turned dance-song (1950s) with claps and stamping; source of dhaanto "jiibdheer"; *xurbo* = "mixed" form between dhaanto and hirwo — [Xaange ch. IV §2](https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf); [Catalogo DAT 4 id 23, DAT 7 id 23](https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf).

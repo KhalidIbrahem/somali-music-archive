@@ -78,6 +78,37 @@ describe('reverse lookup', () => {
   });
 });
 
+describe('glossary v3: the terms added from the musicology review', () => {
+  it('finds the new terms by what they mean', () => {
+    expect(top('wooden camel bell')).toBe('koor');
+    expect(top('camel watering song')).toBe('hees-geel');
+    expect(top('ululation')).toBe('alalaas');
+    expect(top('double clarinet')).toBe('zumari');
+    expect(top('iron clappers')).toBe('sharaq');
+  });
+
+  it('finds a term from its field spelling', () => {
+    expect(top('digri')).toBe('dhikri');
+    expect(top('hurbo')).toBe('hirwo');
+    expect(top('moqoddon')).toBe('mokhoddon');
+  });
+
+  it('keeps the possession rites in their own category and out of saar spellings', () => {
+    const ritual = browse(entries, 'ritual').map((e) => e.id);
+    for (const id of ['saar', 'dhikri', 'mingis', 'nuumbi', 'xayaad', 'sittaat']) {
+      expect(ritual).toContain(id);
+    }
+    const saar = entries.find((e) => e.id === 'saar');
+    expect(saar?.variants).not.toContain('mingis');
+    expect(top('mingis')).toBe('mingis');
+  });
+
+  it('keeps the two senses of haan apart', () => {
+    const haan = entries.filter((e) => e.term === 'haan');
+    expect(haan.map((e) => e.category).sort()).toEqual(['dance', 'instrument']);
+  });
+});
+
 describe('browse / related / suggest', () => {
   it('browses alphabetically within a category', () => {
     const instruments = browse(entries, 'instrument');

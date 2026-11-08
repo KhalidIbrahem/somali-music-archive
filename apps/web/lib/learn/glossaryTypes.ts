@@ -17,6 +17,7 @@ export type GlossaryCategory =
   | 'form'
   | 'poetry'
   | 'dance'
+  | 'ritual'
   | 'instrument'
   | 'performance'
   | 'theory'
@@ -30,6 +31,7 @@ export const GLOSSARY_CATEGORIES: readonly GlossaryCategory[] = [
   'form',
   'poetry',
   'dance',
+  'ritual',
   'instrument',
   'performance',
   'theory',

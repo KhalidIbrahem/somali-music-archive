@@ -61,6 +61,7 @@ const CATEGORY_LABELS: Record<GlossaryCategory, string> = {
   form: 'Song forms',
   poetry: 'Poetry',
   dance: 'Dance',
+  ritual: 'Ritual & devotion',
   instrument: 'Instruments',
   performance: 'Performance',
   theory: 'Musical terms',

@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "updated": "2026-11-07",
+  "version": 3,
+  "updated": "2026-11-08",
   "license": "CC-BY-4.0",
   "entries": [
     {
@@ -12,7 +12,7 @@
       "definition": "The classic Somali popular song style of the 1940s–1970s: a sung melody over the kaban (oud), pentatonic and lyrical, built on balwo and heello love poetry. In present-day usage \"qaraami\" names both the repertoire of that era and the intimate oud-and-voice manner of performing it.",
       "definitionSo": "Heesaha caanka ah ee Soomaalida ee 1940-aadkii ilaa 1970-aadkii: cod iyo kaban, laxan shan-dhawaaqle, oo ku dhisan gabayada balwada iyo heellada.",
       "etymology": "From Arabic gharām (passionate love) according to the descriptions of Jama Musse Jama's book Qaraami; not yet checked against a dictionary here. Giannattasio's catalogue also records \"qaraami\" as a love-themed poetic type (a kind of gabay, 1985). Period: the music is dated mainly to the 1940s–mid-1960s (Jama Musse Jama); \"qaraami\" is now used for almost any 1950s–70s song (Geeska).",
-      "related": ["heello", "balwo", "kaban", "laxan", "hees"],
+      "related": ["heello", "balwo", "kaban", "laxan", "hees", "kabacad", "subcis", "gaaf"],
       "tags": [
         "love song",
         "classic",
@@ -47,7 +47,7 @@
       "definition": "The modern Somali song form that grew out of the balwo in the late 1940s and 1950s: longer, more elaborate texts set to new melodies, performed with instruments and broadcast by radio. Giannattasio traces the chain: the kaban, introduced in 1948, gave the short genres (hirwo, dhaanto, wiglo, balwo) a new musical structure, from which the heello emerged; Qarshe's \"Lay lay\" is said to mark the passage from balwo to heello, and the first political heello dates from 1949. Its rhythm family lives on in the studio's heello groove.",
       "definitionSo": "Qaab heeseed casri ah oo ka soo baxay balwada dabayaaqadii 1940-aadkii; magaceedu ka yimid \"heelloy heellelloy\".",
       "etymology": "Usually derived from the vocable refrain \"heelloy heellelloy\" that opened early performances (Johnson 1996); plausible, but not confirmed in the sources fetched for this review.",
-      "related": ["balwo", "qaraami", "hees", "idaacadda-hargeysa"],
+      "related": ["balwo", "qaraami", "hees", "idaacadda-hargeysa", "wiglo", "hirwo"],
       "tags": ["modern song", "radio song", "refrain", "song form", "1950s", "hello song"],
       "sources": [
         "Johnson, John William (1996), Heelloy: Modern Poetry and Songs of the Somali, Haan",
@@ -70,7 +70,7 @@
       "definition": "A short love lyric sung to a simple melody, created in 1943 according to Cabdullaahi Qarshe's own account (Giannattasio's catalogue; Goth) or 1943–1945 (Wikipedia), associated with Cabdi Deeqsi \"Sinimo\" (Giannattasio spells him Cabdi Shineemo) and his partner Khadiija Ciye Dharaar \"Khadiija Balwo\" in the Borama area, where the Borama Balwo Bands performed from 1944–46. The balwo brought secular love poetry to a mass public and was the seed of the heello and of modern Somali song.",
       "definitionSo": "Gabay gaaban oo jacayl ah, laba ilaa afar tix, oo la heesaa; waxaa 1940-aadkii bilaabay Cabdi Deeqsi \"Sinimo\".",
       "etymology": "The gloss \"misfortune\" is attested (Africa Diary 1964, via Wikipedia); the link to Arabic balwā is widely repeated but not found in a primary source here.",
-      "related": ["heello", "qaraami", "cabdi-sinimo"],
+      "related": ["heello", "qaraami", "cabdi-sinimo", "dheel", "dunya-diwani", "wiglo"],
       "tags": [
         "short poem",
         "love lyric",
@@ -96,7 +96,15 @@
       "category": "form",
       "definition": "A song: sung verse with a melody. In the classical division of Somali oral art, hees (light, sung, often danced verse) stands apart from maanso (weighty poetry recited rather than sung); modern hees since the heello has absorbed much of maanso's seriousness.",
       "definitionSo": "Tix la heeso oo laxan leh; waxaa ka duwan maansada, oo ah gabay culus oo la tiriyo.",
-      "related": ["maanso", "heello", "hees-hawleed", "hees-carruureed", "laxan"],
+      "related": [
+        "maanso",
+        "heello",
+        "hees-hawleed",
+        "hees-carruureed",
+        "laxan",
+        "heesid",
+        "qaadid"
+      ],
       "tags": ["song", "sung poem", "singing", "lyric", "tune", "music piece"],
       "sources": [
         "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry: An Introduction, Clarendon",
@@ -134,7 +142,7 @@
       "category": "poetry",
       "definition": "The most prestigious classical Somali poetic genre: long alliterative lines in a fixed metre, chanted on a few pitches by the poet, used for politics, philosophy and dispute. Not sung as a song, but its metre and alliteration shaped how later sung forms were written.",
       "definitionSo": "Gabayga waa tixda ugu sharafta badan maansada Soomaalida: tixo dhaadheer, miisaan go'an iyo higgaad.",
-      "related": ["maanso", "miisaan", "higgaad", "geeraar", "jiifto"],
+      "related": ["maanso", "miisaan", "higgaad", "geeraar", "jiifto", "gabyid", "guurow"],
       "tags": ["classical poem", "long line", "chant", "political poetry", "alliteration", "metre"],
       "sources": [
         "Andrzejewski, B. W. & Lewis, I. M. (1964), Somali Poetry: An Introduction, Clarendon",
@@ -182,7 +190,7 @@
       "category": "poetry",
       "definition": "The principal genre of Somali women's verse: composed and performed by women, sung with clapping and drum and danced at weddings and celebrations; its texts range from praise and celebration to pointed social commentary.",
       "definitionSo": "Gabayga haweenka Soomaaliyeed: waxaa la heesaa, la sacbiyaa, durbaan lagu garaacaa, oo arooska iyo xafladaha lagu ciyaaraa.",
-      "related": ["hees", "ciyaar", "durbaan", "dhaanto"],
+      "related": ["hees", "ciyaar", "durbaan", "dhaanto", "hoyal", "sittaat", "alalaas"],
       "tags": [
         "women's poetry",
         "women's dance",
@@ -206,7 +214,7 @@
       "definition": "A dance-song of the camel-herding west (Somali Galbeed / Ogaden), performed with handclapping and foot-stamping, call-and-response verses and an off-beat accent; Xaange describes a dhaanto session in four phases and two-line verses interchangeable with the wiglo. Two origin accounts circulate: a Dervish-era revival (Johnson, via Wikipedia) and \"first appeared in the 1930s, developed from hurbo\" (Xaange). Revived as a popular stage and folk-dance form in the twentieth century and still widely performed.",
       "definitionSo": "Ciyaar iyo hees reer-miyi ah oo galbeedka Soomaalida (Soomaali Galbeed) ka soo jeeda; sacab iyo cag-garaac, jawaab-celin, laxan dhaqaaqa.",
       "etymology": "The link to the camel's gait is a widely repeated description, not a documented etymology.",
-      "related": ["ciyaar", "buraanbur", "hees"],
+      "related": ["ciyaar", "buraanbur", "hees", "hirwo", "jiibdheer", "wiglo"],
       "tags": [
         "folk dance",
         "camel rhythm",
@@ -232,12 +240,12 @@
     {
       "id": "saar",
       "term": "saar",
-      "variants": ["saarka", "mingis", "boorane", "zar"],
+      "variants": ["saarka", "zar"],
       "english": "spirit-possession ritual music and dance",
-      "category": "genre",
+      "category": "ritual",
       "definition": "Music and dance of spirit-possession ceremonies (the Horn-of-Africa zār complex), led by drums and repeated sung formulas that build toward trance. Regional forms carry their own names (for example mingis and boorane). A ritual repertoire, distinct from entertainment song.",
       "definitionSo": "Muusig iyo ciyaar xafladaha saarka (ruuxaanta): durbaan iyo heeso soo noqnoqda oo gaarsiiya xaalad dareen-dhimis.",
-      "related": ["durbaan", "ciyaar"],
+      "related": ["durbaan", "ciyaar", "mingis", "nuumbi", "xayaad", "boorane", "haan-dance"],
       "tags": ["possession", "ritual", "trance", "zar", "healing ceremony", "drums", "spirits"],
       "sources": [
         "Lewis, I. M. (1998), Saints and Somalis: Popular Islam in a Clan-based Society, Haan",
@@ -316,7 +324,16 @@
       "category": "dance",
       "definition": "Dance, play or game; the general word for the group dances of the folk tradition (dhaanto, buraanbur, jaandheer and others), which are at once music, poetry and movement.",
       "definitionSo": "Ciyaar: qoob-ka-ciyaar, ciyaar ama cayaar; erayga guud ee ciyaaraha dhaqanka.",
-      "related": ["dhaanto", "buraanbur", "jaandheer", "batar"],
+      "related": [
+        "dhaanto",
+        "buraanbur",
+        "jaandheer",
+        "batar",
+        "ciyaarid",
+        "hees-cayaareed",
+        "haan-dance",
+        "beerrey"
+      ],
       "tags": ["dance", "folk dance", "play", "game", "qoob ka ciyaar", "movement"],
       "sources": [
         "Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary with English Index, Dunwoody"
@@ -331,7 +348,15 @@
       "category": "form",
       "definition": "Songs sung to the rhythm of work — watering camels, pounding grain, weaving, herding — with simple repeating melodies and lines that set the pace of the task. A large and old part of the pastoral repertoire.",
       "definitionSo": "Heeso la qaado marka hawl la qabanayo: geel-waraabin, hadhuudh-tun, reer-dhisid.",
-      "related": ["hees", "hobeey", "hees-carruureed"],
+      "related": [
+        "hees",
+        "hobeey",
+        "hees-carruureed",
+        "hees-xoolaad",
+        "hees-kebdeed",
+        "hees-beereed",
+        "hees-badeed"
+      ],
       "tags": [
         "work song",
         "labour",
@@ -383,7 +408,7 @@
       "category": "form",
       "definition": "Patriotic and nationalist songs, a central strand of Somali music from the independence struggle of the 1950s onward; many of the best-known heello of Radio Hargeysa and Radio Muqdisho belong here.",
       "definitionSo": "Heeso wadani ah oo ka hadlaya qaranka iyo xorriyadda; qayb muhiim ah oo heesaha 1950-aadkii.",
-      "related": ["heello", "cabdullaahi-qarshe", "idaacadda-hargeysa"],
+      "related": ["heello", "cabdullaahi-qarshe", "idaacadda-hargeysa", "waddani", "qaranimo"],
       "tags": ["patriotic", "nationalist", "independence", "anthem", "political song", "country"],
       "sources": [
         "Johnson, John William (1996), Heelloy, Haan",
@@ -398,7 +423,7 @@
       "english": "religious praise poem/hymn",
       "category": "genre",
       "definition": "Religious poetry in praise of God, the Prophet and the saints, chanted in Arabic or Somali, often at Sufi gatherings; a devotional repertoire with its own melodic formulas, separate from secular song.",
-      "related": ["dhikri", "masafo"],
+      "related": ["dhikri", "masafo", "nebi-ammaan", "mawliid"],
       "tags": ["religious", "hymn", "praise poem", "Sufi", "devotional", "chant", "Islamic"],
       "sources": ["Lewis, I. M. (1998), Saints and Somalis, Haan"],
       "confidence": "reported"
@@ -406,14 +431,28 @@
     {
       "id": "dhikri",
       "term": "dhikri",
-      "variants": ["dhikriga", "sikr", "zikr"],
+      "variants": ["digri", "dikri", "dhikr", "dhikriga", "sikr", "zikr"],
       "english": "Sufi remembrance chant",
-      "category": "genre",
-      "definition": "The rhythmic communal chanting of God's names at Sufi gatherings, with swaying and sometimes frame drums; a devotional practice rather than entertainment music.",
-      "related": ["qasiido", "saar"],
-      "tags": ["Sufi", "chant", "remembrance", "zikr", "devotional", "religious gathering"],
-      "sources": ["Lewis, I. M. (1998), Saints and Somalis, Haan"],
-      "confidence": "reported"
+      "category": "ritual",
+      "definition": "The rhythmic communal chanting of God's names at Sufi gatherings, with swaying and sometimes frame drums; a devotional practice rather than entertainment music. Giannattasio's field spelling is digri: the intoned, rhythmically cadenced recitation of prayers of the Islamic orders (dariiqo), held to be \"non-musical\", so that verbs for singing such as qaadid and heesid are not used of its chants (qasiidooyin).",
+      "related": ["qasiido", "saar", "dariiqo", "nebi-ammaan", "jibdo", "qaadid"],
+      "tags": [
+        "Sufi",
+        "chant",
+        "remembrance",
+        "zikr",
+        "devotional",
+        "religious gathering",
+        "digri",
+        "recitation of prayers",
+        "non-musical chant"
+      ],
+      "sources": [
+        "Lewis, I. M. (1998), Saints and Somalis, Haan",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
     },
     {
       "id": "masafo",
@@ -452,7 +491,7 @@
       "definition": "The oud: the short-necked lute that became the lead melodic instrument of Somali urban song. Giannattasio dates its introduction to 1948 and calls it the Yemeni lute (kaban; record keyword gambuus); Harvard's catalogue gives kaman/kaban; Goth credits one of the Borama Balwo Bands (before 1946) as the first to use an oud, and Cabdullaahi Qarshe with establishing it. Today's instrument is the fretless Arab oud. Qaraami is above all a kaban-and-voice music.",
       "definitionSo": "Kaban: aalad xadhkaysan oo cuud ah, aan farac lahayn, oo laxanka heesaha qaraamiga hogaamin jirtay tan iyo 1940-aadkii.",
       "etymology": "Not settled: the forms kaban/kamaan/kaman suggest a loan, but no fetched source gives the origin (the Arabic kamān \"violin\" proposal is unverified).",
-      "related": ["qaraami", "kabanle", "shareero", "cumar-dhuule"],
+      "related": ["qaraami", "kabanle", "shareero", "cumar-dhuule", "tumid"],
       "tags": [
         "oud",
         "lute",
@@ -483,7 +522,7 @@
       "category": "instrument",
       "definition": "The traditional Somali bowl lyre: six strings over a bowl (xeero), tuned re4 re3 si3 la3 sol3 mi3 (Giannattasio 1987), played between the rivers and in the north (Berbera, Togdheer), and used to accompany the nuumbi ritual together with owlan drums; locally also called lumiya. The name is linked to the Semitic root knr; the Ethiopian krar is a cognate instrument, not a Somali spelling. The main indigenous string instrument before the kaban, now rare.",
       "definitionSo": "Aalad xadhkaysan oo dhaqameed, lix xadhig iyo xeero, oo heesaha iyo nuumbiga lagu wehelin jiray ka hor kabanka.",
-      "related": ["kaban", "durbaan"],
+      "related": ["kaban", "durbaan", "nuumbi", "owlan", "tumid"],
       "tags": [
         "lyre",
         "harp",
@@ -507,8 +546,8 @@
       "category": "instrument",
       "definition": "The drum: in Giannattasio's inventory durbaan (plural durbaanno) is the generic and the cylindrical-tubular drum, with named sub-types (yoome, jabbu or durbaan yar, nasar, masoonde, mokhoddon, tabuul, owlan, reeme); the frame drum or tambourine is the daf. Xaange notes that the women's haan dance is also called durbaan. The studio's durbaan voice plays three strokes: dum (low), tak (rim) and slap.",
       "definitionSo": "Durbaan: aaladda garaacda ee ciyaaraha iyo heesaha u dhawaaqda; istuudiyadu waxay leedahay saddex dharbaaxo: dum, tak iyo dharbaaxo.",
-      "related": ["garaac", "shambal", "buraanbur", "saar"],
-      "tags": ["drum", "percussion", "frame drum", "hand drum", "beat", "dum", "tak"],
+      "related": ["garaac", "shambal", "buraanbur", "saar", "yoome", "jabbu", "nasar", "daf"],
+      "tags": ["drum", "percussion", "frame drum", "hand drum", "beat", "dum", "tak", "drums"],
       "sources": [
         "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
         "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
@@ -527,7 +566,7 @@
       "english": "wooden clappers",
       "category": "instrument",
       "definition": "Valve-shaped wooden clappers (garas, gulaan or deegaan wood), widespread throughout Somalia except some northern areas, struck as a louder substitute for handclapping (sacab) in dances such as xayaad; the metal clappers are called sharaq or biro (Giannattasio 1987).",
-      "related": ["durbaan", "sacab", "garaac"],
+      "related": ["durbaan", "sacab", "garaac", "sharaq", "xayaad"],
       "tags": ["clappers", "wood blocks", "percussion", "clap", "beat keeper", "xayaad"],
       "sources": [
         "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
@@ -542,7 +581,7 @@
       "english": "horn, trumpet",
       "category": "instrument",
       "definition": "A horn or trumpet — traditionally a conch or animal horn blown for signalling and ceremony; in modern Somali also the word for brass instruments.",
-      "related": ["durbaan"],
+      "related": ["durbaan", "caroog", "malkad", "gees", "yeerin"],
       "tags": ["horn", "trumpet", "conch", "brass", "wind instrument", "signal"],
       "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
       "confidence": "attested"
@@ -568,9 +607,12 @@
       "english": "piano / keyboard",
       "category": "instrument",
       "definition": "Piano and, by extension, the electric organs and synthesizer keyboards heard in Somali band recordings from the 1970s onward.",
-      "related": ["gitaar", "waaberi"],
+      "related": ["gitaar", "waaberi", "organ"],
       "tags": ["piano", "keyboard", "organ", "synth", "loanword"],
-      "sources": ["Ostinato Records (2017), Sweet As Broken Dates, liner notes"],
+      "sources": [
+        "Ostinato Records (2017), Sweet As Broken Dates, liner notes",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
       "confidence": "reported"
     },
     {
@@ -603,7 +645,7 @@
       "category": "theory",
       "definition": "The sung line or tune, with a stress on the voice's own shaping of it — a singer's luuq is their melodic manner. Often paired with laxan; also used for the chant tune of recited poetry.",
       "definitionSo": "Luuq: codka iyo habka heesaa ugu qaado laxanka; waxaa kaloo loola jeedaa luuqda gabayga lagu tiriyo.",
-      "related": ["laxan", "cod", "heesaa"],
+      "related": ["laxan", "cod", "heesaa", "yeerin", "jiib"],
       "tags": ["vocal melody", "singing style", "chant tune", "voice line", "delivery"],
       "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
       "confidence": "attested"
@@ -616,7 +658,7 @@
       "category": "theory",
       "definition": "Voice, sound, vote; in music the singing voice and, in studio language, a vocal take (cod = the vocal track, as in the archive's session files). Cod wanaagsan — a fine voice.",
       "definitionSo": "Cod: dhawaaqa qofka, codka heesaaga; istuudiyada waa duubista codka heesaaga.",
-      "related": ["luuq", "heesaa", "duubis"],
+      "related": ["luuq", "heesaa", "duubis", "heesid", "foori"],
       "tags": ["voice", "vocal", "vocal take", "singer's voice", "sound"],
       "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
       "confidence": "attested"
@@ -629,7 +671,7 @@
       "category": "theory",
       "definition": "The metre of a poem or song text: the fixed pattern of long and short vowels (moras) that each Somali genre follows. Scholars showed that these quantitative metres map onto musical rhythm when verse is sung or chanted.",
       "definitionSo": "Miisaan: hannaanka shaqallada dhaadheer iyo gaagaaban ee tix walba oo nooc kasta oo maanso leeyahay.",
-      "related": ["higgaad", "gabay", "laxan", "garaac"],
+      "related": ["higgaad", "gabay", "laxan", "garaac", "halaanhal", "dooro-duureed-aa"],
       "tags": ["metre", "meter", "prosody", "scansion", "mora", "vowel length", "rhythm of verse"],
       "sources": [
         "Banti, Giorgio & Giannattasio, Francesco (1996), Music and metre in Somali poetry, in R. J. Hayward & I. M. Lewis (eds.), Voice and Power, SOAS",
@@ -675,7 +717,7 @@
       "category": "rhythm",
       "definition": "To strike or beat; the drum beat itself. Garaaca durbaanka is drumming; by extension the rhythmic pulse a dance or song moves to.",
       "definitionSo": "Garaac: wax garaacid; garaaca durbaanka waa dhawaaqa iyo xawaaraha ciyaarta lagu socdo.",
-      "related": ["durbaan", "miisaan", "shambal"],
+      "related": ["durbaan", "miisaan", "shambal", "tumid"],
       "tags": ["beat", "rhythm", "pulse", "drumming", "strike", "tempo", "groove"],
       "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
       "confidence": "attested"
@@ -736,7 +778,7 @@
       "english": "singer",
       "category": "people",
       "definition": "A singer (one who sings — heesaa from hees); heesaad for a woman singer.",
-      "related": ["fannaan", "cod", "luuq"],
+      "related": ["fannaan", "cod", "luuq", "laashin"],
       "tags": ["singer", "vocalist", "voice", "lead singer"],
       "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
       "confidence": "attested"
@@ -898,7 +940,13 @@
       "english": "pioneer Hargeysa ensemble (1950s)",
       "category": "institution",
       "definition": "The pioneering Hargeysa performing group of the 1950s associated with Cabdullaahi Qarshe and the first generation of radio singers and playwrights; a seedbed of the heello and of Somali theatre.",
-      "related": ["cabdullaahi-qarshe", "idaacadda-hargeysa", "heello"],
+      "related": [
+        "cabdullaahi-qarshe",
+        "idaacadda-hargeysa",
+        "heello",
+        "hoygii-fanka",
+        "xidigaha-geeska"
+      ],
       "tags": ["ensemble", "pioneers", "1950s", "Hargeisa group", "theatre troupe"],
       "sources": ["Johnson, John William (1996), Heelloy, Haan"],
       "confidence": "reported"
@@ -944,7 +992,7 @@
       "variants": ["Abdullahi Qarshe", "Abdillahi Qarshe", "Cabdillaahi Qarshe", "Qarshe"],
       "english": "composer, oud pioneer (1924–1994 or 1997), \"father of Somali music\"",
       "category": "people",
-      "definition": "Composer, poet, singer and kaban player, born 1924 in Moshi (Tanganyika), died 1994 (Wikipedia) or 1997 (VIAF; Giannattasio gives \"1924–1997?\"), who set Somali verse to new melodies at Radio Hargeysa in the 1950s and is honoured as the father of modern Somali music; author of patriotic classics. The archive's score page credits him with the melody Beerdilaacshe; that attribution is not confirmed in the sources consulted (Jama Musse Jama lists Beerdillaacshe as a qaraami melody without a composer).",
+      "definition": "Composer, poet, singer and kaban player, born 1924 in Moshi (Tanganyika), died 1994 (Wikipedia) or 1997 (VIAF; Giannattasio gives \"1924–1997?\"), who set Somali verse to new melodies at Radio Hargeysa in the 1950s and is honoured as the father of modern Somali music; author of patriotic classics. Geeska (2025) names Beerdilaacshe, with Ciil and Laac, among the qaraam classics he originally composed; that is the only source found for the attribution, Jama Musse Jama's book description lists Beerdillaacshe without a composer, and no source consulted dates the melody.",
       "definitionSo": "Abwaan, laxamiiste iyo kabanle (1924–1994) loo yaqaan aabbaha fanka Soomaaliyeed; Idaacadda Hargeysa 1950-aadkii.",
       "related": [
         "kaban",
@@ -968,7 +1016,8 @@
         "Wikipedia, Abdullahi Qarshe",
         "VIAF 19442032 — https://viaf.org/viaf/19442032",
         "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
-        "African Books Collective, Jama Musse Jama, Qaraami (book description) — https://www.africanbookscollective.com/books/qaraami"
+        "African Books Collective, Jama Musse Jama, Qaraami (book description) — https://www.africanbookscollective.com/books/qaraami",
+        "Geeska, The making of Hudeidi — https://www.geeska.com/en/making-hudeidi"
       ],
       "confidence": "attested"
     },
@@ -1179,7 +1228,7 @@
       "english": "hand clapping",
       "category": "rhythm",
       "definition": "Hand clapping, the basic percussion of Somali folk dance and of buraanbur and dhaanto, often in interlocking patterns between groups.",
-      "related": ["dhaanto", "buraanbur", "garaac"],
+      "related": ["dhaanto", "buraanbur", "garaac", "kasrad", "jaan", "tumid"],
       "tags": ["clap", "clapping", "hand percussion", "interlocking", "applause"],
       "sources": ["Zorc, R. David & Osman, Madina (1993), Somali–English Dictionary"],
       "confidence": "attested"
@@ -1191,7 +1240,7 @@
       "english": "call and response",
       "category": "performance",
       "definition": "Answering: the leader–chorus alternation that structures dhaanto, buraanbur, work songs and fishing songs. The documented terms are Giannattasio's \"antiphonal (alternating choruses) or responsorial (soloist and choral response)\" multivocality, Hirsi's hoojis (lead) and hooris (unison chorus) in fishing songs, and Xaange's wiglo soloist with refrain chorus; the compound jawaab-celin itself is this project's descriptive label, not an attested term.",
-      "related": ["dhaanto", "buraanbur", "hees-hawleed"],
+      "related": ["dhaanto", "buraanbur", "hees-hawleed", "hooris", "hoojis", "jiib"],
       "tags": [
         "call and response",
         "leader and chorus",
@@ -1208,6 +1257,1834 @@
         "Xaange, Axmed Cartan (2014), Folk Songs from Somalia, Roma TrE-Press — https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf"
       ],
       "confidence": "uncertain"
+    },
+    {
+      "id": "wiglo",
+      "term": "wiglo",
+      "variants": ["wilgo"],
+      "english": "sailors' two-line song, unaccompanied",
+      "category": "genre",
+      "definition": "One of the oldest Somali popular song genres, which Xaange says began among sailors on dhows and spread to the nomads: two-line verses sung by a soloist, or with a chorus repeating vocable refrains such as \"woyaale woyaale woyaaley\", with no accompaniment of any kind. Giannattasio counts it among the \"minor\" genres (wiglo, hirwo, dhaanto, belwo) to whose metres the kaban gave a new musical structure, producing the heello.",
+      "related": ["hirwo", "dhaanto", "balwo", "heello"],
+      "tags": [
+        "sailors' song",
+        "dhow song",
+        "oldest song genre",
+        "unaccompanied song",
+        "woyaale",
+        "vocable refrain",
+        "minor genre"
+      ],
+      "sources": [
+        "Xaange, Axmed Cartan (2014), Folk Songs from Somalia, Roma TrE-Press — https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hirwo",
+      "term": "hirwo",
+      "variants": ["hurbo"],
+      "english": "western dance-song grown from the wiglo",
+      "category": "dance",
+      "definition": "Mainly in the 1950s the wiglo spread in the western regions and became a dance-song, the hurbo or hirwo, adding handclapping and foot-stamping, with two short lines per verse composed on the spot by men and women as they danced (Xaange). The singer Xaaji Baalbaal named hurbo as the genre from which the \"jiibdheer\" dhaanto is said to derive, and he also sang a xurbo (literally \"mixed\"), placed between dhaanto and hirwo.",
+      "related": ["wiglo", "dhaanto", "jiibdheer", "sacab", "ciyaar"],
+      "tags": [
+        "dance song",
+        "western regions",
+        "handclapping",
+        "foot-stamping",
+        "xurbo",
+        "mixed form",
+        "improvised verses"
+      ],
+      "sources": [
+        "Xaange, Axmed Cartan (2014), Folk Songs from Somalia, Roma TrE-Press — https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "jiibdheer",
+      "term": "jiibdheer",
+      "variants": [],
+      "english": "a type of dhaanto",
+      "category": "dance",
+      "definition": "A type of dhaanto. In 1985 the singer Xaaji Baalbaal told Giannattasio that it is said to derive from the hurbo and that the danced song dheel is connected with it; the catalogue describes it no further.",
+      "etymology": "The name appears to join jiib (multivocal singing) and dheer (long); no source consulted explains it.",
+      "related": ["dhaanto", "hirwo", "dheel", "jiib"],
+      "tags": ["dhaanto type", "kind of dhaanto", "Xaaji Baalbaal"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "dheel",
+      "term": "dheel",
+      "variants": [],
+      "english": "danced song, said source of balwo",
+      "category": "dance",
+      "definition": "A danced song presented by the singer Xaaji Baalbaal in 1985. He connected it with the \"jiibdheer\" dhaanto and said that the balwo genre derives from it.",
+      "related": ["jiibdheer", "balwo", "dhaanto"],
+      "tags": ["danced song", "origin of balwo", "Xaaji Baalbaal"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "guurow",
+      "term": "guurow",
+      "variants": ["guroow"],
+      "english": "poetic genre of the gabay class",
+      "category": "poetry",
+      "definition": "A poetic genre that Giannattasio lists in the gabay class beside gabay, geeraar, buraanbur, jiifto and masafo, and that he recorded in 1989 as \"guroow\". The sources consulted do not describe its form.",
+      "related": ["gabay", "geeraar", "maanso"],
+      "tags": ["poem", "gabay class", "poetic genre", "traditional poetry"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "halaanhal",
+      "term": "halaanhal",
+      "variants": [],
+      "english": "oldest metre, twelve syllables",
+      "category": "poetry",
+      "definition": "Described in Wikipedia's table of Somali verse forms, which it credits to Galaal, as the oldest metre, with 12 syllables per verse.",
+      "related": ["miisaan", "gabay", "geeraar"],
+      "tags": ["metre", "oldest metre", "twelve syllables", "verse form"],
+      "sources": ["Wikipedia, Somali literature"],
+      "confidence": "reported"
+    },
+    {
+      "id": "hees-xoolaad",
+      "term": "hees xoolaad",
+      "variants": ["hees-xoolaad", "xoolaad"],
+      "english": "livestock song",
+      "category": "form",
+      "definition": "Song for livestock, the first kind of working song (hees howleed) in Giannattasio's classification; Galaal, as reported on Wikipedia, gives it lines of 4 to 5 syllables. Xaange's livestock songs cover camels, cattle, sheep, goats and horses.",
+      "related": ["hees-hawleed", "hees-geel", "hees-ari", "hees-fardood"],
+      "tags": [
+        "livestock song",
+        "herding song",
+        "animal song",
+        "xoolaad",
+        "work song",
+        "pastoral song"
+      ],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Wikipedia, Somali literature",
+        "Xaange, Axmed Cartan (2014), Folk Songs from Somalia, Roma TrE-Press — https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-geel",
+      "term": "hees geel",
+      "variants": ["hees-geel", "heesta geela"],
+      "english": "camel-watering song",
+      "category": "form",
+      "definition": "Men's song for watering camels. Giannattasio's 1998 recording, by three men, is noted as typical of the Daarood Ogaadeen of the Doollo region around Wardheer.",
+      "related": ["hees-xoolaad", "hees-rakaadeed", "salsal", "hees-hawleed"],
+      "tags": ["camel song", "watering camels", "camel herding", "geel", "work song"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-rakaadeed",
+      "term": "hees rakaadeed",
+      "variants": ["hees-rakaadeed"],
+      "english": "second-watering song for camels",
+      "category": "form",
+      "definition": "Song for the second watering (rakaad) of the camels, recorded by Giannattasio in 1998.",
+      "related": ["hees-geel", "hees-xoolaad", "hees-hawleed"],
+      "tags": ["camel song", "second watering", "rakaad", "work song"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "salsal",
+      "term": "salsal",
+      "variants": [],
+      "english": "camel-loading song",
+      "category": "form",
+      "definition": "Men's songs for loading the pack-saddle on camels, in short one-line verses; Xaange glosses the name as \"praise sing for the burden beast\" and prints examples of a cameleer soothing or urging on the loaded animal.",
+      "related": ["hees-geel", "hees-xoolaad", "hees-hawleed"],
+      "tags": [
+        "loading camels",
+        "pack camel",
+        "pack-saddle",
+        "burden camel",
+        "work song",
+        "men's song"
+      ],
+      "sources": [
+        "Xaange, Axmed Cartan (2014), Folk Songs from Somalia, Roma TrE-Press — https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-kebdeed",
+      "term": "hees kebdeed",
+      "variants": ["hees-kebdeed", "heesta kebedda"],
+      "english": "mat-weaving song",
+      "category": "form",
+      "definition": "Women's song for weaving the kebed mats of the aqal, the nomads' portable house, and the second kind of working song in Giannattasio's classification. Hirsi finds its metre remarkably similar to the Banaadiri dooro duureed aa.",
+      "related": ["hees-hawleed", "hees-alool", "dooro-duureed-aa"],
+      "tags": ["weaving song", "mat weaving", "kebed", "aqal", "women's song", "work song"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Xaange, Axmed Cartan (2014), Folk Songs from Somalia, Roma TrE-Press — https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf",
+        "Hirsi, Ibrahim (2023), Aweys Geedow Nuur \"Diinle\": Ciyow Biyaha Keen, a case study — https://wardheernews.com/wp-content/uploads/2023/05/Aweys-Geedow-Nuur-Diinles-Ciyow-Biyaha-Keen-A-Case-Study-By-Ibrahim-Hirsi.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-alool",
+      "term": "hees alool",
+      "variants": ["hees-alool"],
+      "english": "bed-frame song",
+      "category": "form",
+      "definition": "Women's song for building the stick frame of the bed in the aqal, the nomads' portable house, recorded by Giannattasio in 1998.",
+      "related": ["hees-kebdeed", "hees-hawleed"],
+      "tags": ["building song", "bed frame", "aqal", "women's song", "work song"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "heesta-caano-ruxidda",
+      "term": "heesta caano-ruxidda",
+      "variants": [],
+      "english": "butter-churning song",
+      "category": "form",
+      "definition": "Song for making butter. The woman Giannattasio recorded presented it under the local name heesta culidda haana, which he glosses as a song for disinfecting the haan vessel; Xaange describes a smaller haan of about 10 to 15 litres used for churning.",
+      "related": ["hees-hawleed", "haan-drum", "hees-caanood"],
+      "tags": [
+        "churning song",
+        "butter",
+        "milk",
+        "haan song",
+        "heesta culidda haana",
+        "women's song",
+        "work song"
+      ],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Xaange, Axmed Cartan (2014), Folk Songs from Somalia, Roma TrE-Press — https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-beereed",
+      "term": "hees beereed",
+      "variants": ["hees-beereed", "hees beerta", "hees-beerta"],
+      "english": "farming song",
+      "category": "form",
+      "definition": "Field song, the third kind of working song in Giannattasio's classification; the catalogue records a hees-beerta for sowing.",
+      "related": ["hees-hawleed", "heesta-dibida"],
+      "tags": ["farming song", "field song", "sowing song", "agriculture", "work song"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "heesta-dibida",
+      "term": "heesta dibida",
+      "variants": [],
+      "english": "ploughing song",
+      "category": "form",
+      "definition": "Song for the oxen that pull the plough; in one recording the verse \"a machine does not plough the fields\" answers the introduction of tractors at Jigjiga in 1960.",
+      "related": ["hees-beereed", "hees-hawleed"],
+      "tags": ["ploughing song", "plough", "oxen", "tractors", "Jigjiga", "work song"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-badeed",
+      "term": "hees badeed",
+      "variants": ["hees-badeed", "hees baddeed", "hees-badda", "hees badda"],
+      "english": "sea and fishermen's song",
+      "category": "form",
+      "definition": "Sea and fishermen's songs, the fourth kind of working song in Giannattasio's classification; he recorded hees baddeed from about ten fishermen at Jasiira, in the Banaadir region, in April 1985.",
+      "related": ["hees-hawleed", "hees-doonnieed", "dooro-duureed-aa"],
+      "tags": ["fishing song", "fishermen", "sea song", "Banaadir", "work song"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-doonnieed",
+      "term": "hees doonnieed",
+      "variants": ["hees-doonnieed"],
+      "english": "dhow song",
+      "category": "form",
+      "definition": "Song sung on the dhow (in the catalogue, \"canto sul sambuco\"), also labelled there a song of the sea (hees-badda).",
+      "related": ["hees-badeed", "wiglo"],
+      "tags": ["dhow song", "boat song", "sailing song", "sea song"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-ari",
+      "term": "hees ari",
+      "variants": ["hees-ari"],
+      "english": "goat and sheep herding song",
+      "category": "form",
+      "definition": "Song for grazing goats and sheep, recorded by Giannattasio in 1998 from girls and women.",
+      "related": ["hees-xoolaad", "hees-maqaleed", "hees-hawleed"],
+      "tags": ["goat song", "sheep song", "herding song", "grazing", "work song"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-maqaleed",
+      "term": "hees maqaleed",
+      "variants": ["hees-maqaleed", "heesta maqasha"],
+      "english": "kid-herding song",
+      "category": "form",
+      "definition": "Song for grazing young goats (kids), recorded by Giannattasio in 1998.",
+      "related": ["hees-ari", "hees-xoolaad", "hees-hawleed"],
+      "tags": ["kid song", "young goats", "herding song", "work song"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-fardood",
+      "term": "hees fardood",
+      "variants": ["hees-fardood"],
+      "english": "horse song",
+      "category": "form",
+      "definition": "Song for horses, performed for Giannattasio by the singer Xaaji Baalbaal in 1985.",
+      "related": ["hees-xoolaad", "hees-hawleed"],
+      "tags": ["horse song", "horses", "Xaaji Baalbaal"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-cayaareed",
+      "term": "hees cayaareed",
+      "variants": ["hees-cayaareed", "hees-ciyaareed", "hees ciyaareed", "heeso ciyaareed"],
+      "english": "dance song",
+      "category": "form",
+      "definition": "Dance song. Giannattasio treats hees and ciyaar as separate classes but allows that it is \"not totally inadmissible\" to speak of heeso ciyaareed, dance songs; Galaal, as reported on Wikipedia, gives the form 6 to 11 syllables.",
+      "related": ["hees", "ciyaar", "ciyaarid"],
+      "tags": ["dance song", "song for dancing"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Wikipedia, Somali literature"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hees-caanood",
+      "term": "hees caanood",
+      "variants": ["hees-caanood"],
+      "english": "milk-shaking song",
+      "category": "form",
+      "definition": "Song for shaking milk; Galaal, as reported on Wikipedia, gives it lines of 6 to 9 syllables.",
+      "related": ["hees-hawleed", "heesta-caano-ruxidda"],
+      "tags": ["milk song", "shaking milk", "work song"],
+      "sources": ["Wikipedia, Somali literature"],
+      "confidence": "reported"
+    },
+    {
+      "id": "hees-mooye",
+      "term": "hees mooye",
+      "variants": ["hees-mooye"],
+      "english": "grinding song",
+      "category": "form",
+      "definition": "Song for grinding; Galaal, as reported on Wikipedia, gives it lines of 6 syllables.",
+      "related": ["hees-hawleed"],
+      "tags": ["grinding song", "pounding grain", "mortar", "work song"],
+      "sources": ["Wikipedia, Somali literature"],
+      "confidence": "reported"
+    },
+    {
+      "id": "heelo-yar-yar",
+      "term": "heelo-yar-yar",
+      "variants": [],
+      "english": "women's light dance songs",
+      "category": "form",
+      "definition": "The light dance songs of Somali women, named by Bashir Goth beside the folklore dances and lullabies of the years before the 1960s.",
+      "related": ["ciyaar", "hees", "hees-carruureed"],
+      "tags": ["women's dance songs", "light songs", "dance song"],
+      "sources": [
+        "Music in Africa, Somali music history (Goth) — https://www.musicinafrica.net/node/25169"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "hoyal",
+      "term": "hoyal",
+      "variants": [],
+      "english": "verse form within the buraanbur",
+      "category": "poetry",
+      "definition": "A verse form listed with hoobeeyo and sitaat as a subdivision of the buraanbur, the women's poetic genre (Wikipedia, citing Wieringa 1995). The sources consulted do not describe it further.",
+      "related": ["buraanbur", "sittaat"],
+      "tags": ["women's poetry", "verse form", "buraanbur type"],
+      "sources": ["Wikipedia, Buraanbur"],
+      "confidence": "reported"
+    },
+    {
+      "id": "dooro-duureed-aa",
+      "term": "dooro duureed aa",
+      "variants": [],
+      "english": "Banaadiri fishing couplet",
+      "category": "poetry",
+      "definition": "A Banaadiri couplet form named after a fishing couplet, in which a lead singer takes the hoojis and the other fishermen sing the hooris in unison. Hirsi defines it as syllabo-quantitative and gives its template in words: an anceps, a short and three long syllables, a caesura, then long, short, long, long, short. Aweys Geedow Nuur \"Diinle\" used it in \"Ciyow Biyaha Keen\" (1968).",
+      "related": ["hooris", "hoojis", "hees-badeed", "hees-kebdeed", "miisaan"],
+      "tags": [
+        "Banaadiri poetry",
+        "fishing couplet",
+        "metre",
+        "syllabo-quantitative",
+        "Mogadishu poetry",
+        "Diinle"
+      ],
+      "sources": [
+        "Hirsi, Ibrahim (2023), Aweys Geedow Nuur \"Diinle\": Ciyow Biyaha Keen, a case study — https://wardheernews.com/wp-content/uploads/2023/05/Aweys-Geedow-Nuur-Diinles-Ciyow-Biyaha-Keen-A-Case-Study-By-Ibrahim-Hirsi.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hooris",
+      "term": "hooris",
+      "variants": [],
+      "english": "half-line sung in chorus",
+      "category": "poetry",
+      "definition": "The half-line sung in unison by the group. In Banaadiri fishing songs it answers the lead singer's hoojis (Hirsi), and in qaraami circles it was the final half-line chanted as a chorus (Wikipedia). Hirsi calls it the first hemistich in one place and the second in another.",
+      "related": ["hoojis", "dooro-duureed-aa", "subcis", "jawaab-celin"],
+      "tags": ["chorus line", "half-line", "hemistich", "group response", "refrain"],
+      "sources": [
+        "Hirsi, Ibrahim (2023), Aweys Geedow Nuur \"Diinle\": Ciyow Biyaha Keen, a case study — https://wardheernews.com/wp-content/uploads/2023/05/Aweys-Geedow-Nuur-Diinles-Ciyow-Biyaha-Keen-A-Case-Study-By-Ibrahim-Hirsi.pdf",
+        "Wikipedia, Qaraami"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hoojis",
+      "term": "hoojis",
+      "variants": [],
+      "english": "half-line sung by the lead",
+      "category": "poetry",
+      "definition": "The half-line sung by the lead singer in Banaadiri fishing songs, answered by the group's hooris. Hirsi calls it the second hemistich in one place and the first in another.",
+      "related": ["hooris", "dooro-duureed-aa", "jawaab-celin"],
+      "tags": ["lead line", "half-line", "hemistich", "soloist"],
+      "sources": [
+        "Hirsi, Ibrahim (2023), Aweys Geedow Nuur \"Diinle\": Ciyow Biyaha Keen, a case study — https://wardheernews.com/wp-content/uploads/2023/05/Aweys-Geedow-Nuur-Diinles-Ciyow-Biyaha-Keen-A-Case-Study-By-Ibrahim-Hirsi.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "kabacad",
+      "term": "kabacad",
+      "variants": [],
+      "english": "\"white shoes\": urban youth poets",
+      "category": "people",
+      "definition": "A youth subculture of northern Somali towns named for its shoes (\"white\" on Wikipedia, \"clean\" in Bashir Goth), whose groups played Aden Arabic songs on phonographs and led the qaraami poetry movement. Cilmi Boodheri is named as the most famous of the Kabacad poets.",
+      "related": ["qaraami", "dunya-diwani", "subcis", "gaaf"],
+      "tags": ["white shoes", "clean shoes", "youth movement", "urban youth", "Cilmi Boodheri"],
+      "sources": [
+        "Wikipedia, Qaraami",
+        "Music in Africa, Somali music history (Goth) — https://www.musicinafrica.net/node/25169"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "dunya-diwani",
+      "term": "dunya diwani",
+      "variants": [],
+      "english": "Arabic songs from Aden, on phonographs",
+      "category": "genre",
+      "definition": "Arabic songs brought from Aden and played on phonographs by kabacad groups, with the music breaks filled by kasrad handclapping; Bashir Goth renders the name \"the world is my poetry book\". They dominated from 1939 to 1943, until the balwo was born, and in their final days Somali words replaced the Arabic while the music stayed the same.",
+      "related": ["kabacad", "kasrad", "balwo", "majlis"],
+      "tags": ["Arabic songs", "Aden", "phonograph", "records", "gramophone", "1940s"],
+      "sources": [
+        "Music in Africa, Somali music history (Goth) — https://www.musicinafrica.net/node/25169"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "gaaf",
+      "term": "gaaf",
+      "variants": [],
+      "english": "youth gathering where qaraami was sung",
+      "category": "performance",
+      "definition": "A popular gathering that drew large crowds of young people; leading qaraami poets were invited to perform at these and at weddings, despite the disapproval of elders and religious scholars (Wikipedia).",
+      "related": ["qaraami", "kabacad"],
+      "tags": ["youth gathering", "party", "wedding", "gathering"],
+      "sources": ["Wikipedia, Qaraami"],
+      "confidence": "reported"
+    },
+    {
+      "id": "subcis",
+      "term": "subcis",
+      "variants": [],
+      "english": "composing in rotation",
+      "category": "performance",
+      "definition": "The Kabacad's name for composing in rotation: young poets seated in a circle improvised short verses in turn, one reciting a line and all chanting the final half-line (hooris) before the next went on. Wikipedia reports it as influenced by Quranic revision sessions.",
+      "related": ["kabacad", "qaraami", "hooris", "lug-kowle", "labaale", "saddexle"],
+      "tags": ["rotation", "composing in a circle", "improvised verses", "collective composition"],
+      "sources": ["Wikipedia, Qaraami"],
+      "confidence": "reported"
+    },
+    {
+      "id": "lug-kowle",
+      "term": "lug-kowle",
+      "variants": ["lug kowle"],
+      "english": "one-line verse format",
+      "category": "poetry",
+      "definition": "The one-line format of the short verses improvised by qaraami poets in the subcis circle (Wikipedia).",
+      "related": ["subcis", "labaale", "saddexle"],
+      "tags": ["one line", "verse format", "single line"],
+      "sources": ["Wikipedia, Qaraami"],
+      "confidence": "reported"
+    },
+    {
+      "id": "labaale",
+      "term": "labaale",
+      "variants": [],
+      "english": "couplet format",
+      "category": "poetry",
+      "definition": "The couplet format of the short verses improvised by qaraami poets in the subcis circle (Wikipedia).",
+      "related": ["subcis", "lug-kowle", "saddexle"],
+      "tags": ["couplet", "two lines", "verse format"],
+      "sources": ["Wikipedia, Qaraami"],
+      "confidence": "reported"
+    },
+    {
+      "id": "saddexle",
+      "term": "saddexle",
+      "variants": [],
+      "english": "triplet format",
+      "category": "poetry",
+      "definition": "The triplet format of the short verses improvised by qaraami poets in the subcis circle (Wikipedia). Not to be confused with saddexley, a folklore dance.",
+      "related": ["subcis", "lug-kowle", "labaale"],
+      "tags": ["triplet", "three lines", "verse format"],
+      "sources": ["Wikipedia, Qaraami"],
+      "confidence": "reported"
+    },
+    {
+      "id": "waddani",
+      "term": "waddani",
+      "variants": ["wadani"],
+      "english": "label for patriotic songs",
+      "category": "form",
+      "definition": "Patriotic: Kapteijns describes waddani as \"a whole sub-genre\" of explicitly political modern song, the songs in which the discourse of soomaalinimo and Somali unity is most explicit.",
+      "related": ["hees-wadani", "soomaalinimo", "qaranimo", "hees"],
+      "tags": ["patriotic", "political song", "nationalist song", "sub-genre"],
+      "sources": [
+        "Kapteijns, Lidwien (2009), Discourse on moral womanhood in Somali popular songs, 1960–1990, Journal of African History 50(1): 101–122 — https://www.cambridge.org/core/journals/journal-of-african-history/article/discourse-on-moral-womanhood-in-somali-popular-songs-19601990/8B56054C3458B9805AA848CCC8079B06"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "haan-dance",
+      "term": "haan",
+      "variants": [],
+      "english": "women's dance on the haan drum",
+      "category": "dance",
+      "definition": "Two accounts. Xaange describes very old dance-songs performed only by women, also called durbaan and popular in Mudug, Nugaal and Sanaag, with an empty haan vessel as the drum; Giannattasio's 1998 recording at Jigjiga labels haan a mixed dance of the fertile season, often with trance, \"in other regions also called saar\".",
+      "related": ["haan-drum", "saar", "durbaan", "ciyaar"],
+      "tags": [
+        "women's dance",
+        "durbaan dance",
+        "fertile season",
+        "trance",
+        "milk vessel drum",
+        "Mudug",
+        "Nugaal",
+        "Sanaag"
+      ],
+      "sources": [
+        "Xaange, Axmed Cartan (2014), Folk Songs from Somalia, Roma TrE-Press — https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "baarcadde",
+      "term": "baarcadde",
+      "variants": [],
+      "english": "dance-song style from memorial songs",
+      "category": "dance",
+      "definition": "A dance-song style. Xaange's informant tells of Bile, a wandering singer who accompanied himself on a small drum; the style is said to have been born from the song his admirers sang in his memory.",
+      "related": ["ciyaar", "durbaan", "hees"],
+      "tags": ["dance song", "memorial song", "Bile", "wandering singer"],
+      "sources": [
+        "Xaange, Axmed Cartan (2014), Folk Songs from Somalia, Roma TrE-Press — https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "kabeebey",
+      "term": "kabeebey",
+      "variants": [],
+      "english": "dance; also a song title",
+      "category": "dance",
+      "definition": "A dance (ciyaar) in Giannattasio's classification, recorded in 1985 from the National Theatre's folklore department with voices, ululation (alalas), two drums, a stamped tub (baaf), handclaps and stamping, and at Far Xaano near Baraawe with a metal sheet struck with sticks. A song of the same name, also called \"Keligiisa kun ka roonow\", is performed with shareero and drums.",
+      "related": ["ciyaar", "alalaas", "baaf", "beerrey", "bullo"],
+      "tags": ["dance", "Far Xaano", "Baraawe", "National Theatre folklore", "ululation"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "beerrey",
+      "term": "beerrey",
+      "variants": [],
+      "english": "community dance with whistles",
+      "category": "dance",
+      "definition": "A community dance (ciyaar) in Giannattasio's classification, recorded in 1985 from the National Theatre's folklore department and at a festival at Far Xaano near Baraawe, with mixed voices, whistles, sharaq metal clappers and handclaps.",
+      "related": ["ciyaar", "sharaq", "kabeebey", "bullo"],
+      "tags": ["dance", "whistles", "sharaq", "Far Xaano", "National Theatre folklore"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "bullo",
+      "term": "bullo",
+      "variants": [],
+      "english": "community dance named by Giannattasio",
+      "category": "dance",
+      "definition": "A community dance (ciyaar) in Giannattasio's classification, one of those he says are accompanied by sharaq metal clappers. The catalogue's \"Buunlo\", danced with jabbu drum, buun, sharaq, malkad, baaf, handclaps and stamping, may be the same dance; the sources do not say so.",
+      "related": ["ciyaar", "sharaq", "beerrey", "gebley-shimbir"],
+      "tags": ["dance", "sharaq", "buunlo", "National Theatre folklore"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "saylici",
+      "term": "saylici",
+      "variants": ["seylici", "syalici"],
+      "english": "dance said to come from Zeila",
+      "category": "dance",
+      "definition": "A dance performed with handclaps and one drum (Giannattasio's catalogue) and named by Bashir Goth among the folklore dances before the 1960s; Twin Cities PBS reports that it began in Zeila as a religious chant and later became a dance. The same catalogue session lists a separate dance \"Sayle\" with a fuller ensemble, and no source says how the two are related.",
+      "related": ["ciyaar", "sacab", "durbaan"],
+      "tags": ["Zeila", "dance", "religious chant", "sayle", "handclaps", "Sufi"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Music in Africa, Somali music history (Goth) — https://www.musicinafrica.net/node/25169",
+        "Twin Cities PBS (2018), Somali traditional dance 101 — https://www.tptoriginals.org/somali-traditional-dance-101/"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "madina",
+      "term": "madina",
+      "variants": [],
+      "english": "National Theatre folklore dance",
+      "category": "dance",
+      "definition": "A dance recorded in 1985 from the National Theatre's folklore department, with men's voices, a moqoddon drum, two jabbu drums and two sharaq.",
+      "related": ["ciyaar", "mokhoddon", "jabbu", "sharaq"],
+      "tags": ["dance", "National Theatre folklore"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "wilwile",
+      "term": "wilwile",
+      "variants": [],
+      "english": "folklore dance",
+      "category": "dance",
+      "definition": "A folklore dance named by Bashir Goth among those Somalis watched before the 1960s and 1970s. The sources consulted give only the name.",
+      "related": ["ciyaar", "saylici", "dhaanto"],
+      "tags": ["folklore dance", "traditional dance", "dance name"],
+      "sources": [
+        "Music in Africa, Somali music history (Goth) — https://www.musicinafrica.net/node/25169"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "xoogweyn",
+      "term": "xoogweyn",
+      "variants": [],
+      "english": "folklore dance",
+      "category": "dance",
+      "definition": "A folklore dance named by Bashir Goth among those Somalis watched before the 1960s and 1970s. The sources consulted give only the name.",
+      "related": ["ciyaar", "saylici", "dhaanto"],
+      "tags": ["folklore dance", "traditional dance", "dance name"],
+      "sources": [
+        "Music in Africa, Somali music history (Goth) — https://www.musicinafrica.net/node/25169"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "saddexley",
+      "term": "saddexley",
+      "variants": [],
+      "english": "folklore dance",
+      "category": "dance",
+      "definition": "A folklore dance named by Bashir Goth among those Somalis watched before the 1960s and 1970s. The sources consulted give only the name; not to be confused with saddexle, a triplet verse format.",
+      "related": ["ciyaar", "saylici", "dhaanto"],
+      "tags": ["folklore dance", "traditional dance", "dance name"],
+      "sources": [
+        "Music in Africa, Somali music history (Goth) — https://www.musicinafrica.net/node/25169"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "gebley-shimbir",
+      "term": "gebley shimbir",
+      "variants": [],
+      "english": "dance named by Giannattasio",
+      "category": "dance",
+      "definition": "A dance named by Giannattasio among those accompanied by sharaq metal clappers. The sources consulted give nothing more.",
+      "related": ["ciyaar", "sharaq", "bullo", "beerrey"],
+      "tags": ["dance", "sharaq", "dance name"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "mingis",
+      "term": "mingis",
+      "variants": [],
+      "english": "Majeerteen possession rite",
+      "category": "ritual",
+      "definition": "The possession cult that Giannattasio's catalogue calls the Majeerteen variant of the Somali saar: led by a calaqad (priest), with a suite of songs in a cryptic language invoking the jinn, three drums, a metal drum (teneg), mixed voices and hands. He studied it as a therapeutic rite of dance and music in 1983.",
+      "related": ["saar", "calaqad", "teneg", "burur", "jiinniyo"],
+      "tags": [
+        "spirit possession",
+        "healing ritual",
+        "therapeutic rite",
+        "jinn",
+        "Majeerteen",
+        "trance"
+      ],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Giannattasio, Francesco (1983), Somalia: la terapia coreutico-musicale del Mingis, Culture musicali II(3): 93–119 — https://arcadia.sba.uniroma3.it/handle/2307/2045",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "ArcAdiA, Mingis therapeutic rite (video record) — https://arcadia.sba.uniroma3.it/handle/2307/2128"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "nuumbi",
+      "term": "nuumbi",
+      "variants": ["luumbi"],
+      "english": "Shabeelle farmers' possession cult",
+      "category": "ritual",
+      "definition": "A possession cult of the farming region, recorded by Giannattasio in the Lower Shabeelle in 1982: songs in a cryptic language with the shareero (there also called lumiya), three tabuul drums, handclaps and an officiant called the Naa'ib tumburi. His 1987 chapter says that the shareero generally plays with owlan kettledrums in this ritual.",
+      "related": ["saar", "shareero", "tabuul", "owlan", "mingis"],
+      "tags": ["spirit possession", "Shabeelle", "farmers", "lyre ritual", "lumiya", "trance"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "xayaad",
+      "term": "xayaad",
+      "variants": [],
+      "english": "religious ritual dance",
+      "category": "ritual",
+      "definition": "A form of possession in Giannattasio's classification and a religious ritual dance: he recorded it at a siyaaro at Jasiira in 1985, with qasiido, shanbal clappers, owlan kettledrums and a woman's cries in trance. He lists some forms of it, with boorane, as evidence of the gradual \"Islamisation\" of the possession cults.",
+      "related": ["saar", "boorane", "shambal", "owlan", "siyaaro", "qasiido"],
+      "tags": ["religious dance", "trance", "wooden clappers", "Sufi", "Jowhar"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "boorane",
+      "term": "boorane",
+      "variants": [],
+      "english": "drum-led possession rite",
+      "category": "ritual",
+      "definition": "A possession ritual that uses the larger of the cylindrical double-headed drums (durbaan, yoome). Giannattasio lists some forms of it, with xayaad, as evidence of the gradual \"Islamisation\" of the possession cults.",
+      "related": ["saar", "xayaad", "yoome", "durbaan"],
+      "tags": ["spirit possession", "drum ritual"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "calaqad",
+      "term": "calaqad",
+      "variants": ["calawaad"],
+      "english": "priest of a possession rite",
+      "category": "ritual",
+      "definition": "The priest who leads a possession rite: Giannattasio's catalogue names the calaqad Jaamac Waledi as head of a mingis community in Mogadishu, and an ArcAdiA video record of the rite writes \"calawaad\".",
+      "related": ["mingis", "saar"],
+      "tags": ["priest", "ritual leader", "healer", "possession rite leader"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "ArcAdiA, Mingis therapeutic rite (video record) — https://arcadia.sba.uniroma3.it/handle/2307/2128"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "burur",
+      "term": "burur",
+      "variants": [],
+      "english": "ritual trance",
+      "category": "ritual",
+      "definition": "Giannattasio's term for the therapeutic-ritual trance connected with the music and dance of the possession cults.",
+      "related": ["saar", "mingis", "jibdo", "jiinniyo"],
+      "tags": ["trance", "possession trance", "healing"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "jibdo",
+      "term": "jibdo",
+      "variants": ["jibbo"],
+      "english": "mystical ecstasy, spiritual climax",
+      "category": "ritual",
+      "definition": "The mystical ecstasy that, Giannattasio writes, the liturgical chants of the digri help to bring about. A 2022 report on a sitaad session writes \"jibbo\" for the spiritual climax some women reached.",
+      "related": ["dhikri", "sittaat", "burur"],
+      "tags": ["ecstasy", "spiritual climax", "Sufi ecstasy", "trance"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Somaliland Chronicle (2022), Sitaad: the Somali women's traditional spiritual gathering — https://www.somalilandchronicle.com/2022/08/01/sitaad-the-somali-womens-traditional-spiritual-gathering/"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "jiinniyo",
+      "term": "jiinniyo",
+      "variants": [],
+      "english": "spirits",
+      "category": "ritual",
+      "definition": "Spirits. Giannattasio notes that Somalis use the English adjective \"spiritual\" for what concerns the presence of spirits (jiinniyo), and the catalogue describes mingis songs as invoking the jinn.",
+      "related": ["saar", "mingis", "burur"],
+      "tags": ["spirits", "jinn", "spiritual"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "nebi-ammaan",
+      "term": "nebi-ammaan",
+      "variants": ["nabi-ammaan", "nebi ammaan", "nabi ammaan"],
+      "english": "songs in praise of the Prophet",
+      "category": "ritual",
+      "definition": "Songs in praise of the Prophet, which the catalogue calls a kind of digri held at home: recorded in Mogadishu in 1985 at evening sessions (leyli), one of them for a funeral commemoration (xus), sung by a sheekh and pious women.",
+      "related": ["dhikri", "qasiido", "leyli", "xus", "abbaay-abbaay"],
+      "tags": [
+        "praise of the Prophet",
+        "religious song",
+        "devotional song",
+        "women's religious song"
+      ],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "sittaat",
+      "term": "sittaat",
+      "variants": ["sitaat", "sitaad"],
+      "english": "women's songs praising early Muslim women",
+      "category": "ritual",
+      "definition": "Songs of praise for the leading women of early Islam, especially Faduumo (Fatima), which older women sing at a ceremony calling blessings on a woman about to give birth (Kapteijns 1999). A 2022 report describes a session led on a very big durbaan and gives the other names Xaawiyo Faadumo, Madaxshub and, particularly in the south, Abbaay Sittidey.",
+      "related": ["buraanbur", "hoyal", "abbaay-abbaay", "jibdo", "durbaan"],
+      "tags": [
+        "women's religious songs",
+        "Fatima",
+        "Faduumo",
+        "childbirth ceremony",
+        "Mothers of the Believers",
+        "Xaawiyo Faadumo",
+        "Madaxshub",
+        "Abbaay Sittidey"
+      ],
+      "sources": [
+        "Kapteijns, Lidwien (1999), Somali Women's Songs for the First Ladies of Early Islam, ISIM Newsletter 3(1): 27 — https://scholarlypublications.universiteitleiden.nl/access/item%3A2728244/view",
+        "Kapteijns, Lidwien with Mariam Omar Ali, Sittaat: Somali Women's Songs for \"The Mothers of the Believers\", Boston University African Studies Center — https://www.bu.edu/phpbin/ijahs/publications/?pid=389",
+        "Wikipedia, Buraanbur",
+        "Somaliland Chronicle (2022), Sitaad: the Somali women's traditional spiritual gathering — https://www.somalilandchronicle.com/2022/08/01/sitaad-the-somali-womens-traditional-spiritual-gathering/"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "abbaay-abbaay",
+      "term": "abbaay abbaay",
+      "variants": [],
+      "english": "women's digri song",
+      "category": "ritual",
+      "definition": "The catalogue's generic title for the women's singing in a digri of the Qaadiriya order, recorded in Mogadishu in 1985. A nebi-ammaan session recorded the same year includes \"Abbay Faadumo\" (O Sister Fatima).",
+      "related": ["dhikri", "nebi-ammaan", "sittaat", "dariiqo"],
+      "tags": ["women's digri", "O sister", "Fatima", "Qaadiriya", "Abbaay Faadumo"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "siyaaro",
+      "term": "siyaaro",
+      "variants": [],
+      "english": "commemoration of a saint",
+      "category": "ritual",
+      "definition": "The commemoration of a sheekh, often at his tomb or mosque, at which Giannattasio recorded digri, religious songs and dances in Mogadishu, Far Xaano and Jasiira in 1985.",
+      "related": ["dhikri", "dariiqo", "owliyo", "xayaad"],
+      "tags": ["saint's day", "pilgrimage", "commemoration", "sheekh", "tomb", "festival"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "mawliid",
+      "term": "mawliid",
+      "variants": [],
+      "english": "the Prophet's birthday",
+      "category": "ritual",
+      "definition": "The Prophet's birthday, at which, and at all religious feasts, the qasiido recorded by Giannattasio is performed.",
+      "related": ["qasiido", "nebi-ammaan"],
+      "tags": ["Prophet's birthday", "religious feast", "mawlid"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "leyli",
+      "term": "leyli",
+      "variants": [],
+      "english": "evening session",
+      "category": "ritual",
+      "definition": "An evening session of religious song; Giannattasio's catalogue glosses it as from the Arabic for \"evening\" and uses it for nebi-ammaan sessions held in homes.",
+      "related": ["nebi-ammaan", "xus", "dhikri"],
+      "tags": ["evening session", "evening gathering", "night"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "xus",
+      "term": "xus",
+      "variants": [],
+      "english": "funeral commemoration",
+      "category": "ritual",
+      "definition": "A funeral commemoration; the catalogue records a leyli of nebi-ammaan held for one in a Mogadishu home in March 1985.",
+      "related": ["leyli", "nebi-ammaan"],
+      "tags": ["funeral", "memorial", "commemoration of the dead"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "dariiqo",
+      "term": "dariiqo",
+      "variants": ["tariiqo", "dariiqooyin"],
+      "english": "Sufi order",
+      "category": "ritual",
+      "definition": "A Sufi order or confraternity. The orders Giannattasio recorded performing digri include the Qaadiriya, Xuseeniya, Axmadiya, Seyliciya and the Makhtuubiya, a women's congregation attached to the Qaadiriya.",
+      "related": ["dhikri", "siyaaro", "owliyo", "duco"],
+      "tags": ["Sufi order", "brotherhood", "confraternity", "Qaadiriya", "tariqa"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "owliyo",
+      "term": "owliyo",
+      "variants": [],
+      "english": "saints",
+      "category": "ritual",
+      "definition": "Saints; the catalogue records the madded, an invocation to the saints (owliyo) common to all the Sufi orders, chanted by the head of the order at the close of a digri.",
+      "related": ["dariiqo", "siyaaro", "duco"],
+      "tags": ["saints", "invocation of saints", "madded"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "duco",
+      "term": "duco",
+      "variants": [],
+      "english": "blessing",
+      "category": "ritual",
+      "definition": "A blessing, given in the catalogue's recordings by the head of the order (khaliif) or a sheekh at the end of a digri.",
+      "related": ["dhikri", "dariiqo", "owliyo"],
+      "tags": ["blessing", "prayer", "supplication"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "sharaq",
+      "term": "sharaq",
+      "variants": ["biro", "shagal"],
+      "english": "iron clappers",
+      "category": "instrument",
+      "definition": "Iron clappers, whose form suggests a farming origin (in Gedo they are called yaambooyin, \"hoes\"), now made from car leaf-springs and spread beyond the farming regions; they accompany dances such as bullo, gebley shimbir and beerrey (Giannattasio 1987). Biro is a synonym, and Wikipedia's list gives shagal for metal clappers.",
+      "related": ["shambal", "bullo", "beerrey", "gebley-shimbir"],
+      "tags": ["metal clappers", "iron clappers", "castanets", "percussion", "yaambooyin", "hoes"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "jaan",
+      "term": "jaan",
+      "variants": [],
+      "english": "foot-stamping; the rhythm section",
+      "category": "rhythm",
+      "definition": "Ground stamped with the feet as a source of sound. Giannattasio notes that jaan and jiib passed from nomadic practice into modern bands, where jaan names the rhythmic section and jiib the melodic one.",
+      "related": ["jiib", "sacab", "tumid", "maqaar-geel", "baaf"],
+      "tags": ["foot-stamping", "stamping", "rhythm section", "feet", "lugo"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "maqaar-geel",
+      "term": "maqaar geel",
+      "variants": [],
+      "english": "stamped camel hide",
+      "category": "instrument",
+      "definition": "A camel hide stamped with the feet, listed among the idiophones in Giannattasio's classification of Somali instruments.",
+      "related": ["jaan", "baaf"],
+      "tags": ["camel hide", "stamping", "percussion", "idiophone"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "baaf",
+      "term": "baaf",
+      "variants": [],
+      "english": "stamped metal tub",
+      "category": "instrument",
+      "definition": "A metal tub stamped with the feet (Giannattasio 1987), played in the National Theatre's folklore ensemble and in dances such as kabeebey.",
+      "related": ["jaan", "maqaar-geel", "kabeebey", "ruxaal"],
+      "tags": ["metal tub", "stamping", "percussion", "National Theatre folklore"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "shunuuf",
+      "term": "shunuuf",
+      "variants": [],
+      "english": "fibre body rattle",
+      "category": "instrument",
+      "definition": "A body rattle with rattles of plant fibre. Giannattasio marks the name with a question mark and the example's origin as unidentified; Wikipedia lists shunuuf as vegetable ankle rattles.",
+      "related": ["jaan", "ciyaar"],
+      "tags": ["rattle", "ankle rattle", "body rattle", "plant fibre", "percussion"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "teneg",
+      "term": "teneg",
+      "variants": [],
+      "english": "tin can struck with sticks",
+      "category": "instrument",
+      "definition": "A tin can struck with sticks, played as the metal drum in the mingis rite (Giannattasio). Wikipedia lists tenegyo as a xylophone, which conflicts with the field sources.",
+      "related": ["mingis", "durbaan"],
+      "tags": ["tin can", "metal drum", "percussion", "tenegyo"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "koor",
+      "term": "koor",
+      "variants": [],
+      "english": "wooden camel bell",
+      "category": "instrument",
+      "definition": "A wooden bell with a double clapper hung on a camel's neck, made in several sizes and so several pitches according to the type of camel. Giannattasio classes it with the instruments that are \"given voice to\" (yeerin), because it is shaken rather than struck.",
+      "related": ["yeerin", "hees-geel", "tumid"],
+      "tags": ["camel bell", "wooden bell", "bell", "animal bell"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "ruxaal",
+      "term": "ruxaal",
+      "variants": [],
+      "english": "wooden milking vessel played as percussion",
+      "category": "instrument",
+      "definition": "A wooden milking vessel for cows, played as an instrument in the National Theatre's folklore ensemble in 1985.",
+      "related": ["baaf", "sanduuq"],
+      "tags": ["milk vessel", "wooden vessel", "percussion", "National Theatre folklore"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "sanduuq",
+      "term": "sanduuq",
+      "variants": [],
+      "english": "box played as percussion",
+      "category": "instrument",
+      "definition": "A box, the catalogue's Italian \"cassa\", played in the National Theatre's folklore ensemble in 1985.",
+      "related": ["ruxaal", "durbaan"],
+      "tags": ["box", "box drum", "percussion", "National Theatre folklore"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "gobeys",
+      "term": "gobeys",
+      "variants": [],
+      "english": "wooden flute",
+      "category": "instrument",
+      "definition": "A wooden flute, listed among the aerophones in Giannattasio's classification of Somali instruments.",
+      "related": ["buun", "yeerin"],
+      "tags": ["flute", "wooden flute", "wind instrument"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "caroog",
+      "term": "caroog",
+      "variants": [],
+      "english": "conch trumpet",
+      "category": "instrument",
+      "definition": "Conch trumpet, the same instrument as the buun; the name occurs mainly in the north-eastern regions. Conches belong to the coast but spread inland: they announce important social events, formerly gave the signal for battle, mark the passages of the shirib and, among farmers, call people to mutual aid.",
+      "related": ["buun", "shirib", "gees", "yeerin"],
+      "tags": ["conch", "shell trumpet", "signal horn", "wind instrument"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "gees",
+      "term": "gees",
+      "variants": [],
+      "english": "side-blown horn",
+      "category": "instrument",
+      "definition": "A side-blown horn; Giannattasio's example is of buffalo horn from Merca. Horns are found in the southern farming and coastal regions and serve ceremonial functions like those of the conch trumpets; his table notes that gees is improperly also called siimbaar.",
+      "related": ["gees-goodir", "malkad", "caroog", "buun", "yeerin"],
+      "tags": ["horn", "buffalo horn", "side-blown horn", "wind instrument"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "gees-goodir",
+      "term": "gees-goodir",
+      "variants": ["gees-godiir", "gees goodir"],
+      "english": "antelope-horn trumpet",
+      "category": "instrument",
+      "definition": "A side-blown horn; Giannattasio's example, of antelope-giraffe horn, was found at Brava. Wikipedia lists it among the horns.",
+      "related": ["gees", "malkad", "buun", "yeerin"],
+      "tags": ["antelope horn", "horn", "side-blown horn", "wind instrument", "Brava"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "malkad",
+      "term": "malkad",
+      "variants": ["siimbaar", "simbaar", "siinbaar"],
+      "english": "leather-covered wooden trumpet",
+      "category": "instrument",
+      "definition": "A wooden trumpet covered with skin, found mainly in farming regions and called siimbaar in some areas; its role is chiefly ceremonial, at births and marriages and at the istun festival at Afgooye (Giannattasio 1987). Giannattasio compares the Oromo malakata; his 1988 paper calls the malkad a horn, and Wikipedia's list calls malkad and siinbaar flutes, against the field sources.",
+      "related": ["buun", "gees", "yeerin"],
+      "tags": [
+        "trumpet",
+        "wooden trumpet",
+        "ceremonial trumpet",
+        "istun",
+        "Afgooye",
+        "wind instrument"
+      ],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "zumari",
+      "term": "zumari",
+      "variants": [],
+      "english": "Bajuni double clarinet",
+      "category": "instrument",
+      "definition": "A double clarinet of bone, with equal pipes, symmetrical holes and beating reeds, collected among the Bajuni; the name is Swahili. Giannattasio compares the Indian zummara and the Yemeni mazaamir.",
+      "related": ["parapanda", "sumaari", "yeerin"],
+      "tags": ["double clarinet", "clarinet", "Bajuni", "reed instrument", "Swahili"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "parapanda",
+      "term": "parapanda",
+      "variants": [],
+      "english": "five-hole oboe",
+      "category": "instrument",
+      "definition": "A five-hole oboe with a bone pipe and wooden bell, of Arab import. The Swahili name was recorded among Bantu groups of the Somali coast (Xordio, Brava, Merca), and in northern Kenya it designates a kind of trumpet.",
+      "related": ["zumari", "yeerin"],
+      "tags": ["oboe", "reed instrument", "Swahili", "Brava", "Merca"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "sumaari",
+      "term": "sumaari",
+      "variants": [],
+      "english": "listed as a double clarinet",
+      "category": "instrument",
+      "definition": "Listed as a double clarinet on Wikipedia (citing Abdullahi 2001), without description; compare the Bajuni zumari in Giannattasio's field classification.",
+      "related": ["zumari"],
+      "tags": ["wind instrument"],
+      "sources": ["Wikipedia, Music of Somalia"],
+      "confidence": "reported"
+    },
+    {
+      "id": "fuugwo",
+      "term": "fuugwo",
+      "variants": [],
+      "english": "listed as a trumpet",
+      "category": "instrument",
+      "definition": "Listed as a trumpet on Wikipedia (citing Abdullahi 2001), without description; absent from Giannattasio's field classification.",
+      "related": ["malkad", "turumbo"],
+      "tags": ["trumpet", "wind instrument"],
+      "sources": ["Wikipedia, Music of Somalia"],
+      "confidence": "reported"
+    },
+    {
+      "id": "muufe",
+      "term": "muufe",
+      "variants": [],
+      "english": "listed as a horn",
+      "category": "instrument",
+      "definition": "Listed among the horns on Wikipedia (citing Abdullahi 2001), without description; absent from Giannattasio's field classification.",
+      "related": ["gees", "buun"],
+      "tags": ["horn", "wind instrument"],
+      "sources": ["Wikipedia, Music of Somalia"],
+      "confidence": "reported"
+    },
+    {
+      "id": "haan-drum",
+      "term": "haan",
+      "variants": [],
+      "english": "drum made from the haan vessel",
+      "category": "instrument",
+      "definition": "A seasonal drum: the haan, the nomads' woven liquid vessel, covered with a skin (Giannattasio 1987). Xaange describes a thin wet kid skin stretched over the mouth of an empty haan and held tight by two women while a third taps it, as the drum of the women's haan dance.",
+      "related": ["haan-dance", "durbaan", "heesta-caano-ruxidda"],
+      "tags": ["milk vessel drum", "vessel drum", "seasonal drum", "kid skin", "women's drum"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Xaange, Axmed Cartan (2014), Folk Songs from Somalia, Roma TrE-Press — https://romatrepress.uniroma3.it/wp-content/uploads/2019/05/folk-xapu.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "yoome",
+      "term": "yoome",
+      "variants": [],
+      "english": "larger cylindrical double-headed drum",
+      "category": "instrument",
+      "definition": "The name in the farming regions for the larger of two cylindrical double-headed wooden drums (durbaan), probably of Arab derivation; this size is also used in the boorane possession ritual. Wikipedia lists yoome among the small drums.",
+      "related": ["durbaan", "jabbu", "boorane"],
+      "tags": ["drum", "cylindrical drum", "double-headed drum"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "jabbu",
+      "term": "jabbu",
+      "variants": ["jaabbu", "durbaan yar"],
+      "english": "small cylindrical double-headed drum",
+      "category": "instrument",
+      "definition": "The small cylindrical double-headed wooden drum (durbaan yar), called jabbu in the farming regions (Swahili chapu). It is heard in the National Theatre's folklore dances such as madina.",
+      "related": ["durbaan", "yoome", "madina"],
+      "tags": ["small drum", "cylindrical drum", "durbaan yar", "chapu"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "nasar",
+      "term": "nasar",
+      "variants": ["nasaro"],
+      "english": "footed tubular drum",
+      "category": "instrument",
+      "definition": "A tubular wooden drum on feet, of mukay wood with relief decoration and workmanship of Bantu type, found mainly in the Middle and Lower Shabeelle and Upper Juba, where it can exceed a metre in height. The catalogue records it with handclaps in digri.",
+      "related": ["durbaan", "masoonde", "mokhoddon", "dhikri"],
+      "tags": ["footed drum", "tall drum", "tubular drum", "Shabeelle", "Juba"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "masoonde",
+      "term": "masoonde",
+      "variants": ["masoondhe"],
+      "english": "pedestal drum",
+      "category": "instrument",
+      "definition": "A drum that Giannattasio groups with the pedestal drums he links to Bantu cultures; Wikipedia lists it among the high and heavy drums.",
+      "related": ["durbaan", "nasar", "mokhoddon"],
+      "tags": ["pedestal drum", "tall drum", "drum"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "mokhoddon",
+      "term": "mokhoddon",
+      "variants": ["moqoddon"],
+      "english": "pedestal drum",
+      "category": "instrument",
+      "definition": "A pedestal drum; Giannattasio's table writes \"mokhoddon or tabuul\", and the catalogue records it as moqoddon in the National Theatre's folklore ensemble.",
+      "related": ["durbaan", "tabuul", "nasar", "madina"],
+      "tags": ["pedestal drum", "drum", "National Theatre folklore"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "tabuul",
+      "term": "tabuul",
+      "variants": [],
+      "english": "drum of the nuumbi rite",
+      "category": "instrument",
+      "definition": "A drum; Giannattasio's table gives mokhoddon and tabuul as alternative names, and the catalogue records three tabuul with the shareero in the nuumbi rite.",
+      "related": ["durbaan", "mokhoddon", "nuumbi"],
+      "tags": ["drum", "ritual drum", "possession drum"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "owlan",
+      "term": "owlan",
+      "variants": [],
+      "english": "kettledrums of the river region",
+      "category": "instrument",
+      "definition": "Kettledrums, so named in the region of the rivers. The catalogue records them with shanbal clappers in the xayaad ritual, and Giannattasio says that the shareero generally plays with them in the nuumbi.",
+      "related": ["durbaan", "xayaad", "nuumbi", "shareero"],
+      "tags": ["kettledrum", "timpani", "river region", "ritual drum"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "reeme",
+      "term": "reeme",
+      "variants": [],
+      "english": "listed as a small drum",
+      "category": "instrument",
+      "definition": "A drum named without description in Giannattasio's table and listed among the small drums on Wikipedia.",
+      "related": ["durbaan"],
+      "tags": ["small drum", "drum"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "daf",
+      "term": "daf",
+      "variants": [],
+      "english": "tambourine",
+      "category": "instrument",
+      "definition": "The tambourine (tamburello) of the catalogue's urban recordings: with kaban, violin, flute and bongos in Qarshe's group, and played by Maclow Nuur's wife with his violin and voice.",
+      "related": ["durbaan", "kaban", "fiyooliin"],
+      "tags": ["tambourine", "frame drum", "tamburello"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "seese",
+      "term": "seese",
+      "variants": [],
+      "english": "one-string tubular fiddle",
+      "category": "instrument",
+      "definition": "A tubular one-string fiddle, listed by Giannattasio under its Swahili name; Wikipedia lists seese as a one-chord violin.",
+      "related": ["shareero", "fiyooliin"],
+      "tags": ["fiddle", "one-string fiddle", "bowed string", "Swahili"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736",
+        "Wikipedia, Music of Somalia"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "pango",
+      "term": "pango",
+      "variants": [],
+      "english": "musical bow",
+      "category": "instrument",
+      "definition": "A musical bow, listed by Giannattasio under its Swahili name.",
+      "related": ["seese", "shareero"],
+      "tags": ["musical bow", "string instrument", "Swahili"],
+      "sources": [
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "kinaandha",
+      "term": "kinaandha",
+      "variants": [],
+      "english": "listed as a lute",
+      "category": "instrument",
+      "definition": "Listed as a lute on Wikipedia (citing Abdullahi 2001), without description; absent from Giannattasio's field classification.",
+      "related": ["kaban", "shareero"],
+      "tags": ["lute", "string instrument"],
+      "sources": ["Wikipedia, Music of Somalia"],
+      "confidence": "reported"
+    },
+    {
+      "id": "madhuube",
+      "term": "madhuube",
+      "variants": [],
+      "english": "listed as a thumb piano",
+      "category": "instrument",
+      "definition": "Listed as a thumb piano on Wikipedia (citing Abdullahi 2001), without description; absent from Giannattasio's field classification.",
+      "related": ["durbaan"],
+      "tags": ["thumb piano", "lamellophone", "mbira"],
+      "sources": ["Wikipedia, Music of Somalia"],
+      "confidence": "reported"
+    },
+    {
+      "id": "fiyooliin",
+      "term": "fiyooliin",
+      "variants": [],
+      "english": "violin",
+      "category": "instrument",
+      "definition": "The violin, listed in Giannattasio's figure of Somali instruments among those played with the verb tumid, beside kaban and shareero.",
+      "related": ["tumid", "kaban", "daf", "seese"],
+      "tags": ["violin", "fiddle", "string instrument", "modern band"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "fiisarmooniyo",
+      "term": "fiisarmooniyo",
+      "variants": [],
+      "english": "accordion",
+      "category": "instrument",
+      "definition": "The accordion, listed in Giannattasio's figure of Somali instruments among those played with the verb tumid; Giannattasio groups it with the organ as a mechanical aerophone.",
+      "related": ["tumid", "organ", "biyaano"],
+      "tags": ["accordion", "keyboard instrument", "modern band"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "turumbo",
+      "term": "turumbo",
+      "variants": [],
+      "english": "trumpet",
+      "category": "instrument",
+      "definition": "The trumpet, listed in Giannattasio's figure of Somali instruments among those that take the verb yeerin.",
+      "related": ["yeerin", "sagsoofan", "malkad"],
+      "tags": ["trumpet", "brass", "wind instrument", "modern band"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "sagsoofan",
+      "term": "sagsoofan",
+      "variants": [],
+      "english": "saxophone",
+      "category": "instrument",
+      "definition": "The saxophone, listed in Giannattasio's figure of Somali instruments among those that take the verb yeerin.",
+      "related": ["yeerin", "turumbo"],
+      "tags": ["saxophone", "sax", "wind instrument", "modern band"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "organ",
+      "term": "organ",
+      "variants": ["organka"],
+      "english": "organ",
+      "category": "instrument",
+      "definition": "The organ. It is Giannattasio's example of the two playing verbs: organka yeeri, \"let the sound of the organ be heard\", against heeskan organka ku tun, \"play that song on the organ\".",
+      "related": ["yeerin", "tumid", "biyaano", "fiisarmooniyo"],
+      "tags": ["organ", "keyboard", "electric organ", "modern band"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "yeerin",
+      "term": "yeerin",
+      "variants": ["yeeri"],
+      "english": "to sound (an instrument)",
+      "category": "performance",
+      "definition": "To make an instrument \"emit its own sound\". As a verb for playing it is proper only to a few instruments, such as wind instruments, where manual action is involved only in the possible modulation (luuq) of the sound; Giannattasio finds that Somali classes instruments by this verb and tumid rather than by the four Western families.",
+      "related": ["tumid", "buun", "koor", "luuq"],
+      "tags": ["to play", "to sound", "wind instruments", "blowing", "to give voice", "yeeri"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "tumid",
+      "term": "tumid",
+      "variants": ["tun"],
+      "english": "to play by striking",
+      "category": "performance",
+      "definition": "To beat or strike: the verb for playing strings (shareero, kaban), drums, mechanical aerophones such as the organ and accordion, handclaps, foot-stamping and clappers, as in heeskan organka ku tun, \"play that song on the organ\". Giannattasio adds that garaacid is sometimes used instead.",
+      "related": ["yeerin", "garaac", "sacab", "jaan"],
+      "tags": ["to play", "to strike", "to beat", "plucking", "drumming"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984",
+        "Giannattasio, Francesco (1987), Strumenti musicali — https://arcadia.sba.uniroma3.it/handle/2307/736"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "qaadid",
+      "term": "qaadid",
+      "variants": [],
+      "english": "to perform a known song",
+      "category": "performance",
+      "definition": "More than \"to sing\", to perform a song, an already known piece. Giannattasio notes that it would be inappropriate to use it of the chants of the digri (qasiidooyin).",
+      "related": ["heesid", "dhikri", "qasiido", "hees"],
+      "tags": ["to sing", "to perform", "known song", "cover"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "gabyid",
+      "term": "gabyid",
+      "variants": [],
+      "english": "to compose and perform poetry",
+      "category": "performance",
+      "definition": "One of the three performing practices into which Giannattasio divides Somali musical activity, with heesid and ciyaarid: composing and performing poetry.",
+      "related": ["heesid", "ciyaarid", "gabay", "maanso"],
+      "tags": ["to compose poetry", "to recite", "reciting poetry"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "heesid",
+      "term": "heesid",
+      "variants": [],
+      "english": "to sing",
+      "category": "performance",
+      "definition": "One of the three performing practices into which Giannattasio divides Somali musical activity, with gabyid and ciyaarid: singing songs. He also places the voice (cod) and the whistle (foori) of people and birds under this heading.",
+      "related": ["gabyid", "ciyaarid", "hees", "cod", "foori"],
+      "tags": ["to sing", "singing"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "ciyaarid",
+      "term": "ciyaarid",
+      "variants": [],
+      "english": "to play-dance",
+      "category": "performance",
+      "definition": "One of the three performing practices into which Giannattasio divides Somali musical activity, with gabyid and heesid: playing and dancing, an action from which he finds the vocal and instrumental accompaniment of the dance difficult to separate.",
+      "related": ["gabyid", "heesid", "ciyaar", "hees-cayaareed"],
+      "tags": ["to dance", "to play", "dancing"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "jiib",
+      "term": "jiib",
+      "variants": [],
+      "english": "multivocal singing; melodic section",
+      "category": "performance",
+      "definition": "Multivocal singing. Giannattasio notes that jiib and jaan passed from nomadic practice into modern instrumental groups, where jiib names the melodic section and jaan the rhythmic one.",
+      "related": ["jaan", "luuq", "jawaab-celin", "koox"],
+      "tags": ["choral singing", "chorus", "melodic section", "multivocal", "band"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "foori",
+      "term": "foori",
+      "variants": [],
+      "english": "whistle",
+      "category": "performance",
+      "definition": "The whistle, of people and birds alike, which Giannattasio places with the voice (cod) under singing (heesid) rather than among the instruments.",
+      "related": ["heesid", "cod", "shimbiro"],
+      "tags": ["whistle", "whistling"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "shimbiro",
+      "term": "shimbiro",
+      "variants": [],
+      "english": "birds; birdsong",
+      "category": "performance",
+      "definition": "Birds, whose song Giannattasio's figure of sound sources places with the voice and the whistle under singing (heesid). He notes the expression shimbirtu waa gabyaysaa, \"the bird is singing\".",
+      "related": ["heesid", "foori", "gabyid"],
+      "tags": ["birds", "birdsong", "bird singing"],
+      "sources": [
+        "Giannattasio, Francesco (1988), The study of Somali music: present state — https://arcadia.sba.uniroma3.it/handle/2307/984"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "alalaas",
+      "term": "alalaas",
+      "variants": ["alalas"],
+      "english": "ululation",
+      "category": "performance",
+      "definition": "Ululation; the catalogue glosses it as \"trilli di glottide\" (glottal trills) and records it with the buraanbur and in dances such as kabeebey.",
+      "related": ["buraanbur", "kabeebey", "sacab"],
+      "tags": ["ululation", "trilling", "women's cry", "zaghrouta"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "laashin",
+      "term": "laashin",
+      "variants": ["laashinno"],
+      "english": "poet and lead singer",
+      "category": "people",
+      "definition": "A poet and lead singer: the catalogue glosses Axmedey Cabdi Gaashaan, who directed the National Theatre's folklore musicians, as \"laashin (poeta, capo cantore)\". Wikipedia, citing Luling, describes the Laashin of Afgooye composing and reciting at the same moment, with no prior preparation.",
+      "related": ["abwaan", "heesaa", "shirib"],
+      "tags": ["poet", "lead singer", "southern poet", "improvising poet", "Afgooye"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf",
+        "Wikipedia, Somali literature"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "kasrad",
+      "term": "kasrad",
+      "variants": [],
+      "english": "quick rhythmic handclapping",
+      "category": "rhythm",
+      "definition": "Quick, rhythmic handclapping that filled the music breaks when dunya diwani songs were performed (Bashir Goth).",
+      "related": ["sacab", "dunya-diwani"],
+      "tags": ["handclapping", "clapping", "rhythm", "music breaks"],
+      "sources": [
+        "Music in Africa, Somali music history (Goth) — https://www.musicinafrica.net/node/25169"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "majlis",
+      "term": "majlis",
+      "variants": ["majlises"],
+      "english": "qaad-chewing session with song",
+      "category": "performance",
+      "definition": "A qaad-chewing session; Bashir Goth describes majlises at which men and women sat and sang dunya diwani songs together while girls danced the taxriig.",
+      "related": ["dunya-diwani", "marqaan"],
+      "tags": ["qaad session", "khat", "kat chewing", "taxriig", "gathering"],
+      "sources": [
+        "Music in Africa, Somali music history (Goth) — https://www.musicinafrica.net/node/25169"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "marqaan",
+      "term": "marqaan",
+      "variants": [],
+      "english": "qaad intoxication",
+      "category": "performance",
+      "definition": "The intoxication of qaad; it occurs in the opening of the dheel recorded by Giannattasio, \"Ama nala marqaan\", glossed there as \"or become drunk on qaad with us\".",
+      "related": ["majlis", "dheel"],
+      "tags": ["qaad", "khat", "intoxication"],
+      "sources": [
+        "Giannattasio, Francesco (1982–1998), Catalogo dei documenti sonori sulla musica somala, Centro Studi Somali — https://arcadia.sba.uniroma3.it/bitstream/2307/798/1/Catalogo%20dei%20documenti%20sonori%20sulla%20musica%20somala.pdf"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "soomaalinimo",
+      "term": "soomaalinimo",
+      "variants": [],
+      "english": "Somali identity, Somaliness",
+      "category": "poetry",
+      "definition": "Somaliness. Kapteijns writes that the discourse of soomaalinimo and Somali unity informs both the love songs and the political songs of the modern hees, most explicitly the political ones.",
+      "related": ["qaranimo", "waddani", "hees"],
+      "tags": ["Somali identity", "Somaliness", "national identity", "song theme"],
+      "sources": [
+        "Kapteijns, Lidwien (2009), Discourse on moral womanhood in Somali popular songs, 1960–1990, Journal of African History 50(1): 101–122 — https://www.cambridge.org/core/journals/journal-of-african-history/article/discourse-on-moral-womanhood-in-somali-popular-songs-19601990/8B56054C3458B9805AA848CCC8079B06"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "qaranimo",
+      "term": "qaranimo",
+      "variants": [],
+      "english": "Somali nationalism",
+      "category": "poetry",
+      "definition": "Somali nationalism, named by Harvard's Loeb Music Library as a theme of songs that preached unity and called for allegiance to the state.",
+      "related": ["soomaalinimo", "waddani", "hees-wadani"],
+      "tags": ["nationalism", "nationhood", "national unity", "song theme"],
+      "sources": [
+        "Harvard Loeb Music Library blog (2020), A trunk full of love songs: the Maryan Aryette Omar Ali collection — https://archive.blogs.harvard.edu/loebmusic/2020/02/14/a-trunk-full-of-love-songs-somali-songs-1955-1991-the-maryan-aryette-omar-ali-collection/"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "miyi-iyo-magaalo",
+      "term": "miyi iyo magaalo",
+      "variants": [],
+      "english": "countryside and city",
+      "category": "poetry",
+      "definition": "Countryside and city: Kapteijns uses the phrase of the two worlds between which urban artists with rural roots served as cultural brokers.",
+      "related": ["soomaalinimo", "hees"],
+      "tags": ["countryside and city", "rural and urban", "song theme", "town and country"],
+      "sources": [
+        "Kapteijns, Lidwien (2009), Discourse on moral womanhood in Somali popular songs, 1960–1990, Journal of African History 50(1): 101–122 — https://www.cambridge.org/core/journals/journal-of-african-history/article/discourse-on-moral-womanhood-in-somali-popular-songs-19601990/8B56054C3458B9805AA848CCC8079B06"
+      ],
+      "confidence": "attested"
+    },
+    {
+      "id": "hoygii-fanka",
+      "term": "Hoygii Fanka",
+      "variants": ["hoygii fanka", "hoyga sugaanta", "hoyga suugaanta"],
+      "english": "Hargeisa's nickname, home of the arts",
+      "category": "institution",
+      "definition": "A name for Hargeisa, \"the Home of Somali Arts and Culture\" (Wikipedia). Al Jazeera writes \"hoyga sugaanta\", \"the home of Somali music\", for the title Hargeisa held before Mogadishu overtook it.",
+      "related": ["idaacadda-hargeysa", "walaalo-hargeysa", "xidigaha-geeska"],
+      "tags": ["Hargeisa", "Hargeysa", "home of the arts", "home of Somali music"],
+      "sources": [
+        "Wikipedia, Music of Somaliland",
+        "Al Jazeera (2017), Uncovering Somalia's forgotten music of the 1970s — https://www.aljazeera.com/features/2017/8/18/uncovering-somalias-forgotten-music-of-the-1970s"
+      ],
+      "confidence": "reported"
+    },
+    {
+      "id": "xidigaha-geeska",
+      "term": "Xidigaha Geeska",
+      "variants": [],
+      "english": "\"Stars of the Horn\", Hargeisa group",
+      "category": "institution",
+      "definition": "A group of singers and musicians established in Hargeisa, whose name means \"Stars of the Horn\", credited on Wikipedia with modernising the nationalistic ballad.",
+      "related": ["hoygii-fanka", "walaalo-hargeysa", "waaberi"],
+      "tags": ["Stars of the Horn", "Hargeisa band", "contemporary group"],
+      "sources": ["Wikipedia, Music of Somaliland"],
+      "confidence": "reported"
     }
   ]
 }
