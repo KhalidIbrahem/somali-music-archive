@@ -71,7 +71,9 @@ DENY_RE = re.compile(
     re.IGNORECASE,
 )
 # Substrings that must never appear in a readable path at all (belt and braces).
-DENY_WORDS = ("harvard", "ahmed", "raw_incoming", "ilkacase", ".band", "/public/audio/")
+# The performer's full name stays out of this file: the script ships with the dataset. His paths are
+# all under data/raw_incoming, data/ahmed* or data/inventory, which the gate already refuses.
+DENY_WORDS = ("harvard", "ahmed", "raw_incoming", ".band", "/public/audio/")
 
 # What the script may open, relative to the repo root …
 ALLOWED_REPO = (
@@ -1065,7 +1067,7 @@ SHA-256, size, source path and rights evidence.
 Coll 103, ~24 h of 1955–1991 Somali song) is research-only until the Library's written permission is on
 file; none of its audio, clips, tokens or derived stems is here, and none of the adapters trained on it
 (`harvard_raw`, `medium`, `large`, `qaraami_all`, the DPO variants) has a single clip in this dataset.
-**No performer source audio.** Ahmed Ilkacase's oud collection and session recordings were given to the
+**No performer source audio.** One performer's oud collection and session recordings were given to the
 project for *training*; the consent covers publishing model outputs, not redistributing the recordings,
 so the source audio, its 15/30/60-second clips, EnCodec tokens, stems and transcripts stay out.
 **No `.band`/GarageBand imports or internet-acquired audio** (mixed or unverified rights). **No archive
@@ -1221,8 +1223,7 @@ The archive's communities are Somali musicians, poets and listeners at home and 
 CARE principles for Indigenous data governance — collective benefit, authority to control, responsibility,
 ethics — the project publishes nothing recorded by a person without that person's consent for that use:
 the performer whose recordings trained the releasable adapters consented to training and to publishing
-*outputs*; his recordings stay private and his name is withheld from captions and metadata (the model
-cards name him only as the rights holder of record). Harvard's collection waits for the Library's written
+*outputs*; his recordings stay private and his name is withheld from this dataset. Harvard's collection waits for the Library's written
 permission rather than being published under a "research use" banner. The website labels every generation
 as AI model output, not a recording, and this dataset asks re-users to do the same. The glossary is a
 living document that invites correction from Somali speakers and musicians; corrections and takedown

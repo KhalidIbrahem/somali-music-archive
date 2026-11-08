@@ -23,6 +23,9 @@ the engraving ships; add the missing glossary terms the review listed.
    it should also name dataset redistribution and the licence. The same gap applies to the live gallery.
 2. **The live blind study.** The 80 study clips' metadata labels each opaque file as base or adapter, which
    is the answer key to `/study`. Hold those clips back until the study closes.
+3. **Fixed: the performer's name.** The dataset card and the build script shipped with it named him, against
+   the "performers unlisted" treatment in `DATA_PROVENANCE.md` §4. Both now leave the name out; a grep of the
+   build finds it nowhere.
 
 ### Five statements in the review that did not survive the source check
 
