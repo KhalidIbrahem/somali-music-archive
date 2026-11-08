@@ -293,9 +293,15 @@ def test_readme_has_yaml_configs_and_counts(tmp_path):
     readme = (out / "README.md").read_text(encoding="utf-8")
     header = readme.split("\n---\n")[0]
     assert header.startswith("---\npretty_name:")
-    for cfg in ("generated_audio", "synth_bench", "synth_bench_truth", "glossary", "listening_trials", "listening_summary"):
+    for cfg in ("generated_audio", "synth_bench"):
         assert f"- config_name: {cfg}" in header
-    assert "- config_name: symbolic" not in header
+    # One reader per Hub repository: a JSON-only config beside the audio ones would load nothing.
+    for cfg in ("synth_bench_truth", "glossary", "listening_trials", "listening_summary", "symbolic"):
+        assert f"- config_name: {cfg}" not in header
+    assert 'load_dataset("json", data_files=tables + "/glossary/glossary.jsonl", split="train")' in readme
+    assert "[[KHALID" not in readme and "(https://huggingface.co/ns) on Hugging Face" in readme
+    assert "https://huggingface.co/datasets/ns/test" in readme
+    assert "annotations, votes" not in readme and "config `synth_bench_truth`" not in readme
     assert "No score of Beerdilaacshe in this version" in readme
     assert "engraved score" not in readme and "symbolic/" not in readme
     assert '- "generated_audio/metadata.jsonl"' in header and '- "generated_audio/*/*.mp3"' in header
@@ -313,7 +319,6 @@ def test_symbolic_ships_only_when_asked(tmp_path):
     assert sym[0]["composer"] == "Abdillahi Qarshe" and sym[0]["engraver"] == "Khalid Ibrahim" and sym[0]["note_count"] == 2
     assert all((out / "symbolic" / f).exists() for f in sym[0]["files"])
     readme = (out / "README.md").read_text(encoding="utf-8")
-    assert "- config_name: symbolic" in readme.split("\n---\n")[0]
     assert "### `symbolic` — Beerdilaacshe" in readme and "No score of Beerdilaacshe" not in readme
     assert manifest["subsets"]["symbolic"]["rows"] == 1
 

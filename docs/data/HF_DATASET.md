@@ -3,10 +3,9 @@
 A Hugging Face dataset assembled from this repository by
 `apps/ai-service/scripts/build_hf_dataset.py` (tests:
 `apps/ai-service/tests/test_build_hf_dataset.py`). Built into `dist/hf_dataset/`
-(git-ignored; the build prints its counts). **Nothing has been uploaded**:
-there is no Hugging Face token on this machine and publishing is Khalid's
-decision (§4). **Making it public also waits on the written consent record**
-(§4 step 3).
+(git-ignored; the build prints its counts). **Uploaded privately on 2026-11-08**
+to `khalidibra/qaraamigen-somali-music-reference`; it is not public. **Making it
+public waits on the written consent record and on the study closing** (§4 step 3).
 
 ## 1. The rights rule (why this dataset is "clean")
 
@@ -29,7 +28,7 @@ annotated Somali recordings yet.
 | subset | rows | what | licence |
 | --- | --- | --- | --- |
 | `generated_audio` | 558 MP3 (`gallery/` 472, `generate/` 6, `study/` 80) + `metadata.jsonl` | every QaraamiGen generation already public on the site, with model, adapter, checkpoint, prompt, seed, duration, PCS, voiced ratio, band SNR, the study pair/comparison and loudness | ACE-Step-based adapters CC BY 4.0; MusicGen-based (`oud`, `musicgen_small_base`) CC BY-NC 4.0 (Meta's weights are CC-BY-NC) — per row |
-| `synth_bench` + `synth_bench_truth` | 120 WAV + `metadata.jsonl` + `truth.jsonl` + the generator `synth_somali_bench.py` | the Somali-style synthetic transcription benchmark (24 pentatonic melodies × 5 conditions, exact note/tuning ground truth) | CC BY 4.0 |
+| `synth_bench` | 120 WAV + `metadata.jsonl` + `truth.jsonl` + the generator `synth_somali_bench.py` | the Somali-style synthetic transcription benchmark (24 pentatonic melodies × 5 conditions, exact note/tuning ground truth) | CC BY 4.0 |
 | `glossary` | 194 rows, glossary v3 (`glossary.jsonl`, the fields of `apps/web/lib/learn/glossaryTypes.ts`) | the Somali music reverse dictionary with sources and confidence | CC BY 4.0 |
 | `listening` | `trials.jsonl` 232 rows, `summary.jsonl` | every blind listening sitting (set, date, protocol, pair, choice) | CC BY 4.0 |
 | `results` | `TABLES.md`, the releasable model cards | evaluation tables and provenance | CC BY 4.0 |
@@ -40,12 +39,14 @@ and no permission from his estate is on file (`docs/DATA_PROVENANCE.md` §2). A 
 melody, and a published version cannot be withdrawn, so it is left out unless the build is given
 `--include-symbolic`. Adding it later is a new version; removing it later is not possible.
 
-Loading (no script; README `configs` + audiofolder metadata):
+Loading (no script; README `configs` + audiofolder metadata). Only the two audio
+subsets are configs: `datasets` uses one reader per repository, so a JSON-only
+config beside them would load nothing. The tables name the JSON reader:
 
 ```python
-from datasets import load_dataset
-ds = load_dataset("<namespace>/qaraamigen-somali-music-reference", "glossary")
-audio = load_dataset("<namespace>/qaraamigen-somali-music-reference", "generated_audio")
+from datasets import load_dataset  # pip install "datasets[audio]"
+audio = load_dataset("khalidibra/qaraamigen-somali-music-reference", "generated_audio")
+glossary = load_dataset("json", data_files="hf://datasets/khalidibra/qaraamigen-somali-music-reference/glossary/glossary.jsonl", split="train")
 ```
 
 ## 3. Build and check
@@ -80,8 +81,10 @@ non-zero on any failure. Re-run the build after changing the glossary
    lists only "papers, demos and the website". **Also hold the 80 study clips
    back until the `/study` listening study closes:** their rows in
    `generated_audio/metadata.jsonl` label each opaque clip as base or adapter,
-   which is the study's answer key. Then re-run with `--public`
-   (or switch in Settings), mint the DOI in the repo settings, and add the
+   which is the study's answer key. Then switch it in the Hub's Settings or with
+   `HfApi.update_repo_settings(private=False)`: `--public` only applies when it
+   creates the repository. The Dataset Viewer needs a PRO account on a private
+   dataset, so check it right after going public. Mint the DOI in the repo settings, and add the
    citation to `README.md` and `CITATION.cff`.
 4. Version changes by tag (`v0.1`, `v0.2`); never rewrite a published version.
 
