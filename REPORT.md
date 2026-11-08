@@ -1,3 +1,57 @@
+# QaraamiGen — studio-v3 merge, glossary v3, dataset review (2026-11-08)
+
+Khalid's list: try the studio, then merge `studio-v3` into `master` and push; log in to Hugging Face and
+publish the dataset privately, review it, make it public; confirm the Beerdilaacshe attribution and whether
+the engraving ships; add the missing glossary terms the review listed.
+
+| job | status | proof |
+| --- | --- | --- |
+| Try the studio | PASS | production build at `127.0.0.1:3100`, headless Chrome with a fake microphone: 50 of 50 checks at 1440 × 900; `studio-mobile-check.mjs` passes at 390 and 414 px with 0 console errors |
+| Glossary v3 | PASS | 194 entries: 146 attested, 46 reported, 2 unverified. The review's 64 numbered lines name 125 terms: 122 new entries, `digri` merged into `dhikri`, `shanbal` and `biyaano` already present. New category `ritual`. Every term was checked against the source's own text, or the page image for the scanned Giannattasio PDFs |
+| Beerdilaacshe attribution | ONE SECONDARY SOURCE | Geeska (Fathi Jama, 2025) credits Qarshe directly. Nothing else found does, and no outside source dates the melody. Recorded in `docs/DATA_PROVENANCE.md` §2 and the Qarshe glossary entry |
+| Engraving in the dataset | DECIDED: left out | `build_hf_dataset.py` ships it only with `--include-symbolic` (`docs/data/HF_DATASET.md`) |
+| Web suite | PASS | 245 vitest + 9 rights tests; `npm run typecheck` 6/6; `npm run test` across workspaces; `next build` clean with the rights gate |
+| AI service | PASS | pytest 752 passed, 1 skipped; `ruff check .` clean |
+| Dataset rebuild | PASS, not uploaded | `dist/hf_dataset/`: 1,104 rows, 693 files, 565 MB; `--check` passes; own audit found no audio outside the two allowed folders and no local paths or secrets |
+| Hugging Face upload | BLOCKED | no token on this machine; `hf auth login` is Khalid's |
+
+### Review findings on the dataset (before it may go public)
+
+1. **Consent.** `DATA_PROVENANCE.md` §8 and `docs/data/consent/README.md` say nothing built from Ahmed
+   Ilkacase's corpus is published until the written record exists. The index is empty. 518 of the 558 clips
+   come from adapters trained on that corpus. The record's listed uses are papers, demos and the website, so
+   it should also name dataset redistribution and the licence. The same gap applies to the live gallery.
+2. **The live blind study.** The 80 study clips' metadata labels each opaque file as base or adapter, which
+   is the answer key to `/study`. Hold those clips back until the study closes.
+
+### Five statements in the review that did not survive the source check
+
+Recorded in the research note. Hoyal is not glossed as a mat-weaving song on the cited page. Hirsi labels
+hooris and hoojis first and second inconsistently. Nothing says Bullo and Buunlo are the same dance. The
+catalogue lists Sayle and Seylici separately, and the fetched Sahan Journal page names neither saylici nor
+wilwile. Al Jazeera writes "hoyga sugaanta".
+
+### Defaults chosen
+
+1. One entry per term, so the 64 lines became 122 entries. A dictionary entry holding seven unrelated words
+   would not be findable.
+2. New entries carry no Somali definition. Writing Somali prose without a speaker's review is not something
+   the glossary's honesty flags can cover.
+3. `saar` and `dhikri` moved into the new `ritual` category with the possession and dhikr vocabulary, as the
+   review proposed; `mingis` and `boorane` stopped being listed as spellings of `saar`.
+4. The site's own wording on Beerdilaacshe ("composed by Abdillahi Qarshe in the 1950s") is unchanged: it is
+   Khalid's copy. The "1950s" has no outside source.
+5. Six files fail Prettier identically on `master`; left alone as outside this work.
+
+### Human-only list
+
+1. `hf auth login` with a write token, then say to push privately.
+2. Sign and file the Ahmed Ilkacase consent record, before the dataset goes public.
+3. Somali definitions for the 122 new terms; confirm or drop "1950s" for Beerdilaacshe.
+4. Still open from before: Upstash for `/study`, the Loeb letter, the paper `TODO —` blocks.
+
+---
+
 # QaraamiGen — studio-v3 overnight report (2026-11-07, 02:30 → 09:45)
 
 Branch **`studio-v3`** from `master` `6bffe70`, worktree `~/Projects/sma-studio-v3`.

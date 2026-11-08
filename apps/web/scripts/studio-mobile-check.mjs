@@ -92,10 +92,16 @@ const click = async (selectorOrText) => {
 const report = [];
 const widths = (process.env.WIDTHS ?? '390,414').split(',').map(Number);
 for (const width of widths) {
-  await s('Emulation.setDeviceMetricsOverride', { width, height: 844, deviceScaleFactor: 2, mobile: true });
+  await s('Emulation.setDeviceMetricsOverride', {
+    width,
+    height: 844,
+    deviceScaleFactor: 2,
+    mobile: true,
+  });
   await s('Emulation.setTouchEmulationEnabled', { enabled: true });
   await s('Page.navigate', { url: BASE + '/studio' });
-  for (let i = 0; i < 60 && (await evalJs('document.readyState')) !== 'complete'; i++) await sleep(100);
+  for (let i = 0; i < 60 && (await evalJs('document.readyState')) !== 'complete'; i++)
+    await sleep(100);
   await sleep(1200);
   const steps = [
     ['start', null],
@@ -124,7 +130,16 @@ for (const r of report) {
   if (r.sw !== undefined) {
     const ok = r.sw === r.iw && r.over.length === 0;
     if (!ok) fail = true;
-    console.log(r.width, r.step.padEnd(8), ok ? 'PASS' : 'FAIL', 'scrollW', r.sw, '/', r.iw, r.over.length ? JSON.stringify(r.over) : '');
+    console.log(
+      r.width,
+      r.step.padEnd(8),
+      ok ? 'PASS' : 'FAIL',
+      'scrollW',
+      r.sw,
+      '/',
+      r.iw,
+      r.over.length ? JSON.stringify(r.over) : '',
+    );
   } else console.log(r.width, r.step, r.lib);
 }
 console.log('console errors:', consoleErrors.length, consoleErrors.slice(0, 5));

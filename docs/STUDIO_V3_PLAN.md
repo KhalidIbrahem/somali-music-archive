@@ -127,9 +127,11 @@ Ranked by application impact. Weeks are calendar weeks starting Monday 2026-11-1
 
 ## 4. Decisions only Khalid can make
 
-- Publish the dataset (namespace, name, private → public), and whether the
-  Beerdilaacshe engraving ships in it (composer rights status).
-- Merge `studio-v3` to `master` and push (the rule: no push without Khalid).
+- Publish the dataset (namespace, name, private → public). The written consent
+  record comes first, and the study clips wait for the study to close
+  (`docs/data/HF_DATASET.md` §4). Settled 2026-11-08: the Beerdilaacshe engraving
+  is left out of the dataset unless the build is given `--include-symbolic`.
+- Done 2026-11-08: `studio-v3` merged to `master`, on Khalid's instruction.
 - Which glossary corrections from the musicology note to accept where the
   sources disagree (dhaanto's metre: 4/4 with claps vs a 6/8 feel; several
   dates).

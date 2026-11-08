@@ -2,8 +2,8 @@
 
 The Studio is the browser DAW at `/studio` (Next.js, `apps/web`). The project
 file format is in [DAW-PROJECT-FORMAT.md](DAW-PROJECT-FORMAT.md); this file
-records the architecture, what works, and what is next. Updated 2026-11-07
-(branch `studio-v3`, worktree `~/Projects/sma-studio-v3`; not merged, not deployed).
+records the architecture, what works, and what is next. Updated 2026-11-08
+(branch `studio-v3`, worktree `~/Projects/sma-studio-v3`; merged into `master`).
 The research behind v3 is in `docs/research/` (six sourced notes and the
 synthesis report) and the design decisions in [STUDIO_V3_PLAN.md](STUDIO_V3_PLAN.md).
 
@@ -51,6 +51,11 @@ On a phone the mode closes the overlays it does not need.
   sources and Hear it; melody lesson: 18 phrases + All; Play surface: C4–C7 with
   the A-minor-pentatonic tint, scale-only bars; Record panel; Listen mode opens
   Loops + Pitch; Grooves tab). No console errors.
+- 2026-11-08, production build, headless Chrome 1440 × 900 with a fake microphone:
+  50 of 50 checks. Transport and the play surface start real audio nodes, the
+  Beerdilaacshe lesson plays, Qaamuus finds terms in all 194 entries, the mic meter
+  runs, every bottom tab and the export dialog open, 11 public routes answer, 0
+  console errors, 0 failed requests, 0 `/api/v1` calls.
 - Headless Chrome 390 × 844 and 414 × 844 (`apps/web/scripts/studio-mobile-check.mjs`):
   start, Create, Play, Learn, Listen, Record — `scrollWidth == innerWidth` on
   every step, 0 console errors; the rails are full-screen overlays with a close.
@@ -67,16 +72,18 @@ On a phone the mode closes the overlays it does not need.
   Calibrate removes. A loopback (MLS) calibration is the research's recommendation.
 - The play surface sends raw MIDI; DawApp's `lockToScale` snaps it (so with the
   lock on, the full keyboard lights the snapped key via `heldNotes`).
-- Glossary: 72 entries; 44 attested, 24 reported, 4 unverified (batar, shirib,
-  jaandheer, shambal). The musicology research note (`docs/research/research_notes/…/somali_music_musicology_glossary.md`)
-  lists corrections and additions still to apply.
+- Glossary v3: 194 entries; 146 attested, 46 reported, 2 unverified. Every term
+  in the musicology review's list of additions is in, checked against the
+  sources' own text (2026-11-08). The 122 new entries have no Somali definition
+  yet (32 older entries do); a Somali speaker should write those. The people and
+  institutions the review lists after its 64 lines are not added.
 - ESLint does not run in the worktree (`eslint-config-next` parser resolution,
   pre-existing); CI does not lint the web app.
 
 ## Next engineering step
 
-1. Apply the glossary review (corrections, sources, 30–50 added terms) and
-   bump the glossary version; the HF dataset build reads the same file.
+1. Somali definitions for the new glossary terms; the review's people and
+   institutions; better sources for the entries still marked `reported`.
 2. Phone transport: one-row control bar with a "more" sheet; bottom panel as a
    draggable sheet.
 3. Pitch analysis in a Web Worker; transport-synced slowed playback (the
