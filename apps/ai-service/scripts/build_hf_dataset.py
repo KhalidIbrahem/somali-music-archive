@@ -845,10 +845,13 @@ class Builder:
         }
         write_text(self.out / "README.md", render_card(manifest, self.files, self.card_facts, self))
         self.add_file("README.md", "card", "rendered by scripts/build_hf_dataset.py from MANIFEST.json data", "dataset card")
+        write_text(self.out / "ATTRIBUTION.md", render_attribution(self))
+        self.add_file("ATTRIBUTION.md", "card", "rendered by scripts/build_hf_dataset.py from the built metadata", "required credits, written by this build")
         manifest["files"] = sorted(self.files, key=lambda f: f["path"])
         with open(self.out / "MANIFEST.json", "w", encoding="utf-8", newline="\n") as f:
             json.dump(manifest, f, ensure_ascii=False, indent=1)
             f.write("\n")
+        write_text(self.out / "SHA256SUMS", render_sha256sums(manifest["files"], sha256_of(self.out / "MANIFEST.json")))
         marker.unlink()
         return manifest
 
@@ -913,6 +916,40 @@ def yaml_configs(audio_copied: bool) -> str:
     return "\n".join(lines)
 
 
+def render_sha256sums(files: list[dict], manifest_sha: str) -> str:
+    """`sha256sum -c SHA256SUMS` format: every file in the dataset except this one."""
+    rows = sorted([(f["path"], f["sha256"]) for f in files] + [("MANIFEST.json", manifest_sha)])
+    return "".join(f"{sha}  {path}\n" for path, sha in rows)
+
+
+def render_attribution(b: Builder) -> str:
+    """The credits a re-user owes, built from what this version actually contains."""
+    families = {a["family"] for a in b.card_facts.get("adapters", {}).values()}
+    models = []
+    if "ace-step" in families:
+        models.append("- **ACE-Step 1.5** (`xl-sft`): the open music model behind the `cc-by-4.0` audio rows; MIT licence.")
+    if "musicgen" in families:
+        models.append("- **MusicGen small** by Meta (`facebook/musicgen-small`): the model behind the `cc-by-nc-4.0` audio rows; weights under CC BY-NC 4.0.")
+    glossary = b.out / "glossary/glossary.jsonl"
+    sources = sorted({s for row in read_jsonl(glossary) for s in row["sources"]}) if glossary.exists() else []
+    lines = [
+        "# Attribution", "",
+        f"Credits for reusing {DATASET_NAME}. Every audio row also names its licence in the `license` column, and the",
+        "licences themselves are explained in the dataset card.", "",
+        "Credit this dataset as:", "",
+        f'> {DATASET_NAME} (Khalid Ibrahim, {b.date[:4]}).', "",
+        "## Models that generated the audio", "", *models, "",
+        "## Recordings behind the adapters", "",
+        "The adapters were trained on recordings that are described in `results/MODEL_CARD_*.md` and are not distributed here.",
+        "Rights in those recordings remain with their holders.", "",
+    ]
+    if sources:
+        lines += [f"## Sources behind the glossary ({len(sources)})", "",
+                  "The definitions are written for this project and each entry names its own sources:", "",
+                  *[f"- {s}" for s in sources], ""]
+    return "\n".join(lines).rstrip() + "\n"
+
+
 def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> str:
     s = manifest["subsets"]
     audio = manifest["audio_copied"]
@@ -954,7 +991,7 @@ def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> s
     )
     skipped = manifest["skipped"]
     skipped_md = "\n".join(f"- {w}" for w in skipped) if skipped else "- none"
-    tree_lines = ["README.md", "MANIFEST.json", "generated_audio/metadata.jsonl"]
+    tree_lines = ["README.md", "MANIFEST.json", "ATTRIBUTION.md", "SHA256SUMS", "generated_audio/metadata.jsonl"]
     if audio:
         tree_lines += ["generated_audio/gallery/*.mp3", "generated_audio/generate/*.mp3", "generated_audio/study/*.mp3"]
     tree_lines += ["synth_bench/metadata.jsonl", "synth_bench/truth.jsonl"]
@@ -973,6 +1010,14 @@ def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> s
     sym_summary = f"| engraved score (Beerdilaacshe) | {sym['rows']} | {sym['files']} | {_mb(bytes_by_subset.get('symbolic', 0))} |\n" if sym else ""
     remains_extra = "symbolic data, " if sym else ""
     engraving_intro = "engraving, " if sym else ""
+    gen_seconds = sum(r.get("duration_sec") or 0 for r in read_jsonl(b.out / "generated_audio/metadata.jsonl"))
+    glance = [f"{gen['rows']} model-generated clips ({gen_seconds / 3600:.1f} hours)",
+              f"{syn['rows']} synthetic recordings with {syn['notes']:,} ground-truth notes"]
+    if glo:
+        glance.append(f"{glo['rows']} sourced Somali music terms")
+    if lis:
+        glance.append(f"{lis['rows']} blind listening votes")
+    at_a_glance = "**" + ", ".join(glance[:-1]) + " and " + glance[-1] + ".**"
     load_lines = ['truth = load_dataset("json", data_files=tables + "/synth_bench/truth.jsonl", split="train")']
     if glo:
         load_lines.append('glossary = load_dataset("json", data_files=tables + "/glossary/glossary.jsonl", split="train")')
@@ -1045,6 +1090,8 @@ size_categories:
     body = f"""
 # {DATASET_NAME} (v{version})
 
+{at_a_glance}
+
 Reference material from **QaraamiGen**, a research programme adapting open music-generation models and a
 browser transcriber to Somali *qaraami* (the oud-and-voice song style of the 1940s–1970s) by Khalid Ibrahim.
 Everything here is either model output that is already public on {SITE_URL}, or the project's own
@@ -1061,7 +1108,7 @@ SHA-256, size, source path and rights evidence.
 {sym_summary}| glossary entries | {glo['rows'] if glo else 'not built'} | {1 if glo else 0} | {_mb(bytes_by_subset.get('glossary', 0))} |
 | blind listening trials / sittings | {f"{lis['rows']} / {lis['sittings']}" if lis else 'not built'} | {2 if lis else 0} | {_mb(bytes_by_subset.get('listening', 0))} |
 | results tables and model cards | — | {res['files']} | {_mb(bytes_by_subset.get('results', 0))} |
-| **total** | | **{len(files)} data files** (plus this card and `MANIFEST.json`) | **{_mb(total_bytes)}** |
+| **total** | | **{len(files)} data files** (plus this card, `ATTRIBUTION.md`, `SHA256SUMS` and `MANIFEST.json`) | **{_mb(total_bytes)}** |
 
 {audio_note}
 
@@ -1224,6 +1271,11 @@ which case the row licence functions as terms of use rather than a copyright gra
 - **Glossary confidence varies.** Entries flagged `reported` or `uncertain` are exactly that; etymologies
   state whether they are attested or disputed.
 
+## Takedown
+
+If you hold rights in anything in this dataset, or you appear in it and want it removed, write to the contact at
+the end of this card with the file paths or ids. Removals are applied in the next version.
+
 ## Ethics and community
 
 The archive's communities are Somali musicians, poets and listeners at home and in the diaspora. Following the
@@ -1302,8 +1354,16 @@ def check(out: Path, repo_root: Path | None, data_root: Path | None) -> list[str
     for p in sorted(out.rglob("*")):
         if p.is_file():
             rel = posix(p.relative_to(out))
-            if rel != "MANIFEST.json" and rel not in entries and not rel.startswith(".cache/"):
+            if rel not in ("MANIFEST.json", "SHA256SUMS") and rel not in entries and not rel.startswith(".cache/"):
                 errors.append(f"{rel}: present in the folder but not in MANIFEST.json")
+
+    sums_path = out / "SHA256SUMS"
+    if not sums_path.exists():
+        errors.append("SHA256SUMS missing")
+    elif sums_path.read_text(encoding="utf-8") != render_sha256sums(list(entries.values()), sha256_of(manifest_path)):
+        errors.append("SHA256SUMS does not match MANIFEST.json")
+    if "ATTRIBUTION.md" not in entries:
+        errors.append("ATTRIBUTION.md is not in MANIFEST.json")
 
     jsonl_rows: dict[str, list[dict]] = {}
     for p in sorted(out.rglob("*.jsonl")):

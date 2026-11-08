@@ -61,7 +61,8 @@ cd ~/Projects/sma-studio-v3            # or the checkout that holds apps/ and do
 cd apps/ai-service && ~/ai/musicgen-env/bin/python -m pytest -q tests/test_build_hf_dataset.py
 ```
 
-`--check` re-reads `MANIFEST.json`, verifies every sha256, every JSONL, every
+Each build also writes `ATTRIBUTION.md` (required credits, from the built metadata) and
+`SHA256SUMS` (`sha256sum -c` format). `--check` re-reads `MANIFEST.json`, verifies every sha256, every JSONL, every
 rights evidence line and the deny-list, prints the per-subset table and exits
 non-zero on any failure. Re-run the build after changing the glossary
 (`apps/web/lib/learn/glossary.json`), the published clips or a model card.

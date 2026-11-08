@@ -1,5 +1,6 @@
 """Tests for scripts/build_hf_dataset.py on tiny fake inputs (no project data touched)."""
 
+import hashlib
 import json
 import re
 import wave
@@ -232,7 +233,7 @@ def test_manifest_sha256_matches_files(tmp_path):
     out = tmp_path / "out"
     manifest = json.loads((out / "MANIFEST.json").read_text(encoding="utf-8")) if False else build(root, out)
     listed = {f["path"] for f in manifest["files"]}
-    on_disk = {p.relative_to(out).as_posix() for p in out.rglob("*") if p.is_file()} - {"MANIFEST.json"}
+    on_disk = {p.relative_to(out).as_posix() for p in out.rglob("*") if p.is_file()} - {"MANIFEST.json", "SHA256SUMS"}
     assert listed == on_disk
     for f in manifest["files"]:
         assert sha256_of(out / f["path"]) == f["sha256"] and (out / f["path"]).stat().st_size == f["size"]
@@ -309,6 +310,26 @@ def test_readme_has_yaml_configs_and_counts(tmp_path):
     assert "| model-generated clips with prompt, seed, adapter, metrics | 5 | 5 MP3 |" in readme
     assert 'load_dataset("ns/test", "generated_audio", split="train")' in readme
     assert not any(line != line.rstrip() for line in readme.splitlines())
+
+
+def test_companion_files_and_at_a_glance_line(tmp_path, capsys):
+    root = make_repo(tmp_path / "repo")
+    out = tmp_path / "out"
+    argv = ["--repo-root", str(root), "--data-root", str(root), "--out", str(out)]
+    assert main([*argv, "--copy-audio", "--date", DATE]) == 0
+    readme = (out / "README.md").read_text(encoding="utf-8")
+    assert "**5 model-generated clips" in readme and "ground-truth notes" in readme and "\n## Takedown\n" in readme
+    attribution = (out / "ATTRIBUTION.md").read_text(encoding="utf-8")
+    assert "# Attribution" in attribution and "Credit this dataset as:" in attribution
+    lines = (out / "SHA256SUMS").read_text(encoding="utf-8").splitlines()
+    listed = {line.split("  ", 1)[1]: line.split("  ", 1)[0] for line in lines}
+    assert {"README.md", "MANIFEST.json", "ATTRIBUTION.md"} <= set(listed) and "SHA256SUMS" not in listed
+    assert listed["MANIFEST.json"] == hashlib.sha256((out / "MANIFEST.json").read_bytes()).hexdigest()
+    assert main([*argv, "--check"]) == 0
+    capsys.readouterr()
+    (out / "SHA256SUMS").write_text("0  README.md\n", encoding="utf-8")
+    assert main([*argv, "--check"]) == 1
+    assert "SHA256SUMS does not match" in capsys.readouterr().err
 
 
 def test_symbolic_ships_only_when_asked(tmp_path):
