@@ -10,7 +10,10 @@ The dataset holds ONLY material the project may publish:
 2. the project's own synthesised transcription benchmark
    (`data/eval_qormada/synth/*.wav` + `truth.json`, made by
    `apps/ai-service/scripts/synth_somali_bench.py`, which is shipped with it);
-3. the Beerdilaacshe engraving (`apps/web/public/scores/beerdilaacshe/`);
+3. only with `--include-symbolic`, the Beerdilaacshe engraving
+   (`apps/web/public/scores/beerdilaacshe/`), left out by default because the
+   credit to the composer rests on one secondary source and no permission
+   from his estate is on file;
 4. the Somali music glossary (`apps/web/lib/learn/glossary.json`);
 5. the blind listening records (`data/listening/*.json`: votes, not audio),
    `docs/eval/TABLES.md` and the releasable model cards.
@@ -148,7 +151,7 @@ GLOSSARY_COLUMNS = [  # mirrors apps/web/lib/learn/glossaryTypes.ts GlossaryEntr
 ]
 GLOSSARY_REQUIRED = ("id", "term", "variants", "english", "category", "definition", "related",
                      "tags", "sources", "confidence")
-GLOSSARY_CATEGORIES = {"genre", "form", "poetry", "dance", "instrument", "performance", "theory",
+GLOSSARY_CATEGORIES = {"genre", "form", "poetry", "dance", "ritual", "instrument", "performance", "theory",
                        "rhythm", "people", "institution", "production"}
 GLOSSARY_CONFIDENCE = {"attested", "reported", "uncertain"}
 TRIAL_BASE_COLUMNS = ["set", "title", "listener", "date", "seed", "protocol", "question", "pair",
@@ -351,8 +354,10 @@ def wav_info(path: Path) -> dict:
 
 # ─── the builder ─────────────────────────────────────────────────────────────
 class Builder:
-    def __init__(self, repo_root: Path, data_root: Path, out: Path, copy_audio: bool, date: str, repo_id: str | None = None) -> None:
+    def __init__(self, repo_root: Path, data_root: Path, out: Path, copy_audio: bool, date: str, repo_id: str | None = None,
+                 include_symbolic: bool = False) -> None:
         self.repo_id = repo_id or DEFAULT_REPO_ID
+        self.include_symbolic = include_symbolic
         self.repo = repo_root.resolve()
         self.data = data_root.resolve()
         self.out = out.resolve()
@@ -825,7 +830,8 @@ class Builder:
         marker.write_text("a build is running or failed; the folder may be deleted by the next build\n", encoding="utf-8")
         self.build_generated()
         self.build_synth()
-        self.build_symbolic()
+        if self.include_symbolic:
+            self.build_symbolic()
         self.build_glossary()
         self.build_listening()
         self.build_results()
@@ -905,7 +911,8 @@ def yaml_configs(audio_copied: bool, subsets: dict) -> str:
     table_cfg("synth_bench_truth", "synth_bench/truth.jsonl", "test")
     if "glossary" in subsets:
         table_cfg("glossary", "glossary/glossary.jsonl")
-    table_cfg("symbolic", "symbolic/metadata.jsonl")
+    if "symbolic" in subsets:
+        table_cfg("symbolic", "symbolic/metadata.jsonl")
     if "listening" in subsets:
         table_cfg("listening_trials", "listening/trials.jsonl")
         table_cfg("listening_summary", "listening/summary.jsonl")
@@ -915,10 +922,10 @@ def yaml_configs(audio_copied: bool, subsets: dict) -> str:
 def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> str:
     s = manifest["subsets"]
     audio = manifest["audio_copied"]
-    gen, syn, sym = s["generated_audio"], s["synth_bench"], s["symbolic"]
+    gen, syn, sym = s["generated_audio"], s["synth_bench"], s.get("symbolic")
     glo, lis, res = s.get("glossary"), s.get("listening"), s["results"]
     adapters = facts.get("adapters", {})
-    n_rows = gen["rows"] + syn["rows"] + syn["truth_rows"] + sym["rows"] + (glo["rows"] if glo else 0) + (lis["rows"] + lis["sittings"] if lis else 0)
+    n_rows = gen["rows"] + syn["rows"] + syn["truth_rows"] + (sym["rows"] if sym else 0) + (glo["rows"] if glo else 0) + (lis["rows"] + lis["sittings"] if lis else 0)
     bytes_by_subset: dict[str, int] = {}
     for f in files:
         bytes_by_subset[f["subset"]] = bytes_by_subset.get(f["subset"], 0) + f["size"]
@@ -937,8 +944,9 @@ def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> s
     subset_rows = [
         f"| `generated_audio` | `generated_audio` | {gen['rows']} | {gen['audio_files']} MP3 | {_mb(bytes_by_subset.get('generated_audio', 0))} | per row: `cc-by-4.0` (ACE-Step outputs) or `cc-by-nc-4.0` (MusicGen outputs) | model output published on {SITE_URL}: gallery {gen['by_subset']['gallery']}, Generate page {gen['by_subset']['generate']}, blind-study stimuli {gen['by_subset']['study']} |",
         f"| `synth_bench` | `synth_bench`, `synth_bench_truth` | {syn['rows']} + {syn['truth_rows']} | {syn['audio_files']} WAV | {_mb(bytes_by_subset.get('synth_bench', 0))} | `cc-by-4.0` | synthetic pentatonic melodies with exact note truth; {syn['items']} items × {len(syn['conditions'])} conditions |",
-        f"| `symbolic` | `symbolic` | {sym['rows']} | {sym['files']} | {_mb(bytes_by_subset.get('symbolic', 0))} | `cc-by-4.0` (engraving) | Beerdilaacshe: LilyPond, MIDI, PDF, PNG, note list |",
     ]
+    if sym:
+        subset_rows.append(f"| `symbolic` | `symbolic` | {sym['rows']} | {sym['files']} | {_mb(bytes_by_subset.get('symbolic', 0))} | `cc-by-4.0` (engraving) | Beerdilaacshe: LilyPond, MIDI, PDF, PNG, note list |")
     if glo:
         subset_rows.append(f"| `glossary` | `glossary` | {glo['rows']} | 1 | {_mb(bytes_by_subset.get('glossary', 0))} | `cc-by-4.0` | Somali music terms with English glosses, definitions, sources, confidence |")
     if lis:
@@ -958,7 +966,9 @@ def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> s
     tree_lines += ["synth_bench/metadata.jsonl", "synth_bench/truth.jsonl"]
     if audio:
         tree_lines.append("synth_bench/*.wav")
-    tree_lines += ["synth_bench/synth_somali_bench.py", "symbolic/metadata.jsonl", "symbolic/beerdilaacshe/{Beerdilaacshe.ly,.midi,.pdf,.png,notes.json}"]
+    tree_lines.append("synth_bench/synth_somali_bench.py")
+    if sym:
+        tree_lines += ["symbolic/metadata.jsonl", "symbolic/beerdilaacshe/{Beerdilaacshe.ly,.midi,.pdf,.png,notes.json}"]
     if glo:
         tree_lines.append("glossary/glossary.jsonl")
     if lis:
@@ -966,6 +976,25 @@ def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> s
     tree_lines += ["results/TABLES.md", "results/MODEL_CARD_*.md", "scripts/build_hf_dataset.py"]
     tree = "\n".join(tree_lines)
     gl_conf = ", ".join(f"{k} {v}" for k, v in glo["by_confidence"].items()) if glo else ""
+    sym_summary = f"| engraved score (Beerdilaacshe) | {sym['rows']} | {sym['files']} | {_mb(bytes_by_subset.get('symbolic', 0))} |\n" if sym else ""
+    remains_extra = "symbolic data, " if sym else ""
+    engraving_claim = "engraving " if sym else ""
+    plain_files = "symbolic files and the model cards are" if sym else "the model cards are"
+    no_engraving = "" if sym else (
+        "**No score of Beerdilaacshe in this version.** The project's engraving is public on the website, but the\n"
+        "melody is a third party's composition: the credit to Abdillahi Qarshe rests on one secondary source (Geeska,\n"
+        "2025), its date is unsourced, he died in the 1990s so any life-based copyright term is still running, and no\n"
+        "permission from his estate is on file. A CC BY grant could not cover the melody, so the files are held back. "
+    )
+    symbolic_section = "" if not sym else (
+        "### `symbolic` — Beerdilaacshe\n\n"
+        f"A qaraami melody credited to **Abdillahi Qarshe** (the credit rests on one secondary source, Geeska 2025, and its date is\n"
+        f"unsourced), engraved by **Khalid Ibrahim** in LilyPond (`Beerdilaacshe.ly`, with PDF and PNG renderings), rendered to MIDI,\n"
+        f"and parsed to `notes.json` ({sym['note_count']} notes, {sym['bpm']} BPM, {sym['time_signature']}, {sym['duration_sec']} s). "
+        f"The engraving, MIDI and note list are the\nproject's own work and public at {SITE_URL}/scores/beerdilaacshe. The "
+        "melody's copyright status is the owner's to confirm before relying on it\nbeyond study and citation.\n\n"
+    )
+    symbolic_license_row = "" if not sym else "| `symbolic` | `cc-by-4.0` for the engraving, MIDI and note list | composer credit: Abdillahi Qarshe; the melody's copyright status is to be confirmed by the owner |\n"
     lis_sets = ", ".join(f"`{x}`" for x in lis["sets"]) if lis else ""
     lis_listeners = ", ".join(lis["listeners"]) if lis else ""
     study_lufs = facts.get("study_lufs")
@@ -1023,8 +1052,7 @@ SHA-256, size, source path and rights evidence.
 | --- | --- | --- | --- |
 | model-generated clips with prompt, seed, adapter, metrics | {gen['rows']} | {gen['audio_files']} MP3 | {_mb(bytes_by_subset.get('generated_audio', 0))} |
 | synthetic transcription benchmark with note-level truth | {syn['rows']} | {syn['audio_files']} WAV | {_mb(bytes_by_subset.get('synth_bench', 0))} |
-| engraved score (Beerdilaacshe) | {sym['rows']} | {sym['files']} | {_mb(bytes_by_subset.get('symbolic', 0))} |
-| glossary entries | {glo['rows'] if glo else 'not built'} | {1 if glo else 0} | {_mb(bytes_by_subset.get('glossary', 0))} |
+{sym_summary}| glossary entries | {glo['rows'] if glo else 'not built'} | {1 if glo else 0} | {_mb(bytes_by_subset.get('glossary', 0))} |
 | blind listening trials / sittings | {f"{lis['rows']} / {lis['sittings']}" if lis else 'not built'} | {2 if lis else 0} | {_mb(bytes_by_subset.get('listening', 0))} |
 | results tables and model cards | — | {res['files']} | {_mb(bytes_by_subset.get('results', 0))} |
 | **total** | | **{len(files)} data files** (plus this card and `MANIFEST.json`) | **{_mb(total_bytes)}** |
@@ -1041,9 +1069,9 @@ file; none of its audio, clips, tokens or derived stems is here, and none of the
 project for *training*; the consent covers publishing model outputs, not redistributing the recordings,
 so the source audio, its 15/30/60-second clips, EnCodec tokens, stems and transcripts stay out.
 **No `.band`/GarageBand imports or internet-acquired audio** (mixed or unverified rights). **No archive
-members' uploads.** What remains is model output, synthetic audio, symbolic data, annotations and a
-glossary — and the build script refuses, with a non-zero exit, any file whose rights evidence is missing
-(see *Rights gate* below).
+members' uploads.** {no_engraving}What remains is model output, synthetic audio, {remains_extra}listening
+records, evaluation tables and a glossary — and the build script refuses, with a non-zero exit, any file
+whose rights evidence is missing (see *Rights gate* below).
 
 ## Subsets
 
@@ -1064,7 +1092,7 @@ from datasets import load_dataset
 clips = load_dataset("{b.repo_id}", "generated_audio", split="train")
 bench = load_dataset("{b.repo_id}", "synth_bench", split="test")
 truth = load_dataset("{b.repo_id}", "synth_bench_truth", split="test")
-# symbolic files and the model cards are plain files: huggingface_hub.snapshot_download(..., repo_type="dataset")
+# {plain_files} plain files: huggingface_hub.snapshot_download(..., repo_type="dataset")
 ```
 
 ## Provenance
@@ -1130,15 +1158,7 @@ rendered fundamental is `pitch_hz = 440 · 2^((midi + cents/100 − 69)/12)` —
 `mir_eval.transcription` (intervals + Hz). The project's browser transcriber (Qormada) is scored on this set
 in `docs/eval/QORMADA_EVAL.md` of the repository (note F1 0.820 on the v1 set).
 
-### `symbolic` — Beerdilaacshe
-
-A qaraami melody composed by **Abdillahi Qarshe** in the 1950s, engraved by **Khalid Ibrahim** in LilyPond
-(`Beerdilaacshe.ly`, with PDF and PNG renderings), rendered to MIDI, and parsed to `notes.json`
-({sym['note_count']} notes, {sym['bpm']} BPM, {sym['time_signature']}, {sym['duration_sec']} s). The engraving, MIDI and note list are the
-project's own work and public at {SITE_URL}/scores/beerdilaacshe. The composition credit is Qarshe's; the
-melody's copyright status is the owner's to confirm before relying on it beyond study and citation.
-
-### `glossary` — {glo['rows'] if glo else 0} terms
+{symbolic_section}### `glossary` — {glo['rows'] if glo else 0} terms
 
 {("Qaamuus: Somali music vocabulary (version " + str(glo['version']) + ", updated " + str(glo['updated']) + ") in standard Somali Latin orthography with variants, an English gloss, a definition (" + str(glo['with_somali_definition']) + " also in Somali), etymology where known, related terms, search tags in both languages, sources, and an honesty flag — `attested` (found in a cited scholarly or primary source), `reported` (widely used, documented in secondary sources), `uncertain` (heard or used, not yet verified): " + gl_conf + ". Categories: " + ", ".join(f"{k} {v}" for k, v in glo['by_category'].items()) + ". `listen` points to a studio groove preset, a scale, or a clip path on the website. Fields mirror `apps/web/lib/learn/glossaryTypes.ts` exactly.") if glo else "The glossary file was not present when this build ran; the subset is absent from this version."}
 
@@ -1168,11 +1188,10 @@ at {study_lufs} LUFS, and stores no name, e-mail, IP address or user agent. Its 
 | `generated_audio` rows from ACE-Step 1.5 adapters and base (`ace_clean_oud`, `ace_songs_v4`, `acestep_base`) | `cc-by-4.0` | ACE-Step 1.5 is MIT-licensed and its model card permits commercial use of generated music; the LoRA training data was consented for publishing outputs |
 | `generated_audio` rows from MusicGen adapters and base (`oud`, `musicgen_small_base`) | `cc-by-nc-4.0` | Meta's MusicGen weights are CC BY-NC 4.0 and say nothing about outputs; non-commercial is the conservative reading |
 | `synth_bench`, `glossary`, `listening`, every `metadata.jsonl`, `MANIFEST.json`, this card | `cc-by-4.0` | the project's own synthesis, writing and records |
-| `symbolic` | `cc-by-4.0` for the engraving, MIDI and note list | composer credit: Abdillahi Qarshe (1950s); the melody's copyright status is to be confirmed by the owner |
-| `scripts/`, `synth_bench/synth_somali_bench.py` | Apache-2.0 | the repository's licence |
+{symbolic_license_row}| `scripts/`, `synth_bench/synth_somali_bench.py` | Apache-2.0 | the repository's licence |
 
 The `license` column carries the licence of every audio row. Who claims what: Khalid Ibrahim / QaraamiGen
-asserts rights in the selection, arrangement, metadata, glossary, annotations, engraving and synthesis
+asserts rights in the selection, arrangement, metadata, glossary, {engraving_claim}and synthesis
 code, and makes no copyright claim over purely machine-generated waveforms beyond these terms; under
 current US Copyright Office guidance, purely prompt-driven outputs may not be copyrightable at all, in
 which case the row licence functions as terms of use rather than a copyright grant. Attribute as
@@ -1219,7 +1238,7 @@ requests go to the contact below and are answered in a new version.
   version      = {{{version}}},
   howpublished = {{Hugging Face dataset}},
   url          = {{{GITHUB_URL}}},
-  note         = {{Model output, synthetic transcription benchmark, symbolic data, glossary and listening records from the QaraamiGen programme; no archival recordings}}
+  note         = {{Model output, synthetic transcription benchmark, {remains_extra}glossary and listening records from the QaraamiGen programme; no archival recordings}}
 }}
 ```
 
@@ -1402,6 +1421,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--push", action="store_true", help="upload --out to the Hub (owner only; runs --check first)")
     ap.add_argument("--repo-id", default=None, help="Hub dataset id, used in the card's loading example and by --push, e.g. <namespace>/qaraamigen-somali-music-reference")
     ap.add_argument("--public", action="store_true", help="create the Hub repo public (default: private)")
+    ap.add_argument("--include-symbolic", action="store_true", help="also ship the Beerdilaacshe engraving (off by default: composition rights not cleared, DATA_PROVENANCE.md §2)")
     ap.add_argument("--date", default=None, help="build date YYYY-MM-DD (default: today)")
     args = ap.parse_args(argv)
     repo_root = args.repo_root.resolve()
@@ -1420,7 +1440,7 @@ def main(argv: list[str] | None = None) -> int:
         return push(args.out.resolve(), args.repo_id, args.public)
 
     try:
-        builder = Builder(repo_root, data_root, args.out, args.copy_audio, date, args.repo_id)
+        builder = Builder(repo_root, data_root, args.out, args.copy_audio, date, args.repo_id, include_symbolic=args.include_symbolic)
         manifest = builder.build()
     except BuildError as e:
         print(f"BUILD FAILED: {e}", file=sys.stderr)

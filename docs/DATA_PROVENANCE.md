@@ -58,6 +58,21 @@ public web.
 ## 2 · Beerdilaacshe (the engraved score)
 
 - **Melody:** composed by Abdillahi Qarshe, 1950s.
+- **Attribution check (2026-11-08):** one secondary source credits Qarshe
+  directly: Geeska, Fathi Jama, "The making of Hudeidi" (20 April 2025), names
+  "Ciil, Laac, and Beerdilaacshe, originally composed by Abdullahi Qarshe".
+  Jama Musse Jama's *Qaraami* (2023) lists Beerdillaacshe in its publisher
+  description with no composer; the book itself was not available. Qarshe's own
+  long interview in Geeska, Giannattasio's catalogue and the Wikipedia articles
+  do not mention the melody. No source outside this project dates it, so
+  "1950s" rests on this record alone. Separately, the singer Cabdi Salaad Aadan
+  is known by the nickname Beerdilaacshe (Harvard AWM SC 12217), so a search on
+  the title also finds his other work.
+- **Composition rights:** Qarshe died in 1994 or 1997, so any life-based term is
+  still running, and no permission from his estate is on file. The engraving
+  stays on the website as before, but it is **not in the public dataset**:
+  `build_hf_dataset.py` leaves it out unless `--include-symbolic` is passed
+  (`docs/data/HF_DATASET.md`).
 - **Sheet music:** engraved by Khalid Ibrahim; the LilyPond source, PDF, and
   MIDI are committed at `apps/web/public/scores/beerdilaacshe/`.
 - **Audio:** there is no archival recording in this feature. The in-browser

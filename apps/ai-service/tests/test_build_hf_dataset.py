@@ -140,8 +140,8 @@ def make_repo(root: Path, *, glossary: bool = True, bad_clip: str | None = None)
     return root
 
 
-def build(root: Path, out: Path, copy_audio: bool = True) -> dict:
-    return Builder(root, root, out, copy_audio, DATE, repo_id="ns/test").build()
+def build(root: Path, out: Path, copy_audio: bool = True, include_symbolic: bool = False) -> dict:
+    return Builder(root, root, out, copy_audio, DATE, repo_id="ns/test", include_symbolic=include_symbolic).build()
 
 
 def rows(path: Path) -> list[dict]:
@@ -213,9 +213,7 @@ def test_build_writes_documented_columns_and_licences(tmp_path):
     assert [list(r.keys()) for r in glossary] == [GLOSSARY_COLUMNS] * 2
     assert glossary[0]["id"] == "kaban" and glossary[0]["listen"] is None and glossary[1]["definitionSo"] == "ds"
 
-    sym = rows(out / "symbolic/metadata.jsonl")
-    assert sym[0]["composer"] == "Abdillahi Qarshe" and sym[0]["engraver"] == "Khalid Ibrahim" and sym[0]["note_count"] == 2
-    assert all((out / "symbolic" / f).exists() for f in sym[0]["files"])
+    assert not (out / "symbolic").exists()  # the engraving ships only with --include-symbolic
 
     trials = rows(out / "listening/trials.jsonl")
     assert trials[0]["a_file"] == "pair000_adapter.wav" and trials[0]["b_file"] == "pair000_base.wav"
@@ -295,13 +293,29 @@ def test_readme_has_yaml_configs_and_counts(tmp_path):
     readme = (out / "README.md").read_text(encoding="utf-8")
     header = readme.split("\n---\n")[0]
     assert header.startswith("---\npretty_name:")
-    for cfg in ("generated_audio", "synth_bench", "synth_bench_truth", "glossary", "symbolic", "listening_trials", "listening_summary"):
+    for cfg in ("generated_audio", "synth_bench", "synth_bench_truth", "glossary", "listening_trials", "listening_summary"):
         assert f"- config_name: {cfg}" in header
+    assert "- config_name: symbolic" not in header
+    assert "No score of Beerdilaacshe in this version" in readme
+    assert "engraved score" not in readme and "symbolic/" not in readme
     assert '- "generated_audio/metadata.jsonl"' in header and '- "generated_audio/*/*.mp3"' in header
     assert "- cc-by-4.0\n- cc-by-nc-4.0" in header and "- 1K<n<10K" not in header and "- n<1K" in header
     assert "| model-generated clips with prompt, seed, adapter, metrics | 5 | 5 MP3 |" in readme
     assert 'load_dataset("ns/test", "generated_audio", split="train")' in readme
     assert not any(line != line.rstrip() for line in readme.splitlines())
+
+
+def test_symbolic_ships_only_when_asked(tmp_path):
+    root = make_repo(tmp_path / "repo")
+    out = tmp_path / "out"
+    manifest = build(root, out, include_symbolic=True)
+    sym = rows(out / "symbolic/metadata.jsonl")
+    assert sym[0]["composer"] == "Abdillahi Qarshe" and sym[0]["engraver"] == "Khalid Ibrahim" and sym[0]["note_count"] == 2
+    assert all((out / "symbolic" / f).exists() for f in sym[0]["files"])
+    readme = (out / "README.md").read_text(encoding="utf-8")
+    assert "- config_name: symbolic" in readme.split("\n---\n")[0]
+    assert "### `symbolic` — Beerdilaacshe" in readme and "No score of Beerdilaacshe" not in readme
+    assert manifest["subsets"]["symbolic"]["rows"] == 1
 
 
 def test_mp3_duration_from_info_header_and_frame_walk(tmp_path):
