@@ -22,7 +22,8 @@ are loudness-matched (EBU R128 -16 LUFS, measured within about 1 LU) and opaquel
 
 ## Files
 - `apps/ai-service/scripts/study_prepare.py` — clips, `apps/web/lib/study/stimuli.json`,
-  `apps/ai-service/study/key.json` (id → condition), rights-manifest entries.
+  `apps/ai-service/study/key.json` (id → condition, git-ignored and the only record of which
+  clip is which: back it up, a rerun overwrites it under new random ids), rights-manifest entries.
 - `apps/web/lib/study/` — session design and Zod schema, text, storage.
 - `apps/web/app/api/study/route.ts` — POST, Zod-validated, 64 KB cap.
 - `apps/web/components/study/ListeningStudy.tsx`, `apps/web/app/study/page.tsx` (not indexed).

@@ -25,6 +25,16 @@ test('a releasable clip with a matching card passes', () => {
   assert.deepEqual(check(base()), []);
 });
 
+test('a blind-study clip passes only when both models of its pair are releasable', () => {
+  const entry = { kind: 'model_output', adapters: ['base', 'oud'], rights: 'releasable' };
+  const blind = { audioFiles: [OUD], manifest: { files: { [OUD]: entry } }, references: [] };
+  const ok = check(base({ ...blind, cards: { base: OK_CARD, oud: OK_CARD } }));
+  assert.deepEqual(ok, []);
+  const bad = check(base({ ...blind, cards: { base: RESEARCH_CARD, oud: OK_CARD } }));
+  assert.equal(bad.length, 1);
+  assert.match(bad[0], /MODEL_CARD_base\.md says research_only/);
+});
+
 test('reads the rights class from a model card', () => {
   assert.equal(cardRights(OK_CARD), 'releasable');
   assert.equal(cardRights(RESEARCH_CARD), 'research_only');

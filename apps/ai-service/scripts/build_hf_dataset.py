@@ -489,8 +489,19 @@ class Builder:
         m = re.match(r"pair(\d+)_", p.name)
         return folder, int(m.group(1)) if m else None
 
-    def collect_generated(self) -> list[dict]:
+    def read_rights(self) -> dict:
+        """The rights manifest, with each blind-study clip's own adapter and source filled in from the local key."""
         rights = self.read_json(self.repo / "apps/web/public-audio-rights.json")
+        key_path = self.repo / "apps/ai-service/study/key.json"
+        key = self.read_json(key_path) if key_path.exists() else {}
+        for clip_id, k in key.items():
+            entry = rights["files"].get(f"apps/web/public/study/{clip_id}.mp3")
+            if entry is not None and "adapters" in entry:
+                entry.update(adapter=k["adapter"], source=k["source"])
+        return rights
+
+    def collect_generated(self) -> list[dict]:
+        rights = self.read_rights()
         gallery = self.read_json(self.repo / "apps/web/lib/gallery-clips.json")
         published = self.read_json(self.repo / "apps/web/lib/published-clips.json")
         stimuli = self.read_json(self.repo / "apps/web/lib/study/stimuli.json")
@@ -1346,7 +1357,7 @@ def check(out: Path, repo_root: Path | None, data_root: Path | None) -> list[str
     # Re-verify the rights evidence against the current checkout, when one is given.
     if repo_root is not None and (repo_root / "apps/web/public-audio-rights.json").exists():
         b = Builder(repo_root, data_root or repo_root, out, audio_copied, manifest.get("built", ""))
-        rights = b.read_json(repo_root / "apps/web/public-audio-rights.json")
+        rights = b.read_rights()
         for rel, f in sorted(entries.items()):
             if rel.startswith("generated_audio/") and AUDIO_RE.search(rel):
                 try:

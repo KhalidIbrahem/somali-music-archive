@@ -14,8 +14,11 @@ a listener which side is which. Writes:
 
 * apps/web/public/study/<id>.mp3
 * apps/web/lib/study/stimuli.json   — what the page needs (no conditions)
-* apps/ai-service/study/key.json    — id -> set, pair, condition, adapter, caption, seed (for the analysis)
-* entries in apps/web/public-audio-rights.json
+* apps/ai-service/study/key.json    — id -> set, pair, condition, adapter, caption, seed (for the analysis);
+  git-ignored, the only record of which clip is which
+* entries in apps/web/public-audio-rights.json (both models of the pair, not the clip's own)
+
+Rerunning replaces every clip under new random ids and overwrites the key.
 
     python apps/ai-service/scripts/study_prepare.py --data ~/Projects/somali-music-archive/data --repo .
 """
@@ -23,13 +26,12 @@ a listener which side is which. Writes:
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import re
+import secrets
 import subprocess
 from pathlib import Path
 
-SALT = "qaraamigen-study-2026-11"
 SETS = [
     {
         "id": "oud",
@@ -57,8 +59,9 @@ FADE = 0.5
 LUFS = -16
 
 
-def clip_id(set_id: str, pair: int, side: str) -> str:
-    return hashlib.sha256(f"{SALT}/{set_id}/{pair}/{side}".encode()).hexdigest()[:12]
+def clip_id() -> str:
+    """A random id. Anything derived from the set, pair or side could be recomputed by a listener."""
+    return secrets.token_hex(6)
 
 
 def duration(path: Path) -> float:
@@ -106,7 +109,12 @@ def main() -> None:
     rights_path = args.repo / "apps/web/public-audio-rights.json"
     rights = json.loads(rights_path.read_text())
 
-    stimuli = {"version": 1, "salt": SALT, "loudnessLufs": LUFS, "comparisons": []}
+    # Ids are random, so a rerun replaces the previous clips rather than overwriting them.
+    for old in out_dir.glob("*.mp3"):
+        old.unlink()
+    rights["files"] = {f: e for f, e in rights["files"].items() if not f.startswith("apps/web/public/study/")}
+
+    stimuli = {"version": 1, "loudnessLufs": LUFS, "comparisons": []}
     key = {}
     for s in SETS:
         d = args.data / s["dir"]
@@ -117,13 +125,14 @@ def main() -> None:
             ids = []
             for side, (suffix, adapter) in s["sides"].items():
                 src = d / f"pair{p:03d}_{suffix}.wav"
-                cid = clip_id(s["id"], p, side)
+                cid = clip_id()
                 secs = encode(src, out_dir / f"{cid}.mp3", s["seconds"])
                 ids.append(cid)
                 key[cid] = {"set": s["id"], "pair": p, "condition": side, "adapter": adapter,
                             "caption": caps.get(p), "seed": sds.get(p), "seconds": secs, "source": f"data/{s['dir']}/{src.name}"}
+                # This file is public: name both models of the pair, never which one made this clip.
                 rights["files"][f"apps/web/public/study/{cid}.mp3"] = {
-                    "kind": "model_output", "adapter": adapter, "rights": "releasable", "source": f"data/{s['dir']}/{src.name}"}
+                    "kind": "model_output", "adapters": sorted(a for _, a in s["sides"].values()), "rights": "releasable"}
             comp["pairs"].append({"pair": p, "clips": sorted(ids)})  # sorted ids: no fixed base-first order
         stimuli["comparisons"].append(comp)
         print(f"{s['id']}: {len(pairs)} pairs")

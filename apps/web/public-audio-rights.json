@@ -2909,485 +2909,405 @@
       "kind": "synthesised",
       "note": "Archival Somali Qaraami session \u2014 qaraami-tagay-luula.mp3"
     },
-    "apps/web/public/study/83f6da32acff.mp3": {
+    "apps/web/public/study/4c3523e91f49.mp3": {
       "kind": "model_output",
-      "adapter": "musicgen_small_base",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair000_base.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/d1428a55f8f0.mp3": {
+    "apps/web/public/study/568600344647.mp3": {
       "kind": "model_output",
-      "adapter": "oud",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair000_finetuned.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/3dadefc9b4bc.mp3": {
+    "apps/web/public/study/1293c49e6916.mp3": {
       "kind": "model_output",
-      "adapter": "musicgen_small_base",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair001_base.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/9b7c6309dbe1.mp3": {
+    "apps/web/public/study/1227aef3c14e.mp3": {
       "kind": "model_output",
-      "adapter": "oud",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair001_finetuned.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/4454a8c82491.mp3": {
+    "apps/web/public/study/7231ce61cedb.mp3": {
       "kind": "model_output",
-      "adapter": "musicgen_small_base",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair002_base.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/50b46ee91910.mp3": {
+    "apps/web/public/study/fab39278034e.mp3": {
       "kind": "model_output",
-      "adapter": "oud",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair002_finetuned.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/c31967c8cca0.mp3": {
+    "apps/web/public/study/8f30447efebb.mp3": {
       "kind": "model_output",
-      "adapter": "musicgen_small_base",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair003_base.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/b282881b9c4f.mp3": {
+    "apps/web/public/study/7d263c510f8e.mp3": {
       "kind": "model_output",
-      "adapter": "oud",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair003_finetuned.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/a2f1a7a2fd3c.mp3": {
+    "apps/web/public/study/527b98d300f9.mp3": {
       "kind": "model_output",
-      "adapter": "musicgen_small_base",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair004_base.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/cc4713c7d1dd.mp3": {
+    "apps/web/public/study/02a87491d9a8.mp3": {
       "kind": "model_output",
-      "adapter": "oud",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair004_finetuned.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/0a9f4e2fbae2.mp3": {
+    "apps/web/public/study/e1335c7c505d.mp3": {
       "kind": "model_output",
-      "adapter": "musicgen_small_base",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair005_base.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/eaadfa33970a.mp3": {
+    "apps/web/public/study/e7f263aedbc9.mp3": {
       "kind": "model_output",
-      "adapter": "oud",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair005_finetuned.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/30e8c946c444.mp3": {
+    "apps/web/public/study/74c0d64fc08e.mp3": {
       "kind": "model_output",
-      "adapter": "musicgen_small_base",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair006_base.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/d601b3492366.mp3": {
+    "apps/web/public/study/b08b36e0fe91.mp3": {
       "kind": "model_output",
-      "adapter": "oud",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair006_finetuned.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/0fe7ac988e0d.mp3": {
+    "apps/web/public/study/cf215fb3f644.mp3": {
       "kind": "model_output",
-      "adapter": "musicgen_small_base",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair007_base.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/eefc9980ab28.mp3": {
+    "apps/web/public/study/91a550de72ad.mp3": {
       "kind": "model_output",
-      "adapter": "oud",
-      "rights": "releasable",
-      "source": "data/oud_ab_listening/pair007_finetuned.wav"
+      "adapters": ["musicgen_small_base", "oud"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/fb273df1cfba.mp3": {
+    "apps/web/public/study/83cc75c13242.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair000_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/2c5c8cd07802.mp3": {
+    "apps/web/public/study/49e3a9c5f883.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair000_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/5f068f7e3ce8.mp3": {
+    "apps/web/public/study/20a54287a741.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair001_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/14dd59915907.mp3": {
+    "apps/web/public/study/0cbb1a9988a1.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair001_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/4b9a884b649d.mp3": {
+    "apps/web/public/study/29586e034ce7.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair002_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/7356154c28b0.mp3": {
+    "apps/web/public/study/99d3f60fbe15.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair002_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/192ddaa17331.mp3": {
+    "apps/web/public/study/e828b82a47e7.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair003_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/9f4d90ae96ee.mp3": {
+    "apps/web/public/study/d4351ea803ba.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair003_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/1b96183379d9.mp3": {
+    "apps/web/public/study/95900c050836.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair004_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/5e354bc0d1ca.mp3": {
+    "apps/web/public/study/5ed6aee1e1d7.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair004_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/73ed10e1acc5.mp3": {
+    "apps/web/public/study/a694152b0f13.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair005_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/758d1f088749.mp3": {
+    "apps/web/public/study/096404fb4566.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair005_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/c5d665971cba.mp3": {
+    "apps/web/public/study/56f64b06323b.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair006_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/47ef179c025d.mp3": {
+    "apps/web/public/study/b926cf373979.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair006_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/1e9eb14d8553.mp3": {
+    "apps/web/public/study/50b86c7655a7.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair007_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/bfccb8c73090.mp3": {
+    "apps/web/public/study/4a403f00760d.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair007_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/1c58dcf3ace2.mp3": {
+    "apps/web/public/study/7d32df36cf98.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair008_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/bd642e9a6cfc.mp3": {
+    "apps/web/public/study/a5fa14c1c96f.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair008_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/1c0ece5441e5.mp3": {
+    "apps/web/public/study/47ab287306c8.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair009_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/f5af11b63dfc.mp3": {
+    "apps/web/public/study/0bc4df1bb7e7.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair009_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/81d4aeb476e7.mp3": {
+    "apps/web/public/study/68feef83afd4.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair010_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/3b89fbfbf571.mp3": {
+    "apps/web/public/study/b957654b5986.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair010_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/580015dce6c1.mp3": {
+    "apps/web/public/study/10e0a3d85f5c.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair011_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/de67c85f4ca4.mp3": {
+    "apps/web/public/study/ee223245ee9e.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair011_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/d3f1bed47853.mp3": {
+    "apps/web/public/study/81aabf00ed42.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair012_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/ae363a73f089.mp3": {
+    "apps/web/public/study/7b0acb02281b.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair012_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/2f8a3bc0d5a1.mp3": {
+    "apps/web/public/study/732ab47dd343.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair013_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/1f688f0b67d5.mp3": {
+    "apps/web/public/study/ed617dfcb65f.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair013_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/d75069460c72.mp3": {
+    "apps/web/public/study/2f32640aa4ac.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair014_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/3c9bdcee197d.mp3": {
+    "apps/web/public/study/89179e6249ba.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair014_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/eabe66816544.mp3": {
+    "apps/web/public/study/11973d52d497.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair015_base.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/f6513a46f4f4.mp3": {
+    "apps/web/public/study/01a34e23df36.mp3": {
       "kind": "model_output",
-      "adapter": "ace_clean_oud",
-      "rights": "releasable",
-      "source": "data/ab_stage3_acelora_vs_acebase/pair015_adapter.wav"
+      "adapters": ["ace_clean_oud", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/b88b4f94b167.mp3": {
+    "apps/web/public/study/1415ca8bc0cc.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair000_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/67900fe8576b.mp3": {
+    "apps/web/public/study/a35038e8d765.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair000_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/e70f0f955c44.mp3": {
+    "apps/web/public/study/6b086611eaf8.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair001_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/c531811c80df.mp3": {
+    "apps/web/public/study/72b9735a391b.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair001_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/dbe7802f7034.mp3": {
+    "apps/web/public/study/e35e274e963d.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair002_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/90d2aeb32d2c.mp3": {
+    "apps/web/public/study/b7c5f5ac0cb3.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair002_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/b7a8eca4201e.mp3": {
+    "apps/web/public/study/115714c5c7e7.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair003_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/03e6ef23df46.mp3": {
+    "apps/web/public/study/48b45982d594.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair003_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/a2a33525d942.mp3": {
+    "apps/web/public/study/e3c47c794cdb.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair004_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/d42a25dd364a.mp3": {
+    "apps/web/public/study/7771defefc9e.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair004_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/68d500ade621.mp3": {
+    "apps/web/public/study/03c0f1cddbef.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair005_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/080de110491c.mp3": {
+    "apps/web/public/study/5ef733429fc2.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair005_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/c8352cc943f7.mp3": {
+    "apps/web/public/study/c64f45002dad.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair006_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/73eb4fd5053c.mp3": {
+    "apps/web/public/study/83d8769cbf54.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair006_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/a1203e58eb41.mp3": {
+    "apps/web/public/study/34f3a002f7cb.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair007_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/0d7f76e93860.mp3": {
+    "apps/web/public/study/286418e9b320.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair007_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/b705543697ea.mp3": {
+    "apps/web/public/study/98ff59f3dd68.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair008_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/acfc3ee9f4a1.mp3": {
+    "apps/web/public/study/2ffbb7c70bae.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair008_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/0e1ed1c07dae.mp3": {
+    "apps/web/public/study/d2fa2813b6ac.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair009_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/0adc14c06ee3.mp3": {
+    "apps/web/public/study/b4b259bbb843.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair009_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/80b37abdf21b.mp3": {
+    "apps/web/public/study/123184ca0111.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair010_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/6fe1fb3a0acb.mp3": {
+    "apps/web/public/study/349e982c8139.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair010_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/26cd0d555167.mp3": {
+    "apps/web/public/study/9a12fc36d055.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair011_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/77adb89bd3a7.mp3": {
+    "apps/web/public/study/f7677a34f2ce.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair011_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/53a7656eaf88.mp3": {
+    "apps/web/public/study/361a18136dbd.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair012_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/075ee20e4c62.mp3": {
+    "apps/web/public/study/decd1bf7be43.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair012_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/375610c934f4.mp3": {
+    "apps/web/public/study/5d6b6876edb2.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair013_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/7e7bf4853d0d.mp3": {
+    "apps/web/public/study/f661719470fb.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair013_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/423c68077178.mp3": {
+    "apps/web/public/study/74733fe75157.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair014_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/97e5fce510dd.mp3": {
+    "apps/web/public/study/7fce7728f3a3.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair014_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/bece1af8733f.mp3": {
+    "apps/web/public/study/f619ef3a0e95.mp3": {
       "kind": "model_output",
-      "adapter": "acestep_base",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair015_base.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     },
-    "apps/web/public/study/4368117b5352.mp3": {
+    "apps/web/public/study/3573464ec44a.mp3": {
       "kind": "model_output",
-      "adapter": "ace_songs_v4",
-      "rights": "releasable",
-      "source": "data/ab_stageC_v4_vs_acebase/pair015_adapter.wav"
+      "adapters": ["ace_songs_v4", "acestep_base"],
+      "rights": "releasable"
     }
   }
 }

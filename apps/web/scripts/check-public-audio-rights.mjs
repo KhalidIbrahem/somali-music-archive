@@ -36,6 +36,15 @@ export function cardRights(text) {
 }
 
 /**
+ * The adapters an entry must clear. A blind-study clip lists both models of its
+ * pair in `adapters`, because this file is public and must not say which one
+ * made the clip; every one of them has to be releasable.
+ */
+function entryAdapters(e) {
+  return e.adapters ?? (e.adapter ? [e.adapter] : []);
+}
+
+/**
  * Pure check. `cards` maps adapter name → card text (undefined when there is
  * no card); `cardsAvailable` is false outside a git checkout (the Vercel build
  * has no .git and only part of docs/), and then the manifest's own `rights`
@@ -62,29 +71,31 @@ export function check({ audioFiles, manifest, cards, cardsAvailable, references 
       continue;
     }
     if (e.kind !== 'model_output') continue;
-    if (!e.adapter) {
+    const adapters = entryAdapters(e);
+    if (adapters.length === 0) {
       errors.push(`${file}: model_output without an adapter`);
       continue;
     }
-    if (e.rights !== 'releasable') {
-      errors.push(`${file}: adapter ${e.adapter} is ${e.rights ?? 'unclassified'}, not releasable`);
-    }
-    if (cardsAvailable) {
-      const text = cards[e.adapter];
+    for (const adapter of adapters) {
+      if (e.rights !== 'releasable') {
+        errors.push(`${file}: adapter ${adapter} is ${e.rights ?? 'unclassified'}, not releasable`);
+      }
+      if (!cardsAvailable) continue;
+      const text = cards[adapter];
       const fromCard = text === undefined ? null : cardRights(text);
       if (text === undefined) {
         errors.push(
-          `${file}: no model card docs/eval/MODEL_CARD_${e.adapter}.md (treated as research_only)`,
+          `${file}: no model card docs/eval/MODEL_CARD_${adapter}.md (treated as research_only)`,
         );
       } else if (fromCard === null) {
         errors.push(
-          `${file}: MODEL_CARD_${e.adapter}.md has no "**Rights class:**" line (treated as research_only)`,
+          `${file}: MODEL_CARD_${adapter}.md has no "**Rights class:**" line (treated as research_only)`,
         );
       } else if (fromCard !== 'releasable') {
-        errors.push(`${file}: MODEL_CARD_${e.adapter}.md says ${fromCard}`);
+        errors.push(`${file}: MODEL_CARD_${adapter}.md says ${fromCard}`);
       } else if (fromCard !== e.rights) {
         errors.push(
-          `${file}: rights ${e.rights} disagree with MODEL_CARD_${e.adapter}.md (${fromCard})`,
+          `${file}: rights ${e.rights} disagree with MODEL_CARD_${adapter}.md (${fromCard})`,
         );
       }
     }
@@ -147,9 +158,11 @@ function main() {
   const cardsAvailable = fromGit && existsSync(cardsDir);
   const cards = {};
   for (const e of Object.values(manifest.files ?? {})) {
-    if (!e.adapter || e.adapter in cards) continue;
-    const p = path.join(cardsDir, `MODEL_CARD_${e.adapter}.md`);
-    cards[e.adapter] = existsSync(p) ? readFileSync(p, 'utf8') : undefined;
+    for (const adapter of entryAdapters(e)) {
+      if (adapter in cards) continue;
+      const p = path.join(cardsDir, `MODEL_CARD_${adapter}.md`);
+      cards[adapter] = existsSync(p) ? readFileSync(p, 'utf8') : undefined;
+    }
   }
 
   const references = [];
