@@ -1,5 +1,6 @@
 """Tests for scripts/build_hf_dataset.py on tiny fake inputs (no project data touched)."""
 
+import hashlib
 import json
 import re
 import wave
@@ -232,7 +233,7 @@ def test_manifest_sha256_matches_files(tmp_path):
     out = tmp_path / "out"
     manifest = json.loads((out / "MANIFEST.json").read_text(encoding="utf-8")) if False else build(root, out)
     listed = {f["path"] for f in manifest["files"]}
-    on_disk = {p.relative_to(out).as_posix() for p in out.rglob("*") if p.is_file()} - {"MANIFEST.json"}
+    on_disk = {p.relative_to(out).as_posix() for p in out.rglob("*") if p.is_file()} - {"MANIFEST.json", "SHA256SUMS"}
     assert listed == on_disk
     for f in manifest["files"]:
         assert sha256_of(out / f["path"]) == f["sha256"] and (out / f["path"]).stat().st_size == f["size"]
@@ -293,9 +294,15 @@ def test_readme_has_yaml_configs_and_counts(tmp_path):
     readme = (out / "README.md").read_text(encoding="utf-8")
     header = readme.split("\n---\n")[0]
     assert header.startswith("---\npretty_name:")
-    for cfg in ("generated_audio", "synth_bench", "synth_bench_truth", "glossary", "listening_trials", "listening_summary"):
+    for cfg in ("generated_audio", "synth_bench"):
         assert f"- config_name: {cfg}" in header
-    assert "- config_name: symbolic" not in header
+    # One reader per Hub repository: a JSON-only config beside the audio ones would load nothing.
+    for cfg in ("synth_bench_truth", "glossary", "listening_trials", "listening_summary", "symbolic"):
+        assert f"- config_name: {cfg}" not in header
+    assert 'load_dataset("json", data_files=tables + "/glossary/glossary.jsonl", split="train")' in readme
+    assert "[[KHALID" not in readme and "(https://huggingface.co/ns) on Hugging Face" in readme
+    assert "https://huggingface.co/datasets/ns/test" in readme
+    assert "annotations, votes" not in readme and "config `synth_bench_truth`" not in readme
     assert "No score of Beerdilaacshe in this version" in readme
     assert "engraved score" not in readme and "symbolic/" not in readme
     assert '- "generated_audio/metadata.jsonl"' in header and '- "generated_audio/*/*.mp3"' in header
@@ -303,6 +310,26 @@ def test_readme_has_yaml_configs_and_counts(tmp_path):
     assert "| model-generated clips with prompt, seed, adapter, metrics | 5 | 5 MP3 |" in readme
     assert 'load_dataset("ns/test", "generated_audio", split="train")' in readme
     assert not any(line != line.rstrip() for line in readme.splitlines())
+
+
+def test_companion_files_and_at_a_glance_line(tmp_path, capsys):
+    root = make_repo(tmp_path / "repo")
+    out = tmp_path / "out"
+    argv = ["--repo-root", str(root), "--data-root", str(root), "--out", str(out)]
+    assert main([*argv, "--copy-audio", "--date", DATE]) == 0
+    readme = (out / "README.md").read_text(encoding="utf-8")
+    assert "**5 model-generated clips" in readme and "ground-truth notes" in readme and "\n## Takedown\n" in readme
+    attribution = (out / "ATTRIBUTION.md").read_text(encoding="utf-8")
+    assert "# Attribution" in attribution and "Credit this dataset as:" in attribution
+    lines = (out / "SHA256SUMS").read_text(encoding="utf-8").splitlines()
+    listed = {line.split("  ", 1)[1]: line.split("  ", 1)[0] for line in lines}
+    assert {"README.md", "MANIFEST.json", "ATTRIBUTION.md"} <= set(listed) and "SHA256SUMS" not in listed
+    assert listed["MANIFEST.json"] == hashlib.sha256((out / "MANIFEST.json").read_bytes()).hexdigest()
+    assert main([*argv, "--check"]) == 0
+    capsys.readouterr()
+    (out / "SHA256SUMS").write_text("0  README.md\n", encoding="utf-8")
+    assert main([*argv, "--check"]) == 1
+    assert "SHA256SUMS does not match" in capsys.readouterr().err
 
 
 def test_symbolic_ships_only_when_asked(tmp_path):
@@ -313,7 +340,6 @@ def test_symbolic_ships_only_when_asked(tmp_path):
     assert sym[0]["composer"] == "Abdillahi Qarshe" and sym[0]["engraver"] == "Khalid Ibrahim" and sym[0]["note_count"] == 2
     assert all((out / "symbolic" / f).exists() for f in sym[0]["files"])
     readme = (out / "README.md").read_text(encoding="utf-8")
-    assert "- config_name: symbolic" in readme.split("\n---\n")[0]
     assert "### `symbolic` — Beerdilaacshe" in readme and "No score of Beerdilaacshe" not in readme
     assert manifest["subsets"]["symbolic"]["rows"] == 1
 

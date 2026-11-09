@@ -13,7 +13,7 @@ the engraving ships; add the missing glossary terms the review listed.
 | Web suite | PASS | 245 vitest + 9 rights tests; `npm run typecheck` 6/6; `npm run test` across workspaces; `next build` clean with the rights gate |
 | AI service | PASS | pytest 752 passed, 1 skipped; `ruff check .` clean |
 | Dataset rebuild | PASS, not uploaded | `dist/hf_dataset/`: 1,104 rows, 693 files, 565 MB; `--check` passes; own audit found no audio outside the two allowed folders and no local paths or secrets |
-| Hugging Face upload | BLOCKED | no token on this machine; `hf auth login` is Khalid's |
+| Hugging Face upload | PASS, private | `khalidibra/qaraamigen-somali-music-reference`: every file matches its local checksum; `datasets` 3.6 and 5.1 load the audio sets and the tables as the card shows; the Dataset Viewer cannot run on a private dataset without a PRO account |
 
 ### Review findings on the dataset (before it may go public)
 

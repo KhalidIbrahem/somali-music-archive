@@ -153,6 +153,25 @@ def rms(x: np.ndarray) -> float:
     return float(np.sqrt(np.mean(x**2)) + 1e-12)
 
 
+def make_item(rng: np.random.Generator, register: str) -> tuple[dict, dict[str, np.ndarray]]:
+    """One melody and its five renderings, drawing from `rng` in a fixed order."""
+    item = melody(rng, register)
+    lead = render(item, register, rng)
+    lead /= rms(lead)
+    bass = bass_line(item, len(lead), rng)
+    bass *= 0.7 / rms(bass)  # bass about 3 dB below the melody
+    drum = drums(item, len(lead), rng)
+    drum *= 0.5 / rms(drum)
+    mixes = {
+        "clean": lead,
+        "bass": lead + bass,
+        "bass_drums": lead + bass + drum,
+        "noise": with_snr(lead, 20, rng),
+        "full_mix": with_snr(reverb(lead + bass + drum, rng), 20, rng),
+    }
+    return item, mixes
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, required=True)
@@ -165,20 +184,7 @@ def main() -> None:
     truth = {}
     for i in range(args.items):
         register = registers[i % 3]
-        item = melody(rng, register)
-        lead = render(item, register, rng)
-        lead /= rms(lead)
-        bass = bass_line(item, len(lead), rng)
-        bass *= 0.7 / rms(bass)  # bass about 3 dB below the melody
-        drum = drums(item, len(lead), rng)
-        drum *= 0.5 / rms(drum)
-        mixes = {
-            "clean": lead,
-            "bass": lead + bass,
-            "bass_drums": lead + bass + drum,
-            "noise": with_snr(lead, 20, rng),
-            "full_mix": with_snr(reverb(lead + bass + drum, rng), 20, rng),
-        }
+        item, mixes = make_item(rng, register)
         for cond, x in mixes.items():
             name = f"synth_{i:02d}_{register}_{cond}.wav"
             sf.write(args.out / name, (0.3 * x / np.abs(x).max()).astype(np.float32), SR, subtype="FLOAT")

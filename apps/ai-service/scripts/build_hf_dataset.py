@@ -52,6 +52,7 @@ from pathlib import Path, PurePosixPath
 
 DATASET_NAME = "QaraamiGen — Somali Music Reference Dataset"
 DATASET_VERSION = "0.1"
+COMPANION_TOKENS = "khalidibra/qaraamigen-synthetic-melody-tokens"
 GITHUB_URL = "https://github.com/KhalidIbrahem/somali-music-archive"
 SITE_URL = "https://www.qaraamigen.com"
 DEFAULT_REPO_ID = "<namespace>/qaraamigen-somali-music-reference"
@@ -856,10 +857,13 @@ class Builder:
         }
         write_text(self.out / "README.md", render_card(manifest, self.files, self.card_facts, self))
         self.add_file("README.md", "card", "rendered by scripts/build_hf_dataset.py from MANIFEST.json data", "dataset card")
+        write_text(self.out / "ATTRIBUTION.md", render_attribution(self))
+        self.add_file("ATTRIBUTION.md", "card", "rendered by scripts/build_hf_dataset.py from the built metadata", "required credits, written by this build")
         manifest["files"] = sorted(self.files, key=lambda f: f["path"])
         with open(self.out / "MANIFEST.json", "w", encoding="utf-8", newline="\n") as f:
             json.dump(manifest, f, ensure_ascii=False, indent=1)
             f.write("\n")
+        write_text(self.out / "SHA256SUMS", render_sha256sums(manifest["files"], sha256_of(self.out / "MANIFEST.json")))
         marker.unlink()
         return manifest
 
@@ -876,7 +880,7 @@ def size_category(n: int) -> str:
     return "1M<n<10M"
 
 
-def yaml_configs(audio_copied: bool, subsets: dict) -> str:
+def yaml_configs(audio_copied: bool) -> str:
     """The Hub `configs:` block.
 
     Rules followed (checked 2026-11-07 against the Hub docs and the project's
@@ -895,6 +899,12 @@ def yaml_configs(audio_copied: bool, subsets: dict) -> str:
     - Without `--copy-audio` the audio configs point only at their
       `metadata.jsonl` (plain JSON tables); builder parameters that the JSON
       builder does not know are then left out.
+    - One builder per repository: `datasets` infers it from the first config's
+      files and uses it for every config, so a JSON-only config in this
+      audio-first repository loads nothing ("Instruction 'train' corresponds to
+      no data", found 2026-11-08 on the private upload). The tables therefore
+      have no config and stay plain JSONL files, loaded through the JSON reader
+      as the card's example shows.
     """
     lines = ["configs:"]
 
@@ -913,23 +923,43 @@ def yaml_configs(audio_copied: bool, subsets: dict) -> str:
         else:
             lines.append(f'    path: "{meta}"')
 
-    def table_cfg(name: str, path: str, split: str = "train") -> None:
-        lines.append(f"- config_name: {name}")
-        lines.append("  data_files:")
-        lines.append(f"  - split: {split}")
-        lines.append(f'    path: "{path}"')
-
     audio_cfg("generated_audio", "generated_audio/metadata.jsonl", "generated_audio/*/*.mp3", "train", True)
     audio_cfg("synth_bench", "synth_bench/metadata.jsonl", "synth_bench/*.wav", "test", False)
-    table_cfg("synth_bench_truth", "synth_bench/truth.jsonl", "test")
-    if "glossary" in subsets:
-        table_cfg("glossary", "glossary/glossary.jsonl")
-    if "symbolic" in subsets:
-        table_cfg("symbolic", "symbolic/metadata.jsonl")
-    if "listening" in subsets:
-        table_cfg("listening_trials", "listening/trials.jsonl")
-        table_cfg("listening_summary", "listening/summary.jsonl")
     return "\n".join(lines)
+
+
+def render_sha256sums(files: list[dict], manifest_sha: str) -> str:
+    """`sha256sum -c SHA256SUMS` format: every file in the dataset except this one."""
+    rows = sorted([(f["path"], f["sha256"]) for f in files] + [("MANIFEST.json", manifest_sha)])
+    return "".join(f"{sha}  {path}\n" for path, sha in rows)
+
+
+def render_attribution(b: Builder) -> str:
+    """The credits a re-user owes, built from what this version actually contains."""
+    families = {a["family"] for a in b.card_facts.get("adapters", {}).values()}
+    models = []
+    if "ace-step" in families:
+        models.append("- **ACE-Step 1.5** (`xl-sft`): the open music model behind the `cc-by-4.0` audio rows; MIT licence.")
+    if "musicgen" in families:
+        models.append("- **MusicGen small** by Meta (`facebook/musicgen-small`): the model behind the `cc-by-nc-4.0` audio rows; weights under CC BY-NC 4.0.")
+    glossary = b.out / "glossary/glossary.jsonl"
+    sources = sorted({s for row in read_jsonl(glossary) for s in row["sources"]}) if glossary.exists() else []
+    lines = [
+        "# Attribution", "",
+        f"Credits for reusing {DATASET_NAME}. Every audio row also names its licence in the `license` column, and the",
+        "licences themselves are explained in the dataset card.", "",
+        "Credit this dataset as:", "",
+        f'> {DATASET_NAME} (Khalid Ibrahim, {b.date[:4]}).', "",
+        "## Models that generated the audio", "", *models, "",
+        "## Recordings behind the adapters", "",
+        "The adapters were trained on recordings that are described in `results/MODEL_CARD_*.md` and are not distributed here.",
+        "Rights in those recordings remain with their holders.", "",
+    ]
+    if sources:
+        lines += [f"## Sources behind the glossary ({len(sources)})", "",
+                  "The definitions are written for this project and each entry names its own sources:", "",
+                  *[f"- {s}" for s in sources], ""]
+    return "\n".join(lines).rstrip() + "\n"
 
 
 def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> str:
@@ -956,14 +986,14 @@ def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> s
 
     subset_rows = [
         f"| `generated_audio` | `generated_audio` | {gen['rows']} | {gen['audio_files']} MP3 | {_mb(bytes_by_subset.get('generated_audio', 0))} | per row: `cc-by-4.0` (ACE-Step outputs) or `cc-by-nc-4.0` (MusicGen outputs) | model output published on {SITE_URL}: gallery {gen['by_subset']['gallery']}, Generate page {gen['by_subset']['generate']}, blind-study stimuli {gen['by_subset']['study']} |",
-        f"| `synth_bench` | `synth_bench`, `synth_bench_truth` | {syn['rows']} + {syn['truth_rows']} | {syn['audio_files']} WAV | {_mb(bytes_by_subset.get('synth_bench', 0))} | `cc-by-4.0` | synthetic pentatonic melodies with exact note truth; {syn['items']} items × {len(syn['conditions'])} conditions |",
+        f"| `synth_bench` | `synth_bench` | {syn['rows']} + {syn['truth_rows']} | {syn['audio_files']} WAV | {_mb(bytes_by_subset.get('synth_bench', 0))} | `cc-by-4.0` | synthetic pentatonic melodies with exact note truth; {syn['items']} items × {len(syn['conditions'])} conditions |",
     ]
     if sym:
-        subset_rows.append(f"| `symbolic` | `symbolic` | {sym['rows']} | {sym['files']} | {_mb(bytes_by_subset.get('symbolic', 0))} | `cc-by-4.0` (engraving) | Beerdilaacshe: LilyPond, MIDI, PDF, PNG, note list |")
+        subset_rows.append(f"| `symbolic` | — | {sym['rows']} | {sym['files']} | {_mb(bytes_by_subset.get('symbolic', 0))} | `cc-by-4.0` (engraving) | Beerdilaacshe: LilyPond, MIDI, PDF, PNG, note list |")
     if glo:
-        subset_rows.append(f"| `glossary` | `glossary` | {glo['rows']} | 1 | {_mb(bytes_by_subset.get('glossary', 0))} | `cc-by-4.0` | Somali music terms with English glosses, definitions, sources, confidence |")
+        subset_rows.append(f"| `glossary` | — | {glo['rows']} | 1 | {_mb(bytes_by_subset.get('glossary', 0))} | `cc-by-4.0` | Somali music terms with English glosses, definitions, sources, confidence |")
     if lis:
-        subset_rows.append(f"| `listening` | `listening_trials`, `listening_summary` | {lis['rows']} + {lis['sittings']} | 2 | {_mb(bytes_by_subset.get('listening', 0))} | `cc-by-4.0` | blind paired-comparison votes from {lis['sittings']} sittings ({lis['dates'][0]} to {lis['dates'][1]}) |")
+        subset_rows.append(f"| `listening` | — | {lis['rows']} + {lis['sittings']} | 2 | {_mb(bytes_by_subset.get('listening', 0))} | `cc-by-4.0` | blind paired-comparison votes from {lis['sittings']} sittings ({lis['dates'][0]} to {lis['dates'][1]}) |")
     subset_rows.append(f"| `results` | — | — | {res['files']} | {_mb(bytes_by_subset.get('results', 0))} | `cc-by-4.0` | `TABLES.md` and the releasable model cards |")
     subset_table = "\n".join(subset_rows)
 
@@ -973,7 +1003,7 @@ def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> s
     )
     skipped = manifest["skipped"]
     skipped_md = "\n".join(f"- {w}" for w in skipped) if skipped else "- none"
-    tree_lines = ["README.md", "MANIFEST.json", "generated_audio/metadata.jsonl"]
+    tree_lines = ["README.md", "MANIFEST.json", "ATTRIBUTION.md", "SHA256SUMS", "generated_audio/metadata.jsonl"]
     if audio:
         tree_lines += ["generated_audio/gallery/*.mp3", "generated_audio/generate/*.mp3", "generated_audio/study/*.mp3"]
     tree_lines += ["synth_bench/metadata.jsonl", "synth_bench/truth.jsonl"]
@@ -991,6 +1021,26 @@ def render_card(manifest: dict, files: list[dict], facts: dict, b: Builder) -> s
     gl_conf = ", ".join(f"{k} {v}" for k, v in glo["by_confidence"].items()) if glo else ""
     sym_summary = f"| engraved score (Beerdilaacshe) | {sym['rows']} | {sym['files']} | {_mb(bytes_by_subset.get('symbolic', 0))} |\n" if sym else ""
     remains_extra = "symbolic data, " if sym else ""
+    engraving_intro = "engraving, " if sym else ""
+    gen_seconds = sum(r.get("duration_sec") or 0 for r in read_jsonl(b.out / "generated_audio/metadata.jsonl"))
+    glance = [f"{gen['rows']} model-generated clips ({gen_seconds / 3600:.1f} hours)",
+              f"{syn['rows']} synthetic recordings with {syn['notes']:,} ground-truth notes"]
+    if glo:
+        glance.append(f"{glo['rows']} sourced Somali music terms")
+    if lis:
+        glance.append(f"{lis['rows']} blind listening votes")
+    at_a_glance = "**" + ", ".join(glance[:-1]) + " and " + glance[-1] + ".**"
+    load_lines = ['truth = load_dataset("json", data_files=tables + "/synth_bench/truth.jsonl", split="train")']
+    if glo:
+        load_lines.append('glossary = load_dataset("json", data_files=tables + "/glossary/glossary.jsonl", split="train")')
+    if lis:
+        load_lines.append('trials = load_dataset("json", data_files=tables + "/listening/trials.jsonl", split="train")')
+    load_tables = "\n".join(load_lines)
+    namespace = b.repo_id.split("/")[0]
+    has_namespace = not namespace.startswith("<")
+    citation_url = f"https://huggingface.co/datasets/{b.repo_id}" if has_namespace else GITHUB_URL
+    contact = (f"[{namespace}](https://huggingface.co/{namespace}) on Hugging Face; please use this dataset's Community tab"
+               if has_namespace else "[[KHALID: contact e-mail or Hugging Face username]]")
     engraving_claim = "engraving " if sym else ""
     plain_files = "symbolic files and the model cards are" if sym else "the model cards are"
     no_engraving = "" if sym else (
@@ -1046,16 +1096,20 @@ source_datasets:
 - original
 size_categories:
 - {size_category(n_rows)}
-{yaml_configs(audio, s)}
+{yaml_configs(audio)}
 ---"""
 
     body = f"""
 # {DATASET_NAME} (v{version})
 
+{at_a_glance}
+
+A companion dataset, [QaraamiGen Synthetic Melody Tokens](https://huggingface.co/datasets/{COMPANION_TOKENS}), holds EnCodec tokens and exact note labels for a large set of synthetic melodies. It contains no recordings.
+
 Reference material from **QaraamiGen**, a research programme adapting open music-generation models and a
 browser transcriber to Somali *qaraami* (the oud-and-voice song style of the 1940s–1970s) by Khalid Ibrahim.
 Everything here is either model output that is already public on {SITE_URL}, or the project's own
-synthesis, engraving, annotations, votes or vocabulary. Built {date} from commit `{commit}` of
+synthesis, {engraving_intro}votes or vocabulary. Built {date} from commit `{commit}` of
 [{GITHUB_URL}]({GITHUB_URL}) by `scripts/build_hf_dataset.py`; `MANIFEST.json` lists every file with its
 SHA-256, size, source path and rights evidence.
 
@@ -1068,7 +1122,7 @@ SHA-256, size, source path and rights evidence.
 {sym_summary}| glossary entries | {glo['rows'] if glo else 'not built'} | {1 if glo else 0} | {_mb(bytes_by_subset.get('glossary', 0))} |
 | blind listening trials / sittings | {f"{lis['rows']} / {lis['sittings']}" if lis else 'not built'} | {2 if lis else 0} | {_mb(bytes_by_subset.get('listening', 0))} |
 | results tables and model cards | — | {res['files']} | {_mb(bytes_by_subset.get('results', 0))} |
-| **total** | | **{len(files)} data files** (plus this card and `MANIFEST.json`) | **{_mb(total_bytes)}** |
+| **total** | | **{len(files)} data files** (plus this card, `ATTRIBUTION.md`, `SHA256SUMS` and `MANIFEST.json`) | **{_mb(total_bytes)}** |
 
 {audio_note}
 
@@ -1101,10 +1155,13 @@ Layout:
 Loading:
 
 ```python
-from datasets import load_dataset
+from datasets import load_dataset  # pip install "datasets[audio]"
 clips = load_dataset("{b.repo_id}", "generated_audio", split="train")
 bench = load_dataset("{b.repo_id}", "synth_bench", split="test")
-truth = load_dataset("{b.repo_id}", "synth_bench_truth", split="test")
+
+# A Hub repository uses one reader, and here it is the audio one, so the tables name the JSON reader.
+tables = "hf://datasets/{b.repo_id}"
+{load_tables}
 # {plain_files} plain files: huggingface_hub.snapshot_download(..., repo_type="dataset")
 ```
 
@@ -1164,7 +1221,7 @@ Nothing comes from a recording.
 
 `metadata.jsonl`: `file_name`, `item`, `voice`, `condition`, `scale_pcs` (the five pitch classes, 0 = C),
 `tonic` (pitch class), `bpm`, `offset_cents` (the item's global tuning offset), `note_count`,
-`duration_sec`, `sample_rate`, `channels`, `license`. `truth.jsonl` (config `synth_bench_truth`): one row
+`duration_sec`, `sample_rate`, `channels`, `license`. `truth.jsonl`: one row
 per file with `notes` = list of `{{onset, offset, midi, cents, pitch_hz}}` in seconds; `cents` is the note's
 total deviation from the equal-tempered MIDI pitch at A440 (global offset plus per-note deviation), so the
 rendered fundamental is `pitch_hz = 440 · 2^((midi + cents/100 − 69)/12)` — ready for
@@ -1228,6 +1285,11 @@ which case the row licence functions as terms of use rather than a copyright gra
 - **Glossary confidence varies.** Entries flagged `reported` or `uncertain` are exactly that; etymologies
   state whether they are attested or disputed.
 
+## Takedown
+
+If you hold rights in anything in this dataset, or you appear in it and want it removed, write to the contact at
+the end of this card with the file paths or ids. Removals are applied in the next version.
+
 ## Ethics and community
 
 The archive's communities are Somali musicians, poets and listeners at home and in the diaspora. Following the
@@ -1249,7 +1311,7 @@ requests go to the contact below and are answered in a new version.
   year         = {{{date[:4]}}},
   version      = {{{version}}},
   howpublished = {{Hugging Face dataset}},
-  url          = {{{GITHUB_URL}}},
+  url          = {{{citation_url}}},
   note         = {{Model output, synthetic transcription benchmark, {remains_extra}glossary and listening records from the QaraamiGen programme; no archival recordings}}
 }}
 ```
@@ -1267,7 +1329,7 @@ Build notes for this version:
 
 ## Contact
 
-Khalid Ibrahim — [[KHALID: contact e-mail or Hugging Face username]] — {GITHUB_URL}/issues
+Khalid Ibrahim — {contact}
 """
     return header + "\n" + body
 
@@ -1306,8 +1368,16 @@ def check(out: Path, repo_root: Path | None, data_root: Path | None) -> list[str
     for p in sorted(out.rglob("*")):
         if p.is_file():
             rel = posix(p.relative_to(out))
-            if rel != "MANIFEST.json" and rel not in entries and not rel.startswith(".cache/"):
+            if rel not in ("MANIFEST.json", "SHA256SUMS") and rel not in entries and not rel.startswith(".cache/"):
                 errors.append(f"{rel}: present in the folder but not in MANIFEST.json")
+
+    sums_path = out / "SHA256SUMS"
+    if not sums_path.exists():
+        errors.append("SHA256SUMS missing")
+    elif sums_path.read_text(encoding="utf-8") != render_sha256sums(list(entries.values()), sha256_of(manifest_path)):
+        errors.append("SHA256SUMS does not match MANIFEST.json")
+    if "ATTRIBUTION.md" not in entries:
+        errors.append("ATTRIBUTION.md is not in MANIFEST.json")
 
     jsonl_rows: dict[str, list[dict]] = {}
     for p in sorted(out.rglob("*.jsonl")):
