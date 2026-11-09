@@ -39,56 +39,64 @@ const HARGEISA_MASTERS: readonly HargeisaMaster[] = [
     role: 'Aabaha Fanka Soomaaliyeed · Father of Somali Music',
     period: '1924–1994',
     bio: 'Pioneering composer, Kaban (oud) virtuoso, and founder of the Walaalo Hargeysa ensemble (1953). Qarshe was the first to marry Somali oral poetry to structured modern melodies and Kaban strings at Radio Hargeisa.',
-    contribution: 'Composed iconic national awakening anthems such as "Aqoon La\'aan Waa Iftiin La\'aan" and established the foundations of modern Somali orchestral arrangement.',
+    contribution:
+      'Composed iconic national awakening anthems such as "Aqoon La\'aan Waa Iftiin La\'aan" and established the foundations of modern Somali orchestral arrangement.',
   },
   {
     name: 'Cabdi Deeqsi "Sinimo"',
     role: 'Aabaha Balwada · Creator of the Balwo',
     period: '1920s–1967',
     bio: 'The musical genius and poet who invented the Balwo in 1943 near Borama and Hargeisa. With his historic song "Balwooy! Hooy Balwooy", Sinimo sparked the acoustic revolution that birthed modern Somali popular music.',
-    contribution: 'Created the compact lyric form and emotional cadence that Radio Hargeisa broadcast across the Horn of Africa, giving rise to the entire Qaraami tradition.',
+    contribution:
+      'Created the compact lyric form and emotional cadence that Radio Hargeisa broadcast across the Horn of Africa, giving rise to the entire Qaraami tradition.',
   },
   {
     name: 'Cumar Dhuule Cali',
     role: 'Ustaad Qaraami · Master of the Kaban',
     period: '1941–2003',
     bio: 'Legendary Kaban virtuoso and vocalist celebrated for his hypnotic "riftoon" (intricate finger-picking) style. Dhuule was a mainstay of Radio Hargeisa broadcasts for over three decades.',
-    contribution: 'Recorded dozens of definitive classical Qaraami master takes at Radio Hargeisa, establishing the rhythmic and melodic benchmark used by our AI transcription models.',
+    contribution:
+      'Recorded dozens of definitive classical Qaraami master takes at Radio Hargeisa, establishing the rhythmic and melodic benchmark used by our AI transcription models.',
   },
   {
     name: 'Maxamed Mooge Liibaan',
     role: 'Master Vocalist, Poet & Kaban Virtuoso',
     period: '1940s–1984',
     bio: 'A monumental figure in northern Somali culture, revered for his rich baritone voice, profound philosophical lyrics, and masterful self-accompaniment on the Kaban.',
-    contribution: 'Recorded landmark Radio Hargeisa studio sessions including "Aamiinta Madaxayga", "Adduunyo", and "Maxaa Iga Galay Duunya Ba\'an", influencing generations of musicians.',
+    contribution:
+      'Recorded landmark Radio Hargeisa studio sessions including "Aamiinta Madaxayga", "Adduunyo", and "Maxaa Iga Galay Duunya Ba\'an", influencing generations of musicians.',
   },
   {
     name: 'Axmed Gacayte',
     role: 'Pioneering Vocalist & Composer · Walaalo Hargeysa',
     period: '1948–1988',
     bio: 'One of the smoothest, most expressive vocal stylists of the golden age. Gacayte was a foundational member of the Walaalo Hargeysa movement and Radio Hargeisa broadcast team.',
-    contribution: 'Penned and performed timeless northern classics such as "Dhulkayga" and "Jawaahir", preserving classical pentatonic modal scales on magnetic reel archives.',
+    contribution:
+      'Penned and performed timeless northern classics such as "Dhulkayga" and "Jawaahir", preserving classical pentatonic modal scales on magnetic reel archives.',
   },
   {
     name: 'Walaalo Hargeysa (Hargeisa Brothers)',
     role: 'Foundational Theatrical & Musical Troupe',
     period: 'Est. 1953',
     bio: 'The legendary ensemble formed in Hargeisa by Cabdullaahi Qarshe, Cali Sugulle Dun-carbeed, Barkhad Cas, Saxardiid Maxamed Jabiye, and Xuseen Aw Faarax. They created the first Somali musical plays.',
-    contribution: 'Turned Radio Hargeisa into an acoustic epicenter of anti-colonial resistance, theatrical drama, and modern collective musical performance.',
+    contribution:
+      'Turned Radio Hargeisa into an acoustic epicenter of anti-colonial resistance, theatrical drama, and modern collective musical performance.',
   },
   {
     name: 'Sahra Axmed Jaamac',
     role: 'Vocal Legend & Radio Hargeisa Broadcaster',
     period: '1956–2018',
     bio: 'Among the most celebrated female vocalists in Somali history, Sahra Axmed rose to national fame through her crystalline vocal performances broadcast from Radio Hargeisa.',
-    contribution: 'Recorded dozens of celebrated duets and solo ballads that defined northern popular song and inspired female musical participation across Somaliland.',
+    contribution:
+      'Recorded dozens of celebrated duets and solo ballads that defined northern popular song and inspired female musical participation across Somaliland.',
   },
   {
     name: 'The Tape Protectors of 1988',
     role: 'Radio Hargeisa Sound Technicians & Custodians',
     period: '1988 Archival Rescue',
-    bio: 'During the 1988 aerial bombardment of Hargeisa, brave station staff and sound technicians risked their lives to preserve Somalia\'s recorded acoustic heritage from total destruction.',
-    contribution: 'Heroically dismantled and buried over 12,000 reel-to-reel master tapes in underground metal drums beneath the earth, ensuring the musical memories of Qaraami survived for this archive.',
+    bio: "During the 1988 aerial bombardment of Hargeisa, brave station staff and sound technicians risked their lives to preserve Somalia's recorded acoustic heritage from total destruction.",
+    contribution:
+      'Heroically dismantled and buried over 12,000 reel-to-reel master tapes in underground metal drums beneath the earth, ensuring the musical memories of Qaraami survived for this archive.',
   },
 ];
 
@@ -251,15 +259,16 @@ export function ListenShelf(): React.JSX.Element {
               Broadcasters, poets, and singers outside the station building in 1965.
             </p>
             <p className="text-xs leading-relaxed text-mid">
-              Founded in 1943, Radio Hargeisa is the historic birthplace of modern Somali music,
-              the Balwo, and classical Qaraami song. It is where pioneers like Cabdullaahi Qarshe,
-              Cabdi Sinimo, Cumar Dhuule, Axmed Gacayte, Maxamed Mooge Liibaan, and the Walaalo
-              Hargeysa troupe first set oral poetry to the strings of the Kaban and magnetic tape.
+              Founded in 1943, Radio Hargeisa is the historic birthplace of modern Somali music, the
+              Balwo, and classical Qaraami song. It is where pioneers like Cabdullaahi Qarshe, Cabdi
+              Sinimo, Cumar Dhuule, Axmed Gacayte, Maxamed Mooge Liibaan, and the Walaalo Hargeysa
+              troupe first set oral poetry to the strings of the Kaban and magnetic tape.
             </p>
             <p className="text-[11px] leading-relaxed text-low">
               During the 1988 bombardment, courageous sound engineers and radio staff buried
               thousands of reel-to-reel master tapes underground in protective caches to save the
-              musical memory of the nation. Those rescued tapes are the foundational bedrock of this archive.
+              musical memory of the nation. Those rescued tapes are the foundational bedrock of this
+              archive.
             </p>
           </div>
         </div>
@@ -299,9 +308,7 @@ export function ListenShelf(): React.JSX.Element {
                 <p className="numeric mt-0.5 text-[11px] tracking-wide text-accent-state/90">
                   {m.role}
                 </p>
-                <p className="mt-3 text-xs leading-relaxed text-mid">
-                  {m.bio}
-                </p>
+                <p className="mt-3 text-xs leading-relaxed text-mid">{m.bio}</p>
               </div>
               <div className="mt-4 border-t border-hairline pt-3">
                 <p className="text-[11px] leading-relaxed text-low">
@@ -319,10 +326,10 @@ export function ListenShelf(): React.JSX.Element {
         <div className="mt-3 rounded-[4px] border border-dashed border-hairline bg-chrome-1 px-5 py-4 text-[13px] leading-relaxed text-mid">
           <p>
             No recording is served on this site yet. The archive&apos;s source recordings are held
-            for research: the archival cassette collection is research-only and never
-            appears here, and the privately shared oud (kaban) collection waits for its written
-            consent record before any of it is published. Rights-clear recordings will be listed in
-            this section, each with its source stated, as they are cleared.
+            for research: the archival cassette collection is research-only and never appears here,
+            and the privately shared oud (kaban) collection waits for its written consent record
+            before any of it is published. Rights-clear recordings will be listed in this section,
+            each with its source stated, as they are cleared.
           </p>
         </div>
       </section>
