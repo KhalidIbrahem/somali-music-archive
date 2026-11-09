@@ -7,7 +7,7 @@ for Somali music, generation models fine-tuned on archival recordings, and a
 pentatonic conformance metric for judging whether generated or transcribed
 material stays inside the tradition's scale system. The recordings themselves
 are never distributed. The code, the method, and the measurements are.
-Built by Khalid Ibrahim, Minneapolis.
+Built by Khalid Ibrahim, Minneapolis. Live site: https://www.qaraamigen.com.
 Dedicated to Ahmed Ali Egal, whose intonation anchors the analysis.
 
 ## The five-minute path for a reviewer
@@ -24,15 +24,15 @@ Dedicated to Ahmed Ali Egal, whose intonation anchors the analysis.
    ~25-cent tuning drift. Scaling to medium and large gives statistically
    supported gains of 0.102 and 0.128 nats on held-out songs
    (`docs/eval/SCALING_REPORT.md`). Figures: `docs/figures/ft1` to `ft7`.
-2. **Hear it (2 min).** With access to the demo (Tailscale, invite only):
-   open `http://100.65.5.120:8765/demo`, paste the token, pick an adapter,
-   press *Generate both*. Same prompt and seed, base model on the left,
-   fine-tuned on the right, pentatonic-conformity score and voiced fraction
-   under each. A recorded walkthrough follows `docs/demo/DEMO_SCRIPT.md`.
+2. **Hear it (2 min).** On https://www.qaraamigen.com, `/listen` and `/gallery`
+   play generated clips, `/transcribe` turns a recording into sheet music in
+   the browser, and `/studio` is the music workspace. The side-by-side
+   base-versus-adapter demo runs on the local service (`services/musicgen-api/`,
+   invite only); a recorded walkthrough follows `docs/demo/DEMO_SCRIPT.md`.
 3. **Check the rights (1 min).** `docs/DATA_PROVENANCE.md`. No recording from
    any corpus is distributed, served publicly, or in git; every model output is
    labelled with the adapter's corpus and a non-distribution line. Model
-   cards: `docs/eval/MODEL_CARD_oud.md`, `docs/eval/MODEL_CARD_harvard_raw.md`.
+   cards: `docs/eval/MODEL_CARD_*.md`.
 
 Reproduce a number yourself (needs the non-distributed processed clips on
 disk): `scripts/reproduce_oud_smoke.sh` re-runs the training smoke test and
@@ -70,15 +70,19 @@ Music Library is outstanding; the oud collection's rights remain with its
 unlisted performers; the cassette imports found on the project's own archive
 are of mixed and partly unknown provenance. All were used for research
 analysis and fine-tuning only. Cultural labels are assigned by Somali
-scholars, never predicted. The platform is invite-only; archival audio is
-served to members through signed, expiring URLs. Institutions get access by
-agreement. Generated audio is research output and is always labelled as such.
+scholars, never predicted. The public site needs no login and serves only
+generated and synthesised audio that passes the rights check in
+`apps/web/scripts/check-public-audio-rights.mjs`. The member archive, where
+archival audio is served through signed, expiring URLs, stays invite-only.
+Institutions get access by agreement. Generated audio is research output and
+is always labelled as such.
 
 ## License and citation
 
 The code is licensed under the Apache License 2.0 (`LICENSE`). The license
 covers the code only: the recordings, the trained weights, and generated audio
-are outside it and are not distributed. To cite the project, use
-`CITATION.cff`.
+are outside it. The recordings and weights are not distributed; the only
+generated clips published are those cleared by the rights check. To cite the
+project, use `CITATION.cff`.
 
 Khalid Ibrahim · Minneapolis, MN
