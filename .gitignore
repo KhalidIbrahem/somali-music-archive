@@ -295,3 +295,6 @@ data/sets_45s/*/tokens/
 
 # ── Proof-of-generation artefacts (2026-09-28): generated WAVs, embeddings, traces. The report is docs/eval/PROOF_OF_GENERATION.md.
 data/proof_generation/
+
+# Blind study answer key (clip id -> condition): local only, needed by study_analyze.py.
+apps/ai-service/study/key.json
