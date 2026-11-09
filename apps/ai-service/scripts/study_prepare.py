@@ -77,7 +77,7 @@ def encode(src: Path, dst: Path, seconds: float | None) -> float:
     af = f"loudnorm=I={LUFS}:TP=-1.5:LRA=11,afade=t=out:st={max(0.0, length - FADE):.3f}:d={FADE}"
     subprocess.run(
         ["ffmpeg", "-v", "error", "-y", "-i", str(src), "-t", f"{length:.3f}", "-af", af,
-         "-ac", "1", "-ar", "44100", "-codec:a", "libmp3lame", "-b:a", "128k", "-map_metadata", "-1", str(dst)],
+         "-ac", "1", "-ar", "44100", "-codec:a", "libmp3lame", "-b:a", "160k", "-map_metadata", "-1", str(dst)],
         check=True,
     )
     return round(length, 2)
