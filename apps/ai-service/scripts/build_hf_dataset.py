@@ -52,6 +52,7 @@ from pathlib import Path, PurePosixPath
 
 DATASET_NAME = "QaraamiGen — Somali Music Reference Dataset"
 DATASET_VERSION = "0.1"
+COMPANION_TOKENS = "khalidibra/qaraamigen-synthetic-melody-tokens"
 GITHUB_URL = "https://github.com/KhalidIbrahem/somali-music-archive"
 SITE_URL = "https://www.qaraamigen.com"
 DEFAULT_REPO_ID = "<namespace>/qaraamigen-somali-music-reference"
@@ -1091,6 +1092,8 @@ size_categories:
 # {DATASET_NAME} (v{version})
 
 {at_a_glance}
+
+A companion dataset, [QaraamiGen Synthetic Melody Tokens](https://huggingface.co/datasets/{COMPANION_TOKENS}), holds EnCodec tokens and exact note labels for a large set of synthetic melodies. It contains no recordings.
 
 Reference material from **QaraamiGen**, a research programme adapting open music-generation models and a
 browser transcriber to Somali *qaraami* (the oud-and-voice song style of the 1940s–1970s) by Khalid Ibrahim.

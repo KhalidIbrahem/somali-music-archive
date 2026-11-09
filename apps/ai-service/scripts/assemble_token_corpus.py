@@ -204,7 +204,13 @@ Splits are by melody, so the five renderings of a melody never cross a split: {b
 
 `scripts/synth_somali_bench.py` draws a melody as a random walk on one of the five rotations of the anhemitonic pentatonic set, at 70 to 140 BPM, with a global tuning offset within ±40 cents and a per-note deviation (sd 12 cents, clipped at ±30). A Karplus–Strong plucked string or a harmonic voice-like source plays it, rendered at 32 kHz in five conditions: `clean`, `bass`, `bass_drums`, `noise` (20 dB SNR) and `full_mix` (bass, drums, reverb, noise).
 
-Each melody has its own random stream, so any clip can be regenerated exactly with `scripts/synth_token_corpus.py`. Audio is not shipped, because the tokens are the product and the audio is reproducible.
+Each melody has its own random stream, so its audio can be regenerated exactly from the shipped scripts. Audio is not shipped, because the tokens are the product and the audio is reproducible:
+
+```python
+# Run from the folder that holds scripts/. Needs numpy and soundfile.
+from scripts.synth_token_corpus import render_item
+meta, clips = render_item(4321)  # five clips of melody 4321, shape (5, 544000), 32 kHz
+```
 
 ## Measured quality
 
