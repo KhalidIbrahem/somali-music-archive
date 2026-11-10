@@ -59,7 +59,7 @@ DEFAULT_REPO_ID = "<namespace>/qaraamigen-somali-music-reference"
 
 # ─── rights ──────────────────────────────────────────────────────────────────
 # Anything matching this must never be read for copying (DATA_PROVENANCE.md §1,
-# §4, §8; CLAUDE.md hard rules). Matched against the posix path relative to the
+# §4, §8). Matched against the posix path relative to the
 # repo root or the data root, and against the absolute path.
 DENY_RE = re.compile(
     r"(^|/)("

@@ -107,4 +107,4 @@ service that hot-swaps adapters and exposes generation and PCS endpoints.
 
 `~/ai/musicgen-env` (Python 3.11, torch with MPS, transformers, peft) for the
 research scripts; `~/ai/ace-step-env` for the vocal survey. The JavaScript
-workspace needs Node 22 (`.nvmrc`). See `SETUP.md` and `docs/README-platform.md`.
+workspace needs Node 22 (`.nvmrc`). See `docs/GENERATION_SETUP.md` and `docs/README-platform.md`.

@@ -111,7 +111,7 @@ Ranked by application impact. Weeks are calendar weeks starting Monday 2026-11-1
    `hf auth login`; push the dataset **private**, review the card on the Hub,
    flip to public; mint the DOI; add the citation to the README.
 2. **Week 2 — the listening study and the trainers' honesty.** Connect Upstash
-   for `/study`, send it to 10–20 musicians (CLAUDE.md Left 0). Add loopback
+   for `/study`, send it to 10–20 musicians. Add loopback
    latency calibration and the phone control bar. Pitch analysis in a worker.
 3. **Week 3 — Somali ground truth.** A musician corrects the five annotation
    packs so Qormada is scored on Somali recordings (the dataset's biggest

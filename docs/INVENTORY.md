@@ -49,7 +49,7 @@ tree and no `pages/` directory; `app/layout.tsx` line 2 says "Root layout
   (`apps/web/.vercel/project.json`, `framework: "nextjs"`) leaves the build
   command null, so Vercel runs `next build` and serves that build at
   `https://somali-music-archive.vercel.app` on pushes to `master`
-  (`CLAUDE.md`). `apps/web/.vercel/output/builds.json` records a local
+  (the project status notes). `apps/web/.vercel/output/builds.json` records a local
   `vercel build --prod`. Node: root `engines` require `>=22.13.0 <23`,
   `.nvmrc` is `22`; the Vercel project setting is `24.x`, which does not match.
 - `.vercelignore` excludes `apps/web/public/audio` and
@@ -140,7 +140,7 @@ references those paths.
 - Deps: express ^4.19, zod ^3.23, mongoose ^8.24 (MongoDB), @prisma/client ^5.22
   (PostgreSQL), redis ^6 with express-rate-limit, jsonwebtoken, bcryptjs,
   google-auth-library, helmet, pino, @aws-sdk/client-s3 + s3-request-presigner
-  (Cloudflare R2). **No Stripe dependency** despite the `CLAUDE.md` stack line.
+  (Cloudflare R2). **No Stripe dependency** despite the the project status notes stack line.
 - Entry: `src/server.ts` → `src/app.ts` (helmet, cors, json 10 MB, pino-http,
   `/health`, `/api/v1` behind a rate limiter). `src/vercel.ts` + `apps/api/vercel.json`
   for serverless deployment.
@@ -203,7 +203,7 @@ The MusicGen research scripts, all under `apps/ai-service/scripts/`:
 | `register_adapter.py`, `showcase.py`, `showcase_final.py`, `improve_loop.py`, `melody_condition.py`, `ace_step_generate.py` | serving, showcase sets, the improvement loop, melody and vocal experiments |
 
 Tests: 46 `test_*.py` files in `apps/ai-service/tests/` (214 passed, 1 skipped
-on 2026-09-24 per `CLAUDE.md`). Pinned runtime deps in
+on 2026-09-24 per the project status notes). Pinned runtime deps in
 `apps/ai-service/requirements.txt`; the training environment is
 `~/ai/musicgen-env` (torch 2.14.0, transformers 4.57.6, peft 0.20.0).
 
@@ -279,7 +279,7 @@ from `oud_lora_r16_nodrop_20260809` onward uses it, and each log prints the
 count. Minimal repro and drafts for upstream are in `docs/oss/`
 (`musicgen_dropout_repro.py`, `transformers_musicgen_dropout_issue.md`,
 `transformers_musicgen_dropout_fix.diff`, plus two companion issue drafts).
-`CLAUDE.md` and `docs/application/RESEARCH_STATEMENT_NOTES.md` record the issue
+the project status notes and `docs/application/RESEARCH_STATEMENT_NOTES.md` record the issue
 as filed, huggingface/transformers #49094 on 2026-09-24; the draft file's
 header still says "not yet filed" and the PR diff is marked "not opened".
 
@@ -354,7 +354,7 @@ and UUID keys. Per source:
 
 Open items in the provenance file: the Harvard Loeb letter; the deployed site's
 older `/demos/audio/…` and `/audio/…` exposures (the source recordings now
-return 404, verified 2026-09-24 per `CLAUDE.md`); a provider-terms review.
+return 404, verified 2026-09-24 per the project status notes); a provider-terms review.
 
 ### 4.2 Corpora and hours (`docs/data/CORPUS_REPORT.md`, 2026-09-26; set cards in `data/sets*/*/SET_CARD.md`)
 
@@ -428,7 +428,7 @@ listener, Khalid, blind paired protocol, "neither" allowed):
 
 | set | model | date | adapter / base / neither | note |
 | --- | --- | --- | --- | --- |
-| `oud_ab_listening` | small, oud adapter | 2026-08/09 | recorded as **passed** in `CLAUDE.md` and `docs/eval/MODEL_CARD_oud.md` | no `data/listening` JSON exists for it; the blind-test tool came later, so this is the one gate without a machine record |
+| `oud_ab_listening` | small, oud adapter | 2026-08/09 | recorded as **passed** in the project status notes and `docs/eval/MODEL_CARD_oud.md` | no `data/listening` JSON exists for it; the blind-test tool came later, so this is the one gate without a machine record |
 | `ab_large` | large SFT | 2026-09-08 | 11 / 2 / 3, then 6 / 0 / 10 the same day | the only SFT adapter preferred over base |
 | `ab_medium` | medium SFT | 2026-09-08, re-sit 09-24 | 3 / 0 / 13, then 1 / 0 / 15 | metric gain, no audible preference |
 | `harvard_ab_listening` | small, harvard_raw | 2026-09-24 | 0 / 0 / 8 | 8 pairs |
@@ -443,7 +443,7 @@ bootstrap intervals clear zero (+0.10, +0.13, +0.08 nats). Those are 2–3 % of
 the loss. The listening tests do not follow the metric: on the medium model
 the listener chose "neither" in 28 of 32 pairs across two sittings and in 15 of
 16 for qaraami_all; only the large model, and its DPO round in one of two
-sittings, was audibly preferred. The 2026-09-19 diagnosis in `CLAUDE.md`
+sittings, was audibly preferred. The 2026-09-19 diagnosis in the project status notes
 matches: the SFT adapters add noise (spectral flatness 0.02–0.07 against 0.005
 for base output and 0.002 for real clips), produce far more voiced material
 (voiced fraction 0.42 → 0.70 on qaraami_all) but with lower pentatonic

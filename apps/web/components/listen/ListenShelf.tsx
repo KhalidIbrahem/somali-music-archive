@@ -8,7 +8,7 @@
  * Nothing on this page is a recording; no source audio is ever served. The
  * Recordings section stays a placeholder until docs/DATA_PROVENANCE.md records
  * a rights-clear file (the oud collection waits for its consent record; Harvard
- * is research-only) — see REPORT.md website-v1 for the file-by-file decision.
+ * is research-only) — see docs/archive/WORKLOG.md (website-v1) for the file-by-file decision.
  * Playback goes through the persistent player (root layout) so the rights
  * line travels with the clip.
  */

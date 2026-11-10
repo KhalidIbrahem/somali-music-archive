@@ -32,7 +32,7 @@ data
 runs
 logs
 HANDOVER.md
-REPORT.md
+docs/archive/WORKLOG.md
 
 # Not needed by the web or api builds
 apps/mobile/ios

@@ -2,7 +2,7 @@
  * Landing copy — SINGLE SOURCE for every string on the landing page.
  *
  * PROVENANCE: strings trace to the approved copy bank
- * (`QaraamiGen-landing-copy.md`), to the QaraamiGen build brief's own story
+ * (`docs/brand/LANDING_COPY.md`), to the QaraamiGen build brief's own story
  * text and the shipped B1-12 landing lines, or to verifiable project numbers
  * (audio inventory, sample session, corpus pipeline). Nothing here is invented
  * marketing. The page reads EXCLUSIVELY from this file — to change wording,

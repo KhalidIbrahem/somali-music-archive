@@ -73,7 +73,7 @@ web / mobile ──▶ POST /api/v1/generate { provider, prompt, … } ─▶ 20
 Design properties worth knowing:
 
 - **Keys live only in the API** (`SUNO_API_KEY`, `GEMINI_API_KEY` — see
-  [`SETUP.md`](SETUP.md) for how to get each). The apps never talk to a
+  [`GENERATION_SETUP.md`](GENERATION_SETUP.md) for how to get each). The apps never talk to a
   provider and never see a key.
 - **Swappable by construction** (ADR-0005): every provider implements one
   `MusicProviderClient` interface (`submit`/`poll`), and every provider —

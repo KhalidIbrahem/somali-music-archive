@@ -22,7 +22,7 @@ disk (data/harvard_raw/legacy/). Output: data/harvard_raw/<AWM_SC>_<side><track>
 <title>__<component>.mp3 + data/harvard_raw/manifest.jsonl (one row per catalog
 object with a link: fetched / legacy / skipped + reason) + fetch.log.
 
-Policy (logged as defaults in REPORT.md):
+Policy (logged as defaults in docs/archive/WORKLOG.md):
   * track-level objects are fetched; a cassette-level object is fetched only when
     the cassette has no linked track objects (otherwise it is the union of the
     tracks and would duplicate audio across song-level splits);

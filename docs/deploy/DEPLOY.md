@@ -30,7 +30,7 @@ OUT=/tmp/qaraamigen-mobile-check BASE=http://127.0.0.1:3200 node apps/web/script
 Pass condition: `scrollW` equals the viewport on every public page at 375 px
 and 414 px, `btn true` (hamburger visible), `desktopHidden true`, the panel
 lists Home, Generate, Transcribe, Listen, Library, Research, and `footer true`.
-Screenshots land in `$OUT/shots/`. Passed on 2026-09-27 (`REPORT.md`).
+Screenshots land in `$OUT/shots/`. Passed on 2026-09-27 (`docs/archive/WORKLOG.md`).
 
 ### 1. Vercel project settings (one-time)
 
@@ -78,7 +78,7 @@ git push origin master              # Vercel builds and promotes automatically
 
 Or, without merging: `git push origin website-v1` gives a preview deployment
 of the branch (URL in the Vercel dashboard → Deployments). Push only with
-Khalid's go-ahead (`CLAUDE.md`).
+Khalid's go-ahead.
 
 Post-deploy checks (curl from any machine):
 

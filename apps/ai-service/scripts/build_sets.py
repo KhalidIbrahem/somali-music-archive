@@ -536,7 +536,7 @@ def select_ahmed(rows: list[dict], set_name: str, root: Path = REPO, include_thi
     labelled it oud or voice, so a merged run never holds one song twice with
     two captions.
 
-    Two rules on top of the content label (defaults logged in REPORT.md):
+    Two rules on top of the content label (defaults logged in docs/archive/WORKLOG.md):
     * every other file of Ahmed's separate collection (data/raw_incoming/oud_ilkacase,
       the corpus of the earlier `oud` adapter, oud-led qaraami with hand drums) counts
       as oud for ahmed_oud whatever the classifier said — the brief's "oud collection";

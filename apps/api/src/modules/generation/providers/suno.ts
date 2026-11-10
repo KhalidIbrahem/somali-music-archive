@@ -3,7 +3,7 @@
  *
  * IMPORTANT CONTEXT: Suno has NO official public API (partner-only as of
  * Jul 2026). This client targets the documented reseller surface and is only
- * active when SUNO_API_KEY is set — an explicit user decision; SETUP.md states
+ * active when SUNO_API_KEY is set — an explicit user decision; docs/GENERATION_SETUP.md states
  * the ToS/commercial-rights caveats plainly.
  *
  * Flow is genuinely asynchronous: submit returns a taskId, results arrive by

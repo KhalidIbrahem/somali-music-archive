@@ -9,7 +9,7 @@
  * single held note fading to silence.
  *
  * ALL copy lives in lib/landingCopy.ts with provenance rules — the approved
- * copy bank (QaraamiGen-landing-copy.md) drops into that file when it lands.
+ * copy bank (docs/brand/LANDING_COPY.md) drops into that file when it lands.
  * Identity: concept 1A "The Seal" (fixtures/qaraamigen-logo.fixture.html).
  */
 
