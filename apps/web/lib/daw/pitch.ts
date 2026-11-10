@@ -2,8 +2,7 @@
  * Pitch lens — measured pitch of an audio region, read against a fitted
  * pentatonic grid instead of being forced onto 12-TET.
  *
- * The method mirrors the research transcription pipeline
- * (docs/application/RESEARCH_SUMMARY.md §1) at browser scale:
+ * The method mirrors the research transcription pipeline at browser scale:
  *   1. f0 per 10 ms frame (YIN on an ~11 kHz mono downmix; the research uses
  *      CREPE, so numbers here are estimates, not the paper's scorer);
  *   2. the recording's tuning offset from A440 (circular weighted mean of the

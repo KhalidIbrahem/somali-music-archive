@@ -11,7 +11,7 @@ monorepo. The **platform** is an invite-only web and mobile archive for Somali
 music (Next.js web app, Express API, Expo mobile app, FastAPI AI service). The
 **research programme** fine-tunes Meta's MusicGen on Somali qaraami audio with
 LoRA adapters, evaluates the adapters, serves them from a local inference
-service, and feeds a paper draft and a PhD application package. The audio
+service, and feeds a paper draft. The audio
 itself is never distributed; only code, metadata, measurements and model output
 are.
 
@@ -279,7 +279,7 @@ from `oud_lora_r16_nodrop_20260809` onward uses it, and each log prints the
 count. Minimal repro and drafts for upstream are in `docs/oss/`
 (`musicgen_dropout_repro.py`, `transformers_musicgen_dropout_issue.md`,
 `transformers_musicgen_dropout_fix.diff`, plus two companion issue drafts).
-the project status notes and `docs/application/RESEARCH_STATEMENT_NOTES.md` record the issue
+the project status notes record the issue
 as filed, huggingface/transformers #49094 on 2026-09-24; the draft file's
 header still says "not yet filed" and the PR diff is marked "not opened".
 
@@ -485,7 +485,6 @@ generating samples at batch 4, which is why batch size is now always 1.
 9. `docs/eval/SCALING_REPORT.md` — small → medium → large with confidence intervals.
 10. `docs/eval/PREFERENCE_OPT.md` — the DPO rounds, the collapse and the one audible win.
 11. `runs/qaraami_all/RESULT.md` — the whole-corpus run: data table, loss curve, test CE, A/B set.
-12. `docs/ISMIR_PAPER_DRAFT.md` — the paper; its abstract still states the July negative, with seven `TODO —` blocks holding the corrected text awaiting approval.
 
 After those: `docs/data/CORPUS_REPORT.md` for the hours behind every set,
 `data/listening/*.json` for the raw listening records, and

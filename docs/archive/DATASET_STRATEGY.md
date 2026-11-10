@@ -564,7 +564,6 @@ What it unlocks:
   - Fine-tune MusicGen / AudioCraft for Somali music generation
   - Dataset valuation: $500,000–$1,000,000 conservatively
   - Approach Google DeepMind, Meta FAIR, Adobe Research for licensing
-  - PhD application with two publications and a live dataset
 
 ### Milestone 5 — 5,000 recordings (national scale)
 What it unlocks:

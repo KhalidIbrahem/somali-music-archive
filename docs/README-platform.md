@@ -18,7 +18,7 @@ Built by **Khalid Ibrahim** — Somali-American AI engineer, Minneapolis MN.
   equal temperament is quantified in cents** (`apps/ai-service/services/scale.py`
   — deliberately dependency-free and unit-tested). The reference frequencies are
   calibrated against master performers, not asserted from Western theory. This is
-  the core contribution of the accompanying ISMIR paper draft (`docs/ISMIR_DRAFT.md`).
+  the core contribution of the accompanying paper draft.
 - **Sung text is not speech.** Whisper hallucinates over melisma; every transcript
   segment is gated by hallucination heuristics and flagged `is_singing`, stored as
   advisory rather than ground truth.
@@ -146,8 +146,6 @@ database verdicts are themselves integration-tested.
 
 ## Research
 
-- **Paper draft:** [`docs/ISMIR_DRAFT.md`](docs/ISMIR_DRAFT.md) — corpus +
-  microtonality method + cultural-governance model.
 - **Pipeline notebook:** [`apps/ai-service/notebooks/harvard_pipeline.ipynb`](apps/ai-service/notebooks/harvard_pipeline.ipynb)
   — the reproducible path from raw archive WAVs to the annotated dataset,
   including the paper's Figure 1.

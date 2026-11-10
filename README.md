@@ -51,8 +51,6 @@ checks the harness invariants and the base validation loss (4.5132).
 | `docs/eval/` | evaluation, scaling report, preference optimisation, cassette restoration, vocal-model survey, model cards |
 | `services/musicgen-api/` | local inference API: model on Apple silicon, adapters hot-swapped, `/generate` `/pcs` `/demo`; `docs/deploy/DEPLOY.md` |
 | `runs/` | every fine-tuning run's config, loss curve, held-out CE (weights and audio are not tracked) |
-| `docs/ISMIR_PAPER_DRAFT.md` | the paper; passages superseded by the harness fix carry labelled TODO blocks with proposed replacements |
-| `docs/application/` | research-statement fact sheet, figure list, project record |
 | `docs/README-platform.md` | the platform itself: mobile field-recording app, archive, listening room, studio, research API (Next.js, Express, Expo, Python) |
 
 ## Environment

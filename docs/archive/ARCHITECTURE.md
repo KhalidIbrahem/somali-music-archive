@@ -36,7 +36,6 @@
 17. [File and Folder Structure](#17-file-and-folder-structure)
 18. [Environment Variables and Secrets](#18-environment-variables-and-secrets)
 19. [Testing Strategy](#19-testing-strategy)
-20. [MIT Portfolio and Academic Strategy](#20-mit-portfolio-and-academic-strategy)
 
 ---
 
@@ -1753,36 +1752,6 @@ Ten critical user flows tested on real device simulators:
 
 ---
 
-## 20. MIT PORTFOLIO AND ACADEMIC STRATEGY
-
-### What This Project Represents for a PhD Application
-
-A PhD application to MIT's music technology program (or McGill, Stanford CCRMA, or UC Berkeley CNMAT) asks: has this applicant demonstrated the ability to identify a research problem, design a methodology, collect data, and produce results? This project answers yes to all four — with real data, a real collaborator, and a working system.
-
-### The Three Papers to Target
-
-**Paper 1 — Dataset paper (target: ISMIR, year 1)**
-Title: "SomaliMusicCorpus: A Labeled Dataset of Traditional Somali Music for Music Information Retrieval Research"
-Content: Description of the archive — collection methodology, annotation schema, inter-annotator agreement, statistical analysis of the corpus, baseline pitch detection results. You do not need a novel model. A novel dataset is a contribution.
-Co-authors: Ahmed Ali Egal (as cultural contributor and knowledge holder), any faculty collaborator you engage.
-
-**Paper 2 — Model paper (target: ISMIR or ICASSP, year 2)**
-Title: "Adapting Automatic Music Transcription for Non-Western Oral Traditions: A Case Study in Somali Pentatonic Music"
-Content: Fine-tuned CREPE model for Somali scale, evaluation methodology, comparison to baseline Western-trained AMT models, analysis of microtonal deviation patterns in the corpus.
-
-**Paper 3 — Framework paper (target: NeurIPS or ICML, year 2–3)**
-Title: "Toward Culturally Equitable Music AI: A Framework for Preserving Oral Musical Traditions with Self-Supervised Audio Models"
-Content: Generalizable methodology for applying modern audio AI to any undocumented oral musical tradition. Somali music as the case study. Implications for preservation of other endangered traditions.
-
-### How to Frame the Application Narrative
-
-"I am a Somali-American software engineer and oud player. I identified a critical gap at the intersection of cultural preservation and music AI: the near-total absence of machine-processable data for Somali traditional music, which is an oral tradition that will be irrecoverably lost within a generation. I have taken concrete action to address this gap: I have established a recording partnership with Ahmed Ali Egal, a founding member of the Waaberi Band — Somalia's greatest musical institution — and built the technical infrastructure to capture, preserve, and analyze this material. I am applying to pursue the rigorous AI research needed to complete this work at the level it deserves."
-
-This narrative is specific, urgent, and yours alone. No other applicant in the world can write it.
-
----
-
-*End of architecture document.*
 *Version 1.0 — Prepared June 2024*
 *Author: Khalid Ibrahim*
 *For questions or contributions: See CONTRIBUTING.md*
