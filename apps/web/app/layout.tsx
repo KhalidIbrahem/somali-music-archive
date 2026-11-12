@@ -5,7 +5,7 @@
  */
 
 import type { Metadata } from 'next';
-import { Playfair_Display, Nunito, IBM_Plex_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { InAppBrowserBanner } from '@/components/InAppBrowserBanner';
 import { SilentModeAudio } from '@/components/SilentModeAudio';
@@ -14,24 +14,29 @@ import { PlayerBar } from '@/components/player/PlayerBar';
 import { THEME_BOOTSTRAP_SCRIPT } from '@/lib/theme';
 import './globals.css';
 
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['400', '500', '700'],
+// Fonts are self-hosted (app/fonts, SIL OFL 1.1, latin subset from Google Fonts) so the
+// build never depends on fetching fonts.googleapis.com, which failed the 2026-11-10 deploy.
+const playfair = localFont({
+  src: './fonts/PlayfairDisplay-Variable.woff2',
+  weight: '400 700',
   variable: '--font-playfair',
   display: 'swap',
 });
 
-const nunito = Nunito({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+const nunito = localFont({
+  src: './fonts/Nunito-Variable.woff2',
+  weight: '400 700',
   variable: '--font-nunito',
   display: 'swap',
 });
 
 // Mono face for numeric readouts only — timecode, BPM, confidence %, Hz (§1).
-const plexMono = IBM_Plex_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
+const plexMono = localFont({
+  src: [
+    { path: './fonts/IBMPlexMono-400.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/IBMPlexMono-500.woff2', weight: '500', style: 'normal' },
+    { path: './fonts/IBMPlexMono-600.woff2', weight: '600', style: 'normal' },
+  ],
   variable: '--font-plex-mono',
   display: 'swap',
 });
