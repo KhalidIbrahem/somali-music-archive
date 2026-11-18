@@ -25,10 +25,13 @@ import {
   armOnly,
   dbToMeterPos,
   elapsedLabel,
+  readRecordOffsetMs,
   recordBlockedReason,
   recordableTakes,
+  saveRecordOffsetMs,
   type RecordableTake,
 } from '@/lib/daw/recordFlow';
+import { RECORD_OFFSET_MAX_MS, RECORD_OFFSET_MIN_MS } from '@/lib/daw/audioSchedule';
 import { audioRegionsOf, trackKind, type DawProject } from '@/lib/daw/types';
 
 /** Mirror of DawApp's RecordingInfo (declared here so this file never imports DawApp). */
@@ -247,9 +250,7 @@ export function RecordPanel({
             {project.bpm} BPM · {project.timeSignature.beatsPerBar}/{project.timeSignature.beatUnit}{' '}
             <span className="text-low">— set them in the control bar</span>
           </p>
-          <p className="mt-auto text-[10px] leading-snug text-low">
-            Takes are shifted earlier by the output + input latency the browser reports.
-          </p>
+          <TimingControl engine={engine} disabled={isRecording} onNotice={onNotice} />
         </Card>
 
         {/* ── 4 · record ────────────────────────────────────────────────── */}
@@ -442,6 +443,87 @@ function InputCard({
         </div>
       </div>
     </Card>
+  );
+}
+
+/**
+ * Take timing for this device. The browser's reported latency is always
+ * applied; this adds the player's own offset, set by ear with the slider or
+ * measured by the click test (speakers on, no headphones).
+ */
+function TimingControl({
+  engine,
+  disabled,
+  onNotice,
+}: {
+  engine: DawEngine;
+  disabled: boolean;
+  onNotice: (message: string) => void;
+}): React.JSX.Element {
+  const [offset, setOffset] = useState(0);
+  const [measuring, setMeasuring] = useState(false);
+  useEffect(() => {
+    setOffset(readRecordOffsetMs());
+  }, []);
+
+  const apply = (ms: number): void => {
+    const value = saveRecordOffsetMs(ms);
+    engine.setRecordOffsetMs(value);
+    setOffset(value);
+  };
+
+  const measure = (): void => {
+    setMeasuring(true);
+    engine
+      .measureRecordOffsetMs()
+      .then((ms) => {
+        if (ms === null) {
+          onNotice(
+            'The clicks were not heard — unplug headphones, turn the volume up and try again',
+          );
+          return;
+        }
+        apply(ms);
+        onNotice(`Timing measured: takes move ${ms} ms earlier on this device`);
+      })
+      .catch((e: unknown) => onNotice(describeMicError(e)))
+      .finally(() => setMeasuring(false));
+  };
+
+  return (
+    <div className="mt-auto flex flex-col gap-1.5 border-t border-hairline pt-2">
+      <div className="flex items-center justify-between gap-2">
+        <label htmlFor="record-offset" className="text-[11px] text-mid">
+          Take timing
+        </label>
+        <span className="numeric text-[11px] text-hi">
+          {offset === 0 ? '0 ms' : `${offset > 0 ? `${offset} ms earlier` : `${-offset} ms later`}`}
+        </span>
+      </div>
+      <input
+        id="record-offset"
+        type="range"
+        min={RECORD_OFFSET_MIN_MS}
+        max={RECORD_OFFSET_MAX_MS}
+        step={5}
+        value={offset}
+        disabled={disabled || measuring}
+        onChange={(e) => apply(Number(e.target.value))}
+        className="w-full accent-[#C89B5F]"
+        aria-describedby="record-offset-help"
+      />
+      <SmallButton
+        onClick={measure}
+        disabled={disabled || measuring}
+        title="Plays five clicks through the speakers and times them with the microphone"
+      >
+        {measuring ? 'Listening to the clicks…' : 'Measure with clicks'}
+      </SmallButton>
+      <p id="record-offset-help" className="text-[10px] leading-snug text-low">
+        If your takes play back late, move this to the right. To measure it: no headphones, volume
+        up, quiet room. Saved for this device.
+      </p>
+    </div>
   );
 }
 

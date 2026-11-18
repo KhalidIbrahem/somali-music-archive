@@ -111,6 +111,7 @@ import { LibraryRail, type LibraryTab } from './LibraryRail';
 import { Inspector } from './Inspector';
 import { PlaySurface } from './PlaySurface';
 import { RecordPanel } from './RecordPanel';
+import { readRecordOffsetMs, takeHeadphonesHint } from '@/lib/daw/recordFlow';
 import { LearnPanel, type LearnTab, type NoteEvent } from './LearnPanel';
 import { StartOverlay, type StudioMode } from './StartOverlay';
 import { Toolbar } from './Toolbar';
@@ -153,6 +154,13 @@ function readStartPref(): boolean {
   }
 }
 type FocusArea = 'arrange' | 'editor';
+
+/** Before the first microphone take on this device: backing and click leak into an open microphone. */
+function remindHeadphones(flash: (message: string) => void): void {
+  if (takeHeadphonesHint()) {
+    flash('Tip: wear headphones while recording, so the click and backing stay out of the take');
+  }
+}
 
 export const ZOOM_MIN = 6;
 export const ZOOM_MAX = 240;
@@ -234,6 +242,11 @@ export function DawApp(): React.JSX.Element {
     window.clearTimeout(noticeTimer.current);
     noticeTimer.current = window.setTimeout(() => setNotice(null), 2600);
   }, []);
+
+  // This device's record offset (set in the Record panel) applies to every project.
+  useEffect(() => {
+    engine.setRecordOffsetMs(readRecordOffsetMs());
+  }, [engine]);
 
   // ── persistence ────────────────────────────────────────────────────────────
   const scheduleSave = useCallback((next: DawProject): void => {
@@ -480,14 +493,26 @@ export function DawApp(): React.JSX.Element {
       held: new Map(),
     };
     takeRef.current = take;
-    // Record always clicks and counts in (the project's count-in length).
-    const current = projectRef.current ?? p;
-    engine.setProject({ ...current, metronome: { ...current.metronome, enabled: true } });
-    engine.play(startBeat);
+    // Record always counts in (the project's count-in length); the take itself
+    // clicks only if the metronome is on. With a microphone take the engine
+    // starts the transport itself once the microphone is open — starting it
+    // here too restarted the count-in and left the first run's clicks behind.
     if (take.audioTrackId !== null) {
-      void settle(extras.startRecording?.(take.audioTrackId)).catch(() =>
-        flash('Microphone unavailable'),
-      );
+      remindHeadphones(flash);
+      void settle(extras.startRecording?.(take.audioTrackId)).catch(() => {
+        if (takeRef.current === take) flash('Microphone unavailable');
+        // No microphone: an armed instrument track still records; otherwise give up.
+        if (takeRef.current !== take) return;
+        if (take.midiTrackId !== null) {
+          take.audioTrackId = null;
+          engine.play(startBeat, { countIn: true });
+        } else {
+          takeRef.current = null;
+          setRecording(null);
+        }
+      });
+    } else {
+      engine.play(startBeat, { countIn: true });
     }
     setRecording({
       trackIds: [take.midiTrackId, take.audioTrackId].filter(

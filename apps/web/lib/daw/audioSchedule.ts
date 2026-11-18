@@ -286,3 +286,60 @@ export function recordingTrimFrames(
 ): number {
   return Math.max(0, Math.round((epoch + compensationSec - captureStartTime) * sampleRate));
 }
+
+/** The record offset a player can set by hand or by the latency test (ms). */
+export const RECORD_OFFSET_MIN_MS = -100;
+export const RECORD_OFFSET_MAX_MS = 400;
+
+export function clampRecordOffsetMs(ms: number): number {
+  if (!Number.isFinite(ms)) return 0;
+  return Math.max(RECORD_OFFSET_MIN_MS, Math.min(RECORD_OFFSET_MAX_MS, Math.round(ms)));
+}
+
+/**
+ * The delay between clicks scheduled at `clickTimes` (context seconds) and
+ * their arrival in a capture whose first frame was taken at `captureStartTime`.
+ * Each click is looked for in the window up to the next one: its onset is the
+ * first frame above half that window's peak, and it only counts when the peak
+ * stands clear of the room noise measured before the first click. Returns the
+ * median over the clicks heard, or null when fewer than three were heard or
+ * they disagree by more than 25 ms (an echo, a noise, a second sound source).
+ */
+export function roundTripDelaySec(
+  samples: Float32Array,
+  sampleRate: number,
+  captureStartTime: number,
+  clickTimes: readonly number[],
+): number | null {
+  if (clickTimes.length === 0 || sampleRate <= 0) return null;
+  const frameOf = (time: number): number => Math.round((time - captureStartTime) * sampleRate);
+  const firstFrame = Math.max(0, Math.min(samples.length, frameOf(clickTimes[0] ?? 0)));
+  let noisePeak = 0;
+  for (let i = 0; i < firstFrame; i++) noisePeak = Math.max(noisePeak, Math.abs(samples[i] ?? 0));
+  const floor = Math.max(0.004, noisePeak * 4);
+
+  const delays: number[] = [];
+  for (let c = 0; c < clickTimes.length; c++) {
+    const time = clickTimes[c] ?? 0;
+    const next = clickTimes[c + 1];
+    const span = next === undefined ? time - (clickTimes[c - 1] ?? time - 0.4) : next - time;
+    const from = Math.max(0, frameOf(time));
+    const to = Math.min(samples.length, frameOf(time + span));
+    if (to <= from) continue;
+    let peak = 0;
+    for (let i = from; i < to; i++) peak = Math.max(peak, Math.abs(samples[i] ?? 0));
+    if (peak < floor) continue;
+    for (let i = from; i < to; i++) {
+      if (Math.abs(samples[i] ?? 0) >= peak * 0.5) {
+        delays.push(i / sampleRate + captureStartTime - time);
+        break;
+      }
+    }
+  }
+  if (delays.length < 3) return null;
+  delays.sort((a, b) => a - b);
+  const median = delays[Math.floor(delays.length / 2)] ?? 0;
+  const agreeing = delays.filter((d) => Math.abs(d - median) <= 0.025);
+  if (agreeing.length < 3) return null;
+  return median;
+}

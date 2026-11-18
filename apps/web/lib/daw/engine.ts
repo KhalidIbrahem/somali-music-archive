@@ -24,6 +24,7 @@
  */
 
 import { ENGINE_SAMPLE_RATE, dum, normalize, pluck, tak } from '@/lib/audio/qaraamiEngine';
+import { setRecordingAudioSession } from '@/lib/audio/silentMode';
 import {
   type ClipStart,
   type TransportSpan,
@@ -31,9 +32,11 @@ import {
   bucketPeaks as bucketPeaksOf,
   clipsInWindow,
   levelsOf,
+  clampRecordOffsetMs,
   METER_FLOOR_DB,
   recordingTrimFrames,
   regionSegments,
+  roundTripDelaySec,
   transportSpans,
 } from './audioSchedule';
 import { getAudio, isIdbSource, putAudio } from './audioStore';
@@ -276,6 +279,10 @@ const OPEN_SPAN: TransportSpan[] = [{ unfoldedStart: 0, timelineStart: 0, timeli
 // ── Recording capture (AudioWorklet, loaded from an inline module) ───────────
 
 const CAPTURE_PROCESSOR = 'qaraami-capture';
+/** The latency test: five clicks, 0.4 s apart, after a short lead. */
+const LATENCY_TEST_CLICKS = 5;
+const LATENCY_TEST_GAP_SEC = 0.4;
+const LATENCY_TEST_LEAD_SEC = 0.35;
 const CAPTURE_BLOCK = 4096;
 const CAPTURE_WORKLET_SOURCE = `
 class QaraamiCapture extends AudioWorkletProcessor {
@@ -432,6 +439,8 @@ export class DawEngine {
   /** ctx.currentTime at unfolded transport second 0 (i.e. at playStartBeat). */
   private epoch = 0;
   private playStartBeat = 0;
+  private recordOffsetSec = 0;
+  private recStartToken = 0;
   private scheduledUntil = 0;
   private countInUntil = 0;
 
@@ -682,7 +691,12 @@ export class DawEngine {
     return startBeat + ((beat - startBeat) % span);
   }
 
-  play(fromBeat = 0): void {
+  /**
+   * Start the transport. `countIn` forces the project's count-in even when the
+   * metronome is off (recording): the bars before the take always click, the
+   * take itself clicks only if the player left the metronome on.
+   */
+  play(fromBeat = 0, opts: { countIn?: boolean } = {}): void {
     if (!this.project) return;
     this.unlock();
     const ctx = this.ctx;
@@ -692,7 +706,7 @@ export class DawEngine {
 
     const project = this.project;
     const countInBeats =
-      project.metronome.enabled && project.metronome.countInBars > 0
+      (project.metronome.enabled || opts.countIn === true) && project.metronome.countInBars > 0
         ? project.metronome.countInBars * project.timeSignature.beatsPerBar
         : 0;
     const startAt = ctx.currentTime + 0.08;
@@ -983,9 +997,7 @@ export class DawEngine {
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
       throw new Error('This browser cannot record audio');
     }
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
-    });
+    const stream = await this.openMicrophone();
     if (this.inputCheck || this.rec) {
       for (const t of stream.getTracks()) t.stop();
       return;
@@ -1010,6 +1022,42 @@ export class DawEngine {
     check.analyser.disconnect();
     check.monitor.disconnect();
     for (const t of check.stream.getTracks()) t.stop();
+    this.releaseMicrophoneSession();
+  }
+
+  /**
+   * Open the microphone with the browser's speech processing off (it ruins
+   * instruments). On iPhones the page's audio session is "playback" so sound
+   * ignores the silent switch; that session has no input, so it is switched to
+   * play-and-record while a microphone is open.
+   */
+  private async openMicrophone(): Promise<MediaStream> {
+    setRecordingAudioSession(true);
+    try {
+      return await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+      });
+    } catch (error) {
+      this.releaseMicrophoneSession();
+      throw error;
+    }
+  }
+
+  /** Back to the playback session once no microphone is open. */
+  private releaseMicrophoneSession(): void {
+    if (!this.rec && !this.inputCheck) setRecordingAudioSession(false);
+  }
+
+  /**
+   * Extra milliseconds every take is shifted earlier (negative = later), on
+   * top of the latency the browser reports. Set per device from the Record panel.
+   */
+  setRecordOffsetMs(ms: number): void {
+    this.recordOffsetSec = clampRecordOffsetMs(ms) / 1000;
+  }
+
+  getRecordOffsetMs(): number {
+    return Math.round(this.recordOffsetSec * 1000);
   }
 
   isInputChecking(): boolean {
@@ -1020,6 +1068,108 @@ export class DawEngine {
   getInputLevel(): LevelReading | null {
     const analyser = this.rec?.analyser ?? this.inputCheck?.analyser ?? null;
     return analyser ? this.read(analyser) : null;
+  }
+
+  private async ensureCaptureModule(ctx: AudioContext): Promise<void> {
+    if (this.captureModuleCtx === ctx) return;
+    const url = URL.createObjectURL(
+      new Blob([CAPTURE_WORKLET_SOURCE], { type: 'application/javascript' }),
+    );
+    try {
+      await ctx.audioWorklet.addModule(url);
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+    this.captureModuleCtx = ctx;
+  }
+
+  /**
+   * Measure this device's real round trip: play five clicks through the
+   * speakers, record them with the microphone and time the gap. Resolves the
+   * record offset (ms) that lines takes up — the measured delay minus what the
+   * browser already reports — or null when the clicks were not heard (headphones
+   * on, volume down). Call from a user gesture, with the transport stopped.
+   */
+  async measureRecordOffsetMs(): Promise<number | null> {
+    if (this.rec) throw new Error('Stop recording first');
+    this.unlock();
+    const ctx = this.ctx;
+    const master = this.master;
+    if (!ctx || !master) throw new Error('Audio is unavailable');
+    if (this.state !== 'stopped') this.stop();
+    if (ctx.state === 'suspended') await ctx.resume();
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      throw new Error('This browser cannot record audio');
+    }
+    this.stopInputCheck();
+    const stream = await this.openMicrophone();
+    const stopStream = (): void => {
+      for (const t of stream.getTracks()) t.stop();
+      this.releaseMicrophoneSession();
+    };
+    try {
+      await this.ensureCaptureModule(ctx);
+    } catch (error) {
+      stopStream();
+      throw error;
+    }
+    const input = ctx.createMediaStreamSource(stream);
+    const worklet = new AudioWorkletNode(ctx, CAPTURE_PROCESSOR, {
+      numberOfInputs: 1,
+      numberOfOutputs: 1,
+      outputChannelCount: [1],
+      channelCount: 1,
+      channelCountMode: 'explicit',
+      channelInterpretation: 'speakers',
+    });
+    const sink = ctx.createGain();
+    sink.gain.value = 0;
+    input.connect(worklet).connect(sink).connect(ctx.destination);
+    const blocks: Float32Array[] = [];
+    let captureStart: number | null = null;
+    let resolveDone: () => void = () => undefined;
+    const done = new Promise<void>((resolve) => {
+      resolveDone = resolve;
+    });
+    worklet.port.onmessage = (event: MessageEvent<unknown>) => {
+      const data = event.data;
+      if (!isCaptureMessage(data)) return;
+      if (data.type === 'done') {
+        resolveDone();
+        return;
+      }
+      if (captureStart === null) captureStart = data.time;
+      blocks.push(data.samples);
+    };
+    const first = ctx.currentTime + LATENCY_TEST_LEAD_SEC;
+    const clickTimes: number[] = [];
+    for (let i = 0; i < LATENCY_TEST_CLICKS; i++) {
+      const when = first + i * LATENCY_TEST_GAP_SEC;
+      clickTimes.push(when);
+      scheduleClick(ctx, master, when, true);
+    }
+    const totalMs = (LATENCY_TEST_LEAD_SEC + LATENCY_TEST_CLICKS * LATENCY_TEST_GAP_SEC) * 1000;
+    await new Promise<void>((r) => setTimeout(r, totalMs));
+    worklet.port.postMessage('stop');
+    await Promise.race([done, new Promise<void>((r) => setTimeout(r, 500))]);
+    worklet.port.onmessage = null;
+    input.disconnect();
+    worklet.disconnect();
+    sink.disconnect();
+    stopStream();
+
+    const total = blocks.reduce((n, b) => n + b.length, 0);
+    if (captureStart === null || total === 0) return null;
+    const samples = new Float32Array(total);
+    let at = 0;
+    for (const block of blocks) {
+      samples.set(block, at);
+      at += block.length;
+    }
+    const delay = roundTripDelaySec(samples, ctx.sampleRate, captureStart, clickTimes);
+    if (delay === null) return null;
+    const reported = (ctx.outputLatency || 0) + (ctx.baseLatency || 0);
+    return clampRecordOffsetMs(Math.round((delay - reported) * 1000));
   }
 
   /**
@@ -1044,23 +1194,15 @@ export class DawEngine {
     }
     // One microphone stream at a time: a running level check hands over.
     this.stopInputCheck();
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
-    });
+    // The microphone prompt can take seconds; a stop pressed meanwhile cancels.
+    const token = ++this.recStartToken;
+    const stream = await this.openMicrophone();
     try {
-      if (this.captureModuleCtx !== ctx) {
-        const url = URL.createObjectURL(
-          new Blob([CAPTURE_WORKLET_SOURCE], { type: 'application/javascript' }),
-        );
-        try {
-          await ctx.audioWorklet.addModule(url);
-        } finally {
-          URL.revokeObjectURL(url);
-        }
-        this.captureModuleCtx = ctx;
-      }
+      await this.ensureCaptureModule(ctx);
+      if (token !== this.recStartToken) throw new Error('Recording cancelled');
     } catch (error) {
       for (const t of stream.getTracks()) t.stop();
+      this.releaseMicrophoneSession();
       throw error;
     }
 
@@ -1092,7 +1234,10 @@ export class DawEngine {
     // Latency compensation: what the player hears at transport time t left the
     // speakers outputLatency later; their sound enters the graph ~baseLatency
     // after that. Shift the take earlier by both.
-    const compensationSec = (ctx.outputLatency || 0) + (ctx.baseLatency || 0);
+    // Browsers under-report (Safari reports no output latency at all, Bluetooth
+    // adds more), so the player's own offset from the Record panel is added.
+    const compensationSec =
+      (ctx.outputLatency || 0) + (ctx.baseLatency || 0) + this.recordOffsetSec;
     const rec: ActiveRecording = {
       trackId,
       stream,
@@ -1121,7 +1266,7 @@ export class DawEngine {
       rec.blocks.push(data.samples);
     };
     this.rec = rec;
-    this.play(this.currentBeat());
+    this.play(this.currentBeat(), { countIn: true });
     rec.startBeat = this.playStartBeat;
     rec.epoch = this.epoch;
   }
@@ -1129,7 +1274,10 @@ export class DawEngine {
   /** Finish the take: stops the transport, stores a WAV, resolves the take. */
   stopRecording(): Promise<RecordedTake> {
     const rec = this.rec;
-    if (!rec) return Promise.reject(new Error('Not recording'));
+    if (!rec) {
+      this.recStartToken += 1; // cancels a start still waiting for the microphone
+      return Promise.reject(new Error('Not recording'));
+    }
     if (rec.finishing) return rec.finishing;
     rec.finishing = this.finishRecording(rec);
     return rec.finishing;
@@ -1188,6 +1336,7 @@ export class DawEngine {
     rec.monitor.disconnect();
     for (const t of rec.stream.getTracks()) t.stop();
     if (this.rec === rec) this.rec = null;
+    this.releaseMicrophoneSession();
   }
 
   private discardRecording(): void {

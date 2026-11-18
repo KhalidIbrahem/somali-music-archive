@@ -15,6 +15,7 @@
     "test": "vitest run && node --test scripts/check-public-audio-rights.test.mjs"
   },
   "dependencies": {
+    "@breezystack/lamejs": "1.2.7",
     "@openrouter/sdk": "^1.2.4",
     "@sma/constants": "*",
     "@sma/types": "*",

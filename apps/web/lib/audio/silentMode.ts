@@ -94,3 +94,23 @@ export function keepSoundInSilentMode(win: Window = window): () => void {
     URL.revokeObjectURL(url);
   };
 }
+
+/**
+ * iOS 17+: the "playback" session above has no microphone. While the studio
+ * records (or checks the input level) the session must be "play-and-record";
+ * afterwards it goes back to "playback" so sound still ignores the silent
+ * switch. Does nothing where the browser has no audio session API.
+ */
+export function setRecordingAudioSession(
+  recording: boolean,
+  nav: Navigator | undefined = typeof navigator === 'undefined' ? undefined : navigator,
+): void {
+  const session = (nav as (Navigator & { audioSession?: AudioSessionLike }) | undefined)
+    ?.audioSession;
+  if (!session) return;
+  try {
+    session.type = recording ? 'play-and-record' : 'playback';
+  } catch {
+    // Read-only on some WebKit builds: recording then relies on the browser's default.
+  }
+}

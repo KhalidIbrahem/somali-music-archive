@@ -91,3 +91,15 @@ export function grooveRegion(
   region.notes = grooveToNotes(preset, beatsPerBar);
   return region;
 }
+
+/** A groove added from the library is at least this long (bars). */
+export const GROOVE_MIN_BARS = 16;
+
+/**
+ * How many bars a groove added at `startBeat` should loop for: up to the end
+ * of the arrangement when that is further, otherwise GROOVE_MIN_BARS.
+ */
+export function grooveFillBars(startBeat: number, endBeat: number, beatsPerBar: number): number {
+  const toEnd = beatsPerBar > 0 ? Math.ceil((endBeat - startBeat) / beatsPerBar - 1e-6) : 0;
+  return Math.max(GROOVE_MIN_BARS, toEnd);
+}

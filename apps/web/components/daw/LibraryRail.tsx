@@ -19,13 +19,20 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { DawEngine } from '@/lib/daw/engine';
-import { GROOVE_PRESETS, STEPS_PER_BAR, grooveRegion, type GroovePreset } from '@/lib/daw/grooves';
+import {
+  GROOVE_PRESETS,
+  STEPS_PER_BAR,
+  grooveFillBars,
+  grooveRegion,
+  type GroovePreset,
+} from '@/lib/daw/grooves';
 import { PENTATONIC_MODES, ROOT_NAMES, scalePitchClasses } from '@/lib/daw/scales';
 import {
   DURBAAN_LANES,
   INSTRUMENT_LABELS,
   newAudioTrack,
   newTrack,
+  projectEndBeat,
   trackKind,
   type DawProject,
   type InstrumentId,
@@ -330,13 +337,18 @@ function GroovesTab({
         ? selected
         : (project.tracks.find((t) => trackKind(t) === 'midi' && t.instrument === 'durbaan') ??
           null);
-    const region = grooveRegion(preset, start, beatsPerBar, 2);
+    // Long enough to play over: to the end of the song, and never under 16 bars
+    // (two bars were five seconds — nothing to record a part against).
+    const bars = grooveFillBars(start, projectEndBeat(project), beatsPerBar);
+    const region = grooveRegion(preset, start, beatsPerBar, bars);
     if (target) {
       onUpdate((draft) => {
         draft.tracks.find((t) => t.id === target.id)?.regions.push(region);
       });
       onSelectTrack(target.id);
-      onNotice(`${preset.label} added to ${target.name} at bar ${start / beatsPerBar + 1}`);
+      onNotice(
+        `${preset.label} added to ${target.name}: ${bars} bars from bar ${start / beatsPerBar + 1}`,
+      );
     } else {
       const track = newTrack('Durbaan', 'durbaan');
       track.regions = [region];
@@ -344,7 +356,7 @@ function GroovesTab({
         draft.tracks.push(track);
       });
       onSelectTrack(track.id);
-      onNotice(`${preset.label} added on a new durbaan track`);
+      onNotice(`${preset.label} added on a new durbaan track: ${bars} bars`);
     }
   };
 

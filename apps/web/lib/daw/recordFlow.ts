@@ -6,6 +6,7 @@
  * __tests__/recordFlow.test.ts.
  */
 
+import { clampRecordOffsetMs } from './audioSchedule';
 import { audioRegionsOf, trackKind, type DawAudioRegion, type DawProject } from './types';
 
 /** The input meter's scale (dBFS). */
@@ -97,4 +98,53 @@ export function recordBlockedReason(
   const selected = project.tracks.find((t) => t.id === selectedTrackId);
   if (selected && trackKind(selected) === 'midi') return null;
   return 'Arm a track to record into it';
+}
+
+// ── per-device record settings (kept in localStorage, not in the project) ────
+
+export const RECORD_OFFSET_KEY = 'sma.studio.recordOffsetMs';
+export const HEADPHONES_HINT_KEY = 'sma.studio.headphonesHint';
+
+type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
+
+function browserStorage(): StorageLike | null {
+  try {
+    return typeof window === 'undefined' ? null : window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+/** The saved record offset for this device (ms), 0 when none or unreadable. */
+export function readRecordOffsetMs(storage: StorageLike | null = browserStorage()): number {
+  try {
+    const raw = storage?.getItem(RECORD_OFFSET_KEY);
+    return raw === null || raw === undefined ? 0 : clampRecordOffsetMs(Number(raw));
+  } catch {
+    return 0;
+  }
+}
+
+export function saveRecordOffsetMs(
+  ms: number,
+  storage: StorageLike | null = browserStorage(),
+): number {
+  const value = clampRecordOffsetMs(ms);
+  try {
+    storage?.setItem(RECORD_OFFSET_KEY, String(value));
+  } catch {
+    // Private windows: the offset then lasts for this visit only.
+  }
+  return value;
+}
+
+/** True the first time only: the caller then shows the headphones reminder. */
+export function takeHeadphonesHint(storage: StorageLike | null = browserStorage()): boolean {
+  try {
+    if (storage?.getItem(HEADPHONES_HINT_KEY) === 'shown') return false;
+    storage?.setItem(HEADPHONES_HINT_KEY, 'shown');
+  } catch {
+    // Unreadable storage: remind every time rather than never.
+  }
+  return true;
 }

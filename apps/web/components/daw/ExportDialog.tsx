@@ -22,6 +22,7 @@ import {
   replaceProject,
 } from '@/lib/daw/projectFile';
 import { audioRegionsOf, trackKind, type DawProject, type DawTrack } from '@/lib/daw/types';
+import { audioBufferToMp3, canShareFile } from '@/lib/daw/mp3';
 import { audioBufferToWav, downloadBlob } from '@/lib/daw/wav';
 
 const STEM_GAP_MS = 700;
@@ -49,6 +50,9 @@ export function ExportDialog({
 }): React.JSX.Element {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState('');
+  // The encoded MP3, kept so Share can run straight from a tap (the share
+  // sheet only opens inside a user gesture, and rendering takes seconds).
+  const [shareFile, setShareFile] = useState<File | null>(null);
   const titleId = useId();
   const firstButton = useRef<HTMLButtonElement | null>(null);
   const importInput = useRef<HTMLInputElement | null>(null);
@@ -88,6 +92,35 @@ export function ExportDialog({
       downloadBlob(audioBufferToWav(buffer), projectFileName(project, '.wav'));
       return 'Mix exported as WAV.';
     });
+  };
+
+  const exportMp3 = (): void => {
+    void run(async () => {
+      setShareFile(null);
+      setStatus('Rendering the mix…');
+      const buffer = await renderProject(engine, project);
+      setStatus('Encoding MP3…');
+      const blob = await audioBufferToMp3(buffer);
+      const file = new File([blob], projectFileName(project, '.mp3'), { type: 'audio/mpeg' });
+      setShareFile(file);
+      const mb = (file.size / (1024 * 1024)).toFixed(1);
+      if (canShareFile(file)) return `MP3 ready (${mb} MB). Share it or save it below.`;
+      downloadBlob(file, file.name);
+      return `Mix exported as MP3 (${mb} MB).`;
+    });
+  };
+
+  const shareMp3 = (): void => {
+    if (!shareFile) return;
+    navigator
+      .share({ files: [shareFile], title: project.name })
+      .then(() => setStatus('Shared.'))
+      .catch((error: unknown) => {
+        // Closing the share sheet is not a failure.
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        downloadBlob(shareFile, shareFile.name);
+        setStatus('Sharing is not available here; the MP3 was saved instead.');
+      });
   };
 
   const exportStems = (): void => {
@@ -187,6 +220,32 @@ export function ExportDialog({
               {rendersAudio ? '' : ' — MIDI instruments only in this build'}
             </span>
           </button>
+          <button type="button" disabled={busy} onClick={exportMp3} className={actionClass}>
+            <span className="text-sm text-hi">Full mix (MP3, to send)</span>
+            <span className="text-[11px] text-low">
+              Small file for WhatsApp and phones, 192 kbps; quiet mixes are raised to full level
+            </span>
+          </button>
+          {shareFile && canShareFile(shareFile) ? (
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={busy}
+                onClick={shareMp3}
+                className="h-10 flex-1 rounded-[4px] border border-accent-state bg-chrome-2 text-sm text-hi disabled:opacity-50"
+              >
+                Share MP3…
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => downloadBlob(shareFile, shareFile.name)}
+                className="h-10 flex-1 rounded-[4px] border border-hairline bg-chrome-2 text-sm text-mid hover:text-hi disabled:opacity-50"
+              >
+                Save MP3
+              </button>
+            </div>
+          ) : null}
           <button
             type="button"
             disabled={busy || stemTracks.length === 0}
