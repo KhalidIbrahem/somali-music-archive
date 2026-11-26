@@ -1,0 +1,97 @@
+{
+  "selectionNote": "4 of 10 prompt-and-seed pairs generated on 2026-11-21, kept for the largest gain in trackable melody (10 of 10 could be scored on both sides). Over those 10: melody 58 % base against 68 % fine-tuned, PCS 0.98 against 0.94, noise 0.011 against 0.011. None of these clips is in the listening study.",
+  "pairs": [
+    {
+      "id": "pair-01",
+      "title": "Qaraami on A, 100 BPM",
+      "prompt": "Somali qaraami led by the oud (kaban), moderate at 100 BPM, pentatonic melody rooted on A, intimate home recording",
+      "seed": 7100,
+      "durationSec": 15,
+      "listenFor": "the plucked melody line. A pitch tracker follows 80 % of the fine-tuned clip and 31 % of the base. It sits 37 cents sharp of concert pitch.",
+      "base": {
+        "file": "/demos/generated/pair_01_base.mp3",
+        "label": "MusicGen-small as published",
+        "pcs": 1.0,
+        "voiced": 0.307,
+        "flatness": 0.0124
+      },
+      "tuned": {
+        "file": "/demos/generated/pair_01_oud.mp3",
+        "label": "MusicGen-small + oud adapter",
+        "pcs": 0.9467,
+        "voiced": 0.802,
+        "flatness": 0.0123
+      }
+    },
+    {
+      "id": "pair-02",
+      "title": "Qaraami on G, 104 BPM",
+      "prompt": "Somali qaraami led by the oud (kaban), moderate at 104 BPM, pentatonic melody rooted on G, intimate home recording",
+      "seed": 7101,
+      "durationSec": 15,
+      "listenFor": "the plucked melody line. A pitch tracker follows 76 % of the fine-tuned clip and 42 % of the base.",
+      "base": {
+        "file": "/demos/generated/pair_02_base.mp3",
+        "label": "MusicGen-small as published",
+        "pcs": 0.9551,
+        "voiced": 0.417,
+        "flatness": 0.0136
+      },
+      "tuned": {
+        "file": "/demos/generated/pair_02_oud.mp3",
+        "label": "MusicGen-small + oud adapter",
+        "pcs": 0.9032,
+        "voiced": 0.759,
+        "flatness": 0.0251
+      }
+    },
+    {
+      "id": "pair-03",
+      "title": "Qaraami on D, 138 BPM",
+      "prompt": "Somali qaraami led by the oud (kaban), lively at 138 BPM, pentatonic melody rooted on D, intimate home recording",
+      "seed": 7106,
+      "durationSec": 15,
+      "listenFor": "the plucked melody line. A pitch tracker follows 65 % of the fine-tuned clip and 26 % of the base. The fine-tuned clip also has more hiss, learned from the home recordings.",
+      "base": {
+        "file": "/demos/generated/pair_03_base.mp3",
+        "label": "MusicGen-small as published",
+        "pcs": 0.9949,
+        "voiced": 0.263,
+        "flatness": 0.0001
+      },
+      "tuned": {
+        "file": "/demos/generated/pair_03_oud.mp3",
+        "label": "MusicGen-small + oud adapter",
+        "pcs": 0.9565,
+        "voiced": 0.646,
+        "flatness": 0.0081
+      }
+    },
+    {
+      "id": "pair-04",
+      "title": "Qaraami on A, 118 BPM",
+      "prompt": "Somali qaraami led by the oud (kaban), moderate at 118 BPM, pentatonic melody rooted on A, intimate home recording",
+      "seed": 7107,
+      "durationSec": 15,
+      "listenFor": "the plucked melody line. A pitch tracker follows 87 % of the fine-tuned clip and 49 % of the base. The fine-tuned clip also has more hiss, learned from the home recordings. It sits 28 cents flat of concert pitch.",
+      "base": {
+        "file": "/demos/generated/pair_04_base.mp3",
+        "label": "MusicGen-small as published",
+        "pcs": 0.9753,
+        "voiced": 0.487,
+        "flatness": 0.0009
+      },
+      "tuned": {
+        "file": "/demos/generated/pair_04_oud.mp3",
+        "label": "MusicGen-small + oud adapter",
+        "pcs": 0.9877,
+        "voiced": 0.87,
+        "flatness": 0.0038
+      }
+    }
+  ],
+  "restoration": {
+    "title": "Cassette restoration: raw, then restored",
+    "note": "Placeholder. The restoration study ran on archival cassette transfers that are research-only, so no raw or restored clip from it can be played here. A pair made from a rights-clear recording will replace this note. The measured result is in the evaluation summary."
+  }
+}

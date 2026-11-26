@@ -3280,6 +3280,38 @@
       "kind": "model_output",
       "adapters": ["ace_songs_v4", "acestep_base"],
       "rights": "releasable"
+    },
+    "apps/web/public/demos/dsp/sep_mixture.mp3": {
+      "kind": "synthesised",
+      "note": "portfolio_dsp_demo.py --synthetic: plucked-string, sung-vowel and tape-noise signals made in numpy"
+    },
+    "apps/web/public/demos/dsp/sep_oud.mp3": {
+      "kind": "synthesised",
+      "note": "portfolio_dsp_demo.py --synthetic: plucked-string, sung-vowel and tape-noise signals made in numpy"
+    },
+    "apps/web/public/demos/dsp/sep_voice.mp3": {
+      "kind": "synthesised",
+      "note": "portfolio_dsp_demo.py --synthetic: plucked-string, sung-vowel and tape-noise signals made in numpy"
+    },
+    "apps/web/public/demos/dsp/sep_remix.mp3": {
+      "kind": "synthesised",
+      "note": "portfolio_dsp_demo.py --synthetic: plucked-string, sung-vowel and tape-noise signals made in numpy"
+    },
+    "apps/web/public/demos/dsp/rest_noisy.mp3": {
+      "kind": "synthesised",
+      "note": "portfolio_dsp_demo.py --synthetic: plucked-string, sung-vowel and tape-noise signals made in numpy"
+    },
+    "apps/web/public/demos/dsp/rest_noise.mp3": {
+      "kind": "synthesised",
+      "note": "portfolio_dsp_demo.py --synthetic: plucked-string, sung-vowel and tape-noise signals made in numpy"
+    },
+    "apps/web/public/demos/dsp/rest_restored.mp3": {
+      "kind": "synthesised",
+      "note": "portfolio_dsp_demo.py --synthetic: plucked-string, sung-vowel and tape-noise signals made in numpy"
+    },
+    "apps/web/public/demos/dsp/rest_clean.mp3": {
+      "kind": "synthesised",
+      "note": "portfolio_dsp_demo.py --synthetic: plucked-string, sung-vowel and tape-noise signals made in numpy"
     }
   }
 }

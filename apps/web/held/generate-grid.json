@@ -1,0 +1,154 @@
+{
+  "durationSec": 15,
+  "cfg": 3.0,
+  "medianGenerationSeconds": 17.8,
+  "labels": {
+    "base": "MusicGen-small as published",
+    "tuned": "MusicGen-small + oud adapter"
+  },
+  "prompts": [
+    {
+      "id": 0,
+      "label": "Moderate, 96 BPM, on D",
+      "prompt": "Somali qaraami led by the oud (kaban), moderate at 96 BPM, pentatonic melody rooted on D, intimate home recording"
+    },
+    {
+      "id": 1,
+      "label": "Lively, 140 BPM, on E",
+      "prompt": "Somali qaraami led by the oud (kaban), lively at 140 BPM, pentatonic melody rooted on E, intimate home recording"
+    },
+    {
+      "id": 2,
+      "label": "Moderate, 110 BPM, on A",
+      "prompt": "Somali qaraami led by the oud (kaban), moderate at 110 BPM, pentatonic melody rooted on A, intimate home recording"
+    },
+    {
+      "id": 3,
+      "label": "Lively, 128 BPM, on C",
+      "prompt": "Somali qaraami led by the oud (kaban), lively at 128 BPM, pentatonic melody rooted on C, intimate home recording"
+    }
+  ],
+  "seeds": [11, 22, 33],
+  "clips": {
+    "p0_s11_base": {
+      "file": "/demos/generated/gen_p0_s11_base.mp3",
+      "pcs": 1.0,
+      "voiced": 0.857
+    },
+    "p0_s11_tuned": {
+      "file": "/demos/generated/gen_p0_s11_oud.mp3",
+      "pcs": 0.962,
+      "voiced": 0.352
+    },
+    "p0_s22_base": {
+      "file": "/demos/generated/gen_p0_s22_base.mp3",
+      "pcs": 0.9067,
+      "voiced": 0.258
+    },
+    "p0_s22_tuned": {
+      "file": "/demos/generated/gen_p0_s22_oud.mp3",
+      "pcs": 1.0,
+      "voiced": 0.826
+    },
+    "p0_s33_base": {
+      "file": "/demos/generated/gen_p0_s33_base.mp3",
+      "pcs": 0.9756,
+      "voiced": 0.329
+    },
+    "p0_s33_tuned": {
+      "file": "/demos/generated/gen_p0_s33_oud.mp3",
+      "pcs": 0.9965,
+      "voiced": 0.385
+    },
+    "p1_s11_base": {
+      "file": "/demos/generated/gen_p1_s11_base.mp3",
+      "pcs": 0.8398,
+      "voiced": 0.342
+    },
+    "p1_s11_tuned": {
+      "file": "/demos/generated/gen_p1_s11_oud.mp3",
+      "pcs": 1.0,
+      "voiced": 0.23
+    },
+    "p1_s22_base": {
+      "file": "/demos/generated/gen_p1_s22_base.mp3",
+      "pcs": 0.5521,
+      "voiced": 0.128
+    },
+    "p1_s22_tuned": {
+      "file": "/demos/generated/gen_p1_s22_oud.mp3",
+      "pcs": 0.6203,
+      "voiced": 0.75
+    },
+    "p1_s33_base": {
+      "file": "/demos/generated/gen_p1_s33_base.mp3",
+      "pcs": 0.697,
+      "voiced": 0.088
+    },
+    "p1_s33_tuned": {
+      "file": "/demos/generated/gen_p1_s33_oud.mp3",
+      "pcs": 0.6233,
+      "voiced": 0.699
+    },
+    "p2_s11_base": {
+      "file": "/demos/generated/gen_p2_s11_base.mp3",
+      "pcs": 1.0,
+      "voiced": 0.578
+    },
+    "p2_s11_tuned": {
+      "file": "/demos/generated/gen_p2_s11_oud.mp3",
+      "pcs": 0.8853,
+      "voiced": 0.746
+    },
+    "p2_s22_base": {
+      "file": "/demos/generated/gen_p2_s22_base.mp3",
+      "pcs": 1.0,
+      "voiced": 0.535
+    },
+    "p2_s22_tuned": {
+      "file": "/demos/generated/gen_p2_s22_oud.mp3",
+      "pcs": 0.962,
+      "voiced": 0.705
+    },
+    "p2_s33_base": {
+      "file": "/demos/generated/gen_p2_s33_base.mp3",
+      "pcs": 0.9375,
+      "voiced": 0.449
+    },
+    "p2_s33_tuned": {
+      "file": "/demos/generated/gen_p2_s33_oud.mp3",
+      "pcs": 0.8889,
+      "voiced": 0.301
+    },
+    "p3_s11_base": {
+      "file": "/demos/generated/gen_p3_s11_base.mp3",
+      "pcs": null,
+      "voiced": null
+    },
+    "p3_s11_tuned": {
+      "file": "/demos/generated/gen_p3_s11_oud.mp3",
+      "pcs": 0.9962,
+      "voiced": 0.703
+    },
+    "p3_s22_base": {
+      "file": "/demos/generated/gen_p3_s22_base.mp3",
+      "pcs": null,
+      "voiced": null
+    },
+    "p3_s22_tuned": {
+      "file": "/demos/generated/gen_p3_s22_oud.mp3",
+      "pcs": 0.9946,
+      "voiced": 0.737
+    },
+    "p3_s33_base": {
+      "file": "/demos/generated/gen_p3_s33_base.mp3",
+      "pcs": 1.0,
+      "voiced": 0.951
+    },
+    "p3_s33_tuned": {
+      "file": "/demos/generated/gen_p3_s33_oud.mp3",
+      "pcs": 0.6481,
+      "voiced": 0.361
+    }
+  }
+}

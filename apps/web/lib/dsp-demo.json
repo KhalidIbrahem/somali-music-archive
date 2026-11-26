@@ -1,0 +1,85 @@
+{
+  "source": {
+    "kind": "synthetic",
+    "label": "Synthesised test signals, not a recording",
+    "note": "A plucked-string model, a sung-vowel model and cassette-style noise, all made in code. They show that the method and the measurement work; they do not show how it sounds on a real oud."
+  },
+  "seconds": 20.0,
+  "separation": {
+    "method": "semi-supervised NMF, 60 oud bases learned from another piece, 16 free bases",
+    "clips": [
+      {
+        "id": "sep_mixture",
+        "label": "Original",
+        "what": "Oud and voice together",
+        "file": "/demos/dsp/sep_mixture.mp3",
+        "image": "/demos/dsp/sep_mixture.png"
+      },
+      {
+        "id": "sep_oud",
+        "label": "Extracted oud",
+        "what": "What the method kept as oud",
+        "file": "/demos/dsp/sep_oud.mp3",
+        "image": "/demos/dsp/sep_oud.png"
+      },
+      {
+        "id": "sep_voice",
+        "label": "Extracted voice",
+        "what": "Everything it did not explain as oud",
+        "file": "/demos/dsp/sep_voice.mp3",
+        "image": "/demos/dsp/sep_voice.png"
+      },
+      {
+        "id": "sep_remix",
+        "label": "Remix",
+        "what": "The extracted oud with the voice turned down 12 dB",
+        "file": "/demos/dsp/sep_remix.mp3",
+        "image": "/demos/dsp/sep_remix.png"
+      }
+    ],
+    "oud": {
+      "mixtureSiSdr": 1.3,
+      "separatedSiSdr": 9.1
+    },
+    "voice": {
+      "mixtureSiSdr": -1.1,
+      "separatedSiSdr": 8.0
+    },
+    "baseline": null
+  },
+  "restoration": {
+    "method": "spectral subtraction, alpha 2.0, at most 18.0 dB",
+    "clips": [
+      {
+        "id": "rest_noisy",
+        "label": "Noisy",
+        "what": "The clean take with tape noise added at a known level",
+        "file": "/demos/dsp/rest_noisy.mp3",
+        "image": "/demos/dsp/rest_noisy.png"
+      },
+      {
+        "id": "rest_noise",
+        "label": "Noise",
+        "what": "The noise alone",
+        "file": "/demos/dsp/rest_noise.mp3",
+        "image": "/demos/dsp/rest_noise.png"
+      },
+      {
+        "id": "rest_restored",
+        "label": "Restored",
+        "what": "After spectral subtraction",
+        "file": "/demos/dsp/rest_restored.mp3",
+        "image": "/demos/dsp/rest_restored.png"
+      },
+      {
+        "id": "rest_clean",
+        "label": "Clean",
+        "what": "The take before any noise was added",
+        "file": "/demos/dsp/rest_clean.mp3",
+        "image": "/demos/dsp/rest_clean.png"
+      }
+    ],
+    "noisySnr": 10.0,
+    "restoredSnr": 22.0
+  }
+}

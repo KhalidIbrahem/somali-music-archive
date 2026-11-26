@@ -1,86 +1,137 @@
 # QaraamiGen
 
-An open-source computational ethnomusicology project on Somali qaraami, the
-oud-led song tradition recorded on cassette between the 1950s and the 1990s.
-It is nonprofit academic research with three goals: a transcription benchmark
-for Somali music, generation models fine-tuned on archival recordings, and a
-pentatonic conformance metric for judging whether generated or transcribed
-material stays inside the tradition's scale system. The recordings themselves
-are never distributed. The code, the method, and the measurements are.
-Built by Khalid Ibrahim, Minneapolis. Live site: https://www.qaraamigen.com.
-Dedicated to Ahmed Ali Egal, whose intonation anchors the analysis.
+Somali qaraami is an oud-led song tradition passed on by ear, with almost no
+written scores and a five-note scale that is not tuned like a piano. QaraamiGen
+is the computation to study it: transcription that writes a recording out as
+sheet music with its measured scale, music-generation models fine-tuned on
+Somali recordings, and an evaluation that reports what listeners hear next to
+what the loss says. Everything a reviewer needs opens in a browser with no
+login and no setup.
 
-## The five-minute path for a reviewer
+**Start here: https://www.qaraamigen.com/portfolio** (ten minutes)
 
-1. **What was found (2 min).** Read `docs/eval/EVALUATION.md` (headline table
-   and "the story in four steps"). Short form: LoRA-adapting MusicGen-small on
-   two Somali corpora looked like a clean negative for two months; it was a
-   training-harness defect (the decoder's 37 functional-dropout attributes,
-   active in training, absent in evaluation, gave train loss 9.74 against eval
-   4.05 on identical weights). With the defect removed, every checkpoint on
-   both corpora beats the base model on unseen songs (oud 4.5132 → 4.4785;
-   Harvard 4.6262 → 4.5501 validation, 4.8363 → 4.7468 test), and the adapters
-   produce 64 to 68 % more trackable melody while learning the cassettes'
-   ~25-cent tuning drift. Scaling to medium and large gives statistically
-   supported gains of 0.102 and 0.128 nats on held-out songs
-   (`docs/eval/SCALING_REPORT.md`). Figures: `docs/figures/ft1` to `ft7`.
-2. **Hear it (2 min).** On https://www.qaraamigen.com, `/listen` and `/gallery`
-   play generated clips, `/transcribe` turns a recording into sheet music in
-   the browser, and `/studio` is the music workspace. The side-by-side
-   base-versus-adapter demo runs on the local service (`services/musicgen-api/`,
-   invite only); a recorded walkthrough follows `docs/demo/DEMO_SCRIPT.md`.
-3. **Check the rights (1 min).** `docs/DATA_PROVENANCE.md`. No recording from
-   any corpus is distributed, served publicly, or in git; every model output is
-   labelled with the adapter's corpus and a non-distribution line. Model
-   cards: `docs/eval/MODEL_CARD_*.md`.
+|         | link                                                 | what you get                                                                                                              |
+| ------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Demo    | [/transcribe](https://www.qaraamigen.com/transcribe) | a recording to sheet music in your browser: one click on a sample, or your own file or microphone; MusicXML, MIDI, PDF    |
+| Scores  | [/scores](https://www.qaraamigen.com/scores)         | three automatic transcriptions with playback, PCS, and the tuning findings in plain words                                 |
+| Results | [/results](https://www.qaraamigen.com/results)       | one figure, one table                                                                                                     |
 
-Reproduce a number yourself (needs the non-distributed processed clips on
-disk): `scripts/reproduce_oud_smoke.sh` re-runs the training smoke test and
-checks the harness invariants and the base validation loss (4.5132).
+Built by Khalid Ibrahim, Minneapolis. Dedicated to Ahmed Ali Egal, whose
+intonation anchors the analysis.
 
-## What is here
+## Results
 
-| path | what |
-| --- | --- |
-| `docs/ARCHITECTURE.md` | the research system: pipeline, models, evaluation rules, storage |
-| `docs/data/CORPUS_INVENTORY.md` | the 43-hour corpus, source by source, with rights tiers |
-| `apps/ai-service/scripts/phase2_train.py`, `scale_train.py` | the fixed LoRA harness (MusicGen small, medium, large; precomputed EnCodec tokens, delay-pattern labels) |
-| `apps/ai-service/scripts/probe_train_eval_gap.py` | the five-condition probe that diagnosed the defect |
-| `apps/ai-service/scripts/pcs.py`, `pentatonic.py` | Pentatonic Conformity Score and tonic/scale detection |
-| `apps/ai-service/scripts/eval_report.py`, `scale_eval.py` | every table and figure in `docs/eval` from `runs/` and `data/` |
-| `docs/eval/` | evaluation, scaling report, preference optimisation, cassette restoration, vocal-model survey, model cards |
-| `services/musicgen-api/` | local inference API: model on Apple silicon, adapters hot-swapped, `/generate` `/pcs` `/demo`; `docs/deploy/DEPLOY.md` |
-| `runs/` | every fine-tuning run's config, loss curve, held-out CE (weights and audio are not tracked) |
-| `docs/README-platform.md` | the platform itself: mobile field-recording app, archive, listening room, studio, research API (Next.js, Express, Expo, Python) |
+Every number is written by a script from the run files in this repository
+(`apps/ai-service/scripts/results_summary_build.py`,
+`transcription_showcase_build.py`).
 
-## Environment
+**Generation.** Fine-tuned models predict unseen Somali songs better than the
+models they start from, and the gain grows with model size.
 
-Apple-silicon Mac; `~/ai/musicgen-env` (Python 3.11, torch with MPS,
-transformers, peft). `services/musicgen-api/requirements.txt` lists the
-inference stack. The web, API, and mobile apps need Node 22 (`.nvmrc`) and
-have their own toolchain (`docs/README-platform.md`).
+| model                                | held-out gain, nats (95 % interval) | unseen songs |
+| ------------------------------------ | ----------------------------------- | ------------ |
+| MusicGen-medium + LoRA               | +0.102 [0.078, 0.123]               | 27           |
+| MusicGen-large + LoRA                | +0.128 [0.104, 0.152]               | 27           |
+| MusicGen-medium + LoRA, whole corpus | +0.076 [0.069, 0.084]               | 64           |
 
-## Rights and governance, in one paragraph
+The ear is a harder judge: in blind paired tests one listener mostly answered
+"neither", and only the large model was preferred clearly. Both results are on
+[/results](https://www.qaraamigen.com/results). A study with Somali musicians
+is open at [/study](https://www.qaraamigen.com/study).
 
-The Harvard corpus (Maryan "Aryette" Omar Ali Collection, AWM Spec Coll 103)
-is not rights-cleared for redistribution and written permission from the Loeb
-Music Library is outstanding; the oud collection's rights remain with its
-unlisted performers; the cassette imports found on the project's own archive
-are of mixed and partly unknown provenance. All were used for research
-analysis and fine-tuning only. Cultural labels are assigned by Somali
-scholars, never predicted. The public site needs no login and serves only
-generated and synthesised audio that passes the rights check in
-`apps/web/scripts/check-public-audio-rights.mjs`. The member archive, where
-archival audio is served through signed, expiring URLs, stays invite-only.
-Institutions get access by agreement. Generated audio is research output and
-is always labelled as such.
+**Transcription.** 91 recordings transcribed automatically, none failed.
+
+| source           | recordings | PCS, median | notes off the scale |
+| ---------------- | ---------- | ----------- | ------------------- |
+| solo oud (kaban) | 28         | 0.96        | 5 %                 |
+| band with voice  | 63         | 0.74        | 35 %                |
+
+PCS (pentatonic conformity score) is the share of the melody that lands on the
+recording's own five-note scale. On the public vocadito benchmark the browser
+transcriber reaches a note F1 of 0.69 against 0.74 between two human
+annotators, 93 % of human agreement (`docs/eval/QORMADA_EVAL.md`). Across the
+pool the minor seventh sits about 8 cents sharp of piano tuning on both solo
+oud and band recordings. No Somali recording has been corrected by ear yet.
+
+**The finding behind the fine-tuning.** For two months LoRA fine-tuning of
+MusicGen looked like a clean negative result. The cause was a defect in the
+`transformers` MusicGen implementation: the hub configs turn on dropout that
+the released checkpoints were never trained with, so training optimises a path
+that generation never uses (train loss 9.74 against eval loss 4.05 on identical
+weights). With it removed, every checkpoint beats its base
+(`docs/eval/EVALUATION.md`).
+
+## Run it
+
+Node 22. This starts the public site locally, with the same pages as above:
+
+```bash
+git clone https://github.com/KhalidIbrahem/somali-music-archive.git
+cd somali-music-archive
+npm install
+NEXT_PUBLIC_AI_SERVICE_MODE=off npm run dev --workspace @sma/web
+```
+
+Then open http://127.0.0.1:3000/portfolio. Training, evaluation and live
+generation need an Apple-silicon Mac, a Python 3.11 environment with torch,
+transformers and peft, and the recordings, which are not distributed
+(`docs/GENERATION_SETUP.md`, `services/musicgen-api/`).
+
+## Open source
+
+- [huggingface/transformers #49094](https://github.com/huggingface/transformers/issues/49094):
+  MusicGen hub configs set decoder dropout to 0.1 although the checkpoints were
+  trained with 0; `train()` doubles the loss and silently breaks fine-tuning.
+- [huggingface/transformers #49095](https://github.com/huggingface/transformers/issues/49095):
+  `forward(labels=...)` raises on every released MusicGen checkpoint.
+
+Each has a one-minute reproducer, and both still reproduce on the main branch
+as of 2026-11-21 (`docs/oss/UPSTREAM_STATUS.md`,
+`docs/oss/musicgen_main_check.py`). The fix used here is
+`zero_functional_dropout()` in `apps/ai-service/scripts/scale_train.py`.
+
+Datasets and a demo Space are on Hugging Face:
+[khalidibra/qaraamigen](https://huggingface.co/spaces/khalidibra/qaraamigen).
+
+## What is in the repository
+
+| path                                                        | what                                                                                |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `apps/web/`                                                 | the public site: transcriber, listening pages, scores, results, studio (Next.js)    |
+| `apps/web/lib/qormada/`                                     | the in-browser transcription pipeline: pitch, scale fit, rhythm, MusicXML           |
+| `apps/ai-service/scripts/phase2_train.py`, `scale_train.py` | the fixed LoRA harness (MusicGen small, medium, large)                              |
+| `apps/ai-service/scripts/pcs.py`, `pentatonic.py`           | Pentatonic Conformity Score and tonic/scale detection                               |
+| `apps/ai-service/scripts/eval_report.py`, `scale_eval.py`   | the tables and figures in `docs/eval` from `runs/` and `data/`                      |
+| `docs/eval/`                                                | evaluation, scaling report, transcription pool report, restoration, model cards     |
+| `services/musicgen-api/`                                    | local inference API: adapters hot-swapped, `/generate`, `/pcs`                      |
+| `runs/`                                                     | every fine-tuning run's config, loss curve and held-out results (no weights, audio) |
+| `docs/ARCHITECTURE.md`, `docs/README-platform.md`           | the research system and the platform (web, API, mobile)                             |
+
+## Rights
+
+No archival recording is distributed, served publicly, or in git. The Harvard
+collection (Maryan "Aryette" Omar Ali Collection, AWM Spec Coll 103) is not
+cleared for redistribution, and models trained on it are reported as numbers
+only. Every clip on the site is AI model output or synthesised audio that
+passes the build-time check in
+`apps/web/scripts/check-public-audio-rights.mjs`. Details:
+`docs/DATA_PROVENANCE.md`; model cards: `docs/eval/MODEL_CARD_*.md`.
 
 ## License and citation
 
-The code is licensed under the Apache License 2.0 (`LICENSE`). The license
-covers the code only: the recordings, the trained weights, and generated audio
-are outside it. The recordings and weights are not distributed; the only
-generated clips published are those cleared by the rights check. To cite the
-project, use `CITATION.cff`.
+Code: Apache License 2.0 (`LICENSE`). The license covers the code only, not
+recordings, weights or generated audio.
+
+```bibtex
+@software{ibrahim_qaraamigen_2026,
+  author  = {Ibrahim, Khalid},
+  title   = {QaraamiGen: computational ethnomusicology tools for Somali qaraami music},
+  year    = {2026},
+  version = {0.1.0},
+  url     = {https://github.com/KhalidIbrahem/somali-music-archive}
+}
+```
+
+`CITATION.cff` carries the same record.
 
 Khalid Ibrahim · Minneapolis, MN

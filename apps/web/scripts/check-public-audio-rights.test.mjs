@@ -93,3 +93,24 @@ test('a reference to an unlisted generated file fails', () => {
 test('a listed file missing from the checkout fails', () => {
   assert.match(check(base({ audioFiles: [] }))[0], /not in the checkout/);
 });
+
+test('a recording made for the project needs a performer and a consent reference', () => {
+  const TAKE = 'apps/web/public/demos/dsp/sep_mixture.mp3';
+  const run = (entry) =>
+    check({
+      audioFiles: [TAKE],
+      manifest: { files: { [TAKE]: entry } },
+      cards: {},
+      cardsAvailable: true,
+      references: [],
+    });
+  assert.deepEqual(
+    run({ kind: 'own_recording', performer: 'A Player', consent: 'index entry 2026-12-10' }),
+    [],
+  );
+  assert.match(run({ kind: 'own_recording', performer: 'A Player' })[0], /without consent/);
+  assert.match(
+    run({ kind: 'own_recording', consent: 'x', performer: ' ' })[0],
+    /without performer/,
+  );
+});

@@ -13,6 +13,7 @@
 import { GENERATED_EXAMPLES, NOT_DISTRIBUTED } from '@/lib/demoExamples';
 import { Reveal } from '@/components/Reveal';
 import { siteCopy } from '@/lib/siteCopy';
+import { GeneratePicker } from './GeneratePicker';
 
 export function GenerateExamples(): React.JSX.Element {
   return (
@@ -39,7 +40,10 @@ export function GenerateExamples(): React.JSX.Element {
         </div>
       </section>
 
+      <GeneratePicker />
+
       <section className="mx-auto max-w-4xl px-4 sm:px-6 py-14">
+        <h2 className="mb-6 font-display text-2xl text-ink-primary">More generated clips</h2>
         <ol className="flex flex-col gap-6">
           {GENERATED_EXAMPLES.map((clip, i) => (
             <li key={clip.id}>

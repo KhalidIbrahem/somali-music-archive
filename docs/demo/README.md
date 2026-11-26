@@ -31,5 +31,5 @@ interval on the adapter preference rate, is written to
 `data/listening/<set>_<listener>_<timestamp>.json` (tracked). Rebuilding the
 demo page then replaces the "study pending" line with a results table.
 
-`DEMO_SCRIPT.md` is the separate screen-recording script for the live
-base-vs-adapter service (`services/musicgen-api`, `/demo`).
+`DEMO_SCRIPT.md` is the screen-recording script for the portfolio video: the
+public site, plus one shot of the model generating live on the local service.

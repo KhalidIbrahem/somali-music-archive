@@ -1,88 +1,77 @@
-# QaraamiGen — 3-minute walkthrough script (screen capture)
+# Demo video script (about 2 min 50 s)
 
-**Setup before recording (2 min, off camera)**
+Project 1 of the portfolio (the technical one): a screen recording with
+voice-over, built around Khalid's own oud recording of the Beerdilaacshe melody
+(session planned for 2026-12-10). Six shots, about 330 words spoken; say them
+your own way. No generated audio is played anywhere in this video.
 
-1. `launchctl print gui/501/com.qaraamigen.musicgen-api | grep state` → `running`.
-   If not: `launchctl bootstrap gui/501 ~/ai/launchd/com.qaraamigen.musicgen-api.plist`.
-2. Open `http://127.0.0.1:8765/demo` in a clean browser window on this
-   laptop, dark theme, 1280×800 or wider. (Use the Tailscale address
-   `http://100.65.5.120:8765/demo` only from another device on your tailnet,
-   after `curl http://100.65.5.120:8765/health` works from that device — the
-   laptop cannot reliably reach its own Tailscale address; see DEPLOY.md
-   "Known issue".) Paste the token from
-   `~/ai/musicgen-api/musicgen-api.env` into the API token field once (it
-   stays for the tab).
-3. Pre-warm: generate once with any adapter so the first on-camera run is not
-   the cold one. Set Seconds = 10, CFG = 3, Seed = 42.
-4. Have `docs/OUD-LORA-RESULTS.md` and `docs/eval/EVALUATION.md` open in a
-   second tab for the one number you will quote.
+Project 2 is the performance video from the same session; its sheet is
+`docs/portfolio/RECORDING_SHEET_MUSICIANS.md`.
 
-**Rights line to say on camera, verbatim (once, at the start):**
-"Both adapters were fine-tuned on recordings I cannot redistribute: a private
-oud collection and the Aryette collection at Harvard's Loeb Music Library.
-Nothing you will hear is a source recording. Everything is model output."
+## What must exist before this can be recorded
 
----
+| needed | state on 2026-11-25 |
+| --- | --- |
+| The takes from the session: silence, Beerdilaacshe on solo oud, a different piece on solo oud, the voice take | not recorded yet |
+| A short clip of the performance video for shot 1 | not recorded yet |
+| The separation and restoration page with those takes on it | page built (`/separation`, 2026-11-25) on synthesised test signals; `portfolio_dsp_build.py --source recording` swaps the takes in |
+| Every clip on that page approved by Khalid's ear | waits on the takes |
+| Numbers marked `[…]` below | measured on the takes, then written in |
+| `portfolio-v1` merged and pushed, so the pages are live | not pushed |
 
-## 0:00 — Frame it (20 s)
+## Before recording
 
-Show the page header. Say: "This is a MusicGen-small model running on my laptop,
-with two LoRA adapters trained on Somali qaraami. Same prompt, same random
-seed, left is the base model, right is the fine-tuned one, and we score both
-with a pentatonic conformity measure I built for the archive."
+1. Browser at 1280 × 720 or 1440 × 900, zoom 110 %, bookmarks bar hidden, one
+   window, these tabs in order: `/portfolio`, `/transcribe`,
+   `/scores/beerdilaacshe`, the separation page, `/results`.
+2. System audio is recorded (QuickTime with BlackHole, or OBS). Play one clip
+   and check the level. Notifications off.
+3. Mac on power, lid open: a sleeping Mac freezes the audio clock.
 
-## 0:20 — Oud, base vs fine-tuned (70 s)
+## Shots
 
-1. Adapter: **oud**. Click **Prompt for adapter** (it fills the oud caption:
-   "Somali qaraami led by the oud (kaban), moderate at 100 BPM, pentatonic
-   melody rooted on A, intimate home recording").
-2. Click **Generate both**. While it runs (~10 s per side): "Batch size one,
-   ten seconds of audio takes about four seconds on Apple silicon."
-3. Play **base** (5–8 s). Then play **fine-tuned** (5–8 s). Let the difference
-   speak; if you narrate, say what you hear, not what the number says.
-4. Point at the two PCS tiles and the **voiced fraction** rows. Say: "PCS is
-   the share of pitched sound that sits on the detected pentatonic scale.
-   Read it with the voiced fraction: on the held-out oud set the adapter
-   produces about sixty percent more trackable melody than base — the
-   improvement comes from more music, not from silence."
-5. One sentence of honesty: "A single click is a demonstration, not a
-   measurement. The evaluation is in the repo: held-out token cross-entropy
-   on unseen songs, 4.51 to 4.48 on validation, and eight-pair A/B sets."
+| # | time | on screen | do | say |
+| --- | --- | --- | --- | --- |
+| 1 | 0:00–0:25 | The performance video, full screen, then `www.qaraamigen.com/portfolio` | Let eight seconds of the oud play with no talking. Cut to the portfolio page. | "That is me, playing Beerdilaacshe on the oud. Somali qaraami is oud-led song, taught by ear, the way my teacher is teaching me. Almost none of it is written down, and its five-note scale is not tuned like a piano. I'm Khalid Ibrahim. I built QaraamiGen to study this music with computation." |
+| 2 | 0:25–0:55 | `/transcribe` | Drop in the recording from shot 1. The score appears. Point at the scale and cents line, then at a red note. Click **Download MusicXML**. | "First, transcription. I give it the recording you just heard, and it becomes sheet music, in the browser, nothing uploaded. It measures which five notes I actually played and how far they sit from piano tuning. Notes off the scale are kept and marked red, because ornaments are music, not errors. On a public benchmark it reaches ninety-three percent of the agreement between two human annotators." |
+| 3 | 0:55–1:20 | `/scores/beerdilaacshe` | Show the engraved melody, press play for three seconds, then put the transcription from shot 2 beside it. | "This is the same melody as it is engraved on the site, and this is what the software heard me play. Where they differ, some of it is the software and some of it is me; I can see which, note by note. Across ninety-one recordings the measurements show a tendency: the minor seventh is played about eight cents sharp." |
+| 4 | 1:20–1:55 | The separation page, first block | Play **Original** (oud and voice together) for five seconds, **Extracted oud** for five, **Extracted voice** for four. Rest on the number table. | "Second, separation. I recorded the oud and the voice separately, so the true parts are known. The method is non-negative matrix factorisation, written in plain numpy: it learns what my oud sounds like from another piece in the same session, then splits the mixture. It recovers the oud at [X] decibels. A pretrained neural network reaches [Y], and I show both, because the simple method is the one I can explain line by line." |
+| 5 | 1:55–2:20 | The separation page, second block | Play **Noisy** for four seconds, **Noise** for two, **Restored** for five. | "Third, restoration. Much of Somali music survives only on cassette. Here I add tape noise to my own clean recording at a known level, remove it with spectral subtraction, and measure what comes back: from ten decibels to [Z]." |
+| 6 | 2:20–2:50 | `/results`, then end on `/portfolio` | Rest on the figure, scroll to the blind-test column. | "I also fine-tuned music generation models on oud recordings. They predict unseen Somali songs better than their base models, and along the way I found and reported a bug in the Hugging Face MusicGen code. But in blind listening the output is not good enough yet, and I say so next to the numbers. Making it good, with Somali musicians as the judges, is the work I want to do next. Thank you." |
 
-## 1:30 — Harvard raw, base vs fine-tuned (60 s)
+## Notes
 
-1. Adapter: **harvard_raw**. Click **Prompt for adapter** ("Qaraami,
-   traditional Somali music, lively at 129 BPM, pentatonic melody rooted on
-   F#, vintage archival recording"). Keep seed 42.
-2. **Generate both**. While it runs: "This adapter was trained on 119 tracks
-   of mid-century Somali cassette recordings from the Aryette collection.
-   The tapes carry hiss and speed drift, and the adapter learns that texture
-   too — you will hear it."
-3. Play base, then fine-tuned. Point at the tuning-offset row: "The fine-tuned
-   output drifts about twenty-plus cents from A440, which is what the real
-   cassettes do. The base model sits near zero."
-4. Say the headline: "Held-out cross-entropy improved from 4.84 to 4.75 on
-   unseen songs, and every checkpoint beat the base model. In July this same
-   experiment looked like a failure — until I found that the training
-   harness was applying dropout the evaluation path never saw. Fixing that
-   one thing turned a negative result into two positive ones."
+- Shot 4's words depend on the measurement. On two real oud takes and one voice
+  take from the project's corpus the same code gave: oud 4.4 dB in the mixture,
+  10.8 dB separated with a same-session dictionary, 16.9 dB for Demucs; with a
+  dictionary from another session it was worse than the mixture (2.9 dB). If
+  the result on Khalid's takes is not clearly above the mixture, the line
+  changes to say so; it is not cut.
+- Shot 3 only works if the two scores are in the same key and tempo on screen.
+  Check it once before recording; if the comparison is hard to read, show the
+  two scores one after the other instead.
+- Beerdilaacshe: one source (Geeska, 2025) credits the melody to Qarshe and
+  nothing else on record dates it. Say "the Beerdilaacshe melody" and name no
+  composer in the video. Whether a public performance of it needs anyone's
+  permission is Khalid's question to settle with his teacher before the video
+  is uploaded.
+- If someone else sings the voice take, their consent form is signed before the
+  clip is used (`docs/portfolio/CONSENT_FORM.md`).
+- Do not show: the member archive, any source recording that is not Khalid's
+  own, the listening study's clips, any generated clip, a terminal with the
+  service token.
+- Numbers spoken are the ones on the pages: 93 %, 91 recordings, about 8 cents,
+  and the three filled in from the takes. If a page changes, change the line.
+- After recording: upload unlisted, then give me the URL for the `/portfolio`
+  video slot and the README.
 
-## 2:30 — Close (30 s)
+## Dates
 
-Switch to the evaluation tab for five seconds; show the results table.
-Say: "Everything runs locally, the service is a FastAPI app with a
-three-request queue and a pentatonic scorer, and the source audio never
-leaves the archive. What comes next is the listening study and the
-melody-conditioned model."
-
-Stop recording at ~3:00.
-
----
-
-**If something goes wrong on camera**
-
-- 429 "queue full": you clicked twice; wait 15 s.
-- "Error: 401": token field is empty — paste it again.
-- Silence in a clip: regenerate with seed 43; say "sampling" and move on.
-- Page unreachable: `curl http://127.0.0.1:8765/health`; if it fails,
-  `launchctl kickstart -k gui/501/com.qaraamigen.musicgen-api` and wait 15 s.
+| by | what | who |
+| --- | --- | --- |
+| 2026-12-10 | Recording session: the takes and the performance video | Khalid |
+| 2026-12-12 | Separation and restoration page built on the takes; numbers filled in | Claude |
+| 2026-12-13 | Every clip listened to and approved or cut | Khalid |
+| 2026-12-14 | Merge and push so the pages are live | Khalid's go |
+| 2026-12-16 | This video recorded | Khalid |
+| 2026-12-18 | Application submitted, five days before the deadline in the notes (2026-12-23; confirm in the portal) | Khalid |

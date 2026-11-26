@@ -22,6 +22,7 @@ import {
   type ListenSample,
 } from '@/lib/demoExamples';
 import { usePlayer, type PlayerTrack } from '@/components/player/PlayerProvider';
+import { BeforeAfterPairs } from './BeforeAfterPairs';
 
 const OUTPUT_LINE = 'AI model output — generated, not a recording';
 
@@ -125,6 +126,7 @@ export function ListenShelf(): React.JSX.Element {
 
   return (
     <main className="mx-auto w-full max-w-4xl px-4 pt-10 pb-32 sm:px-6">
+      <BeforeAfterPairs />
       <header className="mb-8">
         <p className="numeric text-xs tracking-[0.24em] text-accent-state uppercase">
           Where the research is now

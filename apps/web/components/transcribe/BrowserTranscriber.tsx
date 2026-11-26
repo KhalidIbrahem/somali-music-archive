@@ -19,6 +19,23 @@ const MAX_BYTES = 60 * 1024 * 1024;
 const MAX_SPAN_SEC = 600;
 const SOUND_FONT = 'https://storage.googleapis.com/magentadata/js/soundfonts/sgm_plus';
 const ACCEPT = 'audio/*,.mp3,.wav,.m4a,.aac,.ogg,.oga,.flac,.webm,.opus';
+/** Published model-output clips a visitor can transcribe in one click (releasable, rights-gated). */
+const SAMPLES: ReadonlyArray<{
+  readonly label: string;
+  readonly name: string;
+  readonly url: string;
+}> = [
+  {
+    label: 'Oud sample 1',
+    name: 'Generated oud, sample 1',
+    url: '/demos/generated/oud_000.mp3',
+  },
+  {
+    label: 'Oud sample 2',
+    name: 'Generated oud, sample 2',
+    url: '/demos/generated/oud_002.mp3',
+  },
+];
 
 interface Source {
   name: string;
@@ -116,6 +133,7 @@ export function BrowserTranscriber(): React.JSX.Element {
     }
   }, [speed, source]);
 
+  const autoRunRef = useRef(false);
   const load = useCallback(async (blob: Blob, name: string): Promise<void> => {
     abortRef.current?.abort();
     setAnalysis(null);
@@ -146,6 +164,23 @@ export function BrowserTranscriber(): React.JSX.Element {
 
   const openFile = (file: File | undefined): void => {
     if (file) void load(file, file.name.replace(/\.[a-z0-9]+$/i, ''));
+  };
+
+  /** One click for a visitor with no recording to hand: load a published clip, then transcribe it. */
+  const openSample = async (url: string, name: string): Promise<void> => {
+    setPhase({ kind: 'decoding' });
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(String(res.status));
+      autoRunRef.current = true;
+      await load(await res.blob(), name);
+    } catch {
+      autoRunRef.current = false;
+      setPhase({
+        kind: 'error',
+        message: 'The sample could not be loaded. Check the connection and try again.',
+      });
+    }
   };
 
   const startRecording = async (): Promise<void> => {
@@ -282,6 +317,15 @@ export function BrowserTranscriber(): React.JSX.Element {
     [musicXmlUrl],
   );
 
+  // A sample transcribes as soon as it has loaded.
+  useEffect(() => {
+    if (autoRunRef.current && source && phase.kind === 'idle') {
+      autoRunRef.current = false;
+      void analyse();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- analyse reads the current source
+  }, [source, phase]);
+
   const printScore = (): void => {
     if (!engraved || !source) return;
     // A hidden frame holding only the engraved pages; the browser's print
@@ -380,6 +424,24 @@ export function BrowserTranscriber(): React.JSX.Element {
           }}
         />
       </div>
+
+      <div className="mt-3 flex flex-wrap items-center gap-2 font-body text-sm text-ink-secondary">
+        <span>No recording to hand? Try one:</span>
+        {SAMPLES.map((sample) => (
+          <button
+            key={sample.url}
+            type="button"
+            disabled={busy}
+            onClick={() => void openSample(sample.url, sample.name)}
+            className="min-h-11 rounded-lg border border-amber/40 px-3 py-2 font-semibold text-amber transition-colors hover:bg-amber hover:text-bg-primary disabled:opacity-40"
+          >
+            {sample.label}
+          </button>
+        ))}
+      </div>
+      <p className="mt-1 font-body text-xs text-ink-tertiary">
+        The samples are AI model output from this project, 15 seconds each, not recordings.
+      </p>
 
       <p className="mt-2 font-body text-xs text-ink-tertiary">
         Works best with one voice or one instrument (oud, voice, flute, violin). A full band gives a

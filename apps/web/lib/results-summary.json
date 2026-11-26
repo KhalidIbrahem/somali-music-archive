@@ -1,0 +1,111 @@
+{
+  "scaling": [
+    {
+      "key": "medium",
+      "label": "MusicGen-medium, 1.5 B",
+      "model": "facebook/musicgen-medium",
+      "checkpoint": "ckpt_step_2750",
+      "testSongs": 27,
+      "testClips": 128,
+      "baseCe": 4.1011,
+      "adapterCe": 3.9996,
+      "improvement": 0.1016,
+      "ci95": [0.0779, 0.1232],
+      "voicedBase": 0.409,
+      "voicedAdapter": 0.515,
+      "pcsBase": 0.8212,
+      "pcsAdapter": 0.8047,
+      "abPairs": 16,
+      "sittings": [
+        {
+          "date": "2026-09-08",
+          "n": 16,
+          "adapter": 3,
+          "base": 0,
+          "none": 13
+        },
+        {
+          "date": "2026-09-24",
+          "n": 16,
+          "adapter": 1,
+          "base": 0,
+          "none": 15
+        }
+      ]
+    },
+    {
+      "key": "large",
+      "label": "MusicGen-large, 3.3 B",
+      "model": "facebook/musicgen-large",
+      "checkpoint": "ckpt_step_2750",
+      "testSongs": 27,
+      "testClips": 128,
+      "baseCe": 4.075,
+      "adapterCe": 3.9469,
+      "improvement": 0.1282,
+      "ci95": [0.1042, 0.1517],
+      "voicedBase": 0.355,
+      "voicedAdapter": 0.683,
+      "pcsBase": 0.8719,
+      "pcsAdapter": 0.7848,
+      "abPairs": 16,
+      "sittings": [
+        {
+          "date": "2026-09-08",
+          "n": 16,
+          "adapter": 11,
+          "base": 2,
+          "none": 3
+        },
+        {
+          "date": "2026-09-08",
+          "n": 16,
+          "adapter": 6,
+          "base": 0,
+          "none": 10
+        }
+      ]
+    },
+    {
+      "key": "qaraami_all",
+      "label": "MusicGen-medium, whole corpus",
+      "model": "facebook/musicgen-medium",
+      "checkpoint": "ckpt_step_3000",
+      "testSongs": 64,
+      "testClips": 128,
+      "baseCe": 4.2107,
+      "adapterCe": 4.1343,
+      "improvement": 0.0764,
+      "ci95": [0.0687, 0.0837],
+      "voicedBase": 0.424,
+      "voicedAdapter": 0.702,
+      "pcsBase": 0.8505,
+      "pcsAdapter": 0.7376,
+      "abPairs": 16,
+      "sittings": [
+        {
+          "date": "2026-09-27",
+          "n": 16,
+          "adapter": 1,
+          "base": 0,
+          "none": 15
+        }
+      ]
+    }
+  ],
+  "qormada": {
+    "system": {
+      "mean": 0.687,
+      "ci95": [0.657, 0.717]
+    },
+    "human": {
+      "mean": 0.74,
+      "ci95": [0.712, 0.768]
+    },
+    "shareOfHuman": 0.93
+  },
+  "restoration": {
+    "bandSnrRawTrained": 4.7,
+    "bandSnrRestoredTrained": 11.3
+  }
+}

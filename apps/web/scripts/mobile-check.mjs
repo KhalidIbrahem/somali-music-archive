@@ -69,7 +69,17 @@ const shot = async (name, full = false) => {
   const { data } = await s('Page.captureScreenshot', params);
   writeFileSync(`${S}/shots/${name}.png`, Buffer.from(data, 'base64'));
 };
-const PAGES = ['/', '/generate', '/transcribe', '/listen', '/scores/beerdilaacshe', '/library'];
+const PAGES = [
+  '/',
+  '/generate',
+  '/transcribe',
+  '/listen',
+  '/scores',
+  '/results',
+  '/portfolio',
+  '/scores/beerdilaacshe',
+  '/library',
+];
 const report = [];
 for (const width of [375, 414]) {
   await s('Emulation.setDeviceMetricsOverride', {

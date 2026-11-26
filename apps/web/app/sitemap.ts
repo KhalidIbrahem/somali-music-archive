@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import dspDemo from '@/lib/dsp-demo.json';
 
 const SITE = 'https://qaraamigen.com';
 
@@ -19,6 +20,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     page('/', 1.0, 'weekly'),
     page('/generate', 0.9, 'weekly'),
     page('/transcribe', 0.9, 'weekly'),
+    page('/scores', 0.8, 'monthly'),
+    page('/results', 0.8, 'monthly'),
+    ...(dspDemo.source.kind === 'synthetic' ? [] : [page('/separation', 0.8, 'monthly')]),
+    page('/portfolio', 0.9, 'monthly'),
     page('/listen', 0.9, 'weekly'),
     page('/studio', 0.9, 'weekly'),
     page('/gallery', 0.8, 'weekly'),

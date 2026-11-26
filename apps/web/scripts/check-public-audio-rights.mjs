@@ -27,7 +27,7 @@ const SOURCE_ROOTS = ['apps/web/app', 'apps/web/components', 'apps/web/lib', 'ap
 const SOURCE_RE = /\.(ts|tsx|js|jsx|mjs|json|html|md)$/i;
 const REF_RE = /\/demos\/(?:generated|gallery)\/[A-Za-z0-9._-]+/g;
 const RIGHTS_RE = /\*\*Rights class:\*\*\s*`(releasable|research_only)`/;
-const KINDS = new Set(['synthesised', 'model_output']);
+const KINDS = new Set(['synthesised', 'model_output', 'own_recording']);
 
 /** The rights class a model card declares, or null when it declares none. */
 export function cardRights(text) {
@@ -68,6 +68,15 @@ export function check({ audioFiles, manifest, cards, cardsAvailable, references 
       errors.push(`${file}: listed in public-audio-rights.json but not in the checkout`);
     if (!KINDS.has(e.kind)) {
       errors.push(`${file}: kind ${JSON.stringify(e.kind)} is not one of ${[...KINDS].join(', ')}`);
+      continue;
+    }
+    if (e.kind === 'own_recording') {
+      // A real recording made for the project (or a processed version of one): it must name
+      // who plays and the consent record that allows it to be public.
+      for (const field of ['performer', 'consent']) {
+        if (typeof e[field] !== 'string' || e[field].trim() === '')
+          errors.push(`${file}: own_recording without ${field}`);
+      }
       continue;
     }
     if (e.kind !== 'model_output') continue;

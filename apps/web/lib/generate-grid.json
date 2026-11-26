@@ -1,0 +1,33 @@
+{
+  "durationSec": 15,
+  "cfg": 3.0,
+  "medianGenerationSeconds": 17.8,
+  "labels": {
+    "base": "MusicGen-small as published",
+    "tuned": "MusicGen-small + oud adapter"
+  },
+  "prompts": [
+    {
+      "id": 0,
+      "label": "Moderate, 96 BPM, on D",
+      "prompt": "Somali qaraami led by the oud (kaban), moderate at 96 BPM, pentatonic melody rooted on D, intimate home recording"
+    },
+    {
+      "id": 1,
+      "label": "Lively, 140 BPM, on E",
+      "prompt": "Somali qaraami led by the oud (kaban), lively at 140 BPM, pentatonic melody rooted on E, intimate home recording"
+    },
+    {
+      "id": 2,
+      "label": "Moderate, 110 BPM, on A",
+      "prompt": "Somali qaraami led by the oud (kaban), moderate at 110 BPM, pentatonic melody rooted on A, intimate home recording"
+    },
+    {
+      "id": 3,
+      "label": "Lively, 128 BPM, on C",
+      "prompt": "Somali qaraami led by the oud (kaban), lively at 128 BPM, pentatonic melody rooted on C, intimate home recording"
+    }
+  ],
+  "seeds": [11, 22, 33],
+  "clips": {}
+}

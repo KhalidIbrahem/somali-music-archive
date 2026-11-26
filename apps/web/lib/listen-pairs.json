@@ -1,0 +1,8 @@
+{
+  "selectionNote": "4 of 10 prompt-and-seed pairs generated on 2026-11-21, kept for the largest gain in trackable melody (10 of 10 could be scored on both sides). Over those 10: melody 58 % base against 68 % fine-tuned, PCS 0.98 against 0.94, noise 0.011 against 0.011. None of these clips is in the listening study.",
+  "pairs": [],
+  "restoration": {
+    "title": "Cassette restoration: raw, then restored",
+    "note": "Placeholder. The restoration study ran on archival cassette transfers that are research-only, so no raw or restored clip from it can be played here. A pair made from a rights-clear recording will replace this note. The measured result is in the evaluation summary."
+  }
+}
